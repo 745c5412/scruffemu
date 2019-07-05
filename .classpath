@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/Rody/Desktop/Dofus/ScruffEmu/Game/Libraries/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Rody/Desktop/Dofus/ScruffEmu/Game/Libraries/commons-lang-2.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Rody/Desktop/Dofus/ScruffEmu/Game/Libraries/commons-logging-1.0.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Rody/Desktop/Dofus/ScruffEmu/Game/Libraries/config-1.2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Rody/Desktop/Dofus/ScruffEmu/Game/Libraries/google-translate-095.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Rody/Desktop/Dofus/ScruffEmu/Game/Libraries/HikariCP-1.3.8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Rody/Desktop/Dofus/ScruffEmu/Game/Libraries/jansi-1.7.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Rody/Desktop/Dofus/ScruffEmu/Game/Libraries/javassist.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Rody/Desktop/Dofus/ScruffEmu/Game/Libraries/jep.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Rody/Desktop/Dofus/ScruffEmu/Game/Libraries/joda-time-2.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Rody/Desktop/Dofus/ScruffEmu/Game/Libraries/logback-classic-1.1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Rody/Desktop/Dofus/ScruffEmu/Game/Libraries/logback-core-1.1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Rody/Desktop/Dofus/ScruffEmu/Game/Libraries/mina-core-2.0.9.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Rody/Desktop/Dofus/ScruffEmu/Game/Libraries/mysql.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Rody/Desktop/Dofus/ScruffEmu/Game/Libraries/slf4j-api-1.7.7.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
