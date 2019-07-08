@@ -2901,5 +2901,4 @@ public class SocketManager
     String packet="Bp";
     send(out,packet);
   }
-
 }

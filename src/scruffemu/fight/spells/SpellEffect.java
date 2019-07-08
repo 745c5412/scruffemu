@@ -310,11 +310,11 @@ public class SpellEffect
             }
             target.getChatiValue().put(stat,newValue);
             break;
-          case 1017:
-            if(buff.getSpell()==550) //Reinforcementex
-            {
-              target.addBuff(138,buff.getValue(),-1,-1,false,buff.getSpell(),buff.getArgs(),caster,false);
-            }
+          case 1017: //Reinforcementex (Yokai)
+            target.addBuff(138,buff.getValue(),-1,-1,false,buff.getSpell(),buff.getArgs(),caster,false);
+          case 1026: //Moowolf's Rage (+x damage for every hit taken)
+            target.addBuff(112,buff.getValue(),buff.getDuration(),buff.getTurn(),true,buff.getSpell(),buff.getArgs(),caster,false);
+            SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,112,caster.getId()+"",target.getId()+","+5+","+buff.getDuration());
           default:
             break;
         }
@@ -602,92 +602,92 @@ public class SpellEffect
           }
           case 1022: //earth damage
           {
-              if(caster.isMob()&&(caster.getTeam2()==target.getTeam2())&&!caster.isInvocation())
-                continue; // Les monstres de s'entretuent pas
+            if(caster.isMob()&&(caster.getTeam2()==target.getTeam2())&&!caster.isInvocation())
+              continue; // Les monstres de s'entretuent pas
 
-              if(target.hasBuff(765))//sacrifice
+            if(target.hasBuff(765))//sacrifice
+            {
+              if(target.getBuff(765)!=null&&!target.getBuff(765).getCaster().isDead())
               {
-                if(target.getBuff(765)!=null&&!target.getBuff(765).getCaster().isDead())
+                applyEffect_765B(fight,target);
+                target=target.getBuff(765).getCaster();
+              }
+            }
+            //si la cible a le buff renvoie de sort
+
+            if(target.hasBuff(106)&&target.getBuffValue(106)>=spellLvl&&spell!=0)
+            {
+              SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,106,target.getId()+"",target.getId()+",1");
+              //le lanceur devient donc la cible
+              target=caster;
+            }
+            int dmg=0;
+            String[] args=buff.getArgs().split(";");
+            if(target.hasBuff(782)) //Brokle
+            {
+              dmg=Formulas.getMaxJet(args[5]);
+            }
+            else if(target.hasBuff(781)) //Jinx
+            {
+              dmg=Formulas.getMinJet(args[5]);
+            }
+            else
+              dmg=Formulas.getRandomJet(args[5]);
+
+            //Si le sort est boost� par un buff sp�cifique
+            if(caster.hasBuff(293)||caster.haveState(300))
+            {
+              if(caster.haveState(300))
+                caster.setState(300,0);
+              for(SpellEffect SE : caster.getBuffsByEffectID(293))
+              {
+                if(SE==null)
+                  continue;
+                if(SE.getValue()==spell)
                 {
-                  applyEffect_765B(fight,target);
-                  target=target.getBuff(765).getCaster();
-                }
-              }
-              //si la cible a le buff renvoie de sort
-
-              if(target.hasBuff(106)&&target.getBuffValue(106)>=spellLvl&&spell!=0)
-              {
-                SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,106,target.getId()+"",target.getId()+",1");
-                //le lanceur devient donc la cible
-                target=caster;
-              }
-              int dmg=0;
-              String[] args=buff.getArgs().split(";");
-              if(target.hasBuff(782)) //Brokle
-              {
-                dmg=Formulas.getMaxJet(args[5]);
-              }
-              else if(target.hasBuff(781)) //Jinx
-              {
-                dmg=Formulas.getMinJet(args[5]);
-              }
-              else
-                dmg=Formulas.getRandomJet(args[5]);
-
-              //Si le sort est boost� par un buff sp�cifique
-              if(caster.hasBuff(293)||caster.haveState(300))
-              {
-                if(caster.haveState(300))
-                  caster.setState(300,0);
-                for(SpellEffect SE : caster.getBuffsByEffectID(293))
-                {
-                  if(SE==null)
-                    continue;
-                  if(SE.getValue()==spell)
+                  int add=-1;
+                  try
                   {
-                    int add=-1;
-                    try
-                    {
-                      add=Integer.parseInt(SE.getArgs().split(";")[2]);
-                    }
-                    catch(Exception e)
-                    {
-                      e.printStackTrace();
-                    }
-                    if(add<=0)
-                      continue;
-                    dmg+=add;
+                    add=Integer.parseInt(SE.getArgs().split(";")[2]);
                   }
+                  catch(Exception e)
+                  {
+                    e.printStackTrace();
+                  }
+                  if(add<=0)
+                    continue;
+                  dmg+=add;
                 }
               }
+            }
 
-              int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,false,spell);
-              finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_TERRE);//S'il y a des buffs sp�ciaux
-              if(finalDommage>target.getPdv())
-                finalDommage=target.getPdv();//Target va mourrir
-              target.removePdv(caster,finalDommage);
-              target.removePdvMax((int)Math.floor(finalDommage*(Config.getInstance().erosion+caster.getTotalStats().getEffect(Constant.STATS_ADD_ERO)-caster.getTotalStats().getEffect(Constant.STATS_REM_ERO)-target.getTotalStats().getEffect(Constant.STATS_ADD_R_ERO)+target.getTotalStats().getEffect(Constant.STATS_REM_R_ERO)))/100);
-              int cura=finalDommage;
+            int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,false,spell);
+            finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_TERRE);//S'il y a des buffs sp�ciaux
+            if(finalDommage>target.getPdv())
+              finalDommage=target.getPdv();//Target va mourrir
+            target.removePdv(caster,finalDommage);
+            target.removePdvMax((int)Math.floor(finalDommage*(Config.getInstance().erosion+caster.getTotalStats().getEffect(Constant.STATS_ADD_ERO)-caster.getTotalStats().getEffect(Constant.STATS_REM_ERO)-target.getTotalStats().getEffect(Constant.STATS_ADD_R_ERO)+target.getTotalStats().getEffect(Constant.STATS_REM_R_ERO)))/100);
+            int cura=finalDommage;
 
-              if(target.hasBuff(786))
-              {
-                if((cura+caster.getPdv())>caster.getPdvMax())
-                  cura=caster.getPdvMax()-caster.getPdv();
-                caster.removePdv(caster,-cura);
-                SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,100,target.getId()+"",caster.getId()+",+"+cura);
-              }
-              finalDommage=-(finalDommage);
-              SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,100,caster.getId()+"",target.getId()+","+finalDommage);
-              if(target.getMob()!=null)
-                verifmobs(fight,target,97,cura);
-              if(target.getPdv()<=0)
-              {
-                fight.onFighterDie(target,caster);
-                if(target.canPlay()&&target.getPersonnage()!=null)
-                  fight.endTurn(false);
-                else if(target.canPlay())
-                  target.setCanPlay(false);
-              }
+            if(target.hasBuff(786))
+            {
+              if((cura+caster.getPdv())>caster.getPdvMax())
+                cura=caster.getPdvMax()-caster.getPdv();
+              caster.removePdv(caster,-cura);
+              SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,100,target.getId()+"",caster.getId()+",+"+cura);
+            }
+            finalDommage=-(finalDommage);
+            SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,100,caster.getId()+"",target.getId()+","+finalDommage);
+            if(target.getMob()!=null)
+              verifmobs(fight,target,97,cura);
+            if(target.getPdv()<=0)
+            {
+              fight.onFighterDie(target,caster);
+              if(target.canPlay()&&target.getPersonnage()!=null)
+                fight.endTurn(false);
+              else if(target.canPlay())
+                target.setCanPlay(false);
+            }
             break;
           }
           case 1023: //fire damage
@@ -778,8 +778,8 @@ public class SpellEffect
               else if(target.canPlay())
                 target.setCanPlay(false);
             }
-          break;
-        }
+            break;
+          }
           case 1024: //water damage
           {
             if(caster.isMob()&&(caster.getTeam2()==target.getTeam2())&&!caster.isInvocation())
@@ -868,8 +868,8 @@ public class SpellEffect
               else if(target.canPlay())
                 target.setCanPlay(false);
             }
-          break;
-        }
+            break;
+          }
           case 1025: //air damage
           {
             if(caster.isMob()&&(caster.getTeam2()==target.getTeam2())&&!caster.isInvocation())
@@ -958,8 +958,8 @@ public class SpellEffect
               else if(target.canPlay())
                 target.setCanPlay(false);
             }
-          break;
-        }
+            break;
+          }
           default:
             break;
         }
@@ -982,7 +982,7 @@ public class SpellEffect
     this.turns=turn;
   }
 
-  public boolean isDebuffabe()
+  public boolean isDebuffable()
   {
     return debuffable;
   }
@@ -1607,6 +1607,9 @@ public class SpellEffect
           break;
         case 1025://Air damage when healed
           applyEffect_1025(cibles,fight);
+          break;
+        case 1026: //+ Damage on hit (Moowolf)
+          applyEffect_1026(cibles,fight);
           break;
         default:
           break;
@@ -4828,10 +4831,12 @@ public class SpellEffect
   {
     for(Fighter target : cibles)
     {
+      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,132,caster.getId()+"",target.getId()+"");
+      if(target.getPersonnage()!=null&&!target.hasLeft())
+        SocketManager.GAME_SEND_STATS_PACKET(target.getPersonnage());
       target.debuff();
       if(target.isHide())
         target.unHide(spell);
-      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,132,caster.getId()+"",target.getId()+"");
     }
   }
 
@@ -7132,9 +7137,7 @@ public class SpellEffect
   private void applyEffect_1017(ArrayList<Fighter> cibles, Fight fight)
   {
     for(Fighter target : cibles)
-    {
       target.addBuff(effectID,value,turns,1,true,spell,args,caster,true);
-    }
   }
 
   private void applyEffect_1018(ArrayList<Fighter> cibles, Fight fight)
@@ -7237,6 +7240,12 @@ public class SpellEffect
       target.addBuff(effectID,value,turns,1,true,spell,args,caster,false);
   }
 
+  private void applyEffect_1026(ArrayList<Fighter> cibles, Fight fight)
+  {
+    for(Fighter target : cibles)
+      target.addBuff(effectID,value,turns,duration,false,spell,args,caster,true);
+  }
+
   private ArrayList<Fighter> trierCibles(ArrayList<Fighter> cibles, Fight fight)
   {
     ArrayList<Fighter> array=new ArrayList<>();
@@ -7272,13 +7281,6 @@ public class SpellEffect
   {
     switch(target.getMob().getTemplate().getId())
     {
-      case 232://meulou
-        if(target.hasBuff(112))
-        {
-          target.addBuff(112,5,-1,1,true,spell,args,caster,false);
-          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,112,caster.getId()+"",target.getId()+","+5+","+-1);
-        }
-        break;
       case 233:
         if(effet==168||effet==101)
         {

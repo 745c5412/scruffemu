@@ -680,46 +680,128 @@ public class Fighter implements Comparable<Fighter>
     }
   }
 
-  //TODO: fix display of debuffed spells
+  //v2.8 - only add tooltip not effect
+  public void addBuffTooltip(int id, int val, int duration, int turns, boolean debuff, int spellID, String args, Fighter caster, boolean isStart)
+  {
+    if(this.mob!=null)
+      for(int id1 : Constant.STATIC_INVOCATIONS)
+        if(id1==this.mob.getTemplate().getId())
+          return;
+
+    switch(id)
+    {
+      case 6://Renvoie de sort
+        SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),-1,val+"","10","",duration,spellID);
+        break;
+      case 79://Chance éca
+        val=Integer.parseInt(args.split(";")[0]);
+        String valMax=args.split(";")[1];
+        String chance=args.split(";")[2];
+        SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,valMax,chance,"",duration,spellID);
+        break;
+      case 85:
+      case 86:
+      case 87:
+      case 88:
+      case 89:
+        val=Integer.parseInt(args.split(";")[0]);
+        String valMax1=args.split(";")[1];
+        if(valMax1.compareTo("-1")==0)
+          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration,spellID);
+        else if(valMax1.compareTo("-1")!=0)
+          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,valMax1,"","",duration,spellID);
+        break;
+      case 96:
+      case 97:
+      case 98://Poison insidieux
+      case 99:
+      case 100:
+      case 106:
+        if(duration!=-1)
+          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,Integer.toString(val),"","",duration,spellID);
+        else
+          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,Integer.toString(val),"","",duration-1,spellID);
+        break;
+      case 131: //AP Poisons
+        if(duration==-1)
+          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,args.split(";")[1],"","",duration-1,spellID);
+        else
+          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,args.split(";")[1],"","",duration,spellID);
+        break;
+      case 107://Mot d'épine (2à3), Contre(3)
+      case 108://Mot de Régénération, Tout ou rien
+      case 165://Maîtris
+      case 781://MAX
+      case 782://MIN
+        val=Integer.parseInt(args.split(";")[0]);
+        String valMax2=args.split(";")[1];
+        if(valMax2.compareTo("-1")==0||spellID==82||spellID==94)
+          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration,spellID);
+        else if(valMax2.compareTo("-1")!=0)
+          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,valMax2,"","",duration,spellID);
+        break;
+      case 606:
+      case 607:
+      case 608:
+      case 609:
+      case 611:
+        // de X sur Y tours
+        String jet=args.split(";")[5];
+        int min=Formulas.getMinJet(jet);
+        int max=Formulas.getMaxJet(jet);
+        SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),min,""+max,""+max,"",duration,spellID);
+        break;
+      case 788://Fait apparaitre message le temps de buff sacri Chatiment de X sur Y tours
+        val=Integer.parseInt(args.split(";")[1]);
+        String valMax3=args.split(";")[2];
+        if(Integer.parseInt(args.split(";")[0])==108)
+          return;
+        SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,""+val,""+valMax3,"",duration,spellID);
+        break;
+      default:
+        if(duration==-1)
+          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration-1,spellID);
+        else if(duration!=1||spellID==101||spellID==2083) //roulette and doplesque roulette two turns
+          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration,spellID);
+        else if(duration==1&&spellID==83&&id==120) //Hand self-buff duration
+          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration,spellID);
+        else
+          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration-1,spellID);
+        break;
+    }
+  }
+
   public void debuff()
   {
-    Iterator<SpellEffect> it=this.fightBuffs.iterator();
-    while(it.hasNext())
+    if(!fightBuffs.isEmpty())
     {
-      SpellEffect spellEffect=it.next();
-      switch(spellEffect.getSpell())
+      ArrayList<SpellEffect> newBuffs=new ArrayList<SpellEffect>();
+      for(SpellEffect buff : fightBuffs)
       {
-        case 437:
-        case 431:
-        case 433:
-        case 443:
-        case 441://Châtiments
+        if(!buff.isDebuffable())
+        {
+          newBuffs.add(buff);
           continue;
+        }
+        switch(buff.getEffectID())
+        {
+          case Constant.STATS_ADD_PA:
+          case Constant.STATS_ADD_PA2:
+            SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this.fight,7,101,getId()+"",getId()+",-"+buff.getValue());
+            break;
+          case Constant.STATS_ADD_PM:
+          case Constant.STATS_ADD_PM2:
+            SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this.fight,7,127,getId()+"",getId()+",-"+buff.getValue());
+            break;
+        }
       }
-
-      if(spellEffect.isDebuffabe())
-        it.remove();
-      //On envoie les Packets si besoin
-      switch(spellEffect.getEffectID())
+      fightBuffs.clear();
+      if(!newBuffs.isEmpty())
       {
-        case Constant.STATS_ADD_PA:
-        case Constant.STATS_ADD_PA2:
-          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this.fight,7,101,getId()+"",getId()+",-"+spellEffect.getValue());
-          break;
-        case Constant.STATS_ADD_PM:
-        case Constant.STATS_ADD_PM2:
-          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this.fight,7,127,getId()+"",getId()+",-"+spellEffect.getValue());
-          break;
+        newBuffs.stream().filter(spellEffect -> spellEffect!=null).forEach(spellEffect -> this.addBuff(spellEffect.getEffectID(),spellEffect.getValue(),spellEffect.getDuration(),spellEffect.getTurn(),spellEffect.isDebuffable(),spellEffect.getSpell(),spellEffect.getArgs(),this,true));
+        this.fight.buffsToAdd.add(new Pair<Fighter, ArrayList<SpellEffect>>(this,newBuffs));
       }
     }
-    ArrayList<SpellEffect> array=new ArrayList<>(this.fightBuffs);
-    if(!array.isEmpty())
-    {
-      this.fightBuffs.clear();
-      array.stream().filter(spellEffect -> spellEffect!=null).forEach(spellEffect -> this.addBuff(spellEffect.getEffectID(),spellEffect.getValue(),spellEffect.getDuration(),spellEffect.getTurn(),spellEffect.isDebuffabe(),spellEffect.getSpell(),spellEffect.getArgs(),this,false));
-    }
-    if(this.perso!=null&&!this.hasLeft) // Envoie les stats au joueurs
-      SocketManager.GAME_SEND_STATS_PACKET(this.perso);
   }
 
   public void refreshEndTurnBuff()

@@ -276,7 +276,7 @@ public class Constant
   //Verif d'Etat au lancement d'un sort {spellID,stateID}, � completer avant d'activer
   public static final int[][] STATE_REQUIRED= { { 699, Constant.STATE_DRUNK }, { 690, Constant.STATE_DRUNK } };
   //Buff d�clench� en cas de frappe
-  public static final int[] ON_HIT_BUFFS= { 9, 79, 107, 138, 788, 606, 607, 608, 609, 611, 1017 };
+  public static final int[] ON_HIT_BUFFS= { 9, 79, 107, 138, 788, 606, 607, 608, 609, 611, 1017, 1026 };
   public static final int[] ON_HEAL_BUFFS= { 1018, 1019, 1020, 1021, 1022, 1023, 1024, 1025 };
   //Effects
   public static final int STATS_ADD_PM2=78;

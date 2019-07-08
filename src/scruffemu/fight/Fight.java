@@ -92,6 +92,7 @@ public class Fight
   private int nextId=-100;
   //v2.3 - Spectator join PvM
   public int startGuid=-1;
+  public ArrayList<Pair<Fighter, ArrayList<SpellEffect>>> buffsToAdd=new ArrayList<>();
 
   public Fight(int type, int id, GameMap map, Player perso, Player init2)
   {
@@ -1875,6 +1876,18 @@ public class Fight
 
   public synchronized void endTurn(final boolean onAction)
   {
+    if(!buffsToAdd.isEmpty())
+    {
+      for(Pair<Fighter, ArrayList<SpellEffect>> pair : buffsToAdd)
+      {
+        Fighter fighter=pair.getLeft();
+        ArrayList<SpellEffect> buffs=pair.getRight();
+        for(SpellEffect buff : buffs)
+          fighter.addBuffTooltip(buff.getEffectID(),buff.getValue(),buff.getDuration(),buff.getTurn(),buff.isDebuffable(),buff.getSpell(),buff.getArgs(),fighter,true);
+      }
+      buffsToAdd.clear();
+    }
+
     final Fighter current=this.getFighterByOrdreJeu();
     if(current==null)
       return;
