@@ -1040,11 +1040,11 @@ public class Player
     boolean erreur=false;
     if(title.equals(""))
       title="0";
-    if(_allTitle!=null)
+    if(_allTitle!=null&&!_allTitle.isEmpty())
       for(String i : _allTitle.split(","))
         if(i.equals(title))
           erreur=true;
-    if(_allTitle==null&&!erreur)
+    if((_allTitle==null&&!erreur)||_allTitle.isEmpty())
       _allTitle=title;
     else if(!erreur)
       _allTitle+=","+title;
