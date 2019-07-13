@@ -4,7 +4,6 @@ import scruffemu.client.Player;
 import scruffemu.common.SocketManager;
 import scruffemu.database.Database;
 import scruffemu.game.World;
-import scruffemu.job.JobAction;
 import scruffemu.main.Constant;
 import scruffemu.object.GameObject;
 
@@ -107,7 +106,7 @@ public class PetEntry
     float cumul=0;
     for(Entry<Integer, Integer> entry : obj.getStats().getMap().entrySet())
       if(entry.getKey()!=Integer.parseInt("320",16)&&entry.getKey()!=Integer.parseInt("326",16)&&entry.getKey()!=Integer.parseInt("328",16)) //textstats of pet
-        cumul+=JobAction.getPowerByStatId(entry.getKey(),true)*entry.getValue();
+        cumul+=Constant.getPowerByStatId(entry.getKey(),true)*entry.getValue();
     return cumul;
   }
 
@@ -355,7 +354,7 @@ public class PetEntry
                 if(pet.getNumbMonster(ent.getKey(),list.getKey())!=0) //Do not eat monsters not in eatable list, divide-by-zero handler
                 {
                   int statsAdd=(int)Math.floor(list.getValue()/pet.getNumbMonster(ent.getKey(),list.getKey()));
-                  float statPower=JobAction.getPowerByStatId(ent.getKey(),true);
+                  float statPower=Constant.getPowerByStatId(ent.getKey(),true);
                   int max=(int)Math.floor((this.getIsEupeoh() ? pet.getMax()*1.1 : pet.getMax()));
                   while((max<(getCurrentStatsPoids()+statsAdd*statPower))&&statsAdd!=0)
                   {

@@ -7,6 +7,7 @@ import scruffemu.fight.Fight;
 import scruffemu.fight.Fighter;
 import scruffemu.fight.spells.SpellEffect;
 import scruffemu.game.World;
+import scruffemu.job.magus.Rune;
 import scruffemu.utility.Pair;
 import scruffemu.main.Config;
 import scruffemu.main.Constant;
@@ -1130,24 +1131,40 @@ public class Formulas
     return (float)((100/runePower*Math.sqrt(10))-2)/100;
   }
 
-  public static float itemPowerFormula(float averageItemPower, float itemPower)
+  public static float itemPowerFormula(float averageItemPower, float itemPower, float runePower, boolean negative)
   {
-    return averageItemPower*1.3f/itemPower;
+    if(negative)
+      return (itemPower+runePower)/averageItemPower; //return reciprocal to make you not gain more chance when getting closer to 0
+    return 1.1f*averageItemPower/(itemPower+runePower);
+  }
+
+  public static float statPowerFormula(float averageStatPower, float statPower, boolean negative)
+  {
+    if(negative)
+    {
+      if(averageStatPower==0)
+        averageStatPower=0.0001f;
+      return statPower/averageStatPower; //return reciprocal to make you not gain more chance when getting closer to 0
+    }
+    else if(statPower==0)
+      statPower=0.0001f;
+    return averageStatPower/statPower;
   }
 
   //v2.8 - Magus chance redone
-  public static ArrayList<Integer> chanceFM(final float maxItemPower, final float minItemPower, final float itemPower, final float itemStatPower, final float runePower, final int maxStat, final int minStat, final int runeStat, final double coef)
+  public static ArrayList<Integer> chanceFM(final float maxItemPower, final float minItemPower, final float itemPower, final float itemStatPower, final float runePower, final int maxStat, final int minStat, final int runeStat, final double coef, final boolean negative, final Rune rune)
   {
     final ArrayList<Integer> chances=new ArrayList<Integer>();
 
-    final float averageItemPower=(float)Math.floor((maxItemPower+minItemPower)/2);
-
+    final float averageItemPower=(float)Math.round(((float)(maxItemPower+minItemPower)/2)*100)/100; //rounded to two decimals to avoid small errors
+    final float statPower=runePower/runeStat;
+    
     float twentyPowerRule=(float)((itemPower/averageItemPower)/coef); //0.5 if half of average item power, 2 if double of average item power, when exo limit / 0.5 = * 2
     if(twentyPowerRule<0.5f)
       twentyPowerRule=0.5f;
     else if(twentyPowerRule>1f)
       twentyPowerRule=1f;
-    final float currentStat=itemStatPower/(runePower/runeStat); //runePower/runeStat = power per stat
+    final float currentStat=itemStatPower/statPower; //runePower/runeStat = power per stat
     float runesOnItem=currentStat/runeStat;
     if(runesOnItem<0f)
       runesOnItem=0f;
@@ -1160,27 +1177,45 @@ public class Formulas
     else if(allowedRunes>1f)
       allowedRunes=1f;
 
-    float chanceForRune=chanceForRuneFormula(runePower/runeStat); //modifier that reduces chance of working for stats with high base power, prevents ap/mp/range runes from landing easily
+    float chanceForRune=chanceForRuneFormula(statPower); //modifier that reduces chance of working for stats with high base power, prevents ap/mp/range runes from landing easily
     if(chanceForRune<0.01f)
       chanceForRune=0.01f;
     else if(chanceForRune>1f)
       chanceForRune=1f;
 
-    float tempItemPower=itemPower;
-    if(tempItemPower<minItemPower/2)
-      tempItemPower=minItemPower/2;
-    float itemPowerModifier=itemPowerFormula(averageItemPower,tempItemPower);
+    /*f(itemPower<minItemPower/2&&itemPower)
+      itemPower=minItemPower/2;*/
+    float itemPowerModifier=itemPowerFormula(averageItemPower,itemPower,runePower,negative); //modifier that reduces the chance of working for above-average items and increases it for below-average items
     if(itemPowerModifier<0.01f)
       itemPowerModifier=0.01f;
-    else if(itemPowerModifier>5f)
-      itemPowerModifier=5f;
-    float chance=itemPowerModifier*allowedRunes*chanceForRune*Config.getInstance().rateFm;
+    else if(itemPowerModifier>1.5f)
+      itemPowerModifier=1.5f;
+
+    float averageStat=(float)(minStat+maxStat)/2;
+    float averageStatPower=averageStat*statPower;
+
+    if(negative)
+      averageStatPower=averageStat*(-Constant.getPowerByStatId(Integer.parseInt(Rune.getNegativeStatByRuneStat(rune.getStatId()),16),false));
+
+    float statPowerModifier=statPowerFormula(averageStatPower,itemStatPower,negative);
+    if(statPowerModifier<0.17f)
+      statPowerModifier=0.17f;
+    else if(statPower>=4.5f)
+    {
+      if(statPowerModifier>runePower/3)
+        statPowerModifier=runePower/3;
+    }
+    else if(statPowerModifier>=1f)
+      statPowerModifier=1f;
+
+    float chance=itemPowerModifier*allowedRunes*chanceForRune*statPowerModifier*(float)coef*Config.getInstance().rateFm;
 
     int critSuccess=(int)(Math.floor(chance*100));
+
     if(critSuccess<1)
       critSuccess=1;
-    else if(critSuccess>100)
-      critSuccess=100;
+    else if(critSuccess>99)
+      critSuccess=99;
 
     int normSuccess=0;
     if(critSuccess!=1&&critSuccess!=100)
@@ -1188,18 +1223,11 @@ public class Formulas
       normSuccess=(int)Math.floor(Math.pow(critSuccess,1.33f)-critSuccess);
       if(normSuccess<0)
         normSuccess=0;
-      if(normSuccess+critSuccess>100)
-        normSuccess=100-critSuccess;
+      if(normSuccess+critSuccess>99)
+        normSuccess=99-critSuccess;
     }
     chances.add(0,critSuccess);
     chances.add(1,normSuccess);
-
-    System.out.println("allowedRunes: "+allowedRunes);
-    System.out.println("chanceForRune: "+chanceForRune);
-    System.out.println("itemPowerModifier: "+itemPowerModifier);
-    System.out.println("");
-    System.out.println("critSucc: "+critSuccess);
-    System.out.println("normSucc: "+normSuccess);
     return chances;
   }
 
@@ -1655,11 +1683,12 @@ public class Formulas
       else //assume worst case scenario
         sameIpFighters++;
     }
-    float val = 1.5f-(0.166666f*sameIpFighters);
+    float val=1.5f-(0.166666f*sameIpFighters);
     if(val<1f)
       val=1f;
     if(val>1.5f)
       val=1.5f;
     return val;
   }
+
 }

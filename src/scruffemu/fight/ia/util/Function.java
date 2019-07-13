@@ -1191,7 +1191,7 @@ public class Function
   {
     if(fight==null||fighter==null)
       return false;
-    if(fighter.nbInvocation()>=fighter.getTotalStats().getEffect(Constant.STATS_CREATURE))
+    if(fighter.nbInvocation()>=fighter.getTotalStats().getEffect(Constant.STATS_ADD_SUM))
       return false;
     Fighter nearest=getNearestEnnemy(fight,fighter);
     if(nearest==null)
@@ -1218,7 +1218,7 @@ public class Function
   {
     if(fight==null||fighter==null)
       return false;
-    if(fighter.nbInvocation()>=fighter.getTotalStats().getEffect(Constant.STATS_CREATURE))
+    if(fighter.nbInvocation()>=fighter.getTotalStats().getEffect(Constant.STATS_ADD_SUM))
       return false;
     Fighter nearest=getNearestEnnemy(fight,fighter);
     if(nearest==null)
@@ -1245,7 +1245,7 @@ public class Function
   {
     if(fight==null||fighter==null)
       return false;
-    if(fighter.nbInvocation()>=fighter.getTotalStats().getEffect(Constant.STATS_CREATURE))
+    if(fighter.nbInvocation()>=fighter.getTotalStats().getEffect(Constant.STATS_ADD_SUM))
       return false;
     Fighter nearest=getNearestEnnemy(fight,fighter);
     if(nearest==null)

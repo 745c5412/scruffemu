@@ -20,7 +20,7 @@ public class Stats
     this.effects.put(Constant.STATS_ADD_PM,3);
     this.effects.put(Constant.STATS_ADD_PROS,perso.getClasse()==Constant.CLASS_ENUTROF ? 120 : 100);
     this.effects.put(Constant.STATS_ADD_PODS,1000);
-    this.effects.put(Constant.STATS_CREATURE,1);
+    this.effects.put(Constant.STATS_ADD_SUM,1);
     this.effects.put(Constant.STATS_ADD_INIT,1);
   }
 
@@ -33,7 +33,7 @@ public class Stats
     this.effects.put(Constant.STATS_ADD_PM,3);
     this.effects.put(Constant.STATS_ADD_PROS,perso.getClasse()==Constant.CLASS_ENUTROF ? 120 : 100);
     this.effects.put(Constant.STATS_ADD_PODS,1000);
-    this.effects.put(Constant.STATS_CREATURE,1);
+    this.effects.put(Constant.STATS_ADD_SUM,1);
     this.effects.put(Constant.STATS_ADD_INIT,1);
   }
 
@@ -169,40 +169,7 @@ public class Stats
       val=this.effects.get(id);
 
     switch(id)
-    //
     {
-      case Constant.STATS_ADD_AFLEE:
-        if(this.effects.get(Constant.STATS_REM_AFLEE)!=null)
-          val-=getEffect(Constant.STATS_REM_AFLEE);
-        if(this.effects.get(Constant.STATS_ADD_SAGE)!=null)
-          val+=getEffect(Constant.STATS_ADD_SAGE)/4;
-        break;
-      case Constant.STATS_ADD_MFLEE:
-        if(this.effects.get(Constant.STATS_REM_MFLEE)!=null)
-          val-=getEffect(Constant.STATS_REM_MFLEE);
-        if(this.effects.get(Constant.STATS_ADD_SAGE)!=null)
-          val+=getEffect(Constant.STATS_ADD_SAGE)/4;
-        break;
-      case Constant.STATS_ADD_INIT:
-        if(this.effects.get(Constant.STATS_REM_INIT)!=null)
-          val-=this.effects.get(Constant.STATS_REM_INIT);
-        break;
-      case Constant.STATS_ADD_AGIL:
-        if(this.effects.get(Constant.STATS_REM_AGIL)!=null)
-          val-=this.effects.get(Constant.STATS_REM_AGIL);
-        break;
-      case Constant.STATS_ADD_FORC:
-        if(this.effects.get(Constant.STATS_REM_FORC)!=null)
-          val-=this.effects.get(Constant.STATS_REM_FORC);
-        break;
-      case Constant.STATS_ADD_CHAN:
-        if(this.effects.get(Constant.STATS_REM_CHAN)!=null)
-          val-=this.effects.get(Constant.STATS_REM_CHAN);
-        break;
-      case Constant.STATS_ADD_INTE:
-        if(this.effects.get(Constant.STATS_REM_INTE)!=null)
-          val-=this.effects.get(Constant.STATS_REM_INTE);
-        break;
       case Constant.STATS_ADD_PA:
         if(this.effects.get(Constant.STATS_ADD_PA2)!=null)
           val+=this.effects.get(Constant.STATS_ADD_PA2);
@@ -223,44 +190,21 @@ public class Stats
         if(this.effects.get(Constant.STATS_REM_PO)!=null)
           val-=this.effects.get(Constant.STATS_REM_PO);
         break;
-      case Constant.STATS_ADD_VITA:
-        if(this.effects.get(Constant.STATS_REM_VITA)!=null)
-          val-=this.effects.get(Constant.STATS_REM_VITA);
-        break;
-      case Constant.STATS_ADD_VIE:
-        val=Constant.STATS_ADD_VIE;
+      case Constant.STATS_ADD_SUM:
+        if(this.effects.get(Constant.STATS_REM_SUM)!=null)
+          val-=this.effects.get(Constant.STATS_REM_SUM);
         break;
       case Constant.STATS_ADD_DOMA:
         if(this.effects.get(Constant.STATS_REM_DOMA)!=null)
           val-=this.effects.get(Constant.STATS_REM_DOMA);
         break;
-      case Constant.STATS_ADD_PODS:
-        if(this.effects.get(Constant.STATS_REM_PODS)!=null)
-          val-=this.effects.get(Constant.STATS_REM_PODS);
+      case Constant.STATS_ADD_CC:
+        if(this.effects.get(Constant.STATS_REM_CC)!=null)
+          val-=this.effects.get(Constant.STATS_REM_CC);
         break;
-      case Constant.STATS_ADD_PROS:
-        if(this.effects.get(Constant.STATS_REM_PROS)!=null)
-          val-=this.effects.get(Constant.STATS_REM_PROS);
-        break;
-      case Constant.STATS_ADD_R_TER:
-        if(this.effects.get(Constant.STATS_REM_R_TER)!=null)
-          val-=this.effects.get(Constant.STATS_REM_R_TER);
-        break;
-      case Constant.STATS_ADD_R_EAU:
-        if(this.effects.get(Constant.STATS_REM_R_EAU)!=null)
-          val-=this.effects.get(Constant.STATS_REM_R_EAU);
-        break;
-      case Constant.STATS_ADD_R_AIR:
-        if(this.effects.get(Constant.STATS_REM_R_AIR)!=null)
-          val-=this.effects.get(Constant.STATS_REM_R_AIR);
-        break;
-      case Constant.STATS_ADD_R_FEU:
-        if(this.effects.get(Constant.STATS_REM_R_FEU)!=null)
-          val-=this.effects.get(Constant.STATS_REM_R_FEU);
-        break;
-      case Constant.STATS_ADD_R_NEU:
-        if(this.effects.get(Constant.STATS_REM_R_NEU)!=null)
-          val-=this.effects.get(Constant.STATS_REM_R_NEU);
+      case Constant.STATS_ADD_SOIN:
+        if(this.effects.get(Constant.STATS_REM_SOIN)!=null)
+          val-=this.effects.get(Constant.STATS_REM_SOIN);
         break;
       case Constant.STATS_ADD_RP_TER:
         if(this.effects.get(Constant.STATS_REM_RP_TER)!=null)
@@ -282,25 +226,85 @@ public class Stats
         if(this.effects.get(Constant.STATS_REM_RP_NEU)!=null)
           val-=this.effects.get(Constant.STATS_REM_RP_NEU);
         break;
-      case Constant.STATS_ADD_MAITRISE:
-        if(this.effects.get(Constant.STATS_ADD_MAITRISE)!=null)
-          val=this.effects.get(Constant.STATS_ADD_MAITRISE);
+      case Constant.STATS_ADD_PROS:
+        if(this.effects.get(Constant.STATS_REM_PROS)!=null)
+          val-=this.effects.get(Constant.STATS_REM_PROS);
+        break;
+      case Constant.STATS_ADD_SAGE:
+        if(this.effects.get(Constant.STATS_REM_SAGE)!=null)
+          val-=this.effects.get(Constant.STATS_REM_SAGE);
+        break;
+      case Constant.STATS_ADD_R_FEU:
+        if(this.effects.get(Constant.STATS_REM_R_FEU)!=null)
+          val-=this.effects.get(Constant.STATS_REM_R_FEU);
+        break;
+      case Constant.STATS_ADD_R_NEU:
+        if(this.effects.get(Constant.STATS_REM_R_NEU)!=null)
+          val-=this.effects.get(Constant.STATS_REM_R_NEU);
+        break;
+      case Constant.STATS_ADD_R_TER:
+        if(this.effects.get(Constant.STATS_REM_R_TER)!=null)
+          val-=this.effects.get(Constant.STATS_REM_R_TER);
+        break;
+      case Constant.STATS_ADD_R_EAU:
+        if(this.effects.get(Constant.STATS_REM_R_EAU)!=null)
+          val-=this.effects.get(Constant.STATS_REM_R_EAU);
+        break;
+      case Constant.STATS_ADD_R_AIR:
+        if(this.effects.get(Constant.STATS_REM_R_AIR)!=null)
+          val-=this.effects.get(Constant.STATS_REM_R_AIR);
         break;
       case Constant.STATS_ADD_PERDOM:
         if(this.effects.get(Constant.STATS_REM_PERDOM)!=null)
           val-=this.effects.get(Constant.STATS_REM_PERDOM);
         break;
-      case Constant.STATS_ADD_SOIN:
-        if(this.effects.get(Constant.STATS_REM_SOIN)!=null)
-          val-=this.effects.get(Constant.STATS_REM_SOIN);
+      case Constant.STATS_ADD_FORC:
+        if(this.effects.get(Constant.STATS_REM_FORC)!=null)
+          val-=this.effects.get(Constant.STATS_REM_FORC);
         break;
-      case Constant.STATS_ADD_CC:
-        if(this.effects.get(Constant.STATS_REM_CC)!=null)
-          val-=this.effects.get(Constant.STATS_REM_CC);
+      case Constant.STATS_ADD_INTE:
+        if(this.effects.get(Constant.STATS_REM_INTE)!=null)
+          val-=this.effects.get(Constant.STATS_REM_INTE);
         break;
-      case Constant.STATS_ADD_SAGE:
-        if(this.effects.get(Constant.STATS_REM_SAGE)!=null)
-          val-=this.effects.get(Constant.STATS_REM_SAGE);
+      case Constant.STATS_ADD_CHAN:
+        if(this.effects.get(Constant.STATS_REM_CHAN)!=null)
+          val-=this.effects.get(Constant.STATS_REM_CHAN);
+        break;
+      case Constant.STATS_ADD_AGIL:
+        if(this.effects.get(Constant.STATS_REM_AGIL)!=null)
+          val-=this.effects.get(Constant.STATS_REM_AGIL);
+        break;
+      case Constant.STATS_ADD_PODS:
+        if(this.effects.get(Constant.STATS_REM_PODS)!=null)
+          val-=this.effects.get(Constant.STATS_REM_PODS);
+        break;
+      case Constant.STATS_ADD_VITA:
+        if(this.effects.get(Constant.STATS_REM_VITA)!=null)
+          val-=this.effects.get(Constant.STATS_REM_VITA);
+        break;
+      case Constant.STATS_ADD_VIE:
+        val=Constant.STATS_ADD_VIE;
+        break;
+      case Constant.STATS_ADD_INIT:
+        if(this.effects.get(Constant.STATS_REM_INIT)!=null)
+          val-=this.effects.get(Constant.STATS_REM_INIT);
+        break;
+        
+      case Constant.STATS_ADD_AFLEE:
+        if(this.effects.get(Constant.STATS_REM_AFLEE)!=null)
+          val-=getEffect(Constant.STATS_REM_AFLEE);
+        if(this.effects.get(Constant.STATS_ADD_SAGE)!=null)
+          val+=getEffect(Constant.STATS_ADD_SAGE)/4;
+        break;
+      case Constant.STATS_ADD_MFLEE:
+        if(this.effects.get(Constant.STATS_REM_MFLEE)!=null)
+          val-=getEffect(Constant.STATS_REM_MFLEE);
+        if(this.effects.get(Constant.STATS_ADD_SAGE)!=null)
+          val+=getEffect(Constant.STATS_ADD_SAGE)/4;
+        break;
+      case Constant.STATS_ADD_MAITRISE:
+        if(this.effects.get(Constant.STATS_ADD_MAITRISE)!=null)
+          val=this.effects.get(Constant.STATS_ADD_MAITRISE);
         break;
     }
     return val;

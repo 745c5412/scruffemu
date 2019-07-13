@@ -1168,7 +1168,7 @@ public class Monster
         this.stats.put(Constant.STATS_ADD_DOMA,Integer.parseInt(statInfos[0]));
         this.stats.put(Constant.STATS_ADD_PERDOM,Integer.parseInt(statInfos[1]));
         this.stats.put(Constant.STATS_ADD_SOIN,Integer.parseInt(statInfos[2]));
-        this.stats.put(Constant.STATS_CREATURE,Integer.parseInt(statInfos[3]));
+        this.stats.put(Constant.STATS_ADD_SUM,Integer.parseInt(statInfos[3]));
       }
       catch(Exception e)
       {
@@ -1337,8 +1337,8 @@ public class Monster
 
     public Stats getStats()
     {
-      if(this.getTemplate().getId()==42&&!stats.containsKey(Constant.STATS_CREATURE))
-        stats.put(Constant.STATS_CREATURE,5);
+      if(this.getTemplate().getId()==42&&!stats.containsKey(Constant.STATS_ADD_SUM))
+        stats.put(Constant.STATS_ADD_SUM,5);
       if(this.stats.get(-1)!=null)
       {
         Map<Integer, Integer> stats=new HashMap<>();
@@ -1413,7 +1413,7 @@ public class Monster
         double casterAgi=caster.getPersonnage().getTotalStats().getEffect(Constant.STATS_ADD_AGIL);
         if(casterAgi<0)
           casterAgi=0;
-        double casterSummons=caster.getPersonnage().getTotalStats().getEffect(182);
+        double casterSummons=caster.getPersonnage().getTotalStats().getEffect(Constant.STATS_ADD_SUM);
         if(casterSummons<0)
           casterSummons=0;
         double sages=stats.get(Constant.STATS_ADD_SAGE)+(casterWis*0.2);
@@ -1427,7 +1427,7 @@ public class Monster
         stats.put(Constant.STATS_ADD_INTE,(int)intel);
         stats.put(Constant.STATS_ADD_CHAN,(int)chance);
         stats.put(Constant.STATS_ADD_AGIL,(int)agili);
-        stats.put(182,(int)summons);
+        stats.put(Constant.STATS_ADD_SUM,(int)summons);
       }
     }
   }

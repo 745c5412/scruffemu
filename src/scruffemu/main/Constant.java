@@ -323,10 +323,11 @@ public class Constant
   public static final int STATS_REM_PROS=177;
   public static final int STATS_ADD_SOIN=178;
   public static final int STATS_REM_SOIN=179;
-  public static final int STATS_CREATURE=182;
+  public static final int STATS_ADD_SUM=182;
   public static final int STATS_ADD_RES_M=183;
   public static final int STATS_ADD_RES_P=184;
   public static final int STATS_REM_PERDOM=186;
+  public static final int STATS_REM_SUM=187;
   public static final int STATS_ADD_RP_TER=210;
   public static final int STATS_ADD_RP_EAU=211;
   public static final int STATS_ADD_RP_AIR=212;
@@ -1871,7 +1872,7 @@ public class Constant
       case 38:
         stats.addOneStat(STATS_ADD_INIT,lvl*5); // 100*5 = 500
         stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_CREATURE,lvl/50); // 100/50 = 2
+        stats.addOneStat(STATS_ADD_SUM,lvl/50); // 100/50 = 2
         break;
       //Rousse-Dor�e
       case 46:
@@ -1883,7 +1884,7 @@ public class Constant
         stats.addOneStat(STATS_ADD_INIT,lvl*5);
         stats.addOneStat(STATS_ADD_SAGE,lvl/4);
         stats.addOneStat(STATS_ADD_VITA,lvl/2);
-        stats.addOneStat(STATS_CREATURE,lvl/100); // 100/100 = 1
+        stats.addOneStat(STATS_ADD_SUM,lvl/100); // 100/100 = 1
         break;
       //Indigo |
       case 17:
@@ -1905,7 +1906,7 @@ public class Constant
         stats.addOneStat(STATS_ADD_INIT,lvl*5);
         stats.addOneStat(STATS_ADD_VITA,lvl/2);
         stats.addOneStat(STATS_ADD_CHAN,(int)(lvl/1.65));
-        stats.addOneStat(STATS_CREATURE,lvl/100);
+        stats.addOneStat(STATS_ADD_SUM,lvl/100);
         break;
       //Pourpre | Stade 4
       case 19:
@@ -1958,7 +1959,7 @@ public class Constant
         stats.addOneStat(STATS_ADD_INIT,lvl*5);
         stats.addOneStat(STATS_ADD_VITA,lvl/2);
         stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/1.65));
-        stats.addOneStat(STATS_CREATURE,lvl/100);
+        stats.addOneStat(STATS_ADD_SUM,lvl/100);
         break;
       // Amande-Rousse
       case 44:
@@ -1993,14 +1994,14 @@ public class Constant
         stats.addOneStat(STATS_ADD_INIT,lvl*5);
         stats.addOneStat(STATS_ADD_VITA,lvl/2);
         stats.addOneStat(STATS_ADD_FORC,(int)(lvl/1.65));
-        stats.addOneStat(STATS_CREATURE,lvl/100);
+        stats.addOneStat(STATS_ADD_SUM,lvl/100);
         break;
       // Amande-Orchid�e
       case 40:
         stats.addOneStat(STATS_ADD_INIT,lvl*5);
         stats.addOneStat(STATS_ADD_VITA,lvl/2);
         stats.addOneStat(STATS_ADD_INTE,(int)(lvl/1.65));
-        stats.addOneStat(STATS_CREATURE,lvl/100);
+        stats.addOneStat(STATS_ADD_SUM,lvl/100);
         break;
       // Dor�e-Pourpre
       case 49:
@@ -2033,7 +2034,7 @@ public class Constant
         stats.addOneStat(STATS_ADD_INIT,lvl*5);
         stats.addOneStat(STATS_ADD_VITA,lvl/2);
         stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.50));
-        stats.addOneStat(STATS_CREATURE,lvl/100);
+        stats.addOneStat(STATS_ADD_SUM,lvl/100);
         break;
       //Dor�e-Ivoire
       case 45:
@@ -2119,7 +2120,7 @@ public class Constant
       case 35:
         stats.addOneStat(STATS_ADD_VITA,lvl);
         stats.addOneStat(STATS_ADD_PM,lvl/100);
-        stats.addOneStat(STATS_CREATURE,lvl/100);
+        stats.addOneStat(STATS_ADD_SUM,lvl/100);
         stats.addOneStat(STATS_ADD_INIT,lvl*5);
         break;
       //Amande-Prune
@@ -2127,7 +2128,7 @@ public class Constant
         stats.addOneStat(STATS_ADD_VITA,lvl*2);
         stats.addOneStat(STATS_ADD_INIT,lvl*5);
         stats.addOneStat(STATS_ADD_PO,lvl/100);
-        stats.addOneStat(STATS_CREATURE,lvl/100);
+        stats.addOneStat(STATS_ADD_SUM,lvl/100);
         break;
       //Dor�e-Emeraude
       case 43:
@@ -4002,5 +4003,61 @@ public class Constant
         break;
     }
     return modifier;
+  }
+  
+  public static float getPowerByStatId(int statId, boolean zero)
+  {
+    float statX=1f;
+    if(zero)
+      statX=0f;
+    if(statId==175) //-initiative
+      statX=-0.05f;
+    else if(statId==174) //initiative
+      statX=0.1f;
+    else if(statId==153) //-vita
+      statX=-0.1f;
+    else if(statId==125) //vitality
+      statX=0.2f;
+    else if(statId==159) //-pods
+      statX=-0.25f;
+    else if(statId==158) //pods
+      statX=0.25f;
+    else if(statId==157||statId==155||statId==152||statId==154) //-elemental stats
+      statX=-1f;
+    else if(statId==118||statId==126||statId==119||statId==123) //elemental stats
+      statX=1f;
+    else if(statId==186||statId==246||statId==247||statId==245||statId==248||statId==249||statId==156||statId==177) //-%dmg, -neutral res, -earth res, -fire res, -water res, -air res, -wisdom, -PP
+      statX=-2f;
+    else if(statId==138||statId==226||statId==244||statId==240||statId==243||statId==241||statId==242) //%dmg, %trapdmg, neutral res, earth res, fire res, water res, air res
+      statX=2f;
+    else if(statId==219||statId==215||statId==218||statId==216||statId==217) //-%resist
+      statX=-3f;
+    else if(statId==124||statId==176) //wisdom, PP
+      statX=3f;
+    else if(statId==179||statId==171) //-heal, -crit
+      statX=-5f;
+    else if(statId==225||statId==666) //trap damage, hunting
+      statX=5f;
+    else if(statId==210||statId==211||statId==212||statId==213||statId==214) //%resist
+      statX=6f;
+    else if(statId==178||statId==115||statId==220) //heal, crit, reflect
+      statX=10f;
+    else if(statId==112) //damage
+      statX=20f;
+    else if(statId==116) //-range
+      statX=-25f;
+    else if(statId==182) //summon
+      statX=30;
+    else if(statId==127) //-mp
+      statX=-45;
+    else if(statId==101) //-ap
+      statX=-50;
+    else if(statId==117) //range
+      statX=51;
+    else if(statId==128) //mp
+      statX=90;
+    else if(statId==111) //ap
+      statX=100;
+    return statX;
   }
 }

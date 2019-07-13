@@ -12,7 +12,7 @@ public class Config
   public final long startTime=System.currentTimeMillis();
 
   /** Text */
-  public String version="ScruffEmu v2.8", name="Rushu";
+  public String version="ScruffEmu v2.9", name="Rushu";
   public String url="http://herofus.ddns.net";
   public String discord="https://discordapp.com/invite/Fg52GeR";
   public String startMessage="Welcome to <b>Herofus</b>, type .commands for a list of commands or .info for server info.";

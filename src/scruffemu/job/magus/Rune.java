@@ -140,4 +140,132 @@ public class Rune
     new Rune(10662, "b0", (byte)3, 9f, 6f); //Pa Prospe
     new Rune(10057, "31b", (byte)1, 5f, 2.5f); //Hunting
   }
+  
+  //v2.8 - Added support for more negative stats on items
+  public static String getNegativeStatByRuneStat(String runeStat)
+  {
+    if(runeStat.compareTo("6f")==0) //AP
+      runeStat="65";
+    else if(runeStat.compareTo("80")==0) //MP
+      runeStat="7f";
+    else if(runeStat.compareTo("75")==0) //Range
+      runeStat="74";
+    else if(runeStat.compareTo("70")==0) //Damage
+      runeStat="91";
+    else if(runeStat.compareTo("b6")==0) //Summons
+      runeStat="91";
+    else if(runeStat.compareTo("73")==0) //Critical Hits
+      runeStat="ab";
+    else if(runeStat.compareTo("b2")==0) //Heal
+      runeStat="b3";
+    else if(runeStat.compareTo("d2")==0) //% Earth Res
+      runeStat="d7";
+    else if(runeStat.compareTo("d3")==0) //% Water Res
+      runeStat="d8";
+    else if(runeStat.compareTo("d4")==0) //% Air Res
+      runeStat="d9";
+    else if(runeStat.compareTo("d5")==0) //% Fire Res
+      runeStat="da";
+    else if(runeStat.compareTo("d6")==0) //% Neutral Res
+      runeStat="db";
+    else if(runeStat.compareTo("b0")==0) //Prospecting
+      runeStat="b1";
+    else if(runeStat.compareTo("7c")==0) //Wisdom
+      runeStat="9c";
+    else if(runeStat.compareTo("f0")==0) //Fire Res
+      runeStat="f5";
+    else if(runeStat.compareTo("f1")==0) //Neutral Res
+      runeStat="f6";
+    else if(runeStat.compareTo("f2")==0) //Earth Res
+      runeStat="f7";
+    else if(runeStat.compareTo("f3")==0) //Water Res
+      runeStat="f8";
+    else if(runeStat.compareTo("f4")==0) //Air Res
+      runeStat="f9";
+    else if(runeStat.compareTo("8a")==0) //% Damage
+      runeStat="ba";
+    else if(runeStat.compareTo("76")==0) //Strength
+      runeStat="9d";
+    else if(runeStat.compareTo("7e")==0) //Intelligence
+      runeStat="9b";
+    else if(runeStat.compareTo("7b")==0) //Chance
+      runeStat="98";
+    else if(runeStat.compareTo("77")==0) //Agility
+      runeStat="9a";
+    else if(runeStat.compareTo("9e")==0) //Pods
+      runeStat="9f";
+    else if(runeStat.compareTo("7d")==0) //Vitality
+      runeStat="99";
+    else if(runeStat.compareTo("ae")==0) //Initiative
+      runeStat="af";
+    return runeStat;
+  }
+  
+  //v2.8 - Added support for more negative stats on items
+  public static String getPositiveStatByRuneStat(String runeStat)
+  {
+    if(runeStat.compareTo("65")==0) //AP
+      runeStat="6f";
+    else if(runeStat.compareTo("7f")==0) //MP
+      runeStat="80";
+    else if(runeStat.compareTo("74")==0) //Range
+      runeStat="75";
+    else if(runeStat.compareTo("91")==0) //Damage
+      runeStat="70";
+    else if(runeStat.compareTo("91")==0) //Summons
+      runeStat="b6";
+    else if(runeStat.compareTo("ab")==0) //Critical Hits
+      runeStat="73";
+    else if(runeStat.compareTo("b3")==0) //Heal
+      runeStat="b2";
+    else if(runeStat.compareTo("d7")==0) //% Earth Res
+      runeStat="d2";
+    else if(runeStat.compareTo("d8")==0) //% Water Res
+      runeStat="d3";
+    else if(runeStat.compareTo("d9")==0) //% Air Res
+      runeStat="d4";
+    else if(runeStat.compareTo("da")==0) //% Fire Res
+      runeStat="d5";
+    else if(runeStat.compareTo("db")==0) //% Neutral Res
+      runeStat="d6";
+    else if(runeStat.compareTo("b1")==0) //Prospecting
+      runeStat="b0";
+    else if(runeStat.compareTo("9c")==0) //Wisdom
+      runeStat="7c";
+    else if(runeStat.compareTo("f5")==0) //Fire Res
+      runeStat="f0";
+    else if(runeStat.compareTo("f6")==0) //Neutral Res
+      runeStat="f1";
+    else if(runeStat.compareTo("f7")==0) //Earth Res
+      runeStat="f2";
+    else if(runeStat.compareTo("f8")==0) //Water Res
+      runeStat="f3";
+    else if(runeStat.compareTo("f9")==0) //Air Res
+      runeStat="f4";
+    else if(runeStat.compareTo("ba")==0) //% Damage
+      runeStat="8a";
+    else if(runeStat.compareTo("9d")==0) //Strength
+      runeStat="76";
+    else if(runeStat.compareTo("9b")==0) //Intelligence
+      runeStat="7e";
+    else if(runeStat.compareTo("98")==0) //Chance
+      runeStat="7b";
+    else if(runeStat.compareTo("9a")==0) //Agility
+      runeStat="77";
+    else if(runeStat.compareTo("9f")==0) //Pods
+      runeStat="9e";
+    else if(runeStat.compareTo("99")==0) //Vitality
+      runeStat="7d";
+    else if(runeStat.compareTo("af")==0) //Initiative
+      runeStat="ae";
+    return runeStat;
+  }
+  
+  //v2.8 - returns true if hexadecimal string runeStat is a negative stat
+  public static boolean isNegativeStat(String stat)
+  {
+    if(stat.equalsIgnoreCase("65")||stat.equalsIgnoreCase("7f")||stat.equalsIgnoreCase("74")||stat.equalsIgnoreCase("91")||stat.equalsIgnoreCase("bb")||stat.equalsIgnoreCase("ab")||stat.equalsIgnoreCase("b3")||stat.equalsIgnoreCase("d7")||stat.equalsIgnoreCase("d8")||stat.equalsIgnoreCase("d9")||stat.equalsIgnoreCase("da")||stat.equalsIgnoreCase("db")||stat.equalsIgnoreCase("b1")||stat.equalsIgnoreCase("9c")||stat.equalsIgnoreCase("f5")||stat.equalsIgnoreCase("f6")||stat.equalsIgnoreCase("f7")||stat.equalsIgnoreCase("f8")||stat.equalsIgnoreCase("f9")||stat.equalsIgnoreCase("ba")||stat.equalsIgnoreCase("9d")||stat.equalsIgnoreCase("9b")||stat.equalsIgnoreCase("98")||stat.equalsIgnoreCase("9a")||stat.equalsIgnoreCase("9f")||stat.equalsIgnoreCase("99")||stat.equalsIgnoreCase("af"))
+      return true;
+    return false;
+  }
 }

@@ -1,0 +1,1604 @@
+06-06-2018
+Changed to new emu
+Cleaned database
+Ported maging system to new emu
+Ported modified spells to new emu
+Changed Poisoned Arrow from water damage to air damage
+Ported summon stat scaling to new emu
+Ported new maps to new emu
+Made all jobs give the same amount of votepoints upon reaching level 25/50/75/100
+Made all paddocks cost the same depending on their size
+Fixed a bug where the emulator didnt correctly use sha512 hashing and so password checks would fail
+Fixed bunch of keys
+Changed PP-lock of all global drops to 100 (120 previously)
+Fixed a bug where .gettitles would disconnect you if you did not have any titles
+
+07-06-2018
+Fixed a bug where a nullpointerexception caused repeating crafts to not work
+Fixed a bug where finishing a try when maging did not correctly reset the item and the runes, causing things like not being able to mage because the game didnt think you had an item in the bench, or using different runes than the one entered in the workbench
+Set PP-lock of all items to 100 pp
+Fixed a bug that caused you to have 40% drop chance when aligned to a side without any territories
+Fixed a bug where star bonuses were generated randomly instead of based on the time the mob has existed
+Fixed a bug where the bonus of challenges did not apply after the fight
+Made a change in the xp formula so that the wisdom, star and challenge modifiers get calculated in one go instead of in three, resulting in less extreme highs
+Fixed a bug in the drop formula where the star bonus would be 2000% instead of 20%
+Removed item equip drops message from the .info command
+Fixed the conquest xp/drop bonus that should give you more xp when your alignment has conquered areas, up to 462,5% when your alignment has every area and you are rank 10, or 100% when you are rank 3 and your alignment has conquered 100/371 areas
+Fixed a bug in the drop formula that would make prospecting at 120 give 120% bonus dropchance instead of 20% bonus dropchance
+Changed automatic world backups to now happen once every 2 hours instead of every 30 minutes to avoid nuking the chat
+Removed non-fixed groups from Blacksmith dungeon
+
+08-06-2018
+Changed .restat command so it now only restats non-scrolled points
+Changed .restat description so it now no longer mentions you lose scrolle stats
+Removed non-fixed groups from Bwork dungeon
+Fixed interactive doors in larva dungeon so they now open when dropping the correct larva skins
+Removed non-fixed groups from Scaraleaf dungeon
+Bypassed a broken map at Otomai's ark (wrong decryption key)
+Fixed the boss group at Otomai's ark
+
+09-06-2018
+Fixed a bug where the effectID of damage wasnt the same in the emulator as it was in the database, causing damage bonuses to not apply in-game
+Redid exomage chance calculation so it is now limited by item level
+Removed non-fixed groups from Bherb's Gully
+Fixed a bug which caused you to be stuck in Cawwot Dungeon if you did not have wa wabbit items at the end of the dungeon
+
+10-06-2018
+Made Feca's shield with highest stat and shield element instead of with int and shield element
+Made Summon stats scale based on the summoner's stats instead of the summoner's level
+Normalized stat cost so now it always costs 1 for vit, 3 for wis and 1<100,2<200,3<300,4<400,5>400 for elemental stats for every class besides pandawa and sacrier
+Changed summon stat scaling to now no longer be affected by negative stats
+Added actionID to give an effect to a mount
+Added actionID to both teleport and give an item at the same time (for use in kimbo dungeon)
+Added Kralove spawn to their map
+Fixed Kralove's AI
+Added Kralove dungeon
+Fixed a bug where automated backups sometimes did not correctly set the gameserver back to the available state after being completed
+
+11-06-2018
+Fixed all spells with an infinite duration not lasting infinitely
+Fixed damage reflect buff tooltips
+Fixed a bug where Scaraleafs would use Scarasum on themselves instead of on a cell near them to create a summon
+Fixed a bug where Elemental Bworks would use Elemental Solicitude on themselves instead of on a cell near them to create a summon
+Fixed a bug where Elemental Solicitude on level 5 did not do anything
+Fixed a bug where Sly Wave would also debuff allies
+Fixed a bug where Blopzone would also hit allies and the caster
+Fixed a bug where Island Flower would also damage the caster and allies and heal enemies
+Fixed a bug where Coral Pincer would also buff enemies
+Fixed a bug where Coralaction would also debuff the caster and allies
+Fixed a bug where Throw of Jellidice would also damage the summon
+Fixed a bug where Shinlarvation would also debuff the caster and allies
+Fixed a bug where Hammering would buff the target instead of the caster
+Fixed a bug where Greedo Rum would also debuff allies and the caster
+Fixed a bug where Conjuring would also buff enemies
+Fixed a bug where Cheers Mate would debuff allies and buff enemies
+Fixed a bug where Scratch would also buff enemies
+Fixed a bug where Ram would also damage allies and the caster
+Fixed a bug where Emmental would also buff and heal enemies and the caster
+Fixed a bug where Ancestral Roblochon would also debuff allies and the caster
+Fixed a bug where Ravine would also damage allies
+Fixed a bug where Doctorat would also heal enemies and the caster
+Fixed a bug where Ravages would buff the enemy instead of the caster
+Fixed a bug where Radical would also debuff allies and the caster
+Fixed a bug where Wind of Panic would also damage allies and the caster
+Fixed a bug where Explosive Cawwot would also damage allies and the caster
+Fixed a bug where Cawwot with Added Vitamins would also heal enemies
+Fixed a bug where Pawalysing Cawwot would also debuff allies and the caster
+Fixed a bug where Valve would also damage and push allies and the caster
+Fixed a bug where Handcuffing would also damage and debuff allies and the caster
+Fixed a bug where Dreggon's Wrath would also buff enemies
+Fixed a bug where Kalik would also damage allies and the caster
+Fixed a bug where Kaliptus Kiss would also buff enemies and the caster
+Fixed a bug where Refreshment would also buff enemies
+Fixed a bug where Master's Hit would also damage allies and the caster
+Fixed a bug where Weed would also damage allies and the caster
+Fixed a bug where Gall would also damage allies and the caster
+Fixed a bug where Fungal Infection would also debuff allies and the caster
+Fixed a bug where Moopet Cho would also debuff allies and the caster
+Fixed a bug where Bruise would also damage allies and the caster
+Fixed a bug where Quagmire would also debuff allies and the caster
+Fixed a bug where Conditioning Peat would also buff enemies
+Fixed a bug where Malicious Peat would also debuff allies and the caster
+Fixed a bug where Stripping would also debuff allies and the caster
+Fixed a bug where Uprooting would also debuff allies and the caster
+Fixed an emulator bug where the game would log every summoning spell as an error, even when they worked correctly
+Fixed tofu AI not fleeing correctly
+Fixed ranged fleeing AI
+Added +damage to influence calculation list
+Added +hp to the influence calculation list
+Fixed a bug where Elemental Communion was not considered a buff
+Fixed a bug where Gobkool Kiss was not considered a buff
+Fixed a bug where Dazing Stone would also damage and debuff allies and the caster
+Added a clause to AI type 30 that causes elemental bworks to buff elemental sparks but doesnt affect any other monster
+Added AI type 70 for monsters that suicide by using a buff on themselves
+Fixed a bug where %damage based on the hp of the caster didnt work when the caster's hp was below 100
+Added AI type 71 for monsters with regeneration that also have an anti-summon spell
+Added AI type 72 for healing monsters with close combat spells and abolition
+Fixed a bug where Bow Skill was not considered a buff
+Changed the most common AI type so it now heals itself, heals allies, buffs itself and buffs allies
+Changed the post-summoning delay in all AI types that could summon to 600ms (from 1000 or 2000ms, depending on the AI type)
+Removed unused imports from all AI types, resulting in slightly faster server launching time
+Fixed a bug where Magic Seeds was not considered a buff
+Changed AI type of Raul Mops to 32
+Fixed a bug where Bomberfu did not attack
+Fixed a bug where piwis spawned inside of Astrub's alchemist market
+Added AI type 74 for the Osamodas Dopple summon
+
+12-06-2018
+Fixed a bug where monsters' spells never had line of sight
+Made all non-strength stats give two pods per point instead of zero
+Redid damage calculation so it now works with Brokle and Jinx
+Made new players no longer get a free adventurer set upon creating a character
+Added a line of code that prevents players from placing prisms on maps without fighting positions, preventing prisms that can not be attacked
+Translated all messages the server could send to players
+Fixed a bug where the client would crash if you tried opening the inventory just before changing maps
+Removed .alignment command
+Fixed a bug where entering a guild would give you the mercenary alignment
+Added items to the public paddocks
+Made mounts automatically unequip if their energy has reached 0 when changing map
+Fixed name change potion
+Fixed sex change potion
+Decreased movement waiter time
+Changed up website's home page and how to join page
+
+13-06-2018
+Changed Blindness' element back to neutral
+Changed Backlash' element back to neutral
+Changed Bubble's element to neutral
+Fixed a bug where Sleepless belt did not increase the maximum amount of casts of flight by one
+Fixed a bug where Sleepless belt did not make Shriveling non-linear
+Fixed a bug where Shal'Hal boots did not make the range of homing hand modifiable
+Fixed a bug where Subma ring did not set the cooldown of teleportation to 10
+Fixed a bug where Boot-a-Hoop did not make the range of Sword of Judgement modifiable
+Fixed a bug where Ring Bellious did not disable line of sight on celestial sword
+Fixed a bug where Robin Hoodie cap did not increase the amount of casts per target of frozen arrow by one
+Fixed a bug where Robin Hoodie cap did not increase the amount of casts per target of paralyzing arrow by one
+Fixed a bug where Cape Hulco did not give +25 critical hits to Absorptive Arrow
+Fixed a bug where Cape Hulco did not disable line of sight on Poisoned Arrow
+Fixed a bug where Veggie Boots did not increase the critical hit ratio of Tormenting Arrow by 30
+Fixed a bug where Veggie Boots did not reduce the ap cost of Retreat Arrow by one
+Fixed a bug where Veggie Boots did not reduce the ap cost of Magic Arrow by one
+Fixed a bug where Veggie Boots did not reduce the ap cost of Punitive Arrow by one
+Fixed a bug where Targ Belt did not reduce the cooldown of Powerful Shooting by one
+Fixed a bug where Targ Belt did not increase the critical hit ratio of Destructive Arrow by 30
+Fixed a bug where Targ Belt did not reduce the cooldown of Powerful Shooting by one
+Fixed a bug where Targ Belt did not reduce the ap cost of Lashing Arrow by one
+Fixed a bug where Targ Belt did not make Slow-Down Arrow non-linear
+Fixed a bug where Honoh Ring did not reduce the cooldown of Bow Skill by one
+Fixed a bug where Honoh Ring did not reduce the ap cost of Bat's Eye by one
+Fixed a bug where Honoh Ring did not reduce the ap cost of Plaguing Arrow by one
+Fixed a bug where Honoh Ring did not increase the critical hit ratio of Explosive Arrow by 30
+Fixed a bug where Chee Ring did not make Word of Recovery non-linear
+Fixed a bug where Wawka Boots did not disable line of sight on Summoning of Prespic
+Fixed a bug where Nailed Thongs did not increase the range of Absorbtion by two
+Fixed a bug where Sleephairs did not reduce the ap cost of Perception by one
+Fixed a bug where Sleephairs did not increase the critical hit ratio of Playful Claw by 30
+Fixed a bug where Belt Sterous did not disable line of sight on Rough Tongue
+Fixed a bug where Boots Hox did not make Trap of Silence non-linear
+Fixed a bug where Clinkin Belt did not make Lethal Trap non-linear
+Fixed a bug where Hai Ring did not make Wild Grass non-linear
+Fixed a bug where Zinda Hood did not reduce the AP cost of Aggressive Glyph by one
+Fixed a bug where Cape Adossia did not increase the critical hit ratio of Bubble by 30
+Fixed a bug where Relief Boots did not disable line of sight on Paralyzing Glyph
+Fixed a bug where Relief Boots did not make Cloudy Attack non-linear
+Fixed a bug where Relief Boots did not reduce the cooldown of Immunity by one
+Fixed a bug where Getas Barnacle did not disable line of sight on Aqueous Vulnerability
+Fixed a bug where Sticky Strap did not increase the range of Stain by one
+Fixed a bug where Sticky Strap did not disable line of sight on Earth Vulnerability
+Fixed a bug where Ear Ring did not disable line of sight on Pandiniuras
+Fixed a bug where Ear Ring did not disable line of sight on White-Hot Vulnerability
+Fixed Fungus Dungeon
+Fixed a bug where Ze Flib's Conjuring didn't correctly make allies invisible
+Added about 90 "missing" buffs (monsters would not use them) and summons to the buffs list and the summons list respectively
+Changed AI of dopple territory monsters to be the same as their temple dopple counterpart
+Increased AI speed even further
+Added new AI type for dopple territory osamodas dopple to make sure it casts Animal Blessing on itself
+Added back IP-limit of three active connections
+Fixed a bug where winning a fight against a dopple would mean you could not interact with the dopple's npc anymore
+Added EffectIDs for +fixed resistance spells
+Buffed Foxo the Crowfox' XP by a factor of 1.5
+Buffed Horace the Tamed Crow's XP by a factor of 1.5
+Buffed Kapotie the Drinker's XP by a factor of 1.5
+Fixed Mummification lasting three turns instead of five
+Fixed a bug where gathering professions didnt give XP
+
+14-06-2018
+Changed Ceremonial set items to now give as much intelligence as they give agility
+Changed Legendary Crackler set items to now give as much intelligence as they give agility
+Translated 200 lines in the drops table
+Translated 40 error messages that didnt get translated before
+Made name change potion automatically capitalize the first letter and decapitalize every other letter in the input name
+Fixed a bug with the namechange potion that caused names starting with A, B, C, c , D, d, E, e, F, f, G, g, H, h, i, J, K, O, P, R, Q, S, T and W to have different behaviour from the intended one
+Changed bwak eggs to now give you a pet directly instead of starting a fight, preventing an exploit
+Fixed characteristics adding UI
+Added tofu set as a drop from batofu
+Changed Tofu set to now also gives +1 MP when the entire set is equipped
+Changed Farmer set to now also gives +1 AP when the entire set is equipped
+Added new AI type for Royal Tofu
+Added new AI type for Tofukaz
+Added new AI type for Tofoone
+Added new AI type for Tofurby
+Added new AI type for Famished Sunflower
+Changed internal definition of summoning to better fit spells like Tofu Throwing and Throw of the Jellidice
+Changed spelleffects of tofu throwing and throw of the jellidice so they can now be used by monsters correctly
+Buffed Royal Tofu's damage
+Buffed Batofu's damage
+Buffed Thrown Tofu's damage
+Nerfed Crab's damage
+Nerfed Dark Baker's damage
+Nerfed Starfish Trooper's damage
+
+15-06-2018
+Translated names when hovering over tactical mode, anti lag and creature mode buttons
+Fixed Bworkette's AI
+Buffed Bworkette's healing
+Buffed Legendary Crackler's damage
+Fixed a bug where Granite Skin would also reduce the damage on enemies
+Fixed a bug where Dazing Stone would never be used
+Buffed Black Scaraleaf's damage
+Fix a bug where Poisoned Fog would also debuff the caster and allies
+Fixed a bug where Poisoned Fog would never be used
+Nerfed Green Scaraleaf's damage
+Nerfed Red Scaraleaf's damage
+Nerfed Blue Scaraleaf's damage
+Nerfed White Scaraleaf's damage
+Buffed Dragon Pig's damage
+Buffed Skeunk's healing
+Buffed Skeunk's damage
+Replaced Skeunk's Revitalizing word with healing word
+Fixed a bug where skeunk's map could contain up to 3 skeunk mobs
+Buffed Emeralda's damage
+Increased the maximum amount of summons of ruby to 3
+Added Starving Doll to the skeunk bossfight
+Increased Sapphira's wisdom
+Added correct colors to Diamondine, Sapphira and Ruby
+Buffed Ruby's damage
+Fixed a bug where
+Added new AI type for Starving Doll
+Buffed Bulbamboo's wisdom
+Fixed a bug where MP steal could only last one turn
+Added a clause to AP steal that makes stealing without defined duration only steal for one turn
+Added a clause to MP steal that makes stealing without defined duration only steal for one turn
+Nerfed Sacrificial Doll agi scaling
+
+17-06-2018
+Fixed colours of Koalak archmobs
+Fixed colours of Dreggon archmobs
+Fixed colours of Spimush archmobs
+Removed 20 crafting recipes containing undefined items
+Fixed a bug where Spimush Teleportation would not do damage
+Fixed a bug where Spimush Teleportation would also debuff the caster
+Fixed a bug where damage based on the caster's hp did not function correctly
+Added new AI type for Green Spimush
+Fixed a bug where poisoning effects that were not neutral or air did not have a correct tooltip
+
+18-06-2018
+Fixed colours of Piwi archmobs
+Added page on website that allows you to search for item drops
+
+19-06-2018
+Added searching for monsters to the page that allows you to search for item drops as well
+Fixed staff page on the website
+Fixed faq page on the website
+Fixed colours of pink piwi incarnam archmob
+Fixed 24 broken map connections in Nauseating Swamp
+Fixed colours of Dragoss archmobs
+
+20-06-2018
+Fixed a bug where Ancestral Bandage would also buff enemies
+
+22-06-2018
+Finished translating the drops database
+Added Tofu set as a drop from Batofu
+Added Adventurer Boots as a drop from Black Tofu
+Added Arachelmet as a drop from Young Arachnee
+Added Arachelmet as a drop from Arachnee
+Added Arachnee Cutter a drop from Young Arachnee
+Added Arachnee Cutter a drop from Arachnee
+Added Sponge set as a drop from Sponge Mob
+Added Carnivorous Staff as a drop from Fungi Master
+Added Toady as a drop from Mush Mush
+Buffed drop chance of Toady from Fungi Master
+Added Toady as a drop from Red Spimush
+Added Emerald Dofus as a drop from Nomekop Woddly
+Added Emerald Dofus as a drop from Edasse the Killjoy
+Added Larval set as a drop from Shin Larva
+Added Crow Cloak as a drop from Crow
+Added Crow set as a drop from Crow
+Added Golden Scaraleaf set as a drop from Golden Scarabugly
+Changed Golden Scarabugly Set to now also gives +1 AP when the entire set is equipped
+Fixed a bug where leaving/getting kicked from a guild would reset your alignment
+HEROIC ONLY:
+Made receiving an alignment automatically activate your wings
+Made deactivating your wings impossible
+Made it possible to join the same PVP fight with one IP
+
+23-06-2018
+Made .voteshop command unusable in combat
+Made .tokenshop command unusable in combat
+Fixed a bug where invisible characters could lock enemies
+Fixed a bug where Sacrier's stat distribution for str/int/cha/agi was too cheap
+Fixed a bug where traps were also invisible to allies of the caster
+Fixed a bug where repeating crafts would stop working when you gained a crafting slot
+NON-HEROIC ONLY:
+Added back the .alignment command
+Added .alignment to the .commands command
+Added .astrub to the .commands command
+HEROIC ONLY:
+Removed the .astrub command
+Fixed a bug where dying did not reset the amount of spellpoints you had available
+Fixed a bug where dying above level 100 would not set your AP back to 6
+Fixed a bug where dying did not reset the amount of characteristics points you had available
+
+24-06-2018
+Added news system on the login screen
+Fixed a bug where the news label was misaligned
+Added redirection to register page when clicking register button
+Added redirection to paypal when clicking subscribe
+Updated link to site in emulator
+Added news feed to homepage of website
+Removed vote page from website
+Removed .voteshop command
+Removed .votepoints command
+Added a restriction that prevents players from attacking GMs
+Removed part of welcome message to make it clutter chat less
+Added Gobkool and Cave Gobbal mobs to the caves on the path to Koolich Dungeon
+Fixed a bug where Wa Castle did not give tokens
+Fixed a bug where Kwismas Dungeon 3 did not give tokens
+Changed token amounts to now be 5/10/15/25 for easy/medium/hard/insane dungeons
+Added characteristics scrolls to tokenshop
+Added Raydi shield to tokenshop
+Fixed a bug where home potions did not work
+HEROIC ONLY:
+Added announcements to the entire area that happen when a player dies to a mob
+
+25-06-2018
+Fixed Amayiro and Oto Mustam's dialogue so they no longer ask you to become bontarian/brakmarian if you already have an alignment
+Added alignment order and alignment level system
+
+09-11-2018
+Removed some unused imports
+Fixed a memory leak where game sessions would not be closed correctly, causing the server to maintain multiple sessions for the same character when login in and out
+
+10-11-2018
+Added system for randomized dungeons and implemented it for gobball dungeon
+Made AI-type 27's delay after attacking 50 milliseconds longer so damage numbers show up after long spell animations
+
+11-11-2018
+Changed random dungeon system to now work with a predefined group size
+Fixed dialogue to become shield smith so you can now become a shield smith
+Changed shields to no longer require a rank and give stats in non-pvp, but now having a level requirement
+Changed items.swf to reflect the changes to shield requirements
+Changed explanation of .restat in .commands to better show that scrolled stats do not get reset
+Translated ~20 entries in the drops database that were still in french
+Fixed a bug where Brokle acted as an area-of-effect spell
+Fixed a bug where there was no effectID for -damage%
+Fixed a bug where there was no effect calculation for -damage%
+Fixed a bug where there was no effect calculation for -heals
+Fixed a bug where there was no effect calculation for -crits
+Fixed a bug where there was no effect calculation for -wis
+Optimized summon stat scaling slightly when summoning sacrificial doll
+Fixed a bug that made you able to lose xp when finishing a fight with negative wisdom
+Added spawns of Poutch Ingballs in Kanojedos
+Changed tactical mode to now be in gray colours
+Made Barrel no longer attract enemies while being carried
+Changed Barrel AI delay so it now waits until the animation of binge is over before passing its turn
+Removed Dala sets as drops from all monsters except Kitsous
+Made only the correct Kitsou drop a piece of the Kitsou set (Nakwa Ring, Nae Amulet, Nere Cape, Nufeu Hat)
+Made a boolean in the config that disables or enables the .alignment command
+Disabled the .alignment command
+Removed voting message when logging into the game
+
+12-11-2018
+Added Royal Gobball as a random spawn in tainela
+Fixed a bug where some archmobs did not give XP
+Buffed archmob xp by 1.5x
+Added Magus chance calculations back
+
+13-11-2018
+Added AP/MP/RA exo limit
+Fixed a bug where Hunting Knife displayed as only being worth one kama when it had a price of 100
+Fixed a bug where The Chafer Hammer was not a hunting weapon
+Fixed a bug where Tofu Wand was not a hunting weapon
+Fixed repeat maging causing a bunch of problems
+Fixed a bug where the hunting rune could not be used, giving the player an error upon attempting to use it
+Removed checks for a few un-used runes (15 str/int/cha/agi, 100hp, others), causing maging to work slightly more quickly
+Removed magus diff check limiters (easier to mage stat below average stat, harder to mage above average stat)
+
+14-11-2018
+Fixed a bug that caused exomaged stats to not give sink upon being lost
+Fixed a bug that caused critical success mages to remove exomaged stats without giving sink
+Fixed a bug that caused power calculation of exomaged stat to almost always result in the worst-case scenario in two instances
+Removed superfluous cases for signature rune and potions being used making magus code ~200 lines shorter
+Fixed a bug that caused exomaging AP, MP or range to be impossible
+Fixed a bug where you could use a hunting rune on not-weapons
+
+15-11-2018
+Removed ~50 unused NPCs in npc_template table
+Removed ~20 undefined NPCs in npcs table
+Fixed a bug where zaapis did not correctly teleport you in front of the zaapi you would go to
+Fixed a bug where the bonta zaapi to the linked scroll market did not correctly teleport you in front of the zaapi due to the map being smaller than other bonta maps
+Added marketplace NPC to astrub zaap basement with all categories of bonta markets
+Added dofus category to astrub zaap basement market
+Fixed news label in login screen not being aligned properly
+Translated tooltip of tactical mode button
+Translated tooltip of anti-lag mode button
+Translated tooltip of creature mode button
+
+16-11-2018
+Fixed all zaapi teleport locations that were incorrect due to map size or the way the zaapi faced
+Removed a line for debugging purposes in the actioncode for the namechange potion
+Fixed a bug with the namechange potion that caused you to be able to execute arbitrary packets
+Fixed a bug where the account with ID 0 had access to all unowned houses
+Redid gobball dungeon keeper's dialogue to reflect the random dungeon changes
+Set XP-rate to 4, Kamas rate to 1, Droprate to 1 and Job XP rate to 8
+Removed an unused quests data row in the npc_template table
+Fixed a bug where the NPC quest marker would not update after accepting a quest
+Fixed a bug where creating a character after someone else deleted one would give you all quests the character had and had finished
+Removed random training scarecrow spawns in incarnam
+Added fixed spawn of training scarecrow in incarnam
+Fixed a bug where Inhaling was not correctly labeled as a positioning spell
+Fixed a bug where infinite duration poisons did not work
+Fixed two broken map connections in sidemote moor
+Fixed a rounding error in Mot Olov damage calculation
+Completely fixed Mot Olov
+Fixed a rounding error in crit chance calculation
+Fixed a bug where the gameserver became available before completely loading
+Fixed a bug where the loginserver didnt display the gameserver as unavailable when it crashed
+Changed gameserver from Oto Mustam to Rushu
+Changed actionscript of server to now automatically select rushu upon clicking automatic server selection
+Changed rushu's creation date to display 18th of november 2018
+Increased droprate of Crimson Dofus from Minotoror from 0.02% to 0.05%
+Increased droprate of Cawwot from Wa Wabbit from 30% to 100%
+Added Ebony Wood as a drop from Ancestral Treechnid at 50%
+Translated 1 entries in the drops database that were still in french
+Added Wobot Staff as a drop from Wobot at 5%
+Increased droprate of Sapphire Stone form Wobot from 0.5% to 5%
+Removed Terrdala set as a drop from Kitsou Nere
+Removed Feudala set as a drop from Kitsou Nufeu
+Fixed pushback damage formula so now low-level monsters no longer always do 1 damage with pushback
+Added 5 new cases to the influence calculation list
+
+17-11-2018
+Redid damage reduction formula so now non-elemental shields only scale with the highest stat
+Changed color of .all channel to better distinguish from alignment channel
+Added Field Key as a drop from Blue Larva at 1%
+Added Field Key as a drop from Green Larva at 1%
+Removed Osamodas' summoned tofu's drops from the drops table
+Added Field Key as a drop from Orange Larva
+Translated 3 untranslated rows in the drops table
+Added Magic Arachnee Leg as a drop from Arachnee at 1%
+Increased droprate of Gelano from Strawberry Jelly from 0.02% to 0.03-0.07%
+Increased droprate of Moskito Brow from Moskito from 25% to 45%
+Increased droprate of Moskito Wing from Moskito from 65% to 85%
+Added Bow Carver's Scroll as a drop from Karne Rider at 0.5%
+Added Dagger Smith's Scroll as a drop from Karne Rider at 0.5%
+Increased droprate of Black Tiwabbit Hairs from Black Tiwabbit from 6.5% to 9%
+Increased droprate of Black Tiwabbit Headband from Black Tiwabbit from 12 to 15%
+Added Adventurer Amulet as a drop from Agressive Arachnee at 1%
+
+18-11-2018
+Added Bearman set as a drop from Bearman at 0.5% per item
+Added Gobball Dungeon Key as a drop from White Gobbly at 1%
+Added Gobball Dungeon Key as a drop from Black Gobbly at 1%
+Added Ambusher set as a drop from Ambusher at 0.5% per item
+Added Ambusher set as a drop from Ambusher archmob at 1% per item
+Added Prespic set as a drop from Prespic archmob at 1% per item
+Removed Akwadala set as a drop from Kitsou Nakwa
+Added Akwadala Amulet as a drop from Bulbiflor at 0.15%
+Added Akwadala Amulet as a drop from Bulbiflor archmob at 0.3%
+Added Akwadala Amulet as a drop from Bulbush at 0.15%
+Added Akwadala Amulet as a drop from Bulbush archmob at 0.3%
+Added Akwadala Belt as a drop from Bulbamboo at 0.15%
+Added Akwadala Belt as a drop from Bulbamboo archmob at 0.3%
+Added Akwadala Geta as a drop from Drunken Pandawa at 0.15%
+Added Akwadala Geta as a drop from Drunken Pandawa archmob at 0.3%
+Added Akwadala Geta as a drop from Drunk Pandalette at 0.15%
+Added Akwadala Geta as a drop from Drunk Pandalette archmob at 0.3%
+Added Akwadala Geta as a drop from Bulbamboo at 0.15%
+Added Akwadala Geta as a drop from Bulbamboo archmob at 0.3%
+Added Akwadala Cloak as a drop from Drunken Pandawa at 0.1%
+Added Akwadala Cloak as a drop from Drunken Pandawa archmob at 0.2%
+Added Akwadala Cloak as a drop from Drunk Pandalette at 0.1%
+Added Akwadala Cloak as a drop from Drunk Pandalette archmob at 0.2%
+Added Akwadala Cloak as a drop from Pandulum at 0.1%
+Added Akwadala Cloak as a drop from Pandulum archmob at 0.2%
+Added Akwadala Cloak as a drop from Bulbiflor at 0.1%
+Added Akwadala Cloak as a drop from Bulbiflor archmob at 0.2%
+Added Akwadala Cloak as a drop from Bulbush at 0.1%
+Added Akwadala Cloak as a drop from Bulbush archmob at 0.2%
+Added Akwadala Hat as a drop from Pandulum at 0.1%
+Added Akwadala Hat as a drop from Pandulum archmob at 0.2%
+Added Akwadala Wedding Ring as a drop from Drunk Pandalette at 0.15%
+Added Akwadala Wedding Ring as a drop from Drunk Pandalette archmob at 0.3%
+Added Akwadala Shield as a drop from Bulbiflor at 0.12%
+Added Akwadala Shield as a drop from Bulbiflor archmob at 0.24%
+Added Akwadala Shield as a drop from Bulbig at 0.12%
+Added Akwadala Shield as a drop from Bulbig archmob at 0.24%
+Added Akwadala Staff as a drop from Drunk Pandalette at 0.12%
+Added Akwadala Staff as a drop from Drunk Pandalette archmob at 0.24%
+Added Crow set as a drop from Crow archmob at 1% per item
+Buffed droprate of Arachnamu from Treechnid from 0.3% to 0.8%
+Buffed droprate of Treechelt from Treechnid from 0.3% to 0.9%
+Added Treechnid set as a drop from Treechnid archmob at twice the chance of the normal mob
+Added Green Scaraleaf set as a drop from Green Scaraleaf archmob at twice the chance of the normal mob
+Added Red Scaraleaf set as a drop from Red Scaraleaf archmob at twice the chance of the normal mob
+Added Blue Scaraleaf set as a drop from Blue Scaraleaf archmob at twice the chance of the normal mob
+Added White Scaraleaf set as a drop from White Scaraleaf archmob at twice the chance of the normal mob
+Buffed droprate of Crackler Boots from Crackler from 0.3% to 0.5%
+Added Turkoset as a drop from Wild Almond Dragoturkey at 0.15% for hat and cape and 0.4% for boots and ring
+Added Turkoset as a drop from Wild Almond Dragoturkey archmob at 0.3% for hat and cape and 0.8% for boots and ring
+Added Turkoset as a drop from Wild Ginger Dragoturkey at 0.15% for hat and cape and 0.4% for boots and ring
+Added Turkoset as a drop from Wild Ginger Dragoturkey archmob at 0.3% for hat and cape and 0.8% for boots and ring
+Added Turkoset as a drop from Wild Golden Dragoturkey at 0.3% for hat and cape and 0.8% for boots and ring
+Added Gobkool set as a drop from Gobkool at 0.15% for hat and cape, 0.5% for amulet and 0.3% for all other pieces
+Added Bloody Koalak as a drop from Bloody Koalak at 0.05%
+Added Bloody Koalak as a drop from Bloody Koalak archmob at 0.1%
+Added Koalak Amulet as a drop from Mama Koalak at 0.15%
+Added Koalak Amulet as a drop from Mama Koalak archmob at 0.3%
+Added Koalak Ring as a drop from Dok Alako at 0.15%
+Added Koalak Ring as a drop from Dok Alako archmob at 0.3%
+Added Koalak Bow as a drop from Brown Warko at 0.15%
+Added Koalak Bow as a drop from Brown Warko archmob at 0.3%
+Added Koalak Boots as a drop from Wild Koalak at 0.15%
+Added Koalak Boots as a drop from Wild Koalak archmob at 0.3%
+Added Koalak Boots as a drop from Purple Warko at 0.15%
+Added Koalak Boots as a drop from Purple Warko archmob at 0.3%
+Added Koalak Cloak as a drop from Bloody Koalak at 0.15%
+Added Koalak Cloak as a drop from Bloody Koalak archmob at 0.3%
+Added Koalak Belt as a drop from Dok Alako at 0.15%
+Added Koalak Belt as a drop from Dok Alako archmob at 0.3%
+Added Koalak Headgear as a drop from Koalak Forester at 0.15%
+Added Koalak Headgear as a drop from Koalak Forester archmob at 0.3%
+Added Kitsou Ring as a drop from Kitsou Nakwa archmob at 0.6%
+Added Kitsou Amulet as a drop from Kitsou Nae archmob at 0.6%
+Added Kitsou Wrap as a drop from Kitsou Nere archmob at 0.3%
+Added Kitsou Cap as a drop from Kitsou Nufeu archmob at 0.3%
+Added Wabbit as a drop from Wabbit at 0.05%
+Added Wabbit as a drop from Wabbit archmob at 0.1%
+Added Wabbit Flip-Flops as a drop from Gwandpa Wabbit at 0.15%
+Added Wabbit Flip-Flops as a drop from Gwandpa Wabbit archmob at 0.3%
+Buffed droprate of GM Wabbit Y-fwonts from 0.1% to 1%
+Added Wabbit-tooth Amulet as a drop from Skeleton Wabbit at 0.15%
+Added Wabbit-tooth Amulet as a drop from Skeleton Wabbit archmob at 0.3%
+Added Wabbit Ears as a drop from Wabbit at 0.15%
+Added Wabbit Ears as a drop from Wabbit archmob at 0.3%
+Added Cawwot-Bag as a drop from Black Wabbit at 0.15%
+Added Cawwot-Bag as a drop from Black Wabbit archmob at 0.3%
+Added Cawwot-Bag as a drop from Black Tiwabbit at 0.15%
+Added Cawwot-Bag as a drop from Black Tiwabbit archmob at 0.3%
+Added Cawwot-Bag as a drop from Tiwabbit Wosungwee at 0.15%
+Added Cawwot-Bag as a drop from Tiwabbit Wosungwee archmob at 0.3%
+Removed Aerdala set as a drop from Kitsou Nae
+Added Aerdala Hat as a drop from Grass Snake at 0.1%
+Added Aerdala Shield as a drop from Grass Snake at 0.15%
+Added Aerdala Hat as a drop from Grass Snake archmob at 0.2%
+Added Aerdala Shield as a drop from Grass Snake archmob at 0.3%
+Added Aerdala Cloak as a drop from Pandikaze at 0.1%
+Added Aerdala Amulet as a drop from Pandikaze at 0.15%
+Added Aerdala Cloak as a drop from Pandikaze archmob at 0.2%
+Added Aerdala Amulet as a drop from Pandikaze archmob at 0.3%
+Added Aerdala Belt as a drop from Pandulum at 0.15%
+Added Aerdala Daggers as a drop from Pandulum at 0.12%
+Added Aerdala Belt as a drop from Pandulum archmob at 0.3%
+Added Aerdala Daggers as a drop from Pandulum archmob at 0.24%
+Added Aerdala Wedding Ring as a drop from Pandit at 0.15%
+Added Aerdala Geta as a drop from Pandit at 0.15%
+Added Aerdala Wedding Ring as a drop from Pandit archmob at 0.3%
+Added Aerdala Geta as a drop from Pandit at archmob 0.3%
+Buffed droprate of Boowolf set from Moowolf from 0.3% to 1% per item
+Added Crocodyl Chief set as a drop from Crocodyl Chief at 0.15% for hat, cape and bag and 0.2% for all other pieces
+Added Crocodyl Chief set as a drop from Crocodyl Chief archmob at 0.3% for hat, cape and bag and 0.4% for all other pieces
+Added Treechnid Root Bow as a drop from Treechnid at 0.2%
+Added Treechnid Root Bow as a drop from Treechnid archmob at 0.4%
+Added Gobball Horn Bow as a drop from Gobball at 0.3%
+Added Gobball Horn Bow as a drop from Gobball archmob at 0.6%
+Added Treebow as a drop from Treechnee at 0.5%
+Added Treebow as a drop from Treechnee archmob at 1%
+Added Mushd Bow as a drop from Mushd at 0.2%
+Added Mushd Bow as a drop from Mushd archmob at 0.4%
+Added Trunknydum as a drop from Trunknid at 0.3%
+Added Trunknydum as a drop from Trunknid archmob at 0.6%
+Added The Chafer Hammer as a drop from Chafer at 0.5%
+Added The Chafer Hammer as a drop from Chafer archmob at 1%
+Added Crackler set as a drop from Crackler archmob at double the droprate of the normal Crackler
+Added Treechnid Root Staff as a drop from Treechnid at 0.2%
+Added Treechnid Root Staff as a drop from Treechnid archmob at 0.4%
+Added Gwandpa Wabbit Staff as a drop from Gwandpa Wabbit at 2%
+Added Gwandpa Wabbit Staff as a drop from Gwandpa Wabbit archmob at 4%
+Added Kaniger Staff as a drop from Kaniger at 0.2%
+Added Kaniger Staff as a drop from Kaniger archmob at 0.4%
+Removed 3 empty drop entries
+Translated 1 untranslated drop entry
+Fixed 7 broken drop entries
+
+20-11-2018
+Added Bwork Magus Staff as a drop from Bwork Magus at 0.3%
+Added Bwork Magus Staff as a drop from Bwork Magus archmob at 0.6%
+Added Bwork Archer Bow as a drop from Bwork Archer at 0.3%
+Added Bwork Archer Bow as a drop from Bwork Archer archmob at 0.6%
+Added Bwork Blade as a drop from Bwork at 0.3%
+Added Bwork Blade as a drop from Bwork archmob at 0.6%
+Added Treechnid Root Wand as a drop from Treechnid at 0.2%
+Added Treechnid Root Wand as a drop from Treechnid archmob at 0.4%
+Addde Ber Ed Stick as a drop from Dark Baker at 0.2%
+Added Ber Ed Stick as a drop from Dark Baker archmob at 0.4%
+Added Dark Treechnid Root Wand as a drop from Dark Treechnid at 0.2%
+Added Dark Treechnid Root Wand as a drop from Dark Treechnid archmob at 0.4%
+
+22-11-2018
+Fixed a bug where the mimimum base item power algorithm returned wrong results
+Fixed a bug where the average base item power algorithm returned wrong results
+Redid magus chance calculation algorithm
+Fixed a bug where the server crashing would mean the item you were maging disappeared
+Fixed exceeding maximum overmage catcher
+Added clause to maximum overmage catcher that makes items with a basestat max higher than the theoretical max possible to be maged back to their basestat max
+
+23-11-2018
+Redid monster stats with the formula wis=2*level, elemental stats=50+2*level
+Set Poutch Ingball's stats to 0
+Fixed a bug where Reaperalak's Koalak Curse also affected allies
+Fixed a bug where bribery was an AoE spell
+Fixed a bug where bribery would also put enemies in the bribery state
+
+24-11-2018
+Removed all 2.0+ items that were not parasymbic or alyverol
+Fixed a bug where dissociating parasymbic or alyverol items would give you a livitinem item instead of the item you had
+Fixed a bug where dissociating living items would not delete their linked item in the living items table, causing memory heaping
+
+25-11-2018
+Fixed a bug in Poutch Ingball's stat template
+Fixed a bug that caused poisons to not correctly show their base damage in the tooltip
+Fixed a bug where you could be locked while invisible
+Fixed a bug where you could be locked by an invisible enemy
+Fixed a bug where Famished Sunflower would not heal itself
+Fixed a bug where Famished Sunflower would have itself instead of attacking with lifesteal when it had both options
+Set movementdelay to 360ms per cell moved (from 380ms)
+Added AIDelay clause back to config
+Set crit fail delay to 300ms (from 500ms)
+Set player movement delay to (900+100*cells)ms (from (900+150*cells)ms)
+Set crafting repeat delay to 200ms (from 1000ms)
+Added MageDelay clause to config
+Added CraftDelay clause to config
+Added starHour clause to config
+Decreased Famished Sunflower's healing bonus to 10 (from 30)
+Increased Royal Gobball's healing bonus to 30 (from 0)
+Decreased Piglet's damage bonus to 0 (from 10)
+Decreased Piglet's %damage bonus to 0 (from 10)
+Fixed a bug where Raul Mops in sand dungeon was not always level 40
+Fixed a bug where Raul Mops' Harpooning did not deal damage
+Decreased Raul Mops' damage bonus to 10 (from 50)
+Increased Raul Mops' elemental stats at levels 50, 60, 70 and 80 by 150
+
+28-11-2018
+Made explicit formula for item crushing rune generation
+Fixed a bug where Pa Prospe rune showed as though it only added one prospection instead of three
+Added cases for Pa Trap, Pa Trap per, Ra Trap Per, Pa Do Per, Ra Do Per and Pa Prospe runes
+Fixed power calculations for rune crushing
+
+29-11-2018
+Reformatted all gameserver source code
+Reformatted all loginserver source code
+
+14-12-2018
+Added Omelette Amulet as a drop from Tofu at 1.4%
+Added Omelette Amulet as a drop from Tofu archmob at 2.8%
+Added Crab Amulet as a drop from Daredevil Crab at 0.5%
+Added Crab Amulet as a drop from Crab at 1%
+Added Crab Amulet as a drop from Crab archmob at 2%
+Added Dark Miner Amulet as a drop from Dark Miner at 0.5%
+Added Dark Miner Amulet as a drop from Dark Miner archmob at 1%
+Added Bambulet as a drop from Bambooto at 0.5%
+Added Bambulet as a drop from Bambooto archmob at 1%
+Added Pirate Amulet as a drop from Boomba at 0.8%
+Added Pirate Amulet as a drop from Boomba archmob at 1.6%
+Added The Treemu as a drop from Dark Treechnid at 0.3%
+Added The Treemu as a drop from Dark Treechnid archmob at 0.6%
+Added Crackler Pendant as a drop from Crackler at 0.3%
+Added Crackler Pendant as a drop from Crackler at 0.6%
+Added Eye of the Kaniger as a drop from Kaniger at 0.3%
+Added Eye of the Kaniger as a drop from Kaniger at 0.6%
+Added Plain Crackler Amulet as a drop from Plain Crackler at 0.3%
+Added Plain Crackler Amulet as a drop from Plain Crackler archmob at 0.6%
+Added Crab Belt as a drop from Daredevil Crab at 0.5%
+Added Crab Belt as a drop from Crab at 1%
+Added Crab Belt as a drop from Crab archmob at 2%
+Added Banisation Belt as a drop from Wild Almond Dragoturkey at 0.5%
+Added Banisation Belt as a drop from Wild Almond Dragoturkey archmob at 1%
+Added Wild Banisation Belt as a drop from Wild Ginger Dragoturkey at 0.5%
+Added Wild Banisation Belt as a drop from Wild Ginger Dragoturkey at 1%
+Added Krabelt as a drop from Kurasso Craboral at 0.4%
+Added Krabelt as a drop from Kurasso Craboral archmob at 0.8%
+Added Krabelt as a drop from Mahlibuh Craboral at 0.4%
+Added Krabelt as a drop from Mahlibuh Craboral archmob at 0,8%
+Added Krabelt as a drop from Passaoh Craboral at 0.4%
+Added Krabelt as a drop from Passaoh Craboral archmob at 0.8%
+Added Krabelt as a drop from Mojeeto Craboral at 0.4%
+Added Krabelt as a drop from Mojeeto Craboral archmob at 0.8%
+Added Chafeerce Belt as a drop from Chafer Lancer at 0.3%
+Added Chafeerce Belt as a drop from Chafer Lancer archmob at 0.6%
+Added Rat Belt as a drop from Grossewer Rat at 0.3%
+Added Rat Belt as a drop from Grosser Rat archmob at 0.6%
+Added Yellow Turtle Belt as a drop from Yellow Turtle at 0.3%
+Added Yellow Turtle Belt as a drop from Yellow Turtle archmob at 0.6%
+Added Caraboots as a drop from Yellow Turtle at 0.2%
+Added Caraboots as a drop from Yellow Turtle archmob at 0.4%
+Added Caracap as a drop from Yellow Turtle at 0.2%
+Added Caracap as a drop from Yellow Turtle archmob at 0.4%
+Added Caracape as a drop from Yellow Turtle at 0.2%
+Added Caracape as a drop from Yellow Turtle archmob at 0.4%
+Added Blue Turtle Belt as a drop from Blue Turtle at 0.3%
+Added Blue Turtle Belt as a drop from Blue Turtle archmob at 0.6%
+Added Caraboots as a drop from Blue Turtle at 0.2%
+Added Caraboots as a drop from Blue Turtle archmob at 0.4%
+Added Caracap as a drop from Blue Turtle at 0.2%
+Added Caracap as a drop from Blue Turtle archmob at 0.4%
+Added Caracape as a drop from Blue Turtle at 0.2%
+Added Caracape as a drop from Blue Turtle archmob at 0.4%
+Added Green Turtle Belt as a drop from Green Turtle at 0.3%
+Added Green Turtle Belt as a drop from Green Turtle archmob at 0.6%
+Added Caraboots as a drop from Green Turtle at 0.2%
+Added Caraboots as a drop from Green Turtle archmob at 0.4%
+Added Caracap as a drop from Green Turtle at 0.2%
+Added Caracap as a drop from Green Turtle archmob at 0.4%
+Added Caracape as a drop from Green Turtle at 0.2%
+Added Caracape as a drop from Green Turtle archmob at 0.4%
+Added Red Turtle Belt as a drop from Red Turtle at 0.3%
+Added Red Turtle Belt as a drop from Red Turtle archmob at 0.6%
+Added Caraboots as a drop from Red Turtle at 0.2%
+Added Caraboots as a drop from Red Turtle archmob at 0.4%
+Added Caracap as a drop from Red Turtle at 0.2%
+Added Caracap as a drop from Red Turtle archmob at 0.4%
+Added Caracape as a drop from Red Turtle at 0.2%
+Added Caracape as a drop from Red Turtle archmob at 0.4%
+Added Ouginakial Belt as a drop from Ouginak at 0.3%
+Added Ouginakial Belt as a drop from Ouginak archmob at 0.6%
+Added Patent Lousy Pig Shoes as a drop from Lousy Pig Knight at 0.6%
+Added Patent Lousy Pig Shoes as a drop from Lousy Pig Knight archmob at 1.2%
+Added Patent Lousy Pig Shoes as a drop from Lousy Pig Shepherd at 0.4%
+Added Patent Lousy Pig Shoes as a drop from Lousy Pig Shepherd archmob at 0.8%
+Added Winged Boots as a drop from Crow at 0.3%
+Added Winged Boots as a drop from Crow archmob at 0.6%
+Added Moon Boots as a drop from Moon at 5%
+Added Treecloak as a drop from Treechnee at 0.5%
+Added Treecloak as a drop from Treechnee archmob at 1%
+Added Mad Boowolf Cloak as a drop from Miliboowolf at 0.7%
+Added Mad Boowolf Cloak as a drop from Miliboowolfa archmob at 1.4%
+Added Mushd Cloak as a drop from Mushd at 0.3%
+Added Mushd Cloak as a drop from Mushd archmob at 0.6%
+Added Ouginak Cloak as a drop from Ouginak at 0.4%
+Added Ouginak Cloak as a drop from Ouginak archmob at 0.8%
+Added Moopet Cape as a drop from Moopet at 1%
+Added Moopet Cape as a drop from Moopet archmob at 2%
+Added The Bear as a drop from Arepo Ghost at 0.6%
+Added The Bear as a drop from Arepo Ghost archmob at 1.2%
+Added Brave's Dark Dora as a drop from Brave Ghost at 0.6%
+Added Brave's Dark Dora as a drop from Brave Ghost archmob at 1.2%
+Added Dark Makroute as a drop from Burning Ghost at 0.6%
+Added Dark Makroute as a drop from Burning Ghost at 1.2%
+Added White Dreggheadgear as a drop from White Dreggon at 0.4%
+Added White Dreggheadgear as a drop from White Dreggon archmob at 0.8%
+Added Champo to Fungi Master at 0.5%
+Added Carnivorous Staff to Fungi Master archmob at 1%
+Added Toady to Fungi Master archmob at 1%
+Added Champo to Fungi Master archmob at 1%
+Added Chafer Helmet to Chafer Foot Soldier at 0.3%
+Added Chafer Helmet to Chafer Foot Soldier archmob at 0.6%
+Added Golden Dreggheadgear as a drop from Golden Dreggon at 0.3%
+Added Golden Dreggheadgear as a drop from Golden Dreggon archmob at 0.6%
+Added Sapphire Dreggheadgear as a drop from Sapphire Dreggon at 0.3%
+Added Sapphire Dreggheadgear as a drop from Sapphire Dreggon archmob at 0.6%
+Added Treering as a drop from Treechnee at 0.5%
+Added Treering as a drop from Treechnee archmob at 1%
+Added Soft Treering as a drop from Soft Oak at 5%
+Added Coral Ring as a drop from Coralator at 0.3%
+Added Coral Ring as a drop from Coralator archmob at 0.6%
+Added Coral Ring as a drop from Great Coralator at 3%
+Added Polished Ring as a drop from Polished Crackrock at 0.2%
+Added Polished Ring as a drop from Polished Crackrock archmob at 0.4%
+Added Polished Ring as a drop from Polished Crackler at 0.3%
+Added Polished Ring as a drop from Polished Crackler archmob at 0.6%
+Added Peki as a drop from Peki Peki at 1%
+Added Nomoon as a drop from Moon at 1%
+Added Ghast as a drop from Tanukouï San Ghost at 1%
+Added Ghast as a drop from Tanukouï San Ghost archmob at 2%
+Added Pink Dragoone as a drop from Crocabulia at 1%
+Added Minimino as a drop from Minotoror at 1%
+Added Leopardo as a drop from Leopardo at 0.1%
+Added Leopardo as a drop from Leopardo archmob at 0.2%
+Added Bilby as a drop from Royal Strawberry Jelly at 1%
+Added Young Wild Boar as a drop from Dragon Pig at 1%
+Added Mini Wa as a drop from Wa Wabbit at 1%
+Added Gobtubby as a drop from Royal Gobball at 1%
+Added Treechster as a drop from Soft Oak at 1%
+Added El Scarador as a drop from Golden Scarabugly at 1%
+Added Minifoux as a drop from Yokai Firefoux at 0.3%
+Added Minifoux as a drop from Yokai Firefoux archmob at 0.6%
+Added Miniminotot as a drop from Minotot at 1%
+Set droprate of all keys to 1% (except Soft Oak Dungeon Key, Royal Tofu House Key and Incarnam Dungeon Key)
+Buffed droprate of Incarnam Dungeon Key from 2% to 3%
+Removed 1 broken drop entry
+Fixed 29 broken drop entries
+Fixed 12 typos in the drop database
+Fixed a bug where Elite Chafer's Frenzy did not work
+Fixed a bug where Elite Chafer's Frenzy also buffed enemies
+Fixed a bug where Snappers' Sly Wave critical hit at level two would not heal
+Fixed a bug where Grasmera's Dark Cure did not buff vitality
+Added Teleport to Dark Chest in Dark Treechnid Forest
+Added class weapon bonus system
+Made three clauses to configure class weapon bonus system in config: weaponBonusBase, primaryWeaponBonus and secondaryWeaponBonus
+
+15-12-2018
+Completely removed .txt file for config, now all the gamedata is in Config.java and all the serverdata is in Main.java
+Moved some global variables from Main.java to Config.java, removing some imports
+Decreased Soft Oak's stats from 1600-1800 each to 200-240 each
+Decreased Soft Oak's damage bonus to 25 (from 50)
+Decreased Soft Oak's %damage bonus to 25 (from 50)
+Added system for dynamic AoEs (combination of multiple AoEs)
+Fixed memory leak that had to do with ping/pong and qping/qpong systems interfering
+Fixed a bug that caused Healing Branch to not heal
+Fixed a bug where Soft Oak would only spawn at the highest level
+Fixed a bug where Summoning Branch would only spawn at the highest level
+Fixed a bug where Healing Branch would only spawn at the highest level
+Decreased Healing Branch's healing bonus from 100 to 0
+Fixed a bug where the class weapon modifier would also trigger when you used a spell instead of a weapon attack
+Fixed a bug where you did not do any damage without having a weapon equipped
+Fixed a bug where divine sword showed as though it increased damage by more than it actually did
+Decreased Snoowolf's damage bonus to 0 (from 5)
+Decreased Snoowolf's %damage bonus to 0 (from 30)
+Decreased Famished Sunflower's damage bonus to 30 (from 50)
+Added EffectTarget 128 for caster
+Decreased Rib's damage bonus to 20 (from 40)
+Decreased Chafer Foot Soldier's damage bonus to 30 (from 60)
+Decreased Dark Miner's damage bonus to 10 (from 40)
+Decreased Dark Smith's damage bonus to 20 (from 60)
+Increased Royal Coco Blop's damage bonus to 50 (from 33)
+Increased Royal Pippin Blop's damage bonus to 50 (from 33)
+Increased Royal Indigo Blop's damage bonus to 50 (from 33)
+Increased Royal Morello Cherry Blop's damage bonus to 50 (from 33)
+Decreased Royal Rainbow Blop's damage bonus to 30 (from 66)
+Decreased Bulbig's damage bonus to 50 (from 100)
+Increased Great Coralator's damage bonus to 30 (from 0)
+Increased Great Coralator's %damage bonus to 30 (from 0)
+Fixed a bug where Masterly Coralaction was not correctly listed as a buff
+Added AI type 84 for Great Coralator
+Changed duration of Island Flower to 1200ms (from 800ms)
+Changed duration of Capoff to 1200ms (from 800ms)
+Changed AIDelay to 100ms (from 0ms)
+Increased Royal Blue Jelly's damage bonus to 30 (from 0)
+Changed Royal Mint Jelly's AI type to 27 (from 35)
+Increased Royal Mint Jelly's damage bonus to 50 (from 0)
+Changed Royal Strawberry Jelly's AI type to 27 (from 35)
+Increased Royal Strawberry Jelly's damage bonus to 50 (from 0)
+Increased Royal Lemon Jelly's damage bonus to 50 (from 0)
+Increased Leopardo Ghost's damage bonus to 100 (from 0)
+Increased Pandikaze Ghost's damage bonus to 150 (from 0)
+Increased Soryo Firefoux Ghost's damage bonus to 50 (from 0)
+Changed duration of Ofulgur's Horns to 1200ms (from 800ms)
+Decreased Tanukouï San Ghost's stats from 850-930 to 350-430
+Decreased Maho Firefoux's stats from 510-550 to 310-350
+Decreased Yokai Firefoux's stats from 510-590 to 310-390
+Increased Pandulum's damage bonus to 150 (from 50)
+Decreased Pandora Ghost's stats from 810-850 to 410-450
+Fixed a bug where uneven cells from the center of a Cross AoE did not apply their effects
+Fixed a bug where uneven cells from the start of a line AoE did not apply their effects
+Fixed a bug that caused level 200 dopples to not spawn
+Increased Osamodas Dopple's summons to 8 (from 2)
+Removed one print left from debugging dopples
+
+16-12-2018
+Changed duration of Speaw to 2500ms (from 2000ms)
+Hooked AIDelay in config into all AI types
+Decreased Rat Rah's stats from 190-270 each to 100-140 each
+Fixed a bug where Mufafah's Roar would also buff enemies
+Increased Moowolf's damage bonus to 20 (from 0)
+Increased Moowolf's %damage bonus to 100 (from 0)
+Increased Moowolf's summons to 2 (from 1)
+Added Little Black Bow Wow as a drop from Moowolf at 1%
+Increased Dragon Pig's damage bonus to 500 (from 400)
+Made the settitle command unusable in combat
+Made the restat command unusable in combat
+Made the respell command unusable in combat
+Decreased Crocabulia's stats from 850-1010 each to 460-500 each
+Decreased Tanukouï San's stats from 290-330 each to 160-200 each
+Increased Koolich's summons to 10 (from 1)
+Increased Cavern Gobball's damage bonus to 15 (from 0)
+Increased Gobkool's damage bonus to 15 (from 0)
+Decreased Pandora Master's stats from 450-530 to 210-250
+Replaced Trunknids in Treechnid Dungeon boss room with Arachnotrons
+Decreased Peki Peki's stats from 1650-1730 to 210-250
+Fixed a bug where Minowrath would also buff enemies
+Set Monster initiative to be equal to 10x their level
+Increased Dragon Pig's initiative from 1000-1200 to 4000-5000
+Fixed a bug where the spelldata of Primary Kraken was missing
+Decreased Minotot's stats from 850-930 to 60-100
+
+ScruffEmu v2.1
+21-12-2018
+Fixed a bug where using .gettitles when you did not have any titles would cause your client to crash
+Fixed a bug that caused monsters without spells to not be able to be summoned or spawned for a fight
+Fixed a bug that caused some spells to use the weapon class modifier, causing them to not due damage due to a nullpointerexception
+Fixed a bug that caused punch (weapon attack without a weapon equipped) to not do any damage
+Decreased Crab's %damage bonus to 0 (from 30)
+Decreased Prepubescent Chafer's %damage bonus to 0 (from 10)
+Decreased Prepubescent Chafer's stats from 70-78 to 30-38
+Decreased Daredevil Crab's %damage to 0 (from 20)
+Fixed a bug where the level 20 Xelor Dopple used Dopplesque Mass Trap instead of Dopplesque Slow Down
+Fixed a bug where being kicked due to an exception in the code would not correctly disconnect your account
+Doubled droprate of adventurer set items
+Doubled droprate of gobball set items
+Doubled droprate of sponge set items
+Fixed 5 typos in drops database
+
+ScruffEmu v2.2
+24-12-2018
+Added log size limiter of 10 MB to prevent infinite loops causing the VPS's HDD to fill up completely, crashing the server when the database was updated
+Redid the fightbuff algorithm structure, fixing spells with a duration of one that shouldn't disappear at the end of your turn (immunity, spell rebound)
+Added entry to config for selfbuff same duration as allies spells (Increase, Mutilation)
+Fixed a bug where Mutilation had an infinite duration in the database
+Changed print after finishing a dungeon to no longer say bosstokens, but instead say tokens
+Fixed a bug where the .respell command did not work correctly, always returning an anti-cheating error
+Removed debugging message for traps that cluttered the console
+Fixed a bug where invisible enemies interrupted your walking path, revealing that they were around there
+Changed the inner part of Tainela to now only contain Gobball-family monsters
+Fixed a bug where Royal Gobball would not respawn after being defeated
+Changed Kwak's nest maps to now only contain Kwaks
+Changed AI-movement algorithms so they are no longer able to target invisible enemies
+Changed AI-attacking algorithms so they are no longer able to target invisible enemies
+Fixed a bug where maxhp% damage attacks that always did 33% of max hp damage
+
+ScruffEmu v2.3
+26-12-2018
+Added Clock to selfbuff duration list
+Added Time Theft to selfbuff duration list
+Added Musical Bamboo to selfbuff duration list
+Added Dollish Transportation to selfbuff duration list
+Added Flip to selfbuff duration list
+Added Plucking to selfbuff duration list
+Added Mythos to selfbuff duration list
+Added Seduction to selfbuff duration list
+Added Raptor to selfbuff duration list
+Added Battle for Zoth Territory to selfbuff duration list
+Added You're Welcome to selfbuff duration list
+Added Soul Drainer to selfbuff duration list
+Added Amanit'Roglycerin to selfbuff duration list
+Added Dopplesque Clock to selfbuff duration list
+Added Dopplesque Time Theft to selfbuff duration list
+Added Prime of Life to selfbuff duration list
+Added Paralyzing Arrow to selfbuff duration list
+Added Glutination to selfbuff duration list
+Added Royal Blopunishment to selfbuff duration list
+Added Royal Bloprotest to selfbuff duration list
+Added Dopplesque Paralysing Arrow to selfbuff duration list
+Changed teleport location when leaving incarnam for Pandawa to a map in Astrub
+Fixed a flash issue where hovering over the top part of the map would trigger the health tooltip
+Fixed a bug where the fight duration display did not take into account daylight savings time
+Added spectator join PvM-fight system so you are now able to join fights if the sword cant be reached
+
+27-12-2018
+Fixed a small bug with the regen timer
+Fixed a bug where the join game hp regen message was not displaying the correct number
+Fixed a flash issue where a small bag would show up when pressing UI-buttons
+Fixed a flash issue where the wisdom and strength labels were mixed around when adding these stats
+Changed two lines of code that still referred to tokens as bosstokens to reflect this change
+Fixed a bug where Blow's effectTarget was set to 128
+Fixed a bug where the center cell in an AoE pushback spell would always deal full pushback damage instead of no damage
+Fixed a bug where Boo Cloak had the "AP lost for the target" stat instead of the -AP stat
+Fixed a bug where Small Chase Boots had the "AP lost for the target" stat instead of the -AP stat
+Fixed a bug where Chase Boots had the "AP lost for the target" stat instead of the -AP stat
+Fixed a bug where Great Chase Boots had the "AP lost for the target" stat instead of the -AP stat
+Fixed a bug where Powerful Chase Boots had the "AP lost for the target" stat instead of the -AP stat
+Fixed a bug where Royal Tofu Crown had the "AP lost for the target" stat instead of the -AP stat
+
+29-12-2018
+Fixed a bug where the boss in a random dungeon did not have the correct group size
+Fixed an issue with 6 entries in the random dungeon table, causing arrayoutofbounds exceptions and making them not respawn
+Fixed an issue where the identifier of non-boss mobs was incorrect
+
+ScruffEmu v2.4
+01-1-2019
+Fixed an issue where the quest marker did not update after accepting a quest
+Fixed an issue where the actionID for creating a mobfight did not correctly initialise the fight
+Fixed a lang issue that caused divine sword to show as though it buffed damage more than it actually did
+Fixed a bug where the identifier for the selfbuff duration list was not correctly updated for non-reflect spells
+Changed AI-type 27 to prioritize close-range attacks over long-range attacks
+Increased Moowolf's healing bonus to 4000 (from 0)
+Changed non-elemental shields to now scale with the highest stat instead of 0.5*int+0.5*the attack's element
+Added erosion system that reduces max-hp whenever you take damage to prevent infinite duration fights (particularly in pvp)
+Temporarily disabled ping/pong system (suspecting it causing random disconnects)
+Fixed a flash issue where Mistake's spell changes weren't correctly displayed
+
+ScruffEmu v2.5
+03-01-2019
+Fixed a bug where damage based on the caster's hp did not get reduced by shields
+Added erosion stat
+Added pushback damage stat
+Changed system of changing health visual so it now supports variable erosion instead of just static 10% erosion
+Fixed a bug where Sylvan Power was not dispellable
+Added negative erosion stat
+Added negative pushback damage stat
+Added pushback resistance stat
+Added negative pushback resistance stat
+Added erosion resistance stat
+Added negative erosion resistance stat
+Added negative total erosion handler
+
+04-01-2019
+Added follower system
+Made followers automatically join fight when leader started one
+Made followers have a delay of 200ms to make them join fights properly
+Added .leader command
+Added .follow command
+Made .leader command unusable while in a fight
+Made .follow command unusable while in a fight
+Added error handler for when the leader was on a different map then the follower and moved
+Fixed a bug where the maximum character count was set to 4 instead of 5, causing server crashes when making the fifth
+Changed gameserver title to now include both connected clients and connected players
+Added idle gameclient kicking system (also prevents small memory leak)
+Added entry to config for the idle time checker
+Added entry to config for the maximum allowed idle time
+
+05-01-2019
+Fixed a bug where the erosion system caused a nullpointerexception when hitting monsters
+Fixed a bug with the damage formula making "multiply damage by x" increase the damage by more than intended
+Fixed a bug where the "deals damage equal to x% of hp" effecttypes dealt more damage than intended
+Changed behaviour of the "multiply damage by x"-buff so it now only applies to spells
+
+06-01-2019
+Fixed a bug where poisons were not affected by the "multiply damage by x"-buff
+Fixed a bug where the timeline did not correctly update
+Fixed a bug where the %damage bonus of mutilation had an infinite duration
+
+07-01-2019
+Fixed a bug where the AP-malus of devotion lated two turns instead of one
+Reverted item visuals to 1.29 equivalent
+
+ScruffEmu v2.6
+07-01-2019
+Fixed a bug that caused droprate modifiers to be slightly lower than intended when multiple were active at the same time
+Fixed a bug where the game tried to kick null players during the afk-timer kicking
+Added special teleport clause to config that makes you teleport to a certain cell on certain maps
+Fixed teleporting in walls after fight
+Added Blop sets as drops from blops at 0,15% per item
+Added Blop sets as drops from blop archmobs at 0,3% per item
+Renamed Welcome Shop to Swa Low
+Fixed Swa Low's dialogue
+Added correct items to Swa Low's shop
+
+22-01-2019
+Fixed a nullpointerexception when equipping soul gems that had to do with the statsparser of items
+Fixed a bug with the disconnection system
+Changed connection limit system so it now checks logged-in players instead of gameclients and it checks when you select a character instead of when you select a server
+Fixed small text inconsistency in kicking error message
+Changed summoning hp modifier from 300 to 225 (increases hp of summons, thanks to rainred for calculations showing that the number was too high before)
+
+31-01-2019
+Fixed a memory leak that existed due to an exception not causing a gamethread to close when a gameclient closed
+Fixed a bug in the healing algorithm that caused monsters to heal other monsters even when the hp threshhold wasn't met
+
+ScruffEmu v2.7
+10-02-2019
+Removed emulator-side multi-language messages
+Added level 100 profession +5 gathering bonus
+Fixed a bug where dispelling a drunk pandawa did not remove the drunk state
+Fixed a bug where placing a glyph on a trap would trigger the trap instead of doing nothing
+Set standard language to english
+Made switching language from english impossible
+
+14-03-2019
+Changed to new core (with systems for mimisymbics, tokenshop)
+Added tactical mode memory system (automatically toggles tactical mode if ended fight with it on earlier)
+Replaced all looped String +=  with StringBuilders
+
+ScruffEmu v2.8
+15-03-2019
+Added world market system
+Added world market button
+Added tokenshop button
+Removed tokenshop command
+Reworked follower system
+Integrated follower teleporting timing after fight into the client
+
+19-03-2019
+Fixed a bug with the idle gameclient kicker where it only checked players that were confirmed to be connected and not all existing gamethreads
+
+20-03-2019
+Fixed a bug with the heroic mob loader where it did not correctly check the max amount of mobs allowed on a map
+Repurposed heroic mob loader to make mobs not lose stars when restarting the game on non-heroic
+Deleted unused data column of maps database (capabilities)
+Fixed a bug that caused heroic mob loader to not update correctly when a mob was defeated
+
+21-03-2019
+Fixed a bug where GameClient sessions were not correctly terminated when disconnecting instead being set to null, causing them to keep running if they did not get garbage collected
+
+22-03-0219
+Fixed a bug where the star bonus of mobs did not get initialized correctly when launching server
+Fixed a bug where the star bonus of mobs did not correctly get reset when a new mob with the same ID as an old one spawned
+Added uneven square AoE (size 3, 5, etc)
+
+27-03-2019
+Fixed a bug where player sessions were not correctly terminated when kicked by idle gameclient kicker
+
+30-03-2019
+Added minDrop and maxDrop system
+Set minDrop and maxDrop of resources to 2-3
+
+31-03-2019
+Fixed a small bug in the job ingredient modifying system
+
+08-04-2019
+Slightly changed Idle kicking sytem
+Fixed bug that caused infinite loop upon name generation, crashing the server
+Removed IOException logging message when writing to log file to prevent clutter
+
+15-04-2019
+Added Plissken spawns to all Kaniger maps
+
+17-04-2019
+Added condition to stat parser to prevent crashing on items with incorrect stats
+Fixed a bug where the "RA" NPC-question condition did not get parsed correctly
+Fixed a bug where the "RO" NPC-question condition diid not get parsed correctly
+Fixed drop amount of the summoning of arachnee mob
+Fixed summoning of arachnee mobgroup
+
+18-04-2019
+Updated idle kicker to now automatically kick clients of which there's no character connected
+
+22-04-2019
+Updated idle kicker again
+Added IOSession counter to console title
+
+23-04-2019
+Fixed a bug where Wounding Word's damage output got limited by the hp of allies nearby instead of by the target's hp
+Added new spelleffects for custom spells to challenge list of damaging spells
+Added explicit filter for summons from failing challenges
+
+24-04-2019
+Fixed a bug with the follower system, causing followers to sometimes not see mobs correctly when teleported to a fight on a different map
+Fixed a bug where the ID of a newly created mob was sometimes incorrect, causing monsters to not appear correctly in the fight
+Fixed a bug where the range preview of linear spells didnt work
+Fixed a small memory leak with fight ID assignment
+
+25-04-2019
+Fixed a bug where followers could teleport on top of each other at the start of a fight
+Fixed ~50 equips having minDrop of 2 and maxDrop of 3 instead of 1 and 1
+Added timer in loader.swf that teleports you to the cell you were at when starting a fight after the fight
+
+26-04-2019
+Fixed a bug where servers showed as being available even when they weren't (starting, backup)
+Completely redid follower system
+Fixed a bug where the getrandomcell function did not work correctly
+Drop system now uses duplicate drops instead of no-duplicate drops, this makes soul-eater pets work correctly
+Updated leader system explanation 
+Removed astrubian merchant from astrub cellar
+
+30-04-2019
+Added idle player without gameclient kicker
+Fixed a nullpointerexception in the packethandler
+
+03-05-2019
+Added an errorhandler for a nullpointerexception upon a character dying
+Fixed an exception caused by bad (unofficial) clients trying to sell stuff causing an invalid input
+Fixed the sell-all button
+Fixed a bug where you could spectate a fight even though it got locked
+Rewrote gameserver structure
+Replaced Function.java with newer starloco Function.java
+Replaced AItype 10-69 with newer starloco counterpart
+Added AIType 85 for Ougaa
+Added AIType 86 for master crow
+
+04-05-2019
+Fixed a bug where crafting in shared crafting mode would always give you a max stats item
+Fixed a bug where repeat-crafting an item would make crafting a different item impossible until you closed the interface
+Fixed a bug where repeat-maging an item would produce errors when switching runes
+Added invite to magus workshop system
+Fixed a bug where the respawn time of mobs was 10 times as long as intended
+Added base pods field to config
+Set base pods to 3000
+Added ipdrop system
+Fixed a nullpointerexception in the player disconnector
+Fixed a nullpointerexception in the ipdrop system
+
+05-05-2019
+Fixed ipdrop system giving too many drops
+Fixed ipdrop system items not stacking correctly
+Redid getGE function in fight.java using newer starloco
+
+06-05-2019
+Fixed two nullpointerexceptions in the getGE function in fight.java
+Fixed a numberformatexception in the stackDrops function in fight.java
+Increased duration of aggressive brambles from 800ms to 1200ms
+Increased duration of mummification from 800ms to 1200ms
+Set worldsave timer to 1 hour from 2 hours
+Fixed a bug with the pods system where your base pods was not correctly set to 3k
+Fixed a bug where haziness' ap removal did not last two turns
+Added back gobball dungeon
+Removed royal gobball spawn from tainela
+Increased droprate of Bulbiflor Magic Bark from Bulbiflor to 0.5% (was 0.1%)
+Increased droprate of Magic Bambooto Root from Bambooto to 0.5% (was 0.1%)
+Increased droprate of Bulbush Magic Bark from Bulbushisu the Makisan to 0.5% (was 0.1%)
+Increased droprate of Magical Bulbamboo bark from Bulbamboo to 0.5% (was 0.1%)
+Increased droprate of Bulbiflor Magic Bark from Bulbisonic the Penetrating to 1% (was 0.2%)
+Increased droprate of Magic Bambooto Root from Bambottinit the Quiet to 1% (was 0.2%)
+Increased droprate of Bulbush Magic Bark from Bulbushisu the Makisan to 1% (was 0.2%)
+Increased droprate of Magical Bulbamboo bark from Bulbamoon the Trumpeter to 1% (was 0.2%)
+Fixed a bug where soul eater pets would not gain stats when eating enough souls
+Added oldcell teleport to challenging other players
+Fixed a bug where mobgroups in dungeons did not respawn
+
+07-05-2019
+Bandaid-fixed datastream server crashing error
+Fixed a bug where pets' last feeding time did not get updated correctly when fed (or consuming souls)
+Fixed a bug where multiple mobs would spawn at once sometimes
+Completely reintegrated fixed mobgroups in dynamic mobgroup sytem
+Increased droprate of Traumatised Kokokonut from Kokoko to 1% (was 0.05%)
+Increased droprate of Traumatised Kokokonut from Misskokoko the Channel to 2% (was 0.1%)
+
+08-05-2019
+Made seperate class for RespawnGroup system
+Set tickrate of main updatable loop to 500ms (was 100ms)
+Changed RespawnGroup system to a runnable instead of an updatable
+Changed pet ID assignment
+
+09-05-2019
+Fixed runnable system
+Completely redid RespawnGroup system
+Fixed a bug where losing a fight did not work correctly
+Fixed a bug where teleporting to a null cell would disconnect you and prevent you from logging back in
+
+10-05-2019
+Fixed major memory leak with scheduler system
+Changed dynamic mob system so it only saves upon server backup
+Set tailor manual mindrop and maxdrop to 1
+Removed kick function and replaced all instances with disconnect function
+Increased maximum connections of login emulator from 16 to 100
+
+11-05-2019
+Fixed a nullpointerexception with the starbonus system
+Removed runedata table
+Added rune class and integrated it with magus system
+Added potion class and integrated it with magus system
+Refactored magus system
+Removed leftover testing bonus from twiggy sword
+Removed leftover testing stat from small owl amulet
+Set vie rune stats to +5/+15/+50
+Fixed a nullpointerexception with the client kicker
+Temporarily removed .ipdrop command
+Changed max allowed stat calculation to smarter system instead of switch statement
+Changed current stat power calculation to smarter system instead of switch statement
+Added rune size clause to magus system
+
+12-05-2019
+Removed two unused functions
+Fixed a bug where the player's cell didnt get updated correctly (messed up teleportation after fight)
+Updated fight state system
+Improved karcham/chamrak logic so it shouldn't bug out anymore
+Replaced CryptManager with newer starloco variant
+Replaced GameServer with newer starloco variant
+Replaced ExchangePacketHandler with newer starloco variant
+Replaced ExchangeHandler with newer starloco variant
+Replaced GameHandler with newer starloco variant
+Replaced entire loginserver emulator with java 11 + newer starloco variant
+
+13-05-2019
+Integrated exomage rune limit (half of 20% rule if mage is an exo) into magus formula
+Replaced new starloco Dataqueue with old dataqueue
+Removed datatype class
+Changed dataqueue system to be properly object-oriented to the world class
+Added starbonus upon server shutdown system to fixed mobgroups
+Set starbonus database updatable timer to once every 10 minutes (was once every 3 minutes)
+Fixed a bug where the state finding algorithm did not always return wether a character had a state or not
+Removed five leftover testing console prints
+Fixed a bug where a summon being carried by a panda dying due to their summoner dying would not remove the carrying state and lock the pandawa out of removing it by using chamrak
+
+14-05-2019
+Fixed bad kitsou AI delay calculation (kitsous should now fight faster)
+Increased the block's base agility to 300 (was 62) at level 6
+Increased crafting delay from 200ms to 500ms (hopefully fixes repeat crafting at high ping)
+Fixed a big where the minecart system cost -50 kamas instead of 50 kamas
+Fixed a bug here scripted doors were not walkable even when opened, causing them to be useless
+Fixed a bug where kwaks would hit in elements other than their own
+Reduced int of kitsous to 0 so they no longer heal for thousands of hp
+Increased %damage of kitsou nufeu to be the same as the int it had before
+Added fighting positions to map 1088
+Added fighting positions to map 1044
+Added fighting positions to map 1317
+
+15-05-2019
+Fixed pet drops not working correctly
+Added thread delay and addition checks to karcham/chamrak
+Fixed 4 broken map connection
+Added Reptilian Sword Fragment as a drop from Crocodyl Chief at 1% (was missing)
+Removed gender-limitation of marriage
+Set server backup timer to 2 hours (was 1 hour, most server stability problems seem to be fixed)
+
+17-05-2019
+Fixed a bug where repeat-crafting an item would not correctly update the amount of ingredients you had in your inventory after
+Fixed a bug where the object harvesting animation would play when you would enter a map where the trees/ores had been harvested, causing a lagspike
+Fixed a bug where the stars of dungeon mobs would not get set to 0 when they got respawned
+
+18-05-2019
+Fixed a bug with the console save command where it did not start a new thread, stopping players from playing the game while the console save command was running
+Added average ping system to server-side
+Added average ping updatable that updates average ping of gameclients every 5 minutes
+Integrated average ping system with repeat crafting delay
+Fixed a bug where the loginserver did not correctly update the state of the gameserver when an exception was caught
+Added average ping delay to karcham/chamrak delays
+
+19-05-2019
+Removed unused damage calculation formula
+Fixed a bug where poisoned trap's damage was based on the caster's strength
+Removed shielding from poison damage calculation (poisons now go through shields)
+Refactored shielding calculation code
+Fixed a bug where %-health based damage did not get reduced by shields
+Added fighting positions to map 1046
+Added setCurAction code for karcham/chamrak that fix the karcham/chamrak freezes (finally)
+
+20-05-2019
+Fixed a bug where crit failing karcham/chamrak would freeze your game
+Added crit fail debuffs to crit fail chance formula
+Added crit hit debuffs to crit hit chance formula
+Fixed a bug where casting Boozer/Zatoishwan's Wrath while being carried would prevent the carrying panda from throwing you
+Added Sober state for technical reasons (reverse drunk state)
+Made Boozer only castable in Sober state
+Made Zatoishwan's Wrath only castable in Sober state
+Made Boozer uncastable while in the carried state
+Made Bamboo Milk uncastable while in the carried state
+Made Zatoishwan's Wrath uncastable while in the carried state
+Redid ipDrop system code (had to do that to get living chest to work)
+Fixed Living Chest not showing up in drops screen and not getting drops for the summoner
+Fixed a bug where soul eater pets winning a fight against a mob not in their eatable list would cause a divide by 0 error
+Fixed a bug where soul eater pets never reached their stat limit
+Fixed a bug where the max stat field was actually responsible for the total max power allowed for pets
+Fixed a bug where the damage bonus of level 5 divine sword was incorrect
+Fixed incorrect stat bonus of Little White Bow Meow
+Fixed incorrect stat bonus of Pink Piwin
+Fixed incorrect stat bonus of Purple Piwin
+Fixed incorrect stat bonus of Atooin
+Fixed incorrect stat bonus of Ross
+Fixed incorrect stat bonus of Golden Dragoone
+Fixed incorrect stat bonus of Tofrazzle
+Fixed incorrect stat bonus of Sting
+Made pets use magus rune stats - what this changes:
+Max % neutral res Bow Meow 20% -> 13%
+Max wis of Wabbit 27 > 26
+Max % fire res of Fire Bwak 20% -> 13%
+Max % water res of Water Bwak 20% -> 13% 
+Max % air res of Air Bwak 20% -> 13% 
+Max % earth res of Earth Bwak 20% -> 13%
+
+22-05-2019
+Cleaned up drop chance formula
+Fixed a bug where a jelly archmob would drop jelly dungeon specific items while not in jelly dungeon
+Fixed a bug where a jelly archmob would drop hunter specific items while not being a hunter
+Removed three incorrect drops from the drops table
+
+25-05-2019
+Added fighting positions to map 1031
+Added fighting positions to map 1365
+Added 6 missing teleport cells to and from map 4819
+Added minRespawnTime and maxRespawnTime fields to database
+Made repawntimer of normal non-static (dungeon) mobs dependant on these values
+Changed online player count in .info to be accurate with the actual online player count
+Changed unique online player count in .info to be accurate with the actual unique online player count
+Fixed a bug where you'd get trembling dodu belts instead of MP runes from crushing MP items
+Added special effectID for reinforcementex
+Fixed reinforcementex (did +200% damage instead of +1% damage per hit)
+
+26-05-2019
+Added generic type pair class
+Fixed a bug where healing weapon's minimum healing would be 1 instead of whatever it said on the weapon
+Fixed a bug where Ice Knight Sword did not heal the target
+Made healing weapon code fully dynamic (un-hardcoded it)
+Updated emulator to java 11
+Fixed a bug where Fixed mobgroups' (dungeons) stardata did not correctly get loaded when starting the gameserver
+Set respawntimer of 10 underground wabbit maps to 2-3 minutes (was 12-30 seconds)
+Set minimum group size of all Border of Feudala (Firefoux) mobs to 1 (was 3)
+Set minimum group size of all Nolifis Island (Ghosts) mobs to 1 (was 3)
+
+28-05-2019
+Cleaned up fixed mobgroup spawning code
+Removed restrictions from Incarnam channel
+Renamed Incarnam channel to global channel
+
+30-05-2019
+Removed .all command
+Removed .toggleall command
+Redid player command code
+Added subarea requirement system for drops
+Fixed bonta/brakmar sewers rat drops
+Fixed a bug where Pandulum Ghost drops were incorrectly listed as Pandora Ghost drops
+Fixed a bug where ~15 items that were only supposed to be droppable once dropped multiple times per monster
+Fixed a bug where Kaniball archmobs spawned on moon island beach
+Fixed a bug where Pirate Boat archmobs spawned on moon island beach
+Added fighting positions to 7 maps that were missing them
+Temporarily disabled maging due to tons of bugs with magus system
+Added packet encryption system (prevents exploiting with a packet editor)
+Fixed a bug where Lord Crow Dungeon mobs would not respawn correctly (they will lose stars upon server restarts, can't fix this easily)
+Fixed a bug where Clean Hands would fail on certain spells even if they didnt do damage
+Fixed a bug where Punishment's damage did not get reduced by damage reduction effects
+
+31-05-2019
+Fixed a bug where AP poisons did not show the damage they would do per ap used in the tooltip
+Fixed a bug where monsters would never use AP poisons
+Made AP poisons do damage through damage reducing effects (like normal poisons)
+Fixed a bug where due to a rounding error, AP poison damage would not be accurate to what it should be
+Fixed a bug where AP removal did not do damage at the end of the turn for a target with an AP poison applied to them (Madoll + Paralyzing Poison synergy)
+Fixed a bug where Paralyzing Poison's tooltip duration was incorrect (lasted one turn longer than it said it would)
+Fixed Ancestral Treechnid's AI
+Increased Ancestral Treechnid's max summons to 2 (was 1)
+Decreased Ancestral Treechnid's damage bonus to 0 (was 50)
+
+05-06-2019
+Fixed a bug where the mob respawning system would run the entity movement system every time it respawned a mob. The entity movement system is now a seperate system that is scheduled to run every 3 minutes
+Added spell effects for damaging the target when it gets healed and damaging the target by a percentage of the caster's hp when healed
+Added buff/debuff triggering on being healed system
+Fixed a bug where Black Rat's Black Plague would do 50% of the caster's health every turn instead of when the target got healed
+
+08-06-2019
+Decreased Dark Treechnid's Strength bonus to 0 (was 200)
+Changed star updating system to now batch update (CPU usage from 25.7% to x%)
+Set shortest path pathfinding algorithm limit to 500 (was 1000, might reduce accuracy slightly but will increase performance) (CPU usage from 30.0% to x%)
+Set star updating system to now run every 30 minutes (was every 10 minutes, mobs will still update stars correctly in-game, the in-game stars will be saved to the database every 30 minutes instead of every 10 minutes)
+
+09-06-2019
+Fixed a cause for a nullpointerexception in the market system
+Fixed a cause for a nullpointerexception with the spectator system
+Fixed a bug where the new target for Contract Killer was not selected randomly
+Fixed a bug with the Contract Killer challenge where the challenge would fail if a non-player killed a mob that wasn't the target
+Fixed a bug with the Cruel challenge where the challenge would fail if a non-player killed a mob that wasn't the target
+Fixed a bug with the Ordered challenge where the game would not select a new target if a non-player killed the target
+
+10-06-2019
+Fixed a bug where mounts would disappear from paddocks due to incorrect packet structure (all mounts that previously disappeared should be back too)
+
+12-06-2019
+Fixed a bug where Sylvan Power's heal also triggered on the caster and on enemies instead of just allies
+Fixed a bug where Sylvan Power did not block the damage of Earthquake and Poisoned Wind
+Fixed a bug where damage calculation for poisons did not take into account negative stats, causing the poison to heal if the caster had negative stats
+Fixed a bug where damage calculation did not take into account -%damage, causing all damaging spells to heal when the caster had -% damage and no other stats
+Fixed a bug where Soothing Bramble would heal summons for the increased amount instead of all allies
+Fixed a bug where Golden Scarabugly dropped Black Scaraleaf Antennae
+Fixed a bug where The Inflatable did not give an MP boost to the caster
+Changed Inflatable AI (tries to boost mp if available, moves to caster if mp boost available and caster not in range, moves away if mp boost not available)
+
+14-06-2019
+Added soloBonus system for drops, this system was made to make solo-accounting more viable compared to multiaccounting. When playing multiple accounts, you generally still have a higher droprate for items since you have more PP but this should even it out a little bit.
+	if there are only unique IPs in a fight, droprate is increased by 50%
+	if there are 2 characters with the same IP in a fight, droprate is increased by 33%
+	if there are 3 characters with the same IP in a fight, droprate is increased by 16%
+	if there are 4 characters with the same IP in a fight, droprate is not increased
+
+15-06-2019
+Set minDrop and maxDrop of Prespwig to 1
+Set minDrop and maxDrop of Coco Amublop to 1
+Set minDrop and maxDrop of Coco Bloopts to 1
+Set minDrop and maxDrop of Morello Cherry Amublop to 1
+Set minDrop and maxDrop of Morello Cherry Bloopts to 1
+Set minDrop and maxDrop of Indigo Amublop to 1
+Set minDrop and maxDrop of Indigo Bloopts to 1
+Set minDrop and maxDrop of Pippin Amublop to 1
+Set minDrop and maxDrop of Pippin Bloopts to 1
+Set minDrop and maxDrop of Akwadala Shield to 1
+Set minDrop and maxDrop of Aerdala Shield to 1
+Set minDrop and maxDrop of Akwadala Geta to 1
+Set minDrop and maxDrop of Aerdala Geta to 1
+Set minDrop and maxDrop of Boar Feet to 1
+Set minDrop and maxDrop of Arachnee Cutter to 1
+Set minDrop and maxDrop of Atooin to 1
+Set minDrop and maxDrop of Sponghield to 1
+Set minDrop and maxDrop of Pink Dragoone to 1
+Set minDrop and maxDrop of Tofu Slippers to 1
+Set minDrop and maxDrop of El Scarador to 1
+Set minDrop and maxDrop of Peki to 1
+Set minDrop and maxDrop of Leopardo to 1
+Set minDrop and maxDrop of Bambulet to 1
+Set minDrop and maxDrop of Yellow Piwi Sandals to 1
+Set minDrop and maxDrop of Green Piwi Sandals to 1
+Set minDrop and maxDrop of Blue Piwi Sandals to 1
+Set minDrop and maxDrop of Red Piwi Sandals to 1
+Set minDrop and maxDrop of Purple Piwi Sandals to 1
+Set minDrop and maxDrop of Pink Piwi Sandals to 1
+
+19-06-2019
+Fixed a bug where due to stat calculation of monsters being less detailed than stat calculation for players, paralyzing poison did not do damage to monsters
+Fixed a bug where Mega Crackler did not have any drops
+Fixed a bug where Pool of Lemon Jelly dropped in amounts higher than intended
+Added level-dependant spell targeting system (makes soothing bramble at level 6 work correctly, allows me to make spells that gain/lose effects when they level up in the future)
+Fixed a bug where Xelor's Time Theft was unlocked at level 42 instead of level 31 (also made you unable to level the spell)
+Fixed a bug that caused fights to sometimes freeze due to new level-dependant spell targeting system
+
+22-06-2019
+Fixed a bug where Ancestral Shin Guards gave 16-35 strength instead of 21-35 strength
+
+24-06-2019
+Fixed a bug with where The Sacrificial's targets did not get updated correctly after moving
+Increased AI delay of Red Wyrmling's Dragofire to 1500 ms (was 800 ms)
+Increased AI delay of Crackler's Crushing to 1500 ms (was 800 ms)
+
+28-06-2019
+Fixed a bug where gaining an alignment did not correctly check if the server was on heroic mode
+Fixed a bug where toggling your wings would set the server to heroic mode instead of checking if the server was on heroic mode
+
+1-07-2019
+Added missing fighting positions to 1 map
+
+05-07-2019
+Moved getDopeul function to Dopeul class
+Removed couple class
+Changed all instances of couple class to pair class
+Added new functionality to pair class (assigning values to pair after initialization
+Seperated NpcExchange class from PlayerExchange class
+Seperated NpcExchangePets class from NpcExchange class
+Seperated NpcRessurectPets class from NpcExchangePets class
+Increased Regeneration's animation timer to 1600ms (was 800ms)
+Properly object-oriented quest system
+Fixed a bug where the initialization of non-world monsters did not work correctly (any type of fight that starts without you walking up to a mob, so dopples, resource protectors, gobball war chief in incarnam)
+
+08-07-2019
+Added new spelleffect for Moowolf's rage (was necessary to un-hardcode it, now also supported for other mobs)
+Fixed a bug where Moowolf's rage would trigger even on non-damaging effects
+Fixed a bug where the damage boost from rage would not stack, making it hard to see the exact bonus
+Made Moowolf's Rage undispellable (the damage boost can be dispelled, the gaining damage when hit cant be dispelled)
+Fixed a bug where undispellable spells got removed from the tooltip after a dispelling effect was used even though they weren't actually removed (visual bug, now they get added back at the end of your turn due to technical limitations)
+Added Ouginak Chops as a drop from Ouginak at 60%
+Added Ouginak Chops as a drop from Ouginak archmob at 100%
+
+09-07-2019
+Fixed a bug where adding titles to the database would not work correctly if the current titles for a player were an empty string instead of null
+
+Scruffemu v2.9
+10-07-2019
+Added support for all stats that have runes to work with negative maging (no more -5 mp treechelmets)
+Added -summon stat
+Fixed a bug with the negative stat finding algorithm where it would not always return the correct result
+Fixed a bug where negative stat maging where it would make the negative stat more extreme instead of less extreme upon success
+Renamed "MP Lost" stat to -MP stat for consistency
+Fixed a bug where overmaging negative stats did not correctly get detected as an overmage
+Fixed a bug where item power calculation would not decrease power based on negative base stats
+Added sink counter that prints how much sink an item currently has
+Fixed a bug where critical fail maging did not always remove the correct amount of stats
+Fixed a bug where a critical fail on an overmaged stat that was currently being maged would reduce that stat instead of others
+Fixed a bug where some normal success mages would not add stats
+Changed maging dialogue to simply say better reflect the result you got
+Fixed a bug where reducing negative stats would not give sink
+Fixed a bug where when a mage failed, it could reduce item power by less power than the rune itself had
+Fixed a bug where items with multiple overmages' sink taking order would not be correct (would take out of normal stats before taking out of overmage sometimes)
+Fixed a bug where getting a normal success on an overmaged item with a lot of sink without any stats other than the overmaged stat would remove the overmaged stat instead of removing sink
+Fixed a bug where when overmaging one stat and removing another, the rune power would count twice instead of once when calculating remaining sink 
+
+11-07-2019
+Fixed a bug where an infinite loop would be started when a mage failed where the rune had more sink than there were stats on the item
+Fixed a bug where an item with only two stats would remove both stats if the rune failed or it was a normal mage
+Fixed a bug where in some situations, sink calculation would not be correct
+Changed sink to now be stored as a float instead of as an integer
+Fixed a bug where it would be possible to get a normal success on an item with only the stat you are maging
+Fixed a bug where it would be possible to get a normal success on an item without stats
+Fixed a bug where the stats of Treecloak were incorrect
+Fixed a bug with negative stat maging where it would cause an infinite loop if the only stats on the item were negative stats with the maximum allowed amount
+Fixed a bug where Improved Wooden Wings did not have any stats
+Fixed a bug where an item with two stats, one of which you are maging, would not correctly reduce the currently maged stat if the rune had more power than the other stat's power
+Fixed a bug where it was possible to get a normal mage on an item with only the stat you were maging
+Fixed a bug where it was possible to get a normal mage on an item with the stat you were maging and all other stats negative
+Fixed a bug where you would be more likely to succeed maging a negative stat the closer it got to 0
+Fixed a bug where failing on an item with both sink and stats would not correctly calculate the new sink
+
+12-07-2019
+Made non-integer sink values fully supported (no more sink being lost if you lose 3 vit)
+Fixed rounding errors when calculating <1 sink values
+Changed magus chance to be a max of 99% instead of 100%
+Fixed a bug where negative max stats did not always get detected correctly, causing some infinite loops
+Added support for maging from a negative stat to a positive stat
+Fixed a bug where getting a normal success on a non-negative stat would give more sink than intended
+Fixed a bug where Dark Animal Boots gave % earth resistance instead of % neutral resistance
+
+13-07-2019
+Fixed a bug where the resistances of Kracker Cap were incorrect
+Renamed "steals a to b HP (element)" to "Steal: a to b (element)" for consistency
+Renamed "HP restored a to b" to "Heal: a to b" for consistency
+Added vitality icon after healing effect
+Added kamas icon after kamas stealing effect
+Fixed a bug where landing a rune on a negative stat which would become 0 could result in your item disappearing
+Fixed a bug where the item you were maging would disappear if the rune would fail, it had an exo and it had a sink value that was less than the rune value
+Changed stats of 48 items, mostly level 100-200 equips that were underused
+Re-enabled magus system

@@ -99,7 +99,7 @@ public class ObjectData extends AbstractDAO<GameObject>
       p.setInt(1,object.getTemplate().getId());
       p.setInt(2,object.getQuantity());
       p.setInt(3,object.getPosition());
-      p.setInt(4,object.getPuit());
+      p.setFloat(4,object.getPuit());
       p.setString(5,object.parseToSave());
       p.setInt(6,object.getGuid());
       execute(p);
@@ -135,7 +135,7 @@ public class ObjectData extends AbstractDAO<GameObject>
       p.setInt(3,object.getQuantity());
       p.setInt(4,object.getPosition());
       p.setString(5,object.parseToSave());
-      p.setInt(6,object.getPuit());
+      p.setFloat(6,object.getPuit());
       execute(p);
     }
     catch(SQLException e)

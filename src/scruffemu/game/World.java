@@ -2032,69 +2032,6 @@ public class World
       Seller.get(map).remove(player);
   }
 
-  //v2.0 - Fixed rune powers
-  public static float getPwrPerEffet(final int statID)
-  {
-    float statX=1.0f;
-    if(statID==174) //initiative
-    {
-      statX=0.1f;
-    }
-    else if(statID==125) //vitality
-    {
-      statX=0.2f;
-    }
-    else if(statID==158) //pods
-    {
-      statX=0.25f;
-    }
-    else if(statID==118||statID==126||statID==119||statID==123) //elemental stats
-    {
-      statX=1f;
-    }
-    else if(statID==138||statID==226||statID==244||statID==240||statID==243||statID==241||statID==242) //%dmg, %trapdmg, neutral res, earth res, fire res, water res, air res
-    {
-      statX=2f;
-    }
-    else if(statID==124||statID==176) //wisdom, PP
-    {
-      statX=3f;
-    }
-    else if(statID==225||statID==666) //trap damage, hunting
-    {
-      statX=5f;
-    }
-    else if(statID==210||statID==211||statID==212||statID==213||statID==214) //%resist
-    {
-      statX=6f;
-    }
-    else if(statID==178||statID==115||statID==220) //heal, crit, reflect
-    {
-      statX=10f;
-    }
-    else if(statID==112) //damage
-    {
-      statX=20f;
-    }
-    else if(statID==182) //summon
-    {
-      statX=30f;
-    }
-    else if(statID==117) //range
-    {
-      statX=51f;
-    }
-    else if(statID==128) //mp
-    {
-      statX=90f;
-    }
-    else if(statID==111) //ap
-    {
-      statX=100f;
-    }
-    return statX;
-  }
-
   public double getTauxObtentionIntermediaire(double bonus, boolean b1, boolean b2)
   {
     double taux=bonus;

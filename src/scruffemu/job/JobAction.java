@@ -259,9 +259,8 @@ public class JobAction
       return;
     if(this.id==1||this.id==113||this.id==115||this.id==116||this.id==117||this.id==118||this.id==119||this.id==120||(this.id>=163&&this.id<=169))
     {
+      doMage(repeat,null,null);
       return;
-      /*doMage(repeat,null,null);
-      return;*/
     }
     Map<Integer, Integer> items=new HashMap<>();
     for(final Map.Entry<Integer, Integer> e : this.ingredients.entrySet())
@@ -449,9 +448,8 @@ public class JobAction
 
     if(this.id==1||this.id==113||this.id==115||this.id==116||this.id==117||this.id==118||this.id==119||this.id==120||(this.id>=163&&this.id<=169))
     {
-      return false;
-      /*this.SM=SM;
-      doMage(isRepeat,receiver,list);*/
+      this.SM=SM;
+      doMage(isRepeat,receiver,list);
     }
 
     Map<Integer, Integer> items=new HashMap<>();
@@ -637,6 +635,7 @@ public class JobAction
     Rune rune=null;
     Potion potion=null;
     int deleteID=-1;
+    boolean negative=false;
 
     final boolean secure=items!=null&&receiver!=null;
     final Map<Integer, Integer> ingredients=items==null ? this.ingredients : new HashMap<>();
@@ -732,23 +731,23 @@ public class JobAction
         if(itemType==1||itemType==9||itemType==10||itemType==11||itemType==16||itemType==17||itemType==81)
         {
           SocketManager.GAME_SEND_MESSAGE(this.player,"You can only use this rune on weapons.");
-          clearItem(objectFm);
-          ingredients.clear();
+          clearMage(objectFm,runeObject);
           return false;
         }
 
     final ObjectTemplate objTemplate=objectFm.getTemplate();
     ArrayList<Integer> chances=new ArrayList<Integer>();
     String statStringObj=objectFm.parseStatsString();
-    int chance=0,lvlJob=SM.get_lvl(),currentTotalPower=1,lostPower=0,oldSink=objectFm.getPuit();
+    int chance=0,lvlJob=SM.get_lvl();
+    float oldSink=objectFm.getPuit(),currentItemPower=1f;
+    Pair<Integer, Float> lostPower=null;
     int objTemplateID=objTemplate.getId();
 
     //v2.8 - only allow maging of items <= twice your job level
     if(lvlJob<(int)Math.floor(objTemplate.getLevel()/2))
     {
       SocketManager.GAME_SEND_MESSAGE(this.player,"You can only mage items up to twice your job's level.");
-      clearItem(objectFm);
-      ingredients.clear();
+      clearMage(objectFm,runeObject);
       return false;
     }
 
@@ -781,45 +780,46 @@ public class JobAction
       if(currentStat+rune.getStatsAdd()>maxOvermage)
       {
         SocketManager.GAME_SEND_MESSAGE(this.player,"This mage would exceed the maximum allowed stat limit.");
-        clearItem(objectFm);
-        ingredients.clear();
+        clearMage(objectFm,runeObject);
         return false;
       }
 
       if(canFM)
       {
-        float currentStatPower=1;
+        float currentStatPower=1f;
         final int statMin=getStatBaseMins(objectFm.getTemplate(),rune.getStatId());
-        float maxTotalPower=maxTotalPower(objTemplateID);
-        float minTotalPower=minTotalPower(objTemplateID);
+        float maxItemPower=maxTotalPower(objTemplateID);
+        float minitemPower=minTotalPower(objTemplateID);
+
+        final int currentStats2=Job.viewActualStatsItem(objectFm,rune.getStatId());
+        if(currentStats2==2) //change id if negative stat
+          if(!Rune.getNegativeStatByRuneStat(rune.getStatId()).equalsIgnoreCase(rune.getStatId())) //negative rune for rune found
+            negative=true;
+
         float coef=1f;
-        if(minTotalPower<0&&currentStatPower<0) //Maging negative stat
+        if(negative) //Maging negative stat
         {
-          if(currentStat+rune.getnPower()>minTotalPower) //Overmaging negative stat
+          if(currentStat+rune.getnPower()>getStatBaseMaxs(objectFm.getTemplate(),Rune.getNegativeStatByRuneStat(rune.getStatId()))) //Overmaging negative stat
             coef=0.6f;
         }
         else if(statMax==0&&getStatBaseMins(objectFm.getTemplate(),rune.getStatId())==0) //Exomaging, researched
           coef=0.5f;
         else if(currentStat+rune.getPower()>statMax) //Overmaging positive stat
-          coef=0.8f;
+          coef=0.6f;
 
         if(!objectFm.parseStatsString().isEmpty())
         {
-          currentTotalPower=currentTotalPower(statStringObj,objectFm);
+          currentItemPower=currentTotalPower(statStringObj,objectFm);
           currentStatPower=currentStatPower(objectFm,rune);
         }
-        if(maxTotalPower<0)
-          maxTotalPower=0;
-        if(minTotalPower<0)
-          minTotalPower=0;
-        if(currentStatPower<0)
-          currentStatPower=0;
-        if(currentTotalPower<1)
-          currentTotalPower=1;
-        if(minTotalPower<0&&currentStatPower<0) //negative stats
-          chances=Formulas.chanceFM(maxTotalPower,minTotalPower,currentTotalPower,currentStatPower,rune.getnPower(),statMax,statMin,rune.getStatsAdd(),coef);
+        if(maxItemPower==0)
+          maxItemPower=0.01f;
+        if(minitemPower==0)
+          minitemPower=0.01f;
+        if(minitemPower<0&&currentStatPower<0) //negative stats
+          chances=Formulas.chanceFM(maxItemPower,minitemPower,currentItemPower,currentStatPower,rune.getnPower(),statMax,statMin,rune.getStatsAdd(),coef,negative,rune);
         else //standard
-          chances=Formulas.chanceFM(maxTotalPower,minTotalPower,currentTotalPower,currentStatPower,rune.getPower(),statMax,statMin,rune.getStatsAdd(),coef);
+          chances=Formulas.chanceFM(maxItemPower,minitemPower,currentItemPower,currentStatPower,rune.getPower(),statMax,statMin,rune.getStatsAdd(),coef,negative,rune);
       }
       else
       {
@@ -829,8 +829,19 @@ public class JobAction
     }
 
     final int aleatoryChance=Formulas.getRandomValue(1,100);
-    final int SC=chances.get(0);
-    final int SN=chances.get(1);
+    int SC=chances.get(0);
+    int SN=chances.get(1);
+    if(statStringObj.isEmpty())
+    {
+      SC+=(float)(SN/2);
+      SN=0;
+    }
+    if(objectFm.onlyStat(rune.getStatId()))
+    {
+      SC+=(float)(SN/6);
+      SN=0;
+    }
+
     final boolean successC=aleatoryChance<=SC;
     final boolean successN=aleatoryChance<=SC+SN;
 
@@ -866,7 +877,7 @@ public class JobAction
       this.data=data;
       SocketManager.GAME_SEND_IO_PACKET_TO_MAP(this.player.getCurMap(),this.player.getId(),"+"+objTemplateID);
       if(!secure)
-        SocketManager.GAME_SEND_Ec_PACKET(this.player,"K;"+objTemplateID);
+        SocketManager.GAME_SEND_MESSAGE(this.player,"You have succesfully maged this item.","009900");
     }
     else if(successN) //nSuccess item stat maging
     {
@@ -884,15 +895,10 @@ public class JobAction
       this.data=data;
       SocketManager.GAME_SEND_IO_PACKET_TO_MAP(this.player.getCurMap(),this.player.getId(),"+"+objTemplateID);
 
-      if(lostPower>0)
-      {
+      if(lostPower.getRight()>0)
         SocketManager.GAME_SEND_Ec_PACKET(this.player,"EF");
-        SocketManager.GAME_SEND_Im_PACKET(this.player,"0194");
-      }
       else
-      {
         SocketManager.GAME_SEND_Ec_PACKET(this.player,"EF;"+objTemplateID);
-      }
     }
     else //Fail item stat maging
     {
@@ -908,11 +914,6 @@ public class JobAction
       this.data=data;
       SocketManager.GAME_SEND_IO_PACKET_TO_MAP(this.player.getCurMap(),this.player.getId(),"-"+objTemplateID);
       SocketManager.GAME_SEND_Ec_PACKET(this.player,"EF");
-
-      if(lostPower>0)
-        SocketManager.GAME_SEND_Im_PACKET(this.player,"0117");
-      else
-        SocketManager.GAME_SEND_Im_PACKET(this.player,"0183");
     }
 
     int newQuantity=0;
@@ -928,6 +929,50 @@ public class JobAction
         this.player.addObjet(objectFm);
       else
         receiver.addObjet(objectFm);
+    }
+
+    if(!successC)
+    {
+      if(lostPower.getLeft()!=-1)
+      {
+        float newSink=0;
+        if(lostPower.getLeft()==0)
+        {
+          if(negative)
+            newSink=objectFm.getPuit()+lostPower.getRight()-rune.getnPower();
+          else
+            newSink=objectFm.getPuit()+lostPower.getRight()-rune.getPower();
+        }
+        if(lostPower.getLeft()==1)
+        {
+          if(negative)
+            newSink=objectFm.getPuit()+lostPower.getRight();
+          else
+            newSink=objectFm.getPuit()+lostPower.getRight();
+          if(newSink<0)
+            newSink=0;
+        }
+        if(newSink<0)
+          newSink=0;
+        newSink=(float)Math.round(newSink*100)/100; //Rounds sink to 2 decimals (negative initiative is 0.05 sink)
+
+        if(newSink!=objectFm.getPuit())
+        {
+          if(successN)
+            SocketManager.GAME_SEND_MESSAGE(this.player,"You have succesfully maged this item - The current sink of this item is "+newSink+".","009900");
+          else
+            SocketManager.GAME_SEND_MESSAGE(this.player,"You have failed to mage this item - The current sink of this item is "+newSink+".","009900");
+          objectFm.setPuit(newSink);
+        }
+        else if(successN)
+          SocketManager.GAME_SEND_MESSAGE(this.player,"You have succesfully maged this item, but have lost some stats in the process.","009900");
+        else
+          SocketManager.GAME_SEND_MESSAGE(this.player,"You have failed to mage this item.","009900");
+      }
+      else if(successN)
+        SocketManager.GAME_SEND_MESSAGE(this.player,"You have succesfully maged this item, but have lost some stats in the process.","009900");
+      else
+        SocketManager.GAME_SEND_MESSAGE(this.player,"You have failed to mage this item.","009900");
     }
 
     if(receiver==null)
@@ -992,11 +1037,6 @@ public class JobAction
       receiver.send("ErKO+"+objectFm.getGuid()+"|1|"+objTemplate+"|"+stats);
       this.player.send("EcK;"+objTemplate+";T"+receiver.getName()+";"+stats);
       receiver.send("EcK;"+objTemplate+";B"+this.player.getName()+";"+stats);
-
-      if(!successC)
-      {
-        receiver.send("EcEF");
-      }
     }
 
     this.lastCraft.clear();
@@ -1008,12 +1048,11 @@ public class JobAction
     return true;
   }
 
-  public void clearItem(GameObject item)
+  //TODO: fix so you dont have to re-open magus interface
+  public void clearMage(GameObject item, GameObject rune)
   {
-    World.addGameObject(item,true);
-    this.player.addObjet(item);
-    SocketManager.GAME_SEND_Ec_PACKET(this.player,"EI");
-    SocketManager.GAME_SEND_IO_PACKET_TO_MAP(this.player.getCurMap(),this.player.getId(),"-");
+      World.addGameObject(item,true);
+      this.player.addObjet(item);
   }
 
   public void doCritPotionMage(Potion potion, GameObject objectFm)
@@ -1047,21 +1086,17 @@ public class JobAction
   {
     String runeStat=rune.getStatId();
     boolean negative=false;
-    final int currentStats2=Job.viewActualStatsItem(objectFm,runeStat);
+    final int currentStats2=Job.viewActualStatsItem(objectFm,rune.getStatId());
     if(currentStats2==2) //change id if negative stat
     {
-      runeStat=getNegativeStatByRuneStat(runeStat);
-      if(runeStat!=rune.getStatId())
+      runeStat=Rune.getNegativeStatByRuneStat(runeStat);
+      if(!runeStat.equalsIgnoreCase(rune.getStatId()))
         negative=true;
     }
     if(currentStats2==1||currentStats2==2)
     {
       if(statStringObj.isEmpty())
-      {
-        final String statsStr=String.valueOf(runeStat)+"#"+Integer.toHexString(rune.getStatsAdd())+"#0#0#0d0+"+rune.getStatsAdd();
-        objectFm.clearStats();
-        objectFm.parseStringToStats(statsStr,true);
-      }
+        updateItemAddRune(objectFm,rune,runeStat);
       else
       {
         final String statsStr=objectFm.parseFMStatsString(runeStat,objectFm,rune.getStatsAdd(),negative);
@@ -1070,260 +1105,266 @@ public class JobAction
       }
     }
     else if(objectFm.parseStatsString().isEmpty())
-    {
-      final String statsStr=String.valueOf(runeStat)+"#"+Integer.toHexString(rune.getStatsAdd())+"#0#0#0d0+"+rune.getStatsAdd();
-      objectFm.clearStats();
-      objectFm.parseStringToStats(statsStr,true);
-    }
+      updateItemAddRune(objectFm,rune,runeStat);
     else
     {
-      final String statsStr=String.valueOf(objectFm.parseFMStatsString(runeStat,objectFm,rune.getStatsAdd(),negative))+","+runeStat+"#"+Integer.toHexString(rune.getStatsAdd())+"#0#0#0d0+"+rune.getStatsAdd();
+      final String statsStr=String.valueOf(objectFm.parseFMStatsString(runeStat,objectFm,rune.getStatsAdd(),negative));
       objectFm.clearStats();
       objectFm.parseStringToStats(statsStr,true);
     }
   }
 
-  public int doNormalRuneMage(Rune rune, GameObject objectFm, String statStringObj, int oldSink)
+  public Pair<Integer, Float> doNormalRuneMage(Rune rune, GameObject objectFm, String statStringObj, float oldSink)
   {
     String runeStat=rune.getStatId();
     boolean negative=false;
-    int lostPower=0;
-    int currentTotalPower=0;
+    float currentTotalPower=currentTotalPower(statStringObj,objectFm);
     float runePower=rune.getPower();
     final int currentStats3=Job.viewActualStatsItem(objectFm,rune.getStatId());
     if(currentStats3==2) //change id if negative stat
     {
-      runeStat=getNegativeStatByRuneStat(runeStat);
+      runeStat=Rune.getNegativeStatByRuneStat(runeStat);
       if(runeStat!=rune.getStatId())
       {
         runePower=rune.getnPower();
         negative=true;
       }
     }
-    if(currentStats3==1||currentStats3==2) //nSuccess targeting normal stats
+    if(currentStats3==1||currentStats3==2) //not first mage
     {
       if(statStringObj.isEmpty()) //item does not have stats
       {
-        final String statsStr2=String.valueOf(runeStat)+"#"+Integer.toHexString(rune.getStatsAdd())+"#0#0#0d0+"+rune.getStatsAdd();
-        objectFm.clearStats();
-        objectFm.parseStringToStats(statsStr2,true);
+        updateItemAddRune(objectFm,rune,runeStat);
+        return new Pair<Integer, Float>(0,0f);
       }
-      else
+      else //nSuccess targeting normal stats
       {
         String exoStatStr=objectFm.findOverExo(objectFm,Integer.parseInt(runeStat,16));
-        String statsStr2="";
         int exoPower=0;
-        if(exoStatStr!="") //if the item has one or more exomages
+        if(exoStatStr!="") //item has exo
         {
-          String[] exoSplit=exoStatStr.split(";");
+          String[] exoSplit=exoStatStr.split(";"); //calculate total exo power
           for(int i=0;i<exoSplit.length;i++)
           {
             String[] exoSplit2=exoSplit[i].split(",");
-            float statPwr=World.getPwrPerEffet(Integer.valueOf(exoSplit2[0]));
+            float statPwr=Constant.getPowerByStatId(Integer.valueOf(exoSplit2[0]),false);
             int entryPower=(int)(statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16))));
             exoPower=exoPower+entryPower;
           }
-          if(runePower<=exoPower) //reduce all from exo stats, do not give sink, do not consume sink
+
+          if(exoPower>=runePower) //reduce all from exo stats, do not give sink, do not consume sink
           {
-            statsStr2=objectFm.parseStringStatsEC_FM(objectFm,runePower,Integer.parseInt(runeStat,16));
-            objectFm.clearStats();
-            objectFm.parseStringToStats(statsStr2,true);
-            objectFm.setPuit(oldSink);
+            updateItemStatsEC(objectFm,runePower,runeStat);
+            updateItemStats(runeStat,objectFm,rune.getStatsAdd(),negative);
+            return new Pair<Integer, Float>(-1,-1f);
           }
-          else if(runePower>exoPower)
+          else if(exoPower<runePower)
           {
-            if(oldSink<=0) //reduce from exo and do not give sink, then from stats and give sink
+            if(oldSink>0)
             {
-              statsStr2=objectFm.parseStringStatsEC_FM(objectFm,exoPower,Integer.parseInt(runeStat,16));
-              objectFm.clearStats();
-              objectFm.parseStringToStats(statsStr2,true);
-              currentTotalPower=currentTotalPower(statStringObj,objectFm);
-              String statsStr3=objectFm.parseStringStatsEC_FM(objectFm,(runePower-exoPower),Integer.parseInt(runeStat,16));
-              objectFm.clearStats();
-              objectFm.parseStringToStats(statsStr3,true);
-              lostPower=currentTotalPower-currentTotalPower(statsStr3,objectFm);
+              if(oldSink>=runePower-exoPower) //remove exo and then reduce sink
+              {
+                updateItemStatsEC(objectFm,exoPower,runeStat);
+                updateItemStats(runeStat,objectFm,rune.getStatsAdd(),negative);
+                return new Pair<Integer, Float>(0,0f);
+              }
+              else if(oldSink<runePower-exoPower) //reduce from exo, then from sink, then from stats
+              {
+                updateItemStatsEC(objectFm,exoPower,runeStat);
+                objectFm.setPuit(0);
+                updateItemStatsEC(objectFm,runePower-(exoPower+oldSink),runeStat);
+                return new Pair<Integer, Float>(1,currentTotalPower-currentTotalPower(updateItemStats(runeStat,objectFm,rune.getStatsAdd(),negative),objectFm));
+              }
             }
-            else if(oldSink>(runePower-exoPower)) //if sink is bigger than restPower, reduce from exo then from sink
+            else //remove exo then reduce stats
             {
-              statsStr2=objectFm.parseStringStatsEC_FM(objectFm,exoPower,Integer.parseInt(runeStat,16));
-              objectFm.clearStats();
-              objectFm.parseStringToStats(statsStr2,true);
-              int restSink=(int)Math.floor(oldSink-(runePower-exoPower));
-              objectFm.setPuit(restSink);
+              updateItemStatsEC(objectFm,exoPower,runeStat);
+              updateItemStatsEC(objectFm,runePower-exoPower,runeStat);
+              return new Pair<Integer, Float>(1,currentTotalPower-currentTotalPower(updateItemStats(runeStat,objectFm,rune.getStatsAdd(),negative),objectFm));
             }
-            else if(oldSink<(runePower-exoPower)) //if sink is smaller than restPower, reduce from exo then from sink then from remaining stats
+          }
+        } //end of exo region
+        else //not-exo'd item with stats
+        {
+          if(oldSink>0)
+          {
+            if(oldSink>=runePower) //reduce all from sink
             {
-              statsStr2=objectFm.parseStringStatsEC_FM(objectFm,exoPower,Integer.parseInt(runeStat,16));
-              objectFm.clearStats();
-              objectFm.parseStringToStats(statsStr2,true);
-              currentTotalPower=currentTotalPower(statStringObj,objectFm);
-              float restPower=(runePower-exoPower)-oldSink;
-              String statsStr3=objectFm.parseStringStatsEC_FM(objectFm,restPower,Integer.parseInt(runeStat,16));
-              lostPower=currentTotalPower-currentTotalPower(statsStr3,objectFm);
+              updateItemStats(runeStat,objectFm,rune.getStatsAdd(),negative);
+              return new Pair<Integer, Float>(0,0f);
+            }
+            else if(oldSink<runePower) //reduce from sink then from stats
+            {
+              float restPower=runePower-oldSink;
               objectFm.setPuit(0);
+              updateItemStatsEC(objectFm,restPower,runeStat);
+              return new Pair<Integer, Float>(1,currentTotalPower-currentTotalPower(updateItemStats(runeStat,objectFm,rune.getStatsAdd(),negative),objectFm));
             }
           }
+          else //reduce all from stats
+          {
+            updateItemStatsEC(objectFm,runePower,runeStat);
+            return new Pair<Integer, Float>(1,currentTotalPower-currentTotalPower(updateItemStats(runeStat,objectFm,rune.getStatsAdd(),negative),objectFm));
+          }
         }
-        else if(oldSink<=0) //no sink, reduce stats
-        {
-          statsStr2=objectFm.parseStringStatsEC_FM(objectFm,runePower,Integer.parseInt(runeStat,16));
-          objectFm.clearStats();
-          objectFm.parseStringToStats(statsStr2,true);
-          lostPower=currentTotalPower-currentTotalPower(statsStr2,objectFm);
-        }
-        else if(oldSink<runePower) //reduce sink to 0, lose stats
-        {
-          float restPower=runePower-oldSink;
-          statsStr2=objectFm.parseStringStatsEC_FM(objectFm,restPower,Integer.parseInt(runeStat,16));
-          objectFm.clearStats();
-          objectFm.parseStringToStats(statsStr2,true);
-          lostPower=currentTotalPower-currentTotalPower(statsStr2,objectFm);
-          objectFm.setPuit(0);
-        }
-        else if(oldSink>=runePower) //use sink for stats
-        {
-          int restSink=(int)Math.floor(oldSink-runePower);
-          objectFm.setPuit(restSink);
-        }
-        statsStr2=objectFm.parseFMStatsString(runeStat,objectFm,rune.getStatsAdd(),negative);
-        objectFm.clearStats();
-        objectFm.parseStringToStats(statsStr2,true);
       }
     }
-    else if(statStringObj.isEmpty()) //nSuccess targeting normal success exomage
+    else //first stat mage
     {
-      final String statsStr2=String.valueOf(runeStat)+"#"+Integer.toHexString(rune.getStatsAdd())+"#0#0#0d0+"+rune.getStatsAdd();
-      objectFm.clearStats();
-      objectFm.parseStringToStats(statsStr2,true);
+      if(statStringObj.isEmpty()) //item does not have stats
+      {
+        updateItemAddRune(objectFm,rune,runeStat);
+        return new Pair<Integer, Float>(0,0f);
+      }
+      else //nSuccess targeting normal stats
+      {
+        String exoStatStr=objectFm.findOverExo(objectFm,Integer.parseInt(runeStat,16));
+        int exoPower=0;
+        if(exoStatStr!="") //item has exo
+        {
+          String[] exoSplit=exoStatStr.split(";"); //calculate total exo power
+          for(int i=0;i<exoSplit.length;i++)
+          {
+            String[] exoSplit2=exoSplit[i].split(",");
+            float statPwr=Constant.getPowerByStatId(Integer.valueOf(exoSplit2[0]),false);
+            int entryPower=(int)(statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16))));
+            exoPower=exoPower+entryPower;
+          }
+          if(exoPower>=runePower) //reduce all from exo stats, do not give sink, do not consume sink
+          {
+            final String statsStr=String.valueOf(updateItemStatsEC(objectFm,runePower,runeStat)+","+runeStat+"#"+Integer.toHexString(rune.getStatsAdd())+"#0#0#0d0+"+rune.getStatsAdd());
+            objectFm.clearStats();
+            objectFm.parseStringToStats(statsStr,true);
+            return new Pair<Integer, Float>(-1,-1f);
+          }
+          else if(exoPower<runePower)
+          {
+            if(oldSink>0)
+            {
+              if(oldSink>=runePower-exoPower) //remove exo and then reduce sink
+              {
+                updateItemStatsEC(objectFm,exoPower,runeStat);
+                updateItemStats(runeStat,objectFm,rune.getStatsAdd(),negative);
+                return new Pair<Integer, Float>(0,0f);
+              }
+              else if(oldSink<runePower-exoPower) //reduce from exo, then from sink, then from stats
+              {
+                updateItemStatsEC(objectFm,exoPower,runeStat);
+                objectFm.setPuit(0);
+                updateItemStatsEC(objectFm,runePower-(exoPower+oldSink),runeStat);
+                return new Pair<Integer, Float>(1,currentTotalPower-currentTotalPower(updateItemStats(runeStat,objectFm,rune.getStatsAdd(),negative),objectFm));
+              }
+            }
+            else //remove exo then reduce stats
+            {
+              updateItemStatsEC(objectFm,exoPower,runeStat);
+              updateItemStatsEC(objectFm,runePower-exoPower,runeStat);
+              return new Pair<Integer, Float>(0,currentTotalPower-currentTotalPower(updateItemStats(runeStat,objectFm,rune.getStatsAdd(),negative),objectFm));
+            }
+          }
+        } //end of exo region
+        else //not-exo'd item with stats
+        {
+          if(oldSink>0)
+          {
+            if(oldSink>=runePower) //reduce all from sink
+            {
+              updateItemStats(runeStat,objectFm,rune.getStatsAdd(),negative);
+              return new Pair<Integer, Float>(0,0f);
+            }
+            else if(oldSink<runePower) //reduce from sink then from stats
+            {
+              float restPower=runePower-oldSink;
+              objectFm.setPuit(0);
+              updateItemStatsEC(objectFm,restPower,runeStat);
+              return new Pair<Integer, Float>(1,currentTotalPower-currentTotalPower(updateItemStats(runeStat,objectFm,rune.getStatsAdd(),negative),objectFm));
+            }
+          }
+          else //reduce all from stats
+          {
+            updateItemStatsEC(objectFm,runePower,runeStat);
+            return new Pair<Integer, Float>(1,currentTotalPower-currentTotalPower(updateItemStats(runeStat,objectFm,rune.getStatsAdd(),negative),objectFm));
+          }
+        }
+      }
     }
-    else //nSuccess
-    {
-      String statsStr2="";
-      if(oldSink<=0)
-      {
-        statsStr2=objectFm.parseStringStatsEC_FM(objectFm,runePower,Integer.parseInt(runeStat,16));
-        objectFm.clearStats();
-        objectFm.parseStringToStats(statsStr2,true);
-        lostPower=currentTotalPower-currentTotalPower(statsStr2,objectFm);
-      }
-      else if(oldSink<runePower) //reduce sink to 0, lose stats
-      {
-        float restPower=runePower-oldSink;
-        statsStr2=objectFm.parseStringStatsEC_FM(objectFm,restPower,Integer.parseInt(runeStat,16));
-        objectFm.clearStats();
-        objectFm.parseStringToStats(statsStr2,true);
-        lostPower=currentTotalPower-currentTotalPower(statsStr2,objectFm);
-        objectFm.setPuit(0);
-      }
-      else if(oldSink>=runePower) //use sink for stats
-      {
-        int restSink=(int)Math.floor(oldSink-runePower);
-        objectFm.setPuit(restSink);
-      }
-      statsStr2=String.valueOf(objectFm.parseFMStatsString(runeStat,objectFm,rune.getStatsAdd(),negative))+","+runeStat+"#"+Integer.toHexString(rune.getStatsAdd())+"#0#0#0d0+"+rune.getStatsAdd();
-      objectFm.clearStats();
-      objectFm.parseStringToStats(statsStr2,true);
-    }
-    return lostPower;
+    return new Pair<Integer, Float>(0,0f);
   }
 
-  public int doFailRuneMage(Rune rune, GameObject objectFm, String statStringObj, int oldSink)
+  public Pair<Integer, Float> doFailRuneMage(Rune rune, GameObject objectFm, String statStringObj, float oldSink)
   {
     String runeStat=rune.getStatId();
-    int lostPower=0;
-    int currentTotalPower=0;
+    float currentTotalPower=currentTotalPower(statStringObj,objectFm);
     float runePower=rune.getPower();
-    final int currentStats=Job.viewActualStatsItem(objectFm,rune.getStatId());
-    String statsStr3="";
-    if(currentStats==2) //change id if negative stat
+    final int currentStats3=Job.viewActualStatsItem(objectFm,rune.getStatId());
+    if(currentStats3==2) //change id if negative stat
     {
-      runeStat=getNegativeStatByRuneStat(runeStat);
+      runeStat=Rune.getNegativeStatByRuneStat(runeStat);
       if(runeStat!=rune.getStatId())
         runePower=rune.getnPower();
     }
-    if(!statStringObj.isEmpty())
+    if(statStringObj.isEmpty()) //item does not have stats
+      return new Pair<Integer, Float>(0,0f);
+    else //nSuccess targeting normal stats
     {
-      String exoStatStr=objectFm.findOverExo(objectFm,Integer.parseInt(rune.getStatId(),16));
-      String statsStr2="";
+      String exoStatStr=objectFm.findOverExo(objectFm,Integer.parseInt(runeStat,16));
       int exoPower=0;
-      if(exoStatStr!="") //if the item has one or more exomages
+      if(exoStatStr!="") //item has exo
       {
-        String[] exoSplit=exoStatStr.split(";");
+        String[] exoSplit=exoStatStr.split(";"); //calculate total exo power
         for(int i=0;i<exoSplit.length;i++)
         {
           String[] exoSplit2=exoSplit[i].split(",");
-          float statPwr=World.getPwrPerEffet(Integer.valueOf(exoSplit2[0]));
+          float statPwr=Constant.getPowerByStatId(Integer.valueOf(exoSplit2[0]),false);
           int entryPower=(int)(statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16))));
           exoPower=exoPower+entryPower;
         }
-        if(runePower<=exoPower) //reduce all from exo stats, give sink
+
+        if(exoPower>=runePower) //reduce all from exo stats, do not give sink, do not consume sink
         {
-          currentTotalPower=currentTotalPower(statStringObj,objectFm);
-          statsStr2=objectFm.parseStringStatsEC_FM(objectFm,runePower,-1);
-          objectFm.clearStats();
-          objectFm.parseStringToStats(statsStr2,true);
-          lostPower=currentTotalPower-currentTotalPower(statsStr2,objectFm);
+          updateItemStatsEC(objectFm,runePower,runeStat);
+          return new Pair<Integer, Float>(-1,0f);
         }
-        else if(runePower>exoPower)
+        else if(exoPower<runePower)
         {
-          if(oldSink<=0) //reduce from exo and do not give sink, then from stats and give sink
+          if(oldSink>0)
           {
-            statsStr2=objectFm.parseStringStatsEC_FM(objectFm,exoPower,-1);
-            objectFm.clearStats();
-            objectFm.parseStringToStats(statsStr2,true);
-            currentTotalPower=currentTotalPower(statStringObj,objectFm);
-            statsStr3=objectFm.parseStringStatsEC_FM(objectFm,(runePower-exoPower),-1);
-            objectFm.clearStats();
-            objectFm.parseStringToStats(statsStr3,true);
-            lostPower=currentTotalPower-currentTotalPower(statsStr3,objectFm);
+            if(oldSink>=runePower-exoPower) //remove exo and then reduce sink
+            {
+              updateItemStatsEC(objectFm,exoPower,runeStat);
+              return new Pair<Integer, Float>(0,0f);
+            }
+            else if(oldSink<runePower-exoPower) //reduce from exo, then from sink, then from stats
+            {
+              updateItemStatsEC(objectFm,exoPower,runeStat);
+              float restPower=runePower-(exoPower+oldSink);
+              return new Pair<Integer, Float>(0,currentTotalPower-currentTotalPower(updateItemStatsEC(objectFm,restPower,runeStat),objectFm));
+            }
           }
-          else if(oldSink>(runePower-exoPower)) //if sink is bigger than restPower, reduce from exo then from sink
+          else //remove exo then reduce stats
           {
-            statsStr2=objectFm.parseStringStatsEC_FM(objectFm,exoPower,-1);
-            objectFm.clearStats();
-            objectFm.parseStringToStats(statsStr2,true);
-            int restSink=(int)Math.floor(oldSink-(runePower-exoPower));
-            objectFm.setPuit(restSink);
-          }
-          else if(oldSink<(runePower-exoPower)) //if sink is smaller than restPower, reduce from exo then from sink then from remaining stats
-          {
-            statsStr2=objectFm.parseStringStatsEC_FM(objectFm,exoPower,-1);
-            objectFm.clearStats();
-            objectFm.parseStringToStats(statsStr2,true);
-            currentTotalPower=currentTotalPower(statStringObj,objectFm);
-            float restPower=(runePower-exoPower)-oldSink;
-            statsStr3=objectFm.parseStringStatsEC_FM(objectFm,restPower,-1);
-            lostPower=currentTotalPower-currentTotalPower(statsStr3,objectFm);
-            objectFm.setPuit(0);
+            updateItemStatsEC(objectFm,exoPower,runeStat);
+            return new Pair<Integer, Float>(0,currentTotalPower-currentTotalPower(updateItemStatsEC(objectFm,runePower-exoPower,runeStat),objectFm));
           }
         }
-      }
-      else
+      } //end of exo region
+      else //not-exo'd item with stats
       {
-        if(oldSink<=0)
+        if(oldSink>0)
         {
-          statsStr3=objectFm.parseStringStatsEC_FM(objectFm,runePower,-1);
-          objectFm.clearStats();
-          objectFm.parseStringToStats(statsStr3,true);
-          lostPower=currentTotalPower-currentTotalPower(statsStr3,objectFm);
+          if(oldSink>=runePower) //reduce all from sink
+            return new Pair<Integer, Float>(0,0f);
+          else if(oldSink<runePower) //reduce from sink then from stats
+          {
+            float restPower=runePower-oldSink;
+            return new Pair<Integer, Float>(0,currentTotalPower-currentTotalPower(updateItemStatsEC(objectFm,restPower,runeStat),objectFm));
+          }
         }
-        else if(oldSink<runePower)
-        {
-          float restPower=runePower-oldSink;
-          statsStr3=objectFm.parseStringStatsEC_FM(objectFm,restPower,-1);
-          objectFm.clearStats();
-          objectFm.parseStringToStats(statsStr3,true);
-          lostPower=currentTotalPower-currentTotalPower(statsStr3,objectFm);
-          objectFm.setPuit(0);
-        }
-        else if(oldSink>=runePower)
-        {
-          int restSink=(int)Math.floor(oldSink-runePower);
-          objectFm.setPuit(restSink);
-        }
+        else //reduce all from stats
+          return new Pair<Integer, Float>(0,currentTotalPower-currentTotalPower(updateItemStatsEC(objectFm,runePower,runeStat),objectFm));
       }
     }
-    return lostPower;
+    return new Pair<Integer, Float>(0,0f);
   }
 
   private void decrementObjectQuantity(Player player, GameObject object)
@@ -1344,12 +1385,12 @@ public class JobAction
     }
   }
 
-  public static int currentTotalPower(final String statsModelo, final GameObject obj)
+  public static float currentTotalPower(final String statsModelo, final GameObject obj)
   {
     if(statsModelo.equalsIgnoreCase(""))
       return 0;
-    int Weigth=1;
-    int Alto=0;
+    float Weigth=1;
+    float Alto=0;
     final String[] split=statsModelo.split(",");
     String[] array;
     for(int length=(array=split).length,i=0;i<length;++i)
@@ -1393,14 +1434,16 @@ public class JobAction
             catch(Exception ex)
             {
             }
-            Weigth=(int)Math.floor(qua*getPowerByStatId(statID,false));
+            Weigth=qua*Constant.getPowerByStatId(statID,false);
             Alto+=Weigth;
           }
         }
     }
+    Alto=(float)Math.round(Alto*100)/100; //rounds to 2 decimals (negative ini = 0.05s)
     return Alto;
   }
 
+  //v2.8 - negative stat support
   public static int getStatBaseMaxs(final ObjectTemplate objMod, final String statsModif)
   {
     final String[] split=objMod.getStrTemplate().split(",");
@@ -1409,18 +1452,20 @@ public class JobAction
     {
       final String s=array[i];
       final String[] stats=s.split("#");
-      if(stats[0].toLowerCase().compareTo(statsModif.toLowerCase())<=0)
-        if(stats[0].toLowerCase().compareTo(statsModif.toLowerCase())==0)
-        {
-          int max=Integer.parseInt(stats[2],16);
-          if(max==0)
-            max=Integer.parseInt(stats[1],16);
-          return max;
-        }
+      if(stats[0].toLowerCase().compareTo(statsModif.toLowerCase())==0)
+      {
+        int max=Integer.parseInt(stats[2],16);
+        if(max==0)
+          max=Integer.parseInt(stats[1],16);
+        return max;
+      }
+      else if(stats[0].toLowerCase().compareTo(Rune.getNegativeStatByRuneStat(statsModif.toLowerCase()))==0)
+        return -Integer.parseInt(stats[1],16);
     }
     return 0;
   }
 
+  //v2.8 - negative stat support
   public static int getStatBaseMins(final ObjectTemplate objMod, final String statsModif)
   {
     final String[] split=objMod.getStrTemplate().split(",");
@@ -1429,9 +1474,15 @@ public class JobAction
     {
       final String s=array[i];
       final String[] stats=s.split("#");
-      if(stats[0].toLowerCase().compareTo(statsModif.toLowerCase())<=0)
-        if(stats[0].toLowerCase().compareTo(statsModif.toLowerCase())==0)
-          return Integer.parseInt(stats[1],16);
+      if(stats[0].toLowerCase().compareTo(statsModif.toLowerCase())==0)
+        return Integer.parseInt(stats[1],16);
+      if(stats[0].toLowerCase().compareTo(Rune.getNegativeStatByRuneStat(statsModif.toLowerCase()))==0)
+      {
+        int max=Integer.parseInt(stats[2],16);
+        if(max==0)
+          max=Integer.parseInt(stats[1],16);
+        return -max;
+      }
     }
     return 0;
   }
@@ -1441,12 +1492,20 @@ public class JobAction
     for(final Map.Entry<Integer, Integer> entry : obj.getStats().getMap().entrySet())
     {
       final int statID=entry.getKey();
-      if(Integer.toHexString(statID).toLowerCase().compareTo(rune.getStatId().toLowerCase())>0)
-        continue;
-      if(Integer.toHexString(statID).toLowerCase().compareTo(rune.getStatId().toLowerCase())==0)
+      if(Integer.toHexString(statID).toLowerCase().compareTo(rune.getStatId())==0)
       {
         float finalWeight=0; //v2.0 - Divide by 0 handler
         final float Weight=entry.getValue()*(rune.getPower()/rune.getStatsAdd());
+        if(Weight==0)
+          finalWeight=1;
+        else
+          finalWeight=Weight;
+        return finalWeight;
+      }
+      else if(Integer.toHexString(statID).toLowerCase().compareTo(Rune.getNegativeStatByRuneStat(rune.getStatId()))==0)
+      {
+        float finalWeight=0; //v2.0 - Divide by 0 handler
+        final float Weight=entry.getValue()*Constant.getPowerByStatId(Integer.parseInt(Rune.getNegativeStatByRuneStat(rune.getStatId()),16),false);
         if(Weight==0)
           finalWeight=1;
         else
@@ -1466,20 +1525,14 @@ public class JobAction
     if(statsTemplate==null||statsTemplate.isEmpty())
       return 0;
     final String[] split=statsTemplate.split(",");
-    String[] array;
-    for(int length=(array=split).length,i=0;i<length;++i)
+    for(String s : split)
     {
-      final String s=array[i];
       final String[] stats=s.split("#");
       final int statID=Integer.parseInt(stats[0],16);
       boolean sig=true;
-      int[] armes_EFFECT_IDS;
-      for(int length2=(armes_EFFECT_IDS=Constant.ARMES_EFFECT_IDS).length,j=0;j<length2;++j)
-      {
-        final int a=armes_EFFECT_IDS[j];
-        if(a==statID)
+      for(int effectID : Constant.ARMES_EFFECT_IDS)
+        if(effectID==statID)
           sig=false;
-      }
       if(sig)
       {
         String jet="";
@@ -1487,15 +1540,16 @@ public class JobAction
         try
         {
           jet=stats[4];
-          value=Formulas.getRandomJet(jet);
           try
           {
-            final int min=Integer.parseInt(stats[1],16);
-            value=min;
+            value=Integer.parseInt(stats[1],16);
+            if(Rune.isNegativeStat(Integer.toHexString(statID)))
+              value=Integer.parseInt(stats[2],16);
           }
           catch(Exception e)
           {
             e.printStackTrace();
+            jet=stats[4];
             value=Formulas.getRandomJet(jet);
           }
         }
@@ -1503,15 +1557,14 @@ public class JobAction
         {
           e.printStackTrace();
         }
-        weight=value*getPowerByStatId(statID,false);
-        if(weight==0) //v2.0 - divide by 0 handler
-          weight=1;
+        weight=value*Constant.getPowerByStatId(statID,false);
         alt+=weight;
       }
     }
     return alt;
   }
 
+  //v2.8 - de-spaghetti'd
   public static float maxTotalPower(final int objTemplateID)
   {
     float weight=0;
@@ -1521,20 +1574,14 @@ public class JobAction
     if(statsTemplate==null||statsTemplate.isEmpty())
       return 0;
     final String[] split=statsTemplate.split(",");
-    String[] array;
-    for(int length=(array=split).length,i=0;i<length;++i)
+    for(String s : split)
     {
-      final String s=array[i];
       final String[] stats=s.split("#");
       final int statID=Integer.parseInt(stats[0],16);
       boolean sig=true;
-      int[] armes_EFFECT_IDS;
-      for(int length2=(armes_EFFECT_IDS=Constant.ARMES_EFFECT_IDS).length,j=0;j<length2;++j)
-      {
-        final int a=armes_EFFECT_IDS[j];
-        if(a==statID)
+      for(int effectID : Constant.ARMES_EFFECT_IDS)
+        if(effectID==statID)
           sig=false;
-      }
       if(sig)
       {
         String jet="";
@@ -1546,7 +1593,9 @@ public class JobAction
           try
           {
             final int min=Integer.parseInt(stats[1],16);
-            final int max=Integer.parseInt(stats[2],16);
+            int max=Integer.parseInt(stats[2],16);
+            if(Rune.isNegativeStat(Integer.toHexString(statID)))
+              max=Integer.parseInt(stats[1],16);
             value=min;
             if(max!=0)
               value=max;
@@ -1561,9 +1610,7 @@ public class JobAction
         {
           e.printStackTrace();
         }
-        weight=value*getPowerByStatId(statID,false);
-        if(weight==0) //v2.0 - divide by 0 handler
-          weight=1;
+        weight=value*Constant.getPowerByStatId(statID,false);
         alt+=weight;
       }
     }
@@ -1576,84 +1623,48 @@ public class JobAction
     return (int)Math.floor(101/basePower);
   }
 
-  public static String getNegativeStatByRuneStat(String runeStat)
+  public static int getBaseMaxJet(int templateID, String statsModif)
   {
-    if(runeStat.compareTo("7b")==0)
-      runeStat="98";
-    else if(runeStat.compareTo("77")==0)
-      runeStat="9a";
-    else if(runeStat.compareTo("7e")==0)
-      runeStat="9b";
-    else if(runeStat.compareTo("76")==0)
-      runeStat="9d";
-    else if(runeStat.compareTo("7c")==0)
-      runeStat="9c";
-    else if(runeStat.compareTo("7d")==0)
-      runeStat="99";
-    return runeStat;
+    ObjectTemplate t=World.world.getObjTemplate(templateID);
+    String[] splitted=t.getStrTemplate().split(",");
+    for(String s : splitted)
+    {
+      String[] stats=s.split("#");
+      if(stats[0].compareTo(statsModif)>0)//Effets n'existe pas de base
+      {
+      }
+      else if(stats[0].compareTo(statsModif)==0)//L'effet existe bien !
+      {
+        int max=Integer.parseInt(stats[2],16);
+        if(max==0)
+          max=Integer.parseInt(stats[1],16);//Pas de jet maximum on prend le minimum
+        return max;
+      }
+    }
+    return 0;
   }
 
-  public static float getPowerByStatId(int statId, boolean zero)
+  public static String updateItemStats(String runeStat, GameObject objectFm, byte statsAdd, boolean negative)
   {
-    float statX=1f;
-    if(zero)
-      statX=0f;
-    if(statId==174) //initiative
-    {
-      statX=0.1f;
-    }
-    else if(statId==125) //vitality
-    {
-      statX=0.2f;
-    }
-    else if(statId==158) //pods
-    {
-      statX=0.25f;
-    }
-    else if(statId==118||statId==126||statId==119||statId==123) //elemental stats
-    {
-      statX=1f;
-    }
-    else if(statId==138||statId==226||statId==244||statId==240||statId==243||statId==241||statId==242) //%dmg, %trapdmg, neutral res, earth res, fire res, water res, air res
-    {
-      statX=2f;
-    }
-    else if(statId==124||statId==176) //wisdom, PP
-    {
-      statX=3f;
-    }
-    else if(statId==225||statId==666) //trap damage, hunting
-    {
-      statX=5f;
-    }
-    else if(statId==210||statId==211||statId==212||statId==213||statId==214) //%resist
-    {
-      statX=6f;
-    }
-    else if(statId==178||statId==115||statId==220) //heal, crit, reflect
-    {
-      statX=10f;
-    }
-    else if(statId==112) //damage
-    {
-      statX=20f;
-    }
-    else if(statId==182) //summon
-    {
-      statX=30;
-    }
-    else if(statId==117) //range
-    {
-      statX=51;
-    }
-    else if(statId==128) //mp
-    {
-      statX=90;
-    }
-    else if(statId==111) //ap
-    {
-      statX=100;
-    }
-    return statX;
+    String newStats=objectFm.parseFMStatsString(runeStat,objectFm,statsAdd,negative);
+    objectFm.clearStats();
+    objectFm.parseStringToStats(newStats,true);
+    return newStats;
+  }
+
+  public static String updateItemStatsEC(GameObject objectFm, float power, String runeStat)
+  {
+    String newStats=objectFm.parseStringStatsEC_FM(objectFm,power,Integer.parseInt(runeStat,16));
+    objectFm.clearStats();
+    objectFm.parseStringToStats(newStats,true);
+    return newStats;
+  }
+
+  public static String updateItemAddRune(GameObject objectFm, Rune rune, String runeStat)
+  {
+    final String statsStr=String.valueOf(runeStat)+"#"+Integer.toHexString(rune.getStatsAdd())+"#0#0#0d0+"+rune.getStatsAdd();
+    objectFm.clearStats();
+    objectFm.parseStringToStats(statsStr,true);
+    return statsStr;
   }
 }

@@ -21,6 +21,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import scruffemu.job.JobAction;
+import scruffemu.job.magus.Rune;
+
 public class GameObject
 {
   protected ObjectTemplate template;
@@ -29,7 +32,7 @@ public class GameObject
   protected int guid;
   protected int obvijevanPos;
   protected int obvijevanLook;
-  protected int puit;
+  protected float puit;
   private Stats Stats=new Stats();
   private ArrayList<SpellEffect> Effects=new ArrayList<>();
   private ArrayList<String> SortStats=new ArrayList<>();
@@ -38,7 +41,7 @@ public class GameObject
 
   public byte modification=-1;
 
-  public GameObject(int Guid, int template, int qua, int pos, String strStats, int puit)
+  public GameObject(int Guid, int template, int qua, int pos, String strStats, float puit)
   {
     this.guid=Guid;
     this.template=World.world.getObjTemplate(template);
@@ -59,7 +62,7 @@ public class GameObject
     this.puit=0;
   }
 
-  public GameObject(int Guid, int template, int qua, int pos, Stats stats, ArrayList<SpellEffect> effects, Map<Integer, Integer> _SoulStat, Map<Integer, String> _txtStats, int puit)
+  public GameObject(int Guid, int template, int qua, int pos, Stats stats, ArrayList<SpellEffect> effects, Map<Integer, Integer> _SoulStat, Map<Integer, String> _txtStats, float puit)
   {
     this.guid=Guid;
     this.template=World.world.getObjTemplate(template);
@@ -91,12 +94,12 @@ public class GameObject
     return this.getGuid();
   }
 
-  public int getPuit()
+  public float getPuit()
   {
     return this.puit;
   }
 
-  public void setPuit(int puit)
+  public void setPuit(float puit)
   {
     this.puit=puit;
   }
@@ -939,7 +942,6 @@ public class GameObject
 
   public void clearStats()
   {
-    //On vide l'item de tous ces effets
     Stats=new Stats();
     Effects.clear();
     txtStats.clear();
@@ -1015,10 +1017,11 @@ public class GameObject
   }
 
   //v2.7 - Replaced String += with StringBuilder
-  public String parseFMStatsString(String statsstr, GameObject obj, int add, boolean negatif)
+  public String parseFMStatsString(String runeStat, GameObject obj, int add, boolean negatif)
   {
     StringBuilder stats=new StringBuilder();
     boolean isFirst=true;
+    boolean found=false;
     for(SpellEffect SE : obj.Effects)
     {
       if(!isFirst)
@@ -1039,30 +1042,42 @@ public class GameObject
 
     for(Entry<Integer, Integer> entry : obj.Stats.getMap().entrySet())
     {
+      boolean statRemoved=false;
       if(!isFirst)
         stats.append(",");
-      if(Integer.toHexString(entry.getKey()).compareTo(statsstr)==0)
+      if(Integer.toHexString(entry.getKey()).compareTo(runeStat)==0) //stat you are maging
       {
         int newstats=0;
         if(negatif)
         {
           newstats=entry.getValue()-add;
-          if(newstats<1)
-            continue;
+          if(newstats<0) //stat > 0, add positive stat
+            stats.append(Rune.getPositiveStatByRuneStat(Integer.toHexString(entry.getKey()))+"#"+Integer.toHexString(-newstats)+"#0#0#0d0+"+-newstats);
+          else if(newstats>0) //stat < 0, keep
+            stats.append(Integer.toHexString(entry.getKey())+"#"+Integer.toHexString(newstats)+"#0#0#0d0+"+newstats);
+          else //else if newstats = 0, remove last character of string (",") and continue
+          {
+            stats.setLength(stats.length()-1);
+            statRemoved=true;
+          }
         }
         else
         {
           newstats=entry.getValue()+add;
+          stats.append(Integer.toHexString(entry.getKey())+"#"+Integer.toHexString(newstats)+"#0#0#0d0+"+newstats);
         }
-        String jet="0d0+"+newstats;
-        stats.append(Integer.toHexString(entry.getKey())+"#"+Integer.toHexString(entry.getValue()+add)+"#0#0#"+jet);
+        found=true;
       }
       else
-      {
-        String jet="0d0+"+entry.getValue();
-        stats.append(Integer.toHexString(entry.getKey())+"#"+Integer.toHexString(entry.getValue())+"#0#0#"+jet);
-      }
-      isFirst=false;
+        stats.append(Integer.toHexString(entry.getKey())+"#"+Integer.toHexString(entry.getValue())+"#0#0#0d0+"+entry.getValue());
+      if(!statRemoved)
+        isFirst=false;
+    }
+    if(!found)
+    {
+      if(!isFirst)
+        stats.append(",");
+      stats.append(runeStat+"#"+Integer.toHexString(add)+"#0#0#0d0+"+add);
     }
 
     for(Entry<Integer, String> entry : obj.txtStats.entrySet())
@@ -1072,104 +1087,163 @@ public class GameObject
       stats.append(Integer.toHexString(entry.getKey())+"#0#0#0#"+entry.getValue());
       isFirst=false;
     }
-
     return stats.toString();
   }
 
   //v2.0 - Redid magus fail stat choice
   //v2.7 - Replaced String += with StringBuilder
-  public String parseStringStatsEC_FM(GameObject obj, double poid, int carac)
+  public String parseStringStatsEC_FM(GameObject obj, double power, int stat)
   {
     StringBuilder stats=new StringBuilder();
-    boolean first=false;
-    double perte=0.0;
-    for(SpellEffect EH : obj.Effects)
+    StringBuilder statsNoRuneStat=new StringBuilder();
+    statsNoRuneStat.append(0); //not empty upon first loop
+    stats.append(0);
+    double lost=0.0;
+    boolean stop=false;
+    while(lost<power&&!stats.toString().isEmpty()) //stop looping when power limit is reached or item doesnt have stats
     {
-      if(first)
-        stats.append(",");
-      String[] infos=EH.getArgs().split(";");
-      try
+      statsNoRuneStat=new StringBuilder();
+      stats=new StringBuilder();
+      boolean first=false;
+      for(SpellEffect EH : obj.Effects)
       {
-        stats.append(Integer.toHexString(EH.getEffectID())+"#"+infos[0]+"#"+infos[1]+"#0#"+infos[5]);
-      }
-      catch(Exception e)
-      {
-        e.printStackTrace();
-        continue;
-      }
-      first=true;
-    }
-    java.util.Map<Integer, Integer> statsObj=new java.util.HashMap<Integer, Integer>(obj.Stats.getMap());
-    java.util.ArrayList<Integer> keys=new ArrayList<Integer>(obj.Stats.getMap().keySet());
-    Collections.shuffle(keys);
-    int p=0;
-    int key=0;
-    if(keys.size()>1)
-    {
-      for(Integer i : keys) // On cherche un OverFM
-      {
-        int value=statsObj.get(i);
-        if(this.isOverFm(i,value))
+        if(first)
+          stats.append(",");
+        String[] infos=EH.getArgs().split(";");
+        try
         {
-          key=i;
-          break;
+          stats.append(Integer.toHexString(EH.getEffectID())+"#"+infos[0]+"#"+infos[1]+"#0#"+infos[5]);
         }
-        p++;
+        catch(Exception e)
+        {
+          e.printStackTrace();
+          continue;
+        }
+        first=true;
       }
-      if(key>0) // On place l'OverFm en t�te de liste pour �tre niqu�
+      Map<Integer, Integer> statsObj=new HashMap<Integer, Integer>(obj.Stats.getMap());
+      ArrayList<Integer> keys=new ArrayList<Integer>(obj.Stats.getMap().keySet());
+      ArrayList<Integer> noNegativeMaxKeys=new ArrayList<Integer>();
+      ArrayList<Integer> filteredKeys=new ArrayList<Integer>();
+      ArrayList<Integer> removedStats=new ArrayList<Integer>();
+      ArrayList<Integer> overmageKeys=new ArrayList<Integer>();
+      Collections.shuffle(keys);
+      for(Integer i : keys)
       {
-        keys.remove(p);
-        keys.add(p,keys.get(0));
-        keys.remove(0);
-        keys.add(0,key);
+        if(Rune.isNegativeStat(Integer.toHexString(i)))
+        {
+          if(statsObj.get(i)!=JobAction.getBaseMaxJet(obj.getTemplate().getId(),Rune.getNegativeStatByRuneStat(Integer.toHexString(i)))) //if current stat
+            noNegativeMaxKeys.add(i);
+          else
+            removedStats.add(i); //remove stat if maxStat and negative
+        }
+        else
+          noNegativeMaxKeys.add(i);
       }
-    }
-    for(Integer i : keys)
-    {
-      int newstats=0;
-      int statID=i;
-      int value=statsObj.get(i);
-      if(perte>poid||statID==carac)
+
+      if(noNegativeMaxKeys.size()>1) //more than one stat to take sink from
       {
-        newstats=value;
-      }
-      else if((statID==152)||(statID==154)||(statID==155)||(statID==157)||(statID==116)||(statID==153)) //negative cha,agi,int,str,ra and vit
-      {
-        float a=(float)(value*poid/100.0D);
-        if(a<1.0F)
-          a=1.0F;
-        float chute=value+a;
-        newstats=(int)Math.floor(chute);
+        for(Integer i : noNegativeMaxKeys)
+        {
+          if(i!=stat&&i!=Integer.parseInt( Rune.getNegativeStatByRuneStat(Integer.toHexString(stat)) ,16))
+            filteredKeys.add(i);
+          else
+            removedStats.add(i); //remove key if runestat or negative runestat
+        }
       }
       else
+        filteredKeys=noNegativeMaxKeys; //if only one stat to take sink from
+
+      if(filteredKeys.size()>1)
       {
-        if((statID==127)||(statID==101))
-          continue;
-        float chute;
-        if(this.isOverFm(statID,value)) // Gros kick dans la gueulle de l'over FM
-          chute=(float)(value-value*(poid-(int)Math.floor(perte))*2/100.0D);
-        else
-          chute=(float)(value-value*(poid-(int)Math.floor(perte))/100.0D);
-        if((chute/(float)value)<0.75)
-          chute=((float)value)*0.75F; // On ne peut pas perdre plus de 25% d'une stat d'un coup
-        double chutePwr=(value-chute)*World.getPwrPerEffet(statID);
-        perte+=chutePwr;
-        newstats=(int)Math.floor(chute);
+        for(Integer i : filteredKeys)
+          if(isOverFm(i,statsObj.get(i))) //stat, valueOfStat
+            overmageKeys.add(i);
+        for(Integer i : overmageKeys) //move overmaged stats to front of stats not being maged
+          if(i!=0)
+          {
+            filteredKeys.remove(i);
+            filteredKeys.add(0,i);
+          }
       }
-      if(newstats<1)
-        continue;
-      String jet="0d0+"+newstats;
-      if(first)
-        stats.append(",");
-      stats.append(Integer.toHexString(statID)+"#"+Integer.toHexString(newstats)+"#0#0#"+jet);
-      first=true;
-    }
-    for(Entry<Integer, String> entry : obj.txtStats.entrySet())
-    {
-      if(first)
-        stats.append(",");
-      stats.append(Integer.toHexString((entry.getKey()))+"#0#0#0#"+entry.getValue());
-      first=true;
+
+      if(filteredKeys.size()==0)
+        stop=true;
+      //END OF FILTERING+SORTING REGION
+
+      for(Integer i : filteredKeys)
+      {
+        int newstats=0;
+        int statID=i;
+        int statAmount=statsObj.get(i);
+        if((statID==stat&&filteredKeys.size()!=1)||lost>=power) //stop removing if stat being targeted is runestat or if more power than runepower has been lost
+          newstats=statAmount;
+        else if(statID==stat&&filteredKeys.size()==1&&statAmount*Constant.getPowerByStatId(statID,false)<=power-lost) //only stat available is runeStat and less than power limit
+        {
+          newstats=0;
+          stop=true;
+        }
+        else if(Rune.isNegativeStat(Integer.toHexString(statID)))
+        {
+          if(isOverFm(i,statsObj.get(i))) //TODO: add overmaged negative stat handler
+          {
+
+          }
+
+          float chute=(float)(statAmount+statAmount*(power-(int)Math.floor(lost))/100.0D);
+          newstats=(int)Math.ceil(chute); //ceil to prevent infinite loops (stat always goes up at least one)
+          if(newstats>JobAction.getBaseMaxJet(obj.getTemplate().getId(),Integer.toHexString(i)))
+            newstats=JobAction.getBaseMaxJet(obj.getTemplate().getId(),Integer.toHexString(i));
+          double chutePwr=(newstats-statAmount)*-Constant.getPowerByStatId(statID,false);
+          lost+=chutePwr;
+        }
+        else
+        {
+          double totalPower=statAmount*Constant.getPowerByStatId(statID,false);
+          if(isOverFm(i,statsObj.get(i))&&power-lost<=totalPower) //if overmaged and has enough power
+          {
+            newstats=(int)Math.floor((totalPower-(power-lost))/Constant.getPowerByStatId(statID,false));
+            double chutePwr=(statAmount-newstats)*Constant.getPowerByStatId(statID,false);
+            lost+=chutePwr;
+          }
+          else
+          {
+            float chute=(float)(statAmount-statAmount*(power-(int)Math.floor(lost))/100.0D);
+            newstats=(int)Math.floor(chute);
+            double chutePwr=(statAmount-newstats)*Constant.getPowerByStatId(statID,false);
+            lost+=chutePwr;
+            newstats=(int)Math.floor(chute);
+          }
+        }
+        if(newstats<1)
+          continue;
+        if(first)
+        {
+          stats.append(",");
+          statsNoRuneStat.append(",");
+        }
+        stats.append(Integer.toHexString(statID)+"#"+Integer.toHexString(newstats)+"#0#0#0d0+"+newstats);
+        statsNoRuneStat.append(Integer.toHexString(statID)+"#"+Integer.toHexString(newstats)+"#0#0#0d0+"+newstats);
+        first=true;
+      }
+      for(Integer i : removedStats) //add back filtered stats (stat currently being maged)
+      {
+        if(first)
+          stats.append(",");
+        stats.append(Integer.toHexString(i)+"#"+Integer.toHexString(statsObj.get(i))+"#0#0#0d0+"+statsObj.get(i));
+        first=true;
+      }
+      for(Entry<Integer, String> entry : obj.txtStats.entrySet()) //add back textstats
+      {
+        if(first)
+          stats.append(",");
+        stats.append(Integer.toHexString((entry.getKey()))+"#0#0#0#"+entry.getValue());
+        first=true;
+      }
+      obj.clearStats();
+      obj.parseStringToStats(stats.toString(),true);
+      if(stop)
+        return stats.toString();
     }
     return stats.toString();
   }
@@ -1243,9 +1317,7 @@ public class GameObject
         final int value=statsObj.get(i);
         if(obj.getTemplate().getType()!=83)
           if(this.isOverFm(i,value)&&i!=currentStat)
-          {
             key.add(i);
-          }
       }
     }
     for(Integer i : key)
@@ -1318,5 +1390,26 @@ public class GameObject
       if(effect.getEffectID()==108)
         return true;
     return false;
+  }
+
+  public boolean onlyStat(String runeStat)
+  {
+    Map<Integer, Integer> statsObj=new HashMap<Integer, Integer>(this.Stats.getMap());
+    ArrayList<Integer> keys=new ArrayList<Integer>(this.Stats.getMap().keySet());
+    for(Integer i : keys)
+    {
+      if(!Integer.toHexString(i).equalsIgnoreCase(runeStat)) //if statid not equal to rune's statid
+      {
+        if(Rune.isNegativeStat(Integer.toHexString(i))) //if current stat is negative
+        {
+          if(Integer.parseInt(Rune.getNegativeStatByRuneStat(runeStat),16)!=i) //if negative stat isnt equal to negative rune stat
+            if(statsObj.get(i)!=JobAction.getBaseMaxJet(this.getTemplate().getId(),Integer.toHexString(i))) //if negative version of stat is not at max stat
+              return false;
+        }
+        else //current stat is positive and not equal to rune's statid
+          return false;
+      }
+    }
+    return true;
   }
 }

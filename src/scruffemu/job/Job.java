@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import scruffemu.job.magus.Rune;
 import scruffemu.object.GameObject;
 
 public class Job
@@ -109,7 +110,8 @@ public class Job
       if(Integer.toHexString(entry.getKey()).compareTo(statsModif)>0)//Effets inutiles
       {
         continue;
-      } else if(Integer.toHexString(entry.getKey()).compareTo(statsModif)==0)//L'effet existe bien !
+      }
+      else if(Integer.toHexString(entry.getKey()).compareTo(statsModif)==0)//L'effet existe bien !
       {
         int JetActual=entry.getValue();
         return JetActual;
@@ -118,43 +120,28 @@ public class Job
     return 0;
   }
 
-  public static byte viewActualStatsItem(GameObject obj, String stats)//retourne vrai si le stats est actuellement sur l'item
+  //v2.8 - complete negative stat maging
+  public static int viewActualStatsItem(GameObject obj, String runeStat)
   {
     if(!obj.parseStatsString().isEmpty())
     {
       for(Entry<Integer, Integer> entry : obj.getStats().getMap().entrySet())
       {
-        if(Integer.toHexString(entry.getKey()).compareTo(stats)>0)//Effets inutiles
+        if(!Integer.toHexString(entry.getKey()).equalsIgnoreCase(runeStat)) //Rune is not on item
         {
-          if(Integer.toHexString(entry.getKey()).compareTo("98")==0&&stats.compareTo("7b")==0)
+          if(Rune.getNegativeStatByRuneStat(runeStat).equalsIgnoreCase(Integer.toHexString(entry.getKey())))
           {
             return 2;
-          } else if(Integer.toHexString(entry.getKey()).compareTo("9a")==0&&stats.compareTo("77")==0)
-          {
-            return 2;
-          } else if(Integer.toHexString(entry.getKey()).compareTo("9b")==0&&stats.compareTo("7e")==0)
-          {
-            return 2;
-          } else if(Integer.toHexString(entry.getKey()).compareTo("9d")==0&&stats.compareTo("76")==0)
-          {
-            return 2;
-          } else if(Integer.toHexString(entry.getKey()).compareTo("74")==0&&stats.compareTo("75")==0)
-          {
-            return 2;
-          } else if(Integer.toHexString(entry.getKey()).compareTo("99")==0&&stats.compareTo("7d")==0)
-          {
-            return 2;
-          } else
-          {
-            continue;
           }
-        } else if(Integer.toHexString(entry.getKey()).compareTo(stats)==0)//L'effet existe bien !
-        {
-          return 1;
+          else
+            continue;
         }
+        else if(Integer.toHexString(entry.getKey()).equalsIgnoreCase(runeStat)) //Rune is on item
+          return 1;
       }
       return 0;
-    } else
+    }
+    else
     {
       return 0;
     }
