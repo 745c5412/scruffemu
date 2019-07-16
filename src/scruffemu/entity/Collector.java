@@ -6,9 +6,9 @@ import scruffemu.common.ConditionParser;
 import scruffemu.common.SocketManager;
 import scruffemu.database.Database;
 import scruffemu.game.World;
+import scruffemu.guild.Guild;
 import scruffemu.main.Constant;
 import scruffemu.object.GameObject;
-import scruffemu.other.Guild;
 
 import java.util.Collection;
 import java.util.HashMap;

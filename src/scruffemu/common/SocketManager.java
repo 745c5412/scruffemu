@@ -16,6 +16,8 @@ import scruffemu.fight.Fight;
 import scruffemu.fight.Fighter;
 import scruffemu.game.GameClient;
 import scruffemu.game.World;
+import scruffemu.guild.Guild;
+import scruffemu.guild.GuildMember;
 import scruffemu.job.JobStat;
 import scruffemu.main.Config;
 import scruffemu.main.Constant;
@@ -25,8 +27,6 @@ import scruffemu.market.HdvEntry;
 import scruffemu.object.GameObject;
 import scruffemu.object.ObjectSet;
 import scruffemu.object.ObjectTemplate;
-import scruffemu.other.Guild;
-import scruffemu.other.Guild.GuildMember;
 import scruffemu.quest.Quest;
 
 import java.util.ArrayList;

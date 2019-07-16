@@ -7,12 +7,12 @@ import scruffemu.fight.Fight;
 import scruffemu.fight.Fighter;
 import scruffemu.fight.spells.SpellEffect;
 import scruffemu.game.World;
+import scruffemu.guild.GuildMember;
 import scruffemu.job.magus.Rune;
 import scruffemu.utility.Pair;
 import scruffemu.main.Config;
 import scruffemu.main.Constant;
 import scruffemu.object.GameObject;
-import scruffemu.other.Guild;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -848,7 +848,7 @@ public class Formulas
     if(perso.getPersonnage().getGuildMember()==null)
       return 0;
 
-    Guild.GuildMember gm=perso.getPersonnage().getGuildMember();
+    GuildMember gm=perso.getPersonnage().getGuildMember();
 
     double xp=(double)xpWin.get(),Lvl=perso.getLvl(),LvlGuild=perso.getPersonnage().get_guild().getLvl(),pXpGive=(double)gm.getPXpGive()/100;
 

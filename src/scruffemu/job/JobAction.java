@@ -108,6 +108,11 @@ public class JobAction
 
   public void startCraft(Player P)
   {
+    if(P.getInInteractiveObject()!=null)
+    {
+      P.getInInteractiveObject().getLeft().setState(JobConstant.IOBJECT_STATE_EMPTYING);
+      SocketManager.GAME_SEND_GDF_PACKET_TO_MAP(P.getCurMap(),P.getInInteractiveObject().getRight());
+    }
     this.jobCraft=new JobCraft(this,P);
   }
 
@@ -124,7 +129,7 @@ public class JobAction
         int distItem=JobConstant.getDistCanne(P.getObjetByPos(Constant.ITEM_POS_ARME).getTemplate().getId());
         if(distItem<dist)
         {
-          SocketManager.GAME_SEND_MESSAGE(P,"You are too far away to catch a fish!");
+          SocketManager.GAME_SEND_MESSAGE(P,"You are too far away to catch fish!");
           SocketManager.GAME_SEND_GA_PACKET(P.getGameClient(),"","0","","");
           P.setExchangeAction(null);
           P.setDoAction(false);
@@ -143,10 +148,10 @@ public class JobAction
     else
     {
       P.setAway(true);
-      IO.setState(JobConstant.IOBJECT_STATE_EMPTYING);
+      if(P.getInInteractiveObject()==null)
+        P.setInInteractiveObject(new Pair<InteractiveObject, GameCase>(IO,cell));
       P.setExchangeAction(new ExchangeAction<>(ExchangeAction.CRAFTING,this));
       SocketManager.GAME_SEND_ECK_PACKET(P,3,this.min+";"+this.id);
-      SocketManager.GAME_SEND_GDF_PACKET_TO_MAP(P.getCurMap(),cell);
     }
   }
 
@@ -190,20 +195,24 @@ public class JobAction
         SM.addXp(player,(long)(this.getXpWin()*Config.getInstance().rateJob));
       int tID=JobConstant.getObjectByJobSkill(this.id);
 
-      if(SM.getTemplate().getId()==36&&qua>0)
+      if(Formulas.getRandomValue(1,500)==1)
       {
-        if(Formulas.getRandomValue(1,1000)<=2)
+        int _tID=-1;
+        if(SM.getTemplate().getId()==JobConstant.JOB_PECHEUR&&qua>0)
+          _tID=JobConstant.getRareFish(tID);
+        else if(SM.getTemplate().getId()==JobConstant.JOB_MINEUR&&qua>0)
+          _tID=JobConstant.getRareStones();
+        else if(SM.getTemplate().getId()==JobConstant.JOB_PAYSAN&&qua>0)
+          _tID=JobConstant.getRareOats(tID);
+
+        if(_tID!=-1)
         {
-          int _tID=JobConstant.getPoissonRare(tID);
-          if(_tID!=-1)
+          ObjectTemplate _T=World.world.getObjTemplate(_tID);
+          if(_T!=null)
           {
-            ObjectTemplate _T=World.world.getObjTemplate(_tID);
-            if(_T!=null)
-            {
-              GameObject _O=_T.createNewItem(qua,true);
-              if(player.addObjet(_O,true))
-                World.addGameObject(_O,true);
-            }
+            GameObject _O=_T.createNewItem(qua,true);
+            if(player.addObjet(_O,true))
+              World.addGameObject(_O,true);
           }
         }
       }
@@ -218,7 +227,7 @@ public class JobAction
       SocketManager.GAME_SEND_IQ_PACKET(player,player.getId(),qua);
       SocketManager.GAME_SEND_Ow_PACKET(player);
 
-      if(player.getMetierBySkill(this.id).get_lvl()>=30&&Formulas.getRandomValue(1,40)>39)
+      if(player.getMetierBySkill(this.id).get_lvl()>=30&&Formulas.getRandomValue(1,100)==1)
       {
         for(int[] protector : JobConstant.JOB_PROTECTORS)
         {
@@ -241,7 +250,7 @@ public class JobAction
       GameObject obj=entry.getValue();
       if(obj.getTemplate().getId()==newObj.getTemplate().getId()&&obj.getTxtStat().equals(newObj.getTxtStat())&&obj.getStats().isSameStats(newObj.getStats())&&obj.getPosition()==Constant.ITEM_POS_NO_EQUIPED)
       {
-        obj.setQuantity(obj.getQuantity()+newObj.getQuantity());//On ajoute QUA item a la quantit� de l'objet existant
+        obj.setQuantity(obj.getQuantity()+newObj.getQuantity()); //On ajoute QUA item a la quantit� de l'objet existant
         SocketManager.GAME_SEND_OBJECT_QUANTITY_PACKET(player,obj);
         return obj.getGuid();
       }
@@ -253,6 +262,7 @@ public class JobAction
     return -1;
   }
 
+  //v2.9 - 100% crafting success
   public synchronized void craft(boolean repeat)
   {
     if(!this.isCraft)
@@ -324,22 +334,7 @@ public class JobAction
         return;
       }
 
-      int chan=JobConstant.getChanceByNbrCaseByLvl(SM.get_lvl(),this.ingredients.size());
-      boolean success=chan>=Formulas.getRandomValue(1,100);
-
-      if(chan==99)
-      {
-        success=chan*2>=Formulas.getRandomValue(0,200);
-      }
-
-      switch(this.id)
-      {
-        case 109:
-        {
-          success=true;
-          break;
-        }
-      }
+      boolean success=true;
 
       if(!success)
       {
@@ -431,6 +426,11 @@ public class JobAction
 
     if(!repeat)
     {
+      if(this.player.getInInteractiveObject()!=null)
+      {
+        this.player.getInInteractiveObject().getLeft().setState(JobConstant.IOBJECT_STATE_FULL);
+        SocketManager.GAME_SEND_GDF_PACKET_TO_MAP(this.player.getCurMap(),this.player.getInInteractiveObject().getRight());
+      }
       this.oldJobCraft=this.jobCraft;
       this.jobCraft=null;
     }
@@ -525,7 +525,7 @@ public class JobAction
       return false;
     }
 
-    boolean success=JobConstant.getChanceByNbrCaseByLvl(SM.get_lvl(),items.size())>=Formulas.getRandomValue(1,100);
+    boolean success=true;
 
     if(Logging.USE_LOG)
       Logging.getInstance().write("SecureCraft",this.player.getName()+" � crafter avec "+(success ? "SUCCES" : "ECHEC")+" l'item "+template+" ("+World.world.getObjTemplate(template).getName()+") pour "+receiver.getName());
@@ -1051,8 +1051,8 @@ public class JobAction
   //TODO: fix so you dont have to re-open magus interface
   public void clearMage(GameObject item, GameObject rune)
   {
-      World.addGameObject(item,true);
-      this.player.addObjet(item);
+    World.addGameObject(item,true);
+    this.player.addObjet(item);
   }
 
   public void doCritPotionMage(Potion potion, GameObject objectFm)

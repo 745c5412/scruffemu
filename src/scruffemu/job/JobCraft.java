@@ -80,5 +80,11 @@ public class JobCraft
       SocketManager.GAME_SEND_EXCHANGE_MOVE_OK_FM(this.jobAction.player,'O',"+",this.jobAction.data);
     this.jobAction.isRepeat=false;
     this.jobAction.setJobCraft(null);
+
+    if(this.jobAction.player.getInInteractiveObject()!=null)
+    {
+      this.jobAction.player.getInInteractiveObject().getLeft().setState(JobConstant.IOBJECT_STATE_FULL);
+      SocketManager.GAME_SEND_GDF_PACKET_TO_MAP(this.jobAction.player.getCurMap(),this.jobAction.player.getInInteractiveObject().getRight());
+    }
   }
 }

@@ -4,8 +4,8 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import scruffemu.database.active.AbstractDAO;
 import scruffemu.game.World;
+import scruffemu.guild.Guild;
 import scruffemu.main.Main;
-import scruffemu.other.Guild;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

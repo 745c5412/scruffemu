@@ -4,7 +4,7 @@ import scruffemu.area.map.GameMap;
 import scruffemu.common.Formulas;
 import scruffemu.entity.mount.Mount;
 import scruffemu.game.World;
-import scruffemu.other.Guild;
+import scruffemu.guild.Guild;
 
 import java.util.ArrayList;
 import java.util.HashMap;

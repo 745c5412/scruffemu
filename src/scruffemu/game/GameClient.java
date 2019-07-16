@@ -45,6 +45,8 @@ import scruffemu.fight.spells.Spell;
 import scruffemu.utility.Pair;
 import scruffemu.game.action.ExchangeAction;
 import scruffemu.game.action.GameAction;
+import scruffemu.guild.Guild;
+import scruffemu.guild.GuildMember;
 import scruffemu.job.Job;
 import scruffemu.job.JobAction;
 import scruffemu.job.JobConstant;
@@ -63,7 +65,6 @@ import scruffemu.object.entity.Fragment;
 import scruffemu.object.entity.SoulStone;
 import scruffemu.other.Action;
 import scruffemu.other.Dopeul;
-import scruffemu.other.Guild;
 import scruffemu.quest.Quest;
 import scruffemu.quest.QuestPlayer;
 import scruffemu.quest.QuestStep;
@@ -6002,7 +6003,7 @@ public class GameClient
         this.player.removeByTemplateID(1575,1);
       }
       Guild G=new Guild(name,emblem);
-      Guild.GuildMember gm=G.addNewMember(this.player);
+      GuildMember gm=G.addNewMember(this.player);
       gm.setAllRights(1,(byte)0,1,this.player);//1 => Meneur (Tous droits)
       this.player.setGuildMember(gm);//On ajthise le meneur
       World.world.addGuild(G,true);
@@ -6273,7 +6274,7 @@ public class GameClient
           if(p==null)
             return;//Pas cens� arriver
           Guild G=p.get_guild();
-          Guild.GuildMember GM=G.addNewMember(this.player);
+          GuildMember GM=G.addNewMember(this.player);
           Database.getDynamics().getGuildMemberData().update(this.player);
           this.player.setGuildMember(GM);
           this.player.setInvitation(-1);
@@ -6296,7 +6297,7 @@ public class GameClient
     Player P=World.world.getPlayerByName(name);
     int guid=-1,guildId=-1;
     Guild toRemGuild;
-    Guild.GuildMember toRemMember;
+    GuildMember toRemMember;
     if(P==null)
     {
       int infos[]=Database.getDynamics().getGuildMemberData().isPersoInGuild(name);
@@ -6378,8 +6379,8 @@ public class GameClient
     int right=Integer.parseInt(infos[3]);
 
     Player p=World.world.getPlayer(guid); //Cherche le this.playernnage a qui l'on change les droits dans la m�moire
-    Guild.GuildMember toChange;
-    Guild.GuildMember changer=this.player.getGuildMember();
+    GuildMember toChange;
+    GuildMember changer=this.player.getGuildMember();
 
     //R�cup�ration du this.playernnage � changer, et verification de quelques conditions de base
     if(p==null) //Arrive lorsque le this.playernnage n'est pas charg� dans la m�moire

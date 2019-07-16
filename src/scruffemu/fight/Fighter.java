@@ -12,9 +12,9 @@ import scruffemu.fight.spells.LaunchedSpell;
 import scruffemu.fight.spells.Spell;
 import scruffemu.fight.spells.SpellEffect;
 import scruffemu.game.World;
+import scruffemu.guild.Guild;
 import scruffemu.main.Config;
 import scruffemu.main.Constant;
-import scruffemu.other.Guild;
 import scruffemu.utility.Pair;
 
 import java.util.ArrayList;

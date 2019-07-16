@@ -149,13 +149,6 @@ public class JobConstant
     return (lvl/20)+3;
   }
 
-  public static int getChanceForMaxCase(int lvl)
-  {
-    if(lvl<10)
-      return 50;
-    return 54+((lvl/10)-1)*5;
-  }
-
   public static boolean isJobAction(int a)
   {
     for(int[] aJOB_ACTION : JOB_ACTION)
@@ -173,18 +166,12 @@ public class JobConstant
         if(aJOB_ACTION.length>2)
         {
           return aJOB_ACTION[Formulas.getRandomValue(1,aJOB_ACTION.length-1)];
-        } else if(aJOB_ACTION.length>1)
+        }
+        else if(aJOB_ACTION.length>1)
           return aJOB_ACTION[1];
       }
     }
     return -1;
-  }
-
-  public static int getChanceByNbrCaseByLvl(int lvl, int nbr)
-  {
-    if(nbr<=getTotalCaseByJobLevel(lvl)-2)
-      return 100;//99.999... normalement, mais osef
-    return getChanceForMaxCase(lvl);
   }
 
   public static boolean isMageJob(int id)
@@ -245,56 +232,56 @@ public class JobConstant
     int bonus=lvl==100 ? 5 : 0;
     int dropWin=lvl/5+bonus;
     int min=1+bonus;
-    
+
     switch(tID)
     {
       case JOB_BIJOUTIER:
         //Faire Anneau
-        list.add(new JobAction(11,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(11,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         //Faire Amullette
-        list.add(new JobAction(12,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(12,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         break;
       case JOB_TAILLEUR:
         //Faire Sac
-        list.add(new JobAction(64,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(64,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         //Faire Cape
-        list.add(new JobAction(123,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(123,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         //Faire Chapeau
-        list.add(new JobAction(63,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(63,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         break;
       case JOB_F_BOUCLIER:
         //Forger Bouclier
-        list.add(new JobAction(156,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(156,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         break;
       case JOB_BRICOLEUR:
         //Faire clef
-        list.add(new JobAction(171,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(171,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         //Faire objet brico
-        list.add(new JobAction(182,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(182,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         break;
       case JOB_CORDONIER:
         //Faire botte
-        list.add(new JobAction(13,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(13,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         //Faire ceinture
-        list.add(new JobAction(14,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(14,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         break;
       case JOB_S_ARC:
         //Sculter Arc
-        list.add(new JobAction(15,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(15,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         //ReSculter Arc
-        list.add(new JobAction(149,3,0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(149,3,0,true,100,-1));
         break;
       case JOB_S_BATON:
         //Sculter Baton
-        list.add(new JobAction(17,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(17,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         //ReSculter Baton
-        list.add(new JobAction(147,3,0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(147,3,0,true,100,-1));
         break;
       case JOB_S_BAGUETTE:
         //Sculter Baguette
-        list.add(new JobAction(16,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(16,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         //ReSculter Baguette
-        list.add(new JobAction(148,3,0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(148,3,0,true,100,-1));
         break;
       case JOB_CORDOMAGE:
         //FM Bottes
@@ -318,33 +305,33 @@ public class JobConstant
         break;
       case JOB_F_EPEE:
         //Forger Ep�e
-        list.add(new JobAction(20,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(20,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         //Reforger Ep�e
-        list.add(new JobAction(145,3,0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(145,3,0,true,100,-1));
         break;
       case JOB_F_DAGUE:
         //Forger Dague
-        list.add(new JobAction(142,3,0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(142,3,0,true,100,-1));
         //Reforger Dague
-        list.add(new JobAction(18,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(18,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         break;
       case JOB_F_MARTEAU:
         //Forger Marteau
-        list.add(new JobAction(19,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(19,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         //Reforger Marteau
-        list.add(new JobAction(144,3,0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(144,3,0,true,100,-1));
         break;
       case JOB_F_PELLE:
         //Forger Pelle
-        list.add(new JobAction(21,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(21,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         //Reforger Pelle
-        list.add(new JobAction(146,3,0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(146,3,0,true,100,-1));
         break;
       case JOB_F_HACHES:
         //Forger Hache
-        list.add(new JobAction(65,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(65,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         //Reforger Hache
-        list.add(new JobAction(143,3,0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(143,3,0,true,100,-1));
         break;
       case JOB_FM_HACHES:
         //Reforger une hache
@@ -380,19 +367,19 @@ public class JobConstant
         break;
       case JOB_CHASSEUR:
         //Pr�parer
-        list.add(new JobAction(132,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(132,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         break;
       case JOB_BOUCHER:
         //Pr�parer une Viande
-        list.add(new JobAction(134,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(134,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         break;
       case JOB_POISSONNIER:
         //Preparer un Poisson
-        list.add(new JobAction(135,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(135,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         break;
       case JOB_BOULANGER:
         //Cuir le Pain
-        list.add(new JobAction(27,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(27,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         //Faire des Bonbons
         list.add(new JobAction(109,3,0,true,100,-1));
         break;
@@ -447,9 +434,9 @@ public class JobConstant
         //Miner Fer
         list.add(new JobAction(24,min,2+dropWin,false,12000-timeWin,10));
         //Fondre
-        list.add(new JobAction(32,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(32,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         //Polir
-        list.add(new JobAction(48,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(48,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         break;
       case JOB_PECHEUR:
         if(lvl>74)
@@ -491,7 +478,7 @@ public class JobConstant
         //P�cher Petits poissons de mer
         list.add(new JobAction(128,0,1,false,12000-timeWin,10));
         //Vider
-        list.add(new JobAction(133,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(133,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         break;
       case JOB_ALCHIMISTE:
         if(lvl>49)
@@ -524,7 +511,7 @@ public class JobConstant
         //Cueillir Lin
         list.add(new JobAction(68,min,2+dropWin,false,12000-timeWin,10));
         //Fabriquer une Potion
-        list.add(new JobAction(23,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(23,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         break;
       case JOB_BUCHERON:
         if(lvl>99)
@@ -596,7 +583,7 @@ public class JobConstant
         //Couper Fr�ne
         list.add(new JobAction(6,min,2+dropWin,false,12000-timeWin,10));
         //Scie
-        list.add(new JobAction(101,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(101,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         break;
 
       case JOB_PAYSAN:
@@ -640,7 +627,7 @@ public class JobConstant
         //Faucher bl�
         list.add(new JobAction(45,min,2+dropWin,false,12000-timeWin,10));
         //Moudre
-        list.add(new JobAction(47,getTotalCaseByJobLevel(lvl),0,true,getChanceForMaxCase(lvl),-1));
+        list.add(new JobAction(47,getTotalCaseByJobLevel(lvl),0,true,100,-1));
         //Egrener 100% 1 case tout le temps ?
         list.add(new JobAction(122,1,0,true,100,10));
         break;
@@ -678,7 +665,7 @@ public class JobConstant
     return 0;
   }
 
-  public static int getPoissonRare(int tID)
+  public static int getRareFish(int tID)
   {
     switch(tID)
     {
@@ -710,6 +697,53 @@ public class JobConstant
         return 1846;
       case 1847: // Brochet
         return 1849;
+    }
+    return -1;
+  }
+
+  public static int getRareOats(int tID)
+  {
+    switch(tID)
+    {
+      case 289: //Wheat
+        return 2018;
+      case 400: //Barley
+        return 2032;
+      case 533: //Oats
+        return 2036;
+      case 401: //Hop
+        return 2021;
+      case 423: //Flax
+        return 2026;
+      case 532: //Rye
+        return 2029;
+      case 425: //Hemp
+        return 2035;
+    }
+    return -1;
+  }
+
+  public static int getRareStones()
+  {
+    int random=Formulas.getRandomValue(1,8);
+    switch(random)
+    {
+      case 1: //Crystal
+        return 465;
+      case 2: //Sapphire
+        return 466;
+      case 3: //Ruby
+        return 467;
+      case 4: //Emerald
+        return 316;
+      case 5: //Diamond
+        return 315;
+      case 6: //Aquamarine
+        return 7026;
+      case 7: //Topaz
+        return 7027;
+      case 8: //Agathe
+        return 7028;
     }
     return -1;
   }

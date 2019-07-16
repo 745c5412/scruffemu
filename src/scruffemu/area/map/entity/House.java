@@ -5,8 +5,8 @@ import scruffemu.client.Player;
 import scruffemu.common.SocketManager;
 import scruffemu.database.Database;
 import scruffemu.game.World;
+import scruffemu.guild.Guild;
 import scruffemu.main.Constant;
-import scruffemu.other.Guild;
 
 import java.util.Map;
 import java.util.Map.Entry;

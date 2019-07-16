@@ -135,7 +135,8 @@ public class InteractiveObject
         if(!player.hasItemTemplate(1570,1))
         {
           SocketManager.GAME_SEND_MESSAGE(player,"You do not have the necessary key.","009900");
-        } else
+        }
+        else
         {
           player.removeByTemplateID(1570,1);
           SocketManager.GAME_SEND_Im_PACKET(player,"022;"+1+"~"+1570);
@@ -163,7 +164,8 @@ public class InteractiveObject
           		perso.setFullMorph(10, false, false);
           	}
           }, 3000);*/
-        } else
+        }
+        else
         {
           SocketManager.GAME_SEND_Im_PACKET(player,"119");
         }

@@ -32,6 +32,8 @@ import scruffemu.game.World;
 import scruffemu.utility.Pair;
 import scruffemu.game.action.ExchangeAction;
 import scruffemu.game.action.GameAction;
+import scruffemu.guild.Guild;
+import scruffemu.guild.GuildMember;
 import scruffemu.job.Job;
 import scruffemu.job.JobAction;
 import scruffemu.job.JobConstant;
@@ -44,7 +46,6 @@ import scruffemu.object.ObjectSet;
 import scruffemu.object.ObjectTemplate;
 import scruffemu.other.Action;
 import scruffemu.other.Dopeul;
-import scruffemu.other.Guild;
 import scruffemu.quest.Quest;
 import scruffemu.utility.TimerWaiterPlus;
 
@@ -114,7 +115,7 @@ public class Player
   private int _honor=0;
   private boolean _showWings=false;
   private int _aLvl=0;
-  private Guild.GuildMember _guildMember;
+  private GuildMember _guildMember;
   private boolean _showFriendConnection;
   private String _canaux;
   private Fight fight;
@@ -226,6 +227,7 @@ public class Player
   private boolean worldMarket=false;
   //IPDrop system
   public boolean ipDrop=false;
+  private Pair<InteractiveObject,GameCase> inInteractiveObject=null;
 
   public ArrayList<Integer> getIsCraftingType()
   {
@@ -4368,12 +4370,12 @@ public class Player
     }
   }
 
-  public Guild.GuildMember getGuildMember()
+  public GuildMember getGuildMember()
   {
     return _guildMember;
   }
 
-  public void setGuildMember(Guild.GuildMember _guild)
+  public void setGuildMember(GuildMember _guild)
   {
     this._guildMember=_guild;
   }
@@ -6546,6 +6548,16 @@ public class Player
   public void setFollowerCell(int followerCell)
   {
     this.followerCell=followerCell;
+  }
+
+  public Pair<InteractiveObject,GameCase> getInInteractiveObject()
+  {
+    return inInteractiveObject;
+  }
+
+  public void setInInteractiveObject(Pair<InteractiveObject,GameCase> inInteractiveObject)
+  {
+    this.inInteractiveObject = inInteractiveObject;
   }
 
 }
