@@ -8,7 +8,7 @@ import scruffemu.client.Player;
 import scruffemu.common.Formulas;
 import scruffemu.common.PathFinding;
 import scruffemu.common.SocketManager;
-import scruffemu.entity.Monster.MobGrade;
+import scruffemu.entity.monster.MobGrade;
 import scruffemu.fight.Fight;
 import scruffemu.fight.Fighter;
 import scruffemu.fight.spells.Spell.SortStats;

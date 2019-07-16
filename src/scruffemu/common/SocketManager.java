@@ -10,7 +10,7 @@ import scruffemu.client.other.Party;
 import scruffemu.entity.Collector;
 import scruffemu.entity.Npc;
 import scruffemu.entity.Prism;
-import scruffemu.entity.Monster.MobGroup;
+import scruffemu.entity.monster.MobGroup;
 import scruffemu.entity.mount.Mount;
 import scruffemu.fight.Fight;
 import scruffemu.fight.Fighter;

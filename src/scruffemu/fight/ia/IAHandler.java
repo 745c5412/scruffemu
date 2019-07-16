@@ -1,6 +1,6 @@
 package scruffemu.fight.ia;
 
-import scruffemu.entity.Monster.MobGrade;
+import scruffemu.entity.monster.MobGrade;
 import scruffemu.fight.Fight;
 import scruffemu.fight.Fighter;
 import scruffemu.fight.ia.type.*;

@@ -5,7 +5,7 @@ import java.util.List;
 
 import scruffemu.area.map.GameMap;
 import scruffemu.database.Database;
-import scruffemu.entity.Monster.MobGroup;
+import scruffemu.entity.monster.MobGroup;
 import scruffemu.fight.Fight;
 import scruffemu.game.Updatable;
 import scruffemu.game.World;

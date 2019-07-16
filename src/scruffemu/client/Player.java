@@ -17,8 +17,8 @@ import scruffemu.common.Formulas;
 import scruffemu.common.SocketManager;
 import scruffemu.database.Database;
 import scruffemu.entity.Collector;
-import scruffemu.entity.Monster;
 import scruffemu.entity.Prism;
+import scruffemu.entity.monster.MobGroup;
 import scruffemu.entity.mount.Mount;
 import scruffemu.entity.pet.Pet;
 import scruffemu.entity.pet.PetEntry;
@@ -165,7 +165,7 @@ public class Player
   //Fight end
   private int hasEndFight=-1;
   private Action endFightAction;
-  private Monster.MobGroup hasMobGroup=null;
+  private MobGroup hasMobGroup=null;
   //Item classe
   private ArrayList<Integer> _itemClasse=new ArrayList<Integer>();
   private Map<Integer, Pair<Integer, Integer>> _itemClasseSpell=new HashMap<>();
@@ -5265,12 +5265,12 @@ public class Player
     return hasEndFight;
   }
 
-  public Monster.MobGroup hasMobGroup()
+  public MobGroup hasMobGroup()
   {
     return hasMobGroup;
   }
 
-  public void setNeededEndFight(int hasEndFight, Monster.MobGroup group)
+  public void setNeededEndFight(int hasEndFight, MobGroup group)
   {
     this.endFightAction=null;
     this.hasEndFight=hasEndFight;

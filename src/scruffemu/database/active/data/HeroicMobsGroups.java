@@ -4,8 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import scruffemu.area.map.GameMap;
 import scruffemu.database.active.AbstractDAO;
-import scruffemu.entity.Monster;
-import scruffemu.entity.Monster.MobGroup;
+import scruffemu.entity.monster.MobGroup;
 import scruffemu.game.World;
 import scruffemu.game.scheduler.entity.RespawnGroup;
 import scruffemu.main.Config;
@@ -47,7 +46,7 @@ public class HeroicMobsGroups extends AbstractDAO<Object>
       ResultSet RS=result.resultSet;
       while(RS.next())
       {
-        final Monster.MobGroup group=new Monster.MobGroup(RS.getInt("id"),RS.getInt("cell"),RS.getString("group"),RS.getString("objects"),RS.getInt("stars"));
+        final MobGroup group=new MobGroup(RS.getInt("id"),RS.getInt("cell"),RS.getString("group"),RS.getString("objects"),RS.getInt("stars"));
         final GameMap map=World.world.getMap(RS.getShort("map"));
         if(map!=null)
           map.respawnGroup(group);
@@ -95,7 +94,7 @@ public class HeroicMobsGroups extends AbstractDAO<Object>
     }
   }
 
-  public void insert(short map, Monster.MobGroup group, ArrayList<GameObject> array)
+  public void insert(short map, MobGroup group, ArrayList<GameObject> array)
   {
     PreparedStatement prepare=null;
     try
@@ -126,7 +125,7 @@ public class HeroicMobsGroups extends AbstractDAO<Object>
     }
   }
 
-  public void insertFix(short map, Monster.MobGroup group, ArrayList<GameObject> array)
+  public void insertFix(short map, MobGroup group, ArrayList<GameObject> array)
   {
     PreparedStatement prepare=null;
     try
@@ -156,7 +155,7 @@ public class HeroicMobsGroups extends AbstractDAO<Object>
     }
   }
 
-  public void update(short map, Monster.MobGroup group)
+  public void update(short map, MobGroup group)
   {
     PreparedStatement prepare=null;
     try
@@ -209,7 +208,7 @@ public class HeroicMobsGroups extends AbstractDAO<Object>
   }
 
   //v2.8 - reset objects, group and cell of mob replacing old mob
-  public void reset(short map, Monster.MobGroup group)
+  public void reset(short map, MobGroup group)
   {
     PreparedStatement prepare=null;
     try
@@ -235,7 +234,7 @@ public class HeroicMobsGroups extends AbstractDAO<Object>
   }
 
   //v2.8 - reset objects, group and cell of mob replacing old mob
-  public void resetFix(short map, Monster.MobGroup group)
+  public void resetFix(short map, MobGroup group)
   {
     PreparedStatement prepare=null;
     try

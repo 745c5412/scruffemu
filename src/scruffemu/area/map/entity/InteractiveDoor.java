@@ -6,7 +6,7 @@ import com.singularsys.jep.JepException;
 import scruffemu.area.map.GameCase;
 import scruffemu.area.map.GameMap;
 import scruffemu.client.Player;
-import scruffemu.entity.Monster;
+import scruffemu.entity.monster.MobGroup;
 import scruffemu.game.World;
 import scruffemu.utility.Pair;
 import scruffemu.object.GameObject;
@@ -305,7 +305,7 @@ public class InteractiveDoor
     private static String parseMGC(Player player, String request)
     {
       String[] data=request.split("==")[1].split("-");
-      for(Monster.MobGroup mobGroup : player.getCurMap().getMobGroups().values())
+      for(MobGroup mobGroup : player.getCurMap().getMobGroups().values())
         for(String id : data)
           if(mobGroup.getCellId()==Short.parseShort(id))
             return "1==1";

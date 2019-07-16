@@ -3,7 +3,7 @@ package scruffemu.database.active.data;
 import com.zaxxer.hikari.HikariDataSource;
 
 import scruffemu.database.active.AbstractDAO;
-import scruffemu.entity.Monster;
+import scruffemu.entity.monster.Monster;
 import scruffemu.game.World;
 
 import java.sql.ResultSet;

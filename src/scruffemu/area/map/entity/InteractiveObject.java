@@ -5,7 +5,7 @@ import scruffemu.area.map.GameMap;
 import scruffemu.area.map.maze.Minotoror;
 import scruffemu.client.Player;
 import scruffemu.common.SocketManager;
-import scruffemu.entity.Monster;
+import scruffemu.entity.monster.MobGroup;
 import scruffemu.game.Updatable;
 import scruffemu.game.World;
 import scruffemu.job.JobConstant;
@@ -145,7 +145,7 @@ public class InteractiveObject
         break;
 
       case 1330://Pierre de kwak
-        player.getCurMap().startFightVersusProtectors(player,new Monster.MobGroup(player.getCurMap().nextObjectId,cell.getId(),getKwakere(player.getCurMap().getId())+","+40+","+40));
+        player.getCurMap().startFightVersusProtectors(player,new MobGroup(player.getCurMap().nextObjectId,cell.getId(),getKwakere(player.getCurMap().getId())+","+40+","+40));
         break;
 
       case 1679:

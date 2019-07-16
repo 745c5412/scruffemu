@@ -6,7 +6,7 @@ import scruffemu.client.Player;
 import scruffemu.common.Formulas;
 import scruffemu.common.PathFinding;
 import scruffemu.common.SocketManager;
-import scruffemu.entity.Monster;
+import scruffemu.entity.monster.MobGroup;
 import scruffemu.fight.spells.SpellEffect;
 import scruffemu.game.World;
 import scruffemu.utility.Pair;
@@ -234,7 +234,7 @@ public class JobAction
           if(tID==protector[1])
           {
             int monsterLvl=JobConstant.getProtectorLvl(player.getLevel());
-            player.getCurMap().startFightVersusProtectors(player,new Monster.MobGroup(player.getCurMap().nextObjectId,cell.getId(),protector[0]+","+monsterLvl+","+monsterLvl));
+            player.getCurMap().startFightVersusProtectors(player,new MobGroup(player.getCurMap().nextObjectId,cell.getId(),protector[0]+","+monsterLvl+","+monsterLvl));
             break;
           }
         }

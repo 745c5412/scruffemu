@@ -6,8 +6,8 @@ import scruffemu.client.other.Stats;
 import scruffemu.common.Formulas;
 import scruffemu.common.SocketManager;
 import scruffemu.entity.Collector;
-import scruffemu.entity.Monster;
 import scruffemu.entity.Prism;
+import scruffemu.entity.monster.MobGrade;
 import scruffemu.fight.spells.LaunchedSpell;
 import scruffemu.fight.spells.Spell;
 import scruffemu.fight.spells.SpellEffect;
@@ -34,7 +34,7 @@ public class Fighter implements Comparable<Fighter>
   private boolean canPlay=false;
   private Fight fight;
   private int type=0; // 1 : Personnage, 2 : Mob, 5 : Perco
-  private Monster.MobGrade mob=null;
+  private MobGrade mob=null;
   private Player perso=null;
   private Player _double=null;
   private Collector collector=null;
@@ -65,7 +65,7 @@ public class Fighter implements Comparable<Fighter>
   public int lastInvisMP=-1;
   private boolean hadSober=false;
 
-  public Fighter(Fight f, Monster.MobGrade mob)
+  public Fighter(Fight f, MobGrade mob)
   {
     this.fight=f;
     this.type=2;
@@ -148,7 +148,7 @@ public class Fighter implements Comparable<Fighter>
     return this.type;
   }
 
-  public Monster.MobGrade getMob()
+  public MobGrade getMob()
   {
     if(this.type==2)
       return this.mob;

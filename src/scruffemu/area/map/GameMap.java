@@ -11,9 +11,11 @@ import scruffemu.common.PathFinding;
 import scruffemu.common.SocketManager;
 import scruffemu.database.Database;
 import scruffemu.entity.Collector;
-import scruffemu.entity.Monster;
 import scruffemu.entity.Npc;
 import scruffemu.entity.Prism;
+import scruffemu.entity.monster.MobGrade;
+import scruffemu.entity.monster.MobGroup;
+import scruffemu.entity.monster.Monster;
 import scruffemu.entity.mount.Mount;
 import scruffemu.entity.npc.NpcMovable;
 import scruffemu.entity.npc.NpcTemplate;
@@ -46,10 +48,10 @@ public class GameMap
   private MountPark mountPark;
   private List<GameCase> cases=new ArrayList<>();
   private List<Fight> fights=new ArrayList<>();
-  private ArrayList<Monster.MobGrade> mobPossibles=new ArrayList<>();
-  private Map<Integer, Monster.MobGroup> mobGroups=new HashMap<>();
-  private Map<Integer, Monster.MobGroup> fixMobGroups=new HashMap<>();
-  private Map<Integer, Monster.MobGroup> randomFixMobGroups=new HashMap<>();
+  private ArrayList<MobGrade> mobPossibles=new ArrayList<>();
+  private Map<Integer, MobGroup> mobGroups=new HashMap<>();
+  private Map<Integer, MobGroup> fixMobGroups=new HashMap<>();
+  private Map<Integer, MobGroup> randomFixMobGroups=new HashMap<>();
   private Map<Integer, Npc> npcs=new HashMap<>();
   private Map<Integer, ArrayList<Action>> endFightAction=new HashMap<>();
   private Map<Integer, Integer> mobExtras=new HashMap<>();
@@ -430,7 +432,7 @@ public class GameMap
     this.fixSize=fixSize;
   }
 
-  public ArrayList<Monster.MobGrade> getMobPossibles()
+  public ArrayList<MobGrade> getMobPossibles()
   {
     return this.mobPossibles;
   }
@@ -623,7 +625,7 @@ public class GameMap
     return fights;
   }
 
-  public Map<Integer, Monster.MobGroup> getMobGroups()
+  public Map<Integer, MobGroup> getMobGroups()
   {
     return this.mobGroups;
   }
@@ -874,10 +876,10 @@ public class GameMap
   {
     if(World.world.getMonstre(idMob)==null)
       return false;
-    Monster.MobGrade grade=World.world.getMonstre(idMob).getRandomGrade();
+    MobGrade grade=World.world.getMonstre(idMob).getRandomGrade();
     int cell=this.getRandomFreeCellId();
 
-    Monster.MobGroup group=new Monster.MobGroup(this.nextObjectId,Constant.ALIGNEMENT_NEUTRE,this.mobPossibles,this,cell,this.fixSize,this.maxSize,this.maxSize,grade,false);
+    MobGroup group=new MobGroup(this.nextObjectId,Constant.ALIGNEMENT_NEUTRE,this.mobPossibles,this,cell,this.fixSize,this.maxSize,this.maxSize,grade,false);
     if(group.getMobs().isEmpty())
       return false;
     this.mobGroups.put(this.nextObjectId,group);
@@ -910,7 +912,7 @@ public class GameMap
       return false;
     if(perso.getCurMap().getId()!=id||!perso.canAggro())
       return false;
-    for(Monster.MobGroup group : this.mobGroups.values())
+    for(MobGroup group : this.mobGroups.values())
     {
       if(perso.get_align()==0&&group.getAlignement()>0)
         continue;
@@ -953,7 +955,7 @@ public class GameMap
     for(int a=1;a<=nbr;a++)
     {
       // mobExtras
-      ArrayList<Monster.MobGrade> mobPoss=new ArrayList<>(this.mobPossibles);
+      ArrayList<MobGrade> mobPoss=new ArrayList<>(this.mobPossibles);
       if(!this.mobExtras.isEmpty())
       {
         for(Entry<Integer, Integer> entry : this.mobExtras.entrySet())
@@ -967,7 +969,7 @@ public class GameMap
             Monster mob=World.world.getMonstre(entry.getKey());
             if(mob==null)
               continue;
-            Monster.MobGrade mobG=mob.getRandomGrade();
+            MobGrade mobG=mob.getRandomGrade();
             if(mobG==null)
               continue;
             mobPoss.add(mobG);
@@ -981,7 +983,7 @@ public class GameMap
       while(this.mobGroups.get(this.nextObjectId)!=null)
         this.nextObjectId--;
 
-      Monster.MobGroup group=new Monster.MobGroup(this.nextObjectId,align,mobPoss,this,cellID,this.fixSize,this.minSize,this.maxSize,null,true);
+      MobGroup group=new MobGroup(this.nextObjectId,align,mobPoss,this,cellID,this.fixSize,this.minSize,this.maxSize,null,true);
 
       if(group.getMobs().isEmpty())
         continue;
@@ -993,7 +995,7 @@ public class GameMap
     }
   }
 
-  public void respawnGroup(Monster.MobGroup group)
+  public void respawnGroup(MobGroup group)
   {
     this.mobGroups.put(group.getId(),group);
     SocketManager.GAME_SEND_MAP_MOBS_GM_PACKET(this,group);
@@ -1003,14 +1005,14 @@ public class GameMap
   {
     while(this.mobGroups.get(this.nextObjectId)!=null)
       this.nextObjectId--;
-    Monster.MobGrade _m=null;
+    MobGrade _m=null;
     while(_m==null)
       _m=m.getRandomGrade();
     int cell=this.getRandomFreeCellId();
     while(this.containsForbiddenCellSpawn(cell))
       cell=this.getRandomFreeCellId();
 
-    Monster.MobGroup group=new Monster.MobGroup(this.nextObjectId,-1,this.mobPossibles,this,cell,this.fixSize,this.minSize,this.maxSize,_m,false);
+    MobGroup group=new MobGroup(this.nextObjectId,-1,this.mobPossibles,this,cell,this.fixSize,this.minSize,this.maxSize,_m,false);
     group.setIsFix(false);
     this.mobGroups.put(this.nextObjectId,group);
     SocketManager.GAME_SEND_MAP_MOBS_GM_PACKET(this,group);
@@ -1024,7 +1026,7 @@ public class GameMap
     while(this.containsForbiddenCellSpawn(cellID))
       cellID=this.getRandomFreeCellId();
 
-    Monster.MobGroup group=new Monster.MobGroup(this.nextObjectId,cellID,groupData);
+    MobGroup group=new MobGroup(this.nextObjectId,cellID,groupData);
     if(group.getMobs().isEmpty())
       return;
     this.mobGroups.put(this.nextObjectId,group);
@@ -1040,7 +1042,7 @@ public class GameMap
   {
     while(this.mobGroups.get(this.nextObjectId)!=null)
       this.nextObjectId--;
-    Monster.MobGroup group=new Monster.MobGroup(this.nextObjectId,cellID,groupData);
+    MobGroup group=new MobGroup(this.nextObjectId,cellID,groupData);
     if(group.getMobs().isEmpty())
       return;
     this.mobGroups.put(this.nextObjectId,group);
@@ -1056,7 +1058,7 @@ public class GameMap
   {
     while(this.mobGroups.get(this.nextObjectId)!=null)
       this.nextObjectId--;
-    Monster.MobGroup group=new Monster.MobGroup(this.nextObjectId,cellID,groupData);
+    MobGroup group=new MobGroup(this.nextObjectId,cellID,groupData);
     if(group.getMobs().isEmpty())
       return;
     group.setInternalStarBonus(stars);
@@ -1072,7 +1074,7 @@ public class GameMap
   {
     while(this.mobGroups.get(this.nextObjectId)!=null)
       this.nextObjectId--;
-    Monster.MobGroup group=new Monster.MobGroup(this.nextObjectId,cellID,groupData);
+    MobGroup group=new MobGroup(this.nextObjectId,cellID,groupData);
     if(group.getMobs().isEmpty())
       return;
     group.setInternalStarBonus(0);
@@ -1110,7 +1112,7 @@ public class GameMap
       for(int i=0;i<Integer.parseInt(splitGroup.get(0));i++) //groupSize monsters
         randomGroup+=monsters.get(Formulas.getRandomValue(0,monsters.size()-1))+";";
     }
-    Monster.MobGroup group=new Monster.MobGroup(this.nextObjectId,cellID,randomGroup);
+    MobGroup group=new MobGroup(this.nextObjectId,cellID,randomGroup);
     if(group.getMobs().isEmpty())
       return;
     this.mobGroups.put(this.nextObjectId,group);
@@ -1128,9 +1130,9 @@ public class GameMap
     }
     this.mobGroups.clear();
     this.mobGroups.putAll(this.fixMobGroups);
-    for(Monster.MobGroup mg : this.fixMobGroups.values())
+    for(MobGroup mg : this.fixMobGroups.values())
       SocketManager.GAME_SEND_MAP_MOBS_GM_PACKET(this,mg);
-    for(Monster.MobGroup mg : this.randomFixMobGroups.values())
+    for(MobGroup mg : this.randomFixMobGroups.values())
       SocketManager.GAME_SEND_MAP_MOBS_GM_PACKET(this,mg);
 
     spawnGroup(Constant.ALIGNEMENT_NEUTRE,this.maxGroup,true,-1);//Spawn des groupes d'alignement neutre
@@ -1171,7 +1173,7 @@ public class GameMap
     StringBuilder packet=new StringBuilder();
     packet.append("GM|");
     boolean isFirst=true;
-    for(Monster.MobGroup entry : this.mobGroups.values())
+    for(MobGroup entry : this.mobGroups.values())
     {
       String GM=entry.parseGM();
       if(GM.equals(""))
@@ -1239,7 +1241,7 @@ public class GameMap
   //v2.8 - Fixed follower teleporting
   //v2.8 - Fixed starting fights against newly spawned monsters
   //v2.8 - Save old map and cell
-  public void startFightVersusMonstres(Player perso, Monster.MobGroup group)
+  public void startFightVersusMonstres(Player perso, MobGroup group)
   {
     if(perso.getFight()!=null)
       return;
@@ -1311,7 +1313,7 @@ public class GameMap
   }
 
   //v2.7 - Tactical mode memory
-  public void startFightVersusProtectors(Player perso, Monster.MobGroup group)
+  public void startFightVersusProtectors(Player perso, MobGroup group)
   {
     if(perso.getFight()!=null)
       return;
@@ -1344,7 +1346,7 @@ public class GameMap
   }
 
   //v2.7 - Tactical mode memory
-  public void startFigthVersusDopeuls(Player perso, Monster.MobGroup group) //RaZoR
+  public void startFigthVersusDopeuls(Player perso, MobGroup group) //RaZoR
   {
     if(perso.getFight()!=null||Config.getInstance().fightAsBlocked||perso.isDead()==1||!perso.canAggro()||perso.afterFight)
       return;
@@ -1457,7 +1459,7 @@ public class GameMap
 
       boolean ok=true;
       if(this.mobGroups!=null)
-        for(Monster.MobGroup mg : this.mobGroups.values())
+        for(MobGroup mg : this.mobGroups.values())
           if(mg!=null)
             if(mg.getCellId()==entry.getId())
               ok=false;
@@ -1529,7 +1531,7 @@ public class GameMap
         continue;
       //Si la case est prise par un groupe de monstre
       boolean ok=true;
-      for(Entry<Integer, Monster.MobGroup> mgEntry : this.mobGroups.entrySet())
+      for(Entry<Integer, MobGroup> mgEntry : this.mobGroups.entrySet())
         if(mgEntry.getValue().getCellId()==gameCase.getId())
           ok=false;
       if(!ok)
@@ -1559,7 +1561,7 @@ public class GameMap
       return;
     int RandNumb=Formulas.getRandomValue(1,getMobGroups().size());
     int i=0;
-    for(Monster.MobGroup group : getMobGroups().values())
+    for(MobGroup group : getMobGroups().values())
     {
       switch(this.id)
       {
@@ -1864,7 +1866,7 @@ public class GameMap
       return;
     if(player.getCurMap().getId()!=this.id||!player.canAggro())
       return;
-    for(Monster.MobGroup group : this.mobGroups.values())
+    for(MobGroup group : this.mobGroups.values())
     {
       if(PathFinding.getDistanceBetween(this,id,group.getCellId())<=group.getAggroDistance())
       { //S'il y aggr

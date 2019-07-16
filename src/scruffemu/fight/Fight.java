@@ -13,9 +13,11 @@ import scruffemu.common.PathFinding;
 import scruffemu.common.SocketManager;
 import scruffemu.database.Database;
 import scruffemu.entity.Collector;
-import scruffemu.entity.Monster;
 import scruffemu.entity.Prism;
 import scruffemu.entity.boss.Bandit;
+import scruffemu.entity.monster.MobGroup;
+import scruffemu.entity.monster.MobGrade;
+import scruffemu.entity.monster.Monster;
 import scruffemu.entity.mount.Mount;
 import scruffemu.entity.pet.PetEntry;
 import scruffemu.fight.ia.IAHandler;
@@ -80,7 +82,7 @@ public class Fight
   private boolean finish=false;
   private boolean collectorProtect=false;
   private String curAction="";
-  private Monster.MobGroup mobGroup;
+  private MobGroup mobGroup;
   private Collector collector;
   private Prism prism;
   private GameMap map, mapOld;
@@ -165,7 +167,7 @@ public class Fight
     setState(Constant.FIGHT_STATE_PLACE);
   }
 
-  public Fight(int id, GameMap map, Player perso, Monster.MobGroup group)
+  public Fight(int id, GameMap map, Player perso, MobGroup group)
   {
     launchTime=System.currentTimeMillis();
     setCheckTimer(true);
@@ -178,7 +180,7 @@ public class Fight
     setInit0(new Fighter(this,perso));
     setStartGuid(perso.getId());
     getTeam0().put(perso.getId(),getInit0());
-    for(Entry<Integer, Monster.MobGrade> entry : group.getMobs().entrySet())
+    for(Entry<Integer, MobGrade> entry : group.getMobs().entrySet())
     {
       entry.getValue().setInFightID(entry.getKey());
       Fighter mob=new Fighter(this,entry.getValue());
@@ -244,7 +246,7 @@ public class Fight
     setState(Constant.FIGHT_STATE_PLACE);
   }
 
-  public Fight(int id, GameMap map, Player perso, Monster.MobGroup group, int type)
+  public Fight(int id, GameMap map, Player perso, MobGroup group, int type)
   {
     launchTime=System.currentTimeMillis();
     setMobGroup(group);
@@ -255,7 +257,7 @@ public class Fight
     demorph(perso);
     setInit0(new Fighter(this,perso));
     getTeam0().put(perso.getId(),getInit0());
-    for(Entry<Integer, Monster.MobGrade> entry : group.getMobs().entrySet())
+    for(Entry<Integer, MobGrade> entry : group.getMobs().entrySet())
     {
       entry.getValue().setInFightID(entry.getKey());
       Fighter mob=new Fighter(this,entry.getValue());
@@ -899,12 +901,12 @@ public class Fight
     this.curAction=curAction;
   }
 
-  public Monster.MobGroup getMobGroup()
+  public MobGroup getMobGroup()
   {
     return mobGroup;
   }
 
-  void setMobGroup(Monster.MobGroup mobGroup)
+  void setMobGroup(MobGroup mobGroup)
   {
     this.mobGroup=mobGroup;
   }
@@ -3497,8 +3499,8 @@ public class Fight
         groupData=groupData+";";
       a++;
     }
-    setMobGroup(new Monster.MobGroup(getMapOld().nextObjectId,getInit0().getPersonnage().getCurCell().getId(),groupData));
-    for(Entry<Integer, Monster.MobGrade> entry : getMobGroup().getMobs().entrySet())
+    setMobGroup(new MobGroup(getMapOld().nextObjectId,getInit0().getPersonnage().getCurCell().getId(),groupData));
+    for(Entry<Integer, MobGrade> entry : getMobGroup().getMobs().entrySet())
     {
       entry.getValue().setInFightID(entry.getKey());
       getTeam1().put(entry.getKey(),new Fighter(this,entry.getValue()));
@@ -4786,7 +4788,7 @@ public class Fight
           case Constant.FIGHT_TYPE_PVM:
             try
             {
-              final Monster.MobGroup group=this.getMobGroup();
+              final MobGroup group=this.getMobGroup();
 
               if(team)
               { // Players have loose the fight, mob win the fight
@@ -5254,7 +5256,7 @@ public class Fight
             {
               for(Fighter F : loosers)
               {
-                Monster.MobGrade mob=F.getMob();
+                MobGrade mob=F.getMob();
                 Monster m=mob.getTemplate();
                 if(m==null)
                   continue;
@@ -5279,7 +5281,7 @@ public class Fight
             {
               int bouftou=0,tofu=0;
 
-              for(Monster.MobGrade mob : getMobGroup().getMobs().values())
+              for(MobGrade mob : getMobGroup().getMobs().values())
               {
                 switch(mob.getTemplate().getId())
                 {
@@ -5291,7 +5293,7 @@ public class Fight
                     break;
                   case 289:
                     if(player.getCurMap().getSubArea().getId()==211)
-                      Monster.MobGroup.MAITRE_CORBAC.repop(player.getCurMap().getId());
+                      MobGroup.MAITRE_CORBAC.repop(player.getCurMap().getId());
                     break;
                 }
               }

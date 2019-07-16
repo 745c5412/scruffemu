@@ -3,7 +3,7 @@ package scruffemu.entity.boss;
 import scruffemu.area.map.GameMap;
 import scruffemu.common.Formulas;
 import scruffemu.database.Database;
-import scruffemu.entity.Monster;
+import scruffemu.entity.monster.Monster;
 import scruffemu.game.World;
 import scruffemu.utility.TimerWaiterPlus;
 

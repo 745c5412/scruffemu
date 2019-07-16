@@ -13,8 +13,10 @@ import scruffemu.common.ConditionParser;
 import scruffemu.common.Formulas;
 import scruffemu.common.SocketManager;
 import scruffemu.database.Database;
-import scruffemu.entity.Monster;
 import scruffemu.entity.Npc;
+import scruffemu.entity.monster.MobGrade;
+import scruffemu.entity.monster.MobGroup;
+import scruffemu.entity.monster.Monster;
 import scruffemu.entity.mount.Mount;
 import scruffemu.entity.npc.NpcQuestion;
 import scruffemu.entity.pet.PetEntry;
@@ -226,78 +228,9 @@ public class Action
           q.applyQuest(player);
         }
         String grp=IDmob+","+LVLmob+","+LVLmob+";";
-        Monster.MobGroup MG=new Monster.MobGroup(player.getCurMap().nextObjectId,player.getCurCell().getId(),grp);
+        MobGroup MG=new MobGroup(player.getCurMap().nextObjectId,player.getCurCell().getId(),grp);
         player.getCurMap().startFigthVersusDopeuls(player,MG);
         break;
-        
-     /* //v2.4 - Startfight placement fix
-      case -6://Dopeuls
-        GameMap mapActuel=player.getCurMap();
-        Map<Integer, Pair<Integer, Integer>> dopeuls=Dopeul.getDopeul();
-        Integer IDmob=null;
-        if(dopeuls.containsKey((int)mapActuel.getId()))
-          IDmob=dopeuls.get((int)mapActuel.getId()).getLeft();
-        else
-        {
-          SocketManager.GAME_SEND_MESSAGE(player,"Dopple Error, please contact a staff member if this problem persists");
-          return true;
-        }
-
-        if(player.getLevel()<11)
-        {
-          SocketManager.GAME_SEND_MESSAGE(player,"You must be at least level 11 to fight the dopples.");
-          return true;
-        }
-        
-        int LVLmob=Formulas.getLvlDopeuls(player.getLevel());
-        int certificat=Constant.getCertificatByDopeuls(IDmob);
-        if(certificat==-1)
-          return true;
-        if(player.hasItemTemplate(certificat,1))
-        {
-          String date=player.getItemTemplate(certificat,1).getTxtStat().get(Constant.STATS_DATE);
-          long timeStamp=Long.parseLong(date.split("#")[3]);
-          if(System.currentTimeMillis()-timeStamp<=86400000)
-          {
-            SocketManager.GAME_SEND_MESSAGE(player,"You must wait 24 hours before you can fight this dopple.");
-            return true;
-          }
-          else
-            player.removeByTemplateID(certificat,1);
-        }
-        boolean b=true;
-        if(player.getQuestPerso()!=null&&!player.getQuestPerso().isEmpty())
-        {
-          for(Entry<Integer, Quest.QuestPlayer> entry : new HashMap<>(player.getQuestPerso()).entrySet())
-          {
-            Quest.QuestPlayer qa=entry.getValue();
-            if(qa.getQuest().getId()==dopeuls.get((int)mapActuel.getId()).getRight())
-            {
-              b=false;
-              if(qa.isFinish())
-              {
-                player.delQuestPerso(entry.getKey());
-                if(qa.deleteQuestPerso())
-                {
-                  Quest q=Quest.getQuestById(dopeuls.get((int)mapActuel.getId()).getRight());
-                  q.applyQuest(player);
-                }
-              }
-            }
-          }
-        }
-        if(b)
-        {
-          Quest q=Quest.getQuestById(dopeuls.get((int)mapActuel.getId()).getRight());
-          q.applyQuest(player);
-        }
-        String grp=IDmob+","+LVLmob+","+LVLmob+";";
-        if(grp.isEmpty())
-          return true;
-       // player.getCurCell().applyOnCellStopActions(player);
-        Monster.MobGroup MG=new Monster.MobGroup(player.getCurMap().nextObjectId,player.getCurMap().getId(),player.getCurCell().getId(),grp);
-        player.getCurMap().startFigthVersusDopeuls(player,MG);
-        break;*/
       case -5://Apprendre un sort
         try
         {
@@ -1097,7 +1030,7 @@ public class Action
           }
           if(ValidMobGroup.toString().isEmpty())
             return true;
-          Monster.MobGroup group=new Monster.MobGroup(player.getCurMap().nextObjectId,player.getCurCell().getId(),ValidMobGroup.toString());
+          MobGroup group=new MobGroup(player.getCurMap().nextObjectId,player.getCurCell().getId(),ValidMobGroup.toString());
           player.getCurMap().startFightVersusMonstres(player,group);
         }
         catch(Exception e)
@@ -1434,7 +1367,7 @@ public class Action
           }
           if(ValidMobGroup1.toString().isEmpty())
             return true;
-          Monster.MobGroup group=new Monster.MobGroup(player.getCurMap().nextObjectId,player.getCurCell().getId(),ValidMobGroup1.toString());
+          MobGroup group=new MobGroup(player.getCurMap().nextObjectId,player.getCurCell().getId(),ValidMobGroup1.toString());
           player.getCurMap().startFightVersusProtectors(player,group);
         }
         catch(Exception e)
@@ -2196,7 +2129,7 @@ public class Action
             }
             if(ValidMobGroup2.toString().isEmpty())
               return true;
-            Monster.MobGroup group=new Monster.MobGroup(player.getCurMap().nextObjectId,player.getCurCell().getId(),ValidMobGroup2.toString());
+            MobGroup group=new MobGroup(player.getCurMap().nextObjectId,player.getCurCell().getId(),ValidMobGroup2.toString());
             player.getCurMap().startFightVersusMonstres(player,group);// Si bug startfight, voir "//Respawn d'un groupe fix" dans fight.java
           }
           catch(Exception e)
@@ -3107,7 +3040,7 @@ public class Action
       case 524://R�ponse Maitre corbac
         if(client==null)
           return true;
-        int qID=Monster.MobGroup.MAITRE_CORBAC.check();
+        int qID=MobGroup.MAITRE_CORBAC.check();
         NpcQuestion quest=World.world.getNPCQuestion(qID);
         if(quest==null)
         {
@@ -3119,11 +3052,11 @@ public class Action
         return false;
 
       case 525://EndFight Action Maitre Corbac
-        Monster.MobGroup group=player.hasMobGroup();
+        MobGroup group=player.hasMobGroup();
 
         split=args.split(";");
 
-        for(Monster.MobGrade mb : group.getMobs().values())
+        for(MobGrade mb : group.getMobs().values())
         {
           switch(mb.getTemplate().getId())
           {
@@ -3911,10 +3844,10 @@ public class Action
           Monster petitChef=World.world.getMonstre(984);
           if(petitChef==null)
             return true;
-          Monster.MobGrade mg=petitChef.getGradeByLevel(10);
+          MobGrade mg=petitChef.getGradeByLevel(10);
           if(mg==null)
             return true;
-          Monster.MobGroup _mg=new Monster.MobGroup(player.getCurMap().nextObjectId,player.getCurCell().getId(),petitChef.getId()+","+mg.getLevel()+","+mg.getLevel()+";");
+          MobGroup _mg=new MobGroup(player.getCurMap().nextObjectId,player.getCurCell().getId(),petitChef.getId()+","+mg.getLevel()+","+mg.getLevel()+";");
           player.getCurMap().startFightVersusMonstres(player,_mg);
         }
         catch(Exception e)
@@ -4314,7 +4247,7 @@ public class Action
             if(player.hasItemTemplate(item,1))
             {
               String groupe=monstre+","+grade+","+grade+";";
-              Monster.MobGroup Mgroupe=new Monster.MobGroup(player.getCurMap().nextObjectId,player.getCurCell().getId(),groupe);
+              MobGroup Mgroupe=new MobGroup(player.getCurMap().nextObjectId,player.getCurCell().getId(),groupe);
               player.getCurMap().startFightVersusMonstres(player,Mgroupe);
             }
           }
