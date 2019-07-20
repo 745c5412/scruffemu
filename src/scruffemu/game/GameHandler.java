@@ -26,7 +26,10 @@ public class GameHandler implements IoHandler
     else
     {
       World.world.logger.info("Session "+arg0.getId()+" created");
+
       arg0.setAttachment(new GameClient(arg0));
+      Main.gameServer.setSessions(Main.gameServer.getSessions()+1);
+      Main.refreshTitle();
     }
   }
 
@@ -64,6 +67,8 @@ public class GameHandler implements IoHandler
     if(client!=null)
       client.disconnect();
     World.world.logger.info("Session "+arg0.getId()+" closed");
+    Main.gameServer.setSessions(Main.gameServer.getSessions()-1);
+    Main.refreshTitle();
   }
 
   @Override

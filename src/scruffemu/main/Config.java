@@ -31,7 +31,7 @@ public class Config
   public float rateXp=4;
 
   /** Config data */
-  public boolean encryptPackets=false;
+  public boolean encryptPackets=true;
   public boolean allowMulePvp=false; //honor for killing character on same IP
   public boolean HEROIC=false;
   public boolean VOTESHOP=false;
@@ -59,7 +59,7 @@ public class Config
   public String loginHostDB="127.0.0.1", loginNameDB="scruffemu_login", loginUserDB="root", loginPassDB="", loginPortDB="3306";
   public int gamePort=5555;
   public String hostDB="127.0.0.1", nameDB="scruffemu_game", userDB="root", passDB="", portDB="3306";
-  public String Ip="62.210.69.13"; //145.131.6.37
+  public String Ip="62.210.69.13"; //62.210.69.13
 
   public Points points=new Points()
   {

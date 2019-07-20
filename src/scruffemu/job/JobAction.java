@@ -198,21 +198,28 @@ public class JobAction
       if(Formulas.getRandomValue(1,500)==1)
       {
         int _tID=-1;
+        int rareQua=1;
         if(SM.getTemplate().getId()==JobConstant.JOB_PECHEUR&&qua>0)
           _tID=JobConstant.getRareFish(tID);
         else if(SM.getTemplate().getId()==JobConstant.JOB_MINEUR&&qua>0)
           _tID=JobConstant.getRareStones();
         else if(SM.getTemplate().getId()==JobConstant.JOB_PAYSAN&&qua>0)
-          _tID=JobConstant.getRareOats(tID);
+          _tID=JobConstant.getRareCereals(tID);
 
         if(_tID!=-1)
         {
           ObjectTemplate _T=World.world.getObjTemplate(_tID);
           if(_T!=null)
           {
-            GameObject _O=_T.createNewItem(qua,true);
+            GameObject _O=_T.createNewItem(rareQua,true);
             if(player.addObjet(_O,true))
               World.addGameObject(_O,true);
+            if(SM.getTemplate().getId()==JobConstant.JOB_PECHEUR)
+              SocketManager.GAME_SEND_MESSAGE(player,"You have just caught a rare fish.","009900");
+            else if(SM.getTemplate().getId()==JobConstant.JOB_MINEUR)
+              SocketManager.GAME_SEND_MESSAGE(player,"Upon mining you notice something shimmering in the rock.","009900");
+            else if(SM.getTemplate().getId()==JobConstant.JOB_PAYSAN)
+              SocketManager.GAME_SEND_MESSAGE(player,"You have just harvested a rare cereal.","009900");
           }
         }
       }

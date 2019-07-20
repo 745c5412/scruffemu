@@ -1528,9 +1528,9 @@ Moved getDopeul function to Dopeul class
 Removed couple class
 Changed all instances of couple class to pair class
 Added new functionality to pair class (assigning values to pair after initialization
-Seperated NpcExchange class from PlayerExchange class
-Seperated NpcExchangePets class from NpcExchange class
-Seperated NpcRessurectPets class from NpcExchangePets class
+Separated NpcExchange class from PlayerExchange class
+Separated NpcExchangePets class from NpcExchange class
+Separated NpcRessurectPets class from NpcExchangePets class
 Increased Regeneration's animation timer to 1600ms (was 800ms)
 Properly object-oriented quest system
 Fixed a bug where the initialization of non-world monsters did not work correctly (any type of fight that starts without you walking up to a mob, so dopples, resource protectors, gobball war chief in incarnam)
@@ -1602,3 +1602,70 @@ Fixed a bug where landing a rune on a negative stat which would become 0 could r
 Fixed a bug where the item you were maging would disappear if the rune would fail, it had an exo and it had a sink value that was less than the rune value
 Changed stats of 48 items, mostly level 100-200 equips that were underused
 Re-enabled magus system
+
+14-07-2019
+Fixed a bug where the level 120 variant of sacrier dopple had frozen arrow as a spell
+Made all crafting recipes have a 100% chance to succeed upon unlocking
+
+15-07-2019
+Reduced resource protector encounter chance from 1/40 to 1/100
+Increased rare fish chance from 1/2000 to 1/500
+Farming now has a 1/500 chance to drop a rare resource when harvesting
+Mining now has a 1/500 chance to drop a rare gem at random when harvesting
+Fixed a bug where crafting workbenches would be activated once you entered the workbench instead of once you started crafting
+Fixed a bug where crafting workbenches would never be deactivated once you finished crafting
+Fixed a bug where the minimum monster group size on most maps was 3 instead of 1
+
+16-07-2019
+Moved Guild class to seperate guild folder
+Separated GuildMember class from Guild class
+Moved Monster class to seperate monster folder
+Seperated MobGroup class from Monster class
+Seperated MobGrade class from Monster class
+Fixed a bug that caused people to be able to teleport on-demand to any map with monsters on it
+Fixed a bug where Ecaflip's Feline Spirit would deal double damage to the target instead of damage to the caster and the target
+Removed all middle-stage (not the smallest and biggest) crafts that weren't used in other crafts (needed for low-level item stat/recipe overhaul)
+Fixed the decription of Claw of Ceangal stating it did earth damage
+Fixed a bug where Dolly Sacrifice did not have adjustable range even though it said it did
+Decreased the AP cost of Playful Claw at level 5 to 4 (was 5)
+Made Playful Claw castable 3 times per turn at level 6 (was 2)
+Fixed a bug where Moon Hammer was the 1.28 variant of the spell instead of the 1.29 variant
+Decreased AP cost of Moon Hammer at level 1-5 to 7 (was 8)
+Decreased AP cost of Moon Hammer at level 6 to 6 (was 8)
+Increased AI delay of The Sacrificial's Sacrifice to 5000ms (was 3000ms)
+Fixed a bug where the -MP stat showed as being +1 MP instead (it still did -1 MP)
+
+17-07-2019
+Fixed a bug where the 4-account limit system would detect clients even if they did not have active sessions
+Made reinforcementex send a message whenever damage is received
+
+19-07-2019
+Added clockwise-only perpendicular line AoE
+Made shovels have a 2-cell line AoE
+Made axes have a 2-cell clockwise perpendicular line AoE
+Made scythes have a 3-cell clockwise perpendicular line AoE
+
+20-07-2019
+Redid crafting recipes of all weapons
+Added Rat Fang as a drop from Grossewer Rat at 10%
+Added Rat Fang as a drop from Grossewer Rat archmob at 20%
+Added Rat Fang as a drop from Grossewer Shaman at 10%
+Added Araknawa Leg as a drop from Araknawa at 10%
+Added Araknawa Leg as a drop from Araknawa archmob at 20%
+Added Grotto Hesque Key as a drop from Coralator at 1%
+Added Grotto Hesque Key as a drop from Kurasso Craboral at 1%
+Added Grotto Hesque Key as a drop from Mahlibuh Craboral at 1%
+Added Grotto Hesque Key as a drop from Passaoh Craboral at 1%
+Added Grotto Hesque Key as a drop from Mojeeto Craboral at 1%
+Added Mopy King Inside Out Shorts as a drop from Mopy King archmob at 2%
+Fixed a bug where Gold Crackler Tooth was accidentally named Golden Crackler Tooth as a drop from Cracklers
+Fixed a bug where casting a summoning/trap/glyph spell on an invisible target would cause an error and freeze your turn until you passed
+Removed system that checked if you did the otomai quest and would stop you from using zaaps on otomai if you hadn't (you can now prism to otomai and save the zaap there)
+Fixed a bug where using lifesteal spells would deal damage to you if it healed the target (ecaflip's luck, kaniger's luck)
+Accounts now no longer get kicked by the afk client kicker when on the character select/character creation menu
+Fixed a bug where bwork beer said it restored 501-1000 energy instead of 1-10 energy
+Fixed a bug where Risky Soul Stone for Giga Souls said it had a 75% chance of capturing instead of a 25% chance of capturing
+Fixed a bug where the set bonus of the Cherry Blop set was incorrect
+Fixed a bug where the set bonus of the Pippin Blop set was incorrect
+Fixed a bug where the set bonus of the Coco Blop set was incorrect
+Fixed a bug where the set bonus of the Indigo Blop set was incorrect

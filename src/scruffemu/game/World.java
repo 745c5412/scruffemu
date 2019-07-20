@@ -205,6 +205,10 @@ public class World
       {
         continue;
       }
+      if(perso.getValue().getGameClient().getSession()==null)
+      {
+        continue;
+      }
       online.add(perso.getValue());
     }
     for(Player player : online)

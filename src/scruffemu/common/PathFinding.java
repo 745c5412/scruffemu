@@ -1349,6 +1349,7 @@ public class PathFinding
     return false;
   }
 
+  //v2.9 - new axe/shovel target zones
   public static ArrayList<Fighter> getCiblesByZoneByWeapon(Fight fight, int type, GameCase cell, int castCellID)
   {
     ArrayList<Fighter> cibles=new ArrayList<>();
@@ -1392,18 +1393,43 @@ public class PathFinding
         if(l!=null)
           cibles.add(l);//Ajoute case cible
         break;
-      case Constant.ITEM_TYPE_PIOCHE:
-      case Constant.ITEM_TYPE_EPEE:
-      case Constant.ITEM_TYPE_FAUX:
-      case Constant.ITEM_TYPE_DAGUES:
-      case Constant.ITEM_TYPE_BAGUETTE:
-      case Constant.ITEM_TYPE_PELLE:
-      case Constant.ITEM_TYPE_ARC:
       case Constant.ITEM_TYPE_HACHE:
-      case Constant.ITEM_TYPE_OUTIL:
         Fighter m=cell.getFirstFighter();
         if(m!=null)
-          cibles.add(m);
+          cibles.add(m); //Add target cell
+        Fighter n=get1StFighterOnCellFromDirection(fight.getMap(),castCellID,(char)(c+1));
+        if(n!=null)
+          cibles.add(n); //Add cell right of target cell
+        break;
+      case Constant.ITEM_TYPE_FAUX:
+        Fighter o=cell.getFirstFighter();
+        if(o!=null)
+          cibles.add(o); //Add target cell
+        Fighter p=get1StFighterOnCellFromDirection(fight.getMap(),castCellID,(char)(c+1));
+        if(p!=null)
+          cibles.add(p); //Add cell right of target cell
+        Fighter q=getFighterScythe(cell.getId(),c,fight.getMap());
+        if(q!=null)
+          cibles.add(q); //Add cell two right of target cell
+        break;
+      case Constant.ITEM_TYPE_PELLE:
+        Fighter r=cell.getFirstFighter();
+        if(r!=null)
+          cibles.add(r); //Add target cell
+        Fighter s=getFighter2CellBefore(castCellID,c,fight.getMap());
+        if(s!=null)
+          cibles.add(s); //Add cell in front of target cell
+        break;
+
+      case Constant.ITEM_TYPE_PIOCHE:
+      case Constant.ITEM_TYPE_EPEE:
+      case Constant.ITEM_TYPE_DAGUES:
+      case Constant.ITEM_TYPE_BAGUETTE:
+      case Constant.ITEM_TYPE_ARC:
+      case Constant.ITEM_TYPE_OUTIL:
+        Fighter t=cell.getFirstFighter();
+        if(t!=null)
+          cibles.add(t);
         break;
     }
     return cibles;
@@ -1422,6 +1448,33 @@ public class PathFinding
   {
     int new2CellID=GetCaseIDFromDirrection(GetCaseIDFromDirrection(CellID,c,map,false),c,map,false);
     return map.getCase(new2CellID).getFirstFighter();
+  }
+
+  private static Fighter getFighterScythe(int CellID, char c, GameMap map)
+  {
+    char newChar=warpScytheChar(c);
+    if(newChar!=0)
+    {
+      int new2CellID=GetCaseIDFromDirrection(GetCaseIDFromDirrection(CellID,newChar,map,false),newChar,map,false);
+      return map.getCase(new2CellID).getFirstFighter();
+    }
+    return null;
+  }
+
+  private static char warpScytheChar(char c)
+  {
+    switch(c)
+    {
+      case 'b': //right down
+        return 'd';
+      case 'd': //left down
+        return 'f';
+      case 'f': //left up
+        return 'h';
+      case 'h': //right up
+        return 'b';
+    }
+    return 0;
   }
 
   public static char getDirBetweenTwoCase(int cell1ID, int cell2ID, GameMap map, boolean Combat)

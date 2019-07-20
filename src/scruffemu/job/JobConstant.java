@@ -701,7 +701,7 @@ public class JobConstant
     return -1;
   }
 
-  public static int getRareOats(int tID)
+  public static int getRareCereals(int tID)
   {
     switch(tID)
     {

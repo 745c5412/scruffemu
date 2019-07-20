@@ -90,6 +90,8 @@ public class GameClient
   public long timeLastTradeMsg=0, timeLastRecrutmentMsg=0, timeLastAlignMsg=0, timeLastChatMsg=0, timeLastIncarnamMsg=0, timeLastTaverne, lastPacketTime=0, action=0, timeLastAct=0;
   private String preparedKeys;
   private int averagePing=0;
+  private boolean creatingCharacter=false;
+  private boolean characterSelect=true;
 
   public GameClient(IoSession session)
   {
@@ -572,7 +574,10 @@ public class GameClient
             this.getSession().write("BN");
           }
           else
+          {
+            this.setCharacterSelect(false);
             this.player.OnJoinGame();
+          }
           return;
         }
       }
@@ -8747,5 +8752,25 @@ public class GameClient
   public int getAveragePing()
   {
     return averagePing;
+  }
+
+  public boolean getCreatingCharacter()
+  {
+    return creatingCharacter;
+  }
+
+  public void setCreatingCharacter(boolean creatingCharacter)
+  {
+    this.creatingCharacter = creatingCharacter;
+  }
+
+  public boolean getCharacterSelect()
+  {
+    return characterSelect;
+  }
+
+  public void setCharacterSelect(boolean characterSelect)
+  {
+    this.characterSelect = characterSelect;
   }
 }

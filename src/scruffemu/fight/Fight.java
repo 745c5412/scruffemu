@@ -2351,6 +2351,8 @@ public class Fight
 
     getViewer().put(p.getId(),p);
     p.setSpec(true);
+    p.setOldMap(p.getCurMap().getId());
+    p.setOldCell(p.getCurCell().getId());
     p.setFight(this);
 
     ArrayList<Fighter> all=new ArrayList<>();
@@ -2725,8 +2727,23 @@ public class Fight
     if(fighter.getHoldedBy()!=null&&(spell.getSpellID()==686||spell.getSpellID()==699||spell.getSpellID()==701))
       return 10;
 
-    Player player=fighter.getPersonnage();
     GameCase Cell=getMap().getCase(cell);
+    Player player=fighter.getPersonnage();
+
+    if(Cell.getFirstFighter()!=null)
+      if(Cell.getFirstFighter().isHide())
+        for(SpellEffect effect : spell.getEffects())
+          if(effect.getEffectID()==181||effect.getEffectID()==185||effect.getEffectID()==400||effect.getEffectID()==401||effect.getEffectID()==4) //summons, static summons, traps, glyphs, teleportation
+          {
+            for(Fighter f : this.getFighters(3))
+              if(f.getTeam()==fighter.getTeam())
+                if(f.getPersonnage()!=null)
+                  SocketManager.GAME_SEND_MESSAGE(f.getPersonnage(),player.getName()+" cannot cast "+spell.getSpell().getNombre()+" because of an invisible obstacle.");
+            setCurAction("");
+            SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this,7,102,fighter.getId()+"",fighter.getId()+",-0");
+            return 0;
+          }
+
     setCurAction("casting");
 
     if(canCastSpell1(fighter,spell,Cell,-1))

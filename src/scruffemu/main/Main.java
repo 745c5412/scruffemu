@@ -154,7 +154,7 @@ public class Main
   public static void refreshTitle()
   {
     if(Main.isRunning)
-      Main.setTitle(Config.getInstance().name+" - Port : "+Config.getInstance().gamePort+" | "+Config.getInstance().key+" | "+gameServer.getClients().size()+" Session(s) | "+gameServer.getClients().size()+" Client(s) | "+World.world.getOnlinePlayers().size()+" Player(s)");
+      Main.setTitle(Config.getInstance().name+" - Port : "+Config.getInstance().gamePort+" | "+Config.getInstance().key+" | "+gameServer.getSessions()+" Session(s) | "+gameServer.getClients().size()+" Client(s) | "+World.world.getOnlinePlayers().size()+" Player(s)");
   }
 
   public static void clear()

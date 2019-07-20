@@ -922,8 +922,6 @@ public class GameCase
         break;
 
       case 44://Sauvegarder pos
-        if(!player.verifOtomaiZaap())
-          return;
         short map=player.getCurMap().getId();
         String str=map+","+World.world.getZaapCellIdByMapId(map);
         player.set_savePos(str);

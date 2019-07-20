@@ -4450,8 +4450,6 @@ public class Player
   {
     if(this.fight==null)
     {
-      if(!verifOtomaiZaap())
-        return;
       if(getDeshonor()>=3)
       {
         SocketManager.GAME_SEND_Im_PACKET(this,"183");
@@ -4466,8 +4464,6 @@ public class Player
 
   public void verifAndAddZaap(short mapId)
   {
-    if(!verifOtomaiZaap())
-      return;
     if(!_zaaps.contains(mapId))
     {
       _zaaps.add(mapId);
@@ -4476,10 +4472,10 @@ public class Player
     }
   }
 
-  public boolean verifOtomaiZaap()
+  /*public boolean verifOtomaiZaap()
   {
     return !(this.getCurMap().getId()==10643||this.getCurMap().getId()==11210)||ConditionParser.validConditions(this,"QT=231")&&ConditionParser.validConditions(this,"QT=232");
-  }
+  }*/
 
   public void openPrismeMenu()
   {
@@ -4499,14 +4495,14 @@ public class Player
   public void useZaap(short id)
   {
     if(this.getExchangeAction()==null||this.getExchangeAction().getType()!=ExchangeAction.IN_ZAAPING)
-      return;//S'il n'a pas ouvert l'interface Zaap(hack?)
+      return; //S'il n'a pas ouvert l'interface Zaap(hack?)
     if(fight!=null)
-      return;//Si il combat
+      return; //Si il combat
     if(!_zaaps.contains(id))
-      return;//S'il n'a pas le zaap demand�(ne devrais pas arriver)
+      return; //S'il n'a pas le zaap demand�(ne devrais pas arriver)
     int cost=Formulas.calculZaapCost(curMap,World.world.getMap(id));
     if(kamas<cost)
-      return;//S'il n'a pas les kamas (verif cot� client)
+      return; //S'il n'a pas les kamas (verif cot� client)
     short mapID=id;
     int SubAreaID=curMap.getSubArea().getArea().getSuperArea();
     int cellID=World.world.getZaapCellIdByMapId(id);

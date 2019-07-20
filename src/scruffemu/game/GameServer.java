@@ -27,6 +27,7 @@ public class GameServer
   public short MAX_PLAYERS=700;
   private final ArrayList<Account> waitingClients=new ArrayList<>();
   private final IoAcceptor acceptor;
+  private int sessions=0;
 
   public GameServer()
   {
@@ -140,5 +141,15 @@ public class GameServer
   public String getServerTime()
   {
     return "BT"+(new Date().getTime()+3600000*2);
+  }
+
+  public int getSessions()
+  {
+    return sessions;
+  }
+
+  public void setSessions(int sessions)
+  {
+    this.sessions = sessions;
   }
 }
