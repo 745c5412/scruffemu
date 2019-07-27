@@ -272,7 +272,6 @@ public class Mount
       return;
     int time=Generation.getTimeGestation(Constant.getGeneration(this.getColor()));
     int actualHours=(int)((System.currentTimeMillis()-this.getFecundatedDate())/3600000)+1;
-
     if(time<actualHours&&actualHours<time+24*7)
     {
       boolean coupleReprod=World.world.getMountById(this.getCouple())!=null&&World.world.getMountById(this.getCouple()).getCapacitys().contains(3);
@@ -309,7 +308,7 @@ public class Mount
       {
         Database.getStatics().getMountData().delete(this.getId());
         World.world.removeMount(this.getId());
-        ((MountPark)player.getExchangeAction().getValue()).delRaising(this.getId());
+        player.getCurMap().getMountPark().delRaising(this.getId());
         player.send("Im0112; "+this.getName());
       }
     }

@@ -121,8 +121,8 @@ public class SpellEffect
               int duration=target.getBuff(stats).getDurationFixed();
               String args=target.getBuff(stats).getArgs();
               for(int i : Constant.getOppositeStats(stats))
-                target.addBuff(i,val,turns,duration,true,buff.getSpell(),args,caster,false);
-              target.addBuff(stats,val,duration,turns,true,buff.getSpell(),args,caster,false);
+                target.addBuff(i,val,turns,duration,true,buff.getSpell(),args,caster,true);
+              target.addBuff(stats,val,duration,turns,true,buff.getSpell(),args,caster,true);
             }
             break;
           case 9: //Derobade
@@ -245,31 +245,31 @@ public class SpellEffect
           case 606://Chatiment (acncien)
             int stat=buff.getValue();
             int jet=Formulas.getRandomJet(buff.getJet());
-            target.addBuff(stat,jet,-1,-1,false,buff.getSpell(),buff.getArgs(),caster,false);
+            target.addBuff(stat,jet,-1,-1,false,buff.getSpell(),buff.getArgs(),caster,true);
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,stat,caster.getId()+"",target.getId()+","+jet+","+-1);
             break;
           case 607://Chatiment (acncien)
             stat=buff.getValue();
             jet=Formulas.getRandomJet(buff.getJet());
-            target.addBuff(stat,jet,-1,-1,false,buff.getSpell(),buff.getArgs(),caster,false);
+            target.addBuff(stat,jet,-1,-1,false,buff.getSpell(),buff.getArgs(),caster,true);
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,stat,caster.getId()+"",target.getId()+","+jet+","+-1);
             break;
           case 608://Chatiment (acncien)
             stat=buff.getValue();
             jet=Formulas.getRandomJet(buff.getJet());
-            target.addBuff(stat,jet,-1,-1,false,buff.getSpell(),buff.getArgs(),caster,false);
+            target.addBuff(stat,jet,-1,-1,false,buff.getSpell(),buff.getArgs(),caster,true);
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,stat,caster.getId()+"",target.getId()+","+jet+","+-1);
             break;
           case 609://Chatiment (acncien)
             stat=buff.getValue();
             jet=Formulas.getRandomJet(buff.getJet());
-            target.addBuff(stat,jet,-1,-1,false,buff.getSpell(),buff.getArgs(),caster,false);
+            target.addBuff(stat,jet,-1,-1,false,buff.getSpell(),buff.getArgs(),caster,true);
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,stat,caster.getId()+"",target.getId()+","+jet+","+-1);
             break;
           case 611://Chatiment (acncien)
             stat=buff.getValue();
             jet=Formulas.getRandomJet(buff.getJet());
-            target.addBuff(stat,jet,-1,-1,false,buff.getSpell(),buff.getArgs(),caster,false);
+            target.addBuff(stat,jet,-1,-1,false,buff.getSpell(),buff.getArgs(),caster,true);
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,stat,caster.getId()+"",target.getId()+","+jet+","+-1);
             break;
           case 788://Chatiments
@@ -305,14 +305,14 @@ public class SpellEffect
             else
             {
               target.getChatiValue().put(stat,newValue);
-              target.addBuff(stat,gain,5,1,false,buff.getSpell(),buff.getArgs(),caster,false);
+              target.addBuff(stat,gain,5,1,false,buff.getSpell(),buff.getArgs(),caster,true);
               SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,stat,caster.getId()+"",target.getId()+","+gain+","+5);
             }
             target.getChatiValue().put(stat,newValue);
             break;
           case 1017: //Reinforcementex (Yokai)
             target.addBuff(138,buff.getValue(),-1,-1,false,buff.getSpell(),buff.getArgs(),caster,false);
-            SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,138,caster.getId()+"",target.getId()+","+5+","+buff.getDuration());
+            SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,138,caster.getId()+"",target.getId()+","+buff.getValue()+","+buff.getDuration());
             break;
           case 1026: //Moowolf's Rage (+x damage for every hit taken)
             target.addBuff(112,buff.getValue(),buff.getDuration(),buff.getTurn(),true,buff.getSpell(),buff.getArgs(),caster,false);
@@ -1616,6 +1616,9 @@ public class SpellEffect
         case 1027://Dommage Terre
           applyEffect_1027(cibles,fight,isCaC);
           break;
+        case 1028: //AP bonus if hitting target
+          applyEffect_1028(cibles,fight);
+          break;
         default:
           break;
       }
@@ -1959,11 +1962,11 @@ public class SpellEffect
         continue;
       if(turns==0)
       {
-        target.addBuff(Constant.STATS_REM_PM,val,1,1,true,spell,args,caster,false);
+        target.addBuff(Constant.STATS_REM_PM,val,1,1,true,spell,args,caster,true);
       }
       else
       {
-        target.addBuff(Constant.STATS_REM_PM,val,turns,0,true,spell,args,caster,false);
+        target.addBuff(Constant.STATS_REM_PM,val,turns,0,true,spell,args,caster,true);
       }
       SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,Constant.STATS_REM_PM,caster.getId()+"",target.getId()+",-"+val+","+turns);
       num+=val;
@@ -2027,7 +2030,7 @@ public class SpellEffect
             continue;
         heal=getMaxMinSpell(cible,heal);
         int pdvMax=cible.getPdvMax();
-        int healFinal=Formulas.calculFinalHealCac(caster,heal,false);
+        int healFinal=Formulas.calculFinalHeal(caster,heal,false);
         if((healFinal+cible.getPdv())>pdvMax)
           healFinal=pdvMax-cible.getPdv();
         if(healFinal<1)
@@ -4364,7 +4367,7 @@ public class SpellEffect
           heal=heal-caster.getBuffValue(179);
         heal=getMaxMinSpell(cible,heal);
         int pdvMax=cible.getPdvMax();
-        int healFinal=Formulas.calculFinalHealCac(caster,heal,isCaC);
+        int healFinal=Formulas.calculFinalHeal(caster,heal,isCaC);
         if((healFinal+cible.getPdv())>pdvMax)
           healFinal=pdvMax-cible.getPdv();
         if(healFinal<1)
@@ -4954,7 +4957,7 @@ public class SpellEffect
         if(cible.isDead())
           continue;
         heal=getMaxMinSpell(cible,heal);
-        int healFinal=Formulas.calculFinalHealCac(caster,heal,false);
+        int healFinal=Formulas.calculFinalHeal(caster,heal,false);
         if(spell==450)
         {
           healFinal=heal;
@@ -4987,7 +4990,7 @@ public class SpellEffect
         if(cible.isDead())
           continue;
         heal=getMaxMinSpell(cible,heal);
-        int healFinal=Formulas.calculFinalHealCac(caster,heal,false);
+        int healFinal=Formulas.calculFinalHeal(caster,heal,false);
         if(spell==450)
         {
           healFinal=heal;
@@ -7481,6 +7484,21 @@ public class SpellEffect
       {
         target.addBuff(effectID,value,turns,0,true,spell,args,caster,false);//on applique un buff
       }
+    }
+  }
+
+  private void applyEffect_1028(ArrayList<Fighter> cibles, Fight fight) //AP bonus if has target
+  {
+    if(!cibles.isEmpty())
+    {
+      int val=Formulas.getRandomJet(jet);
+      if(val==-1)
+      {
+        return;
+      }
+      caster.addBuff(120,val,turns,1,true,spell,args,caster,false);
+      caster.setCurPa(fight,val);
+      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,120,caster.getId()+"",caster.getId()+","+val+","+turns);
     }
   }
 

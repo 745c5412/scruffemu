@@ -31,7 +31,7 @@ public class Config
   public float rateXp=4;
 
   /** Config data */
-  public boolean encryptPackets=true;
+  public boolean encryptPackets=false;
   public boolean allowMulePvp=false; //honor for killing character on same IP
   public boolean HEROIC=false;
   public boolean VOTESHOP=false;
@@ -44,13 +44,15 @@ public class Config
   public int erosion=10;
   public int basePods=3000;
   public int idleTime=1000*60*20; //20 minutes
-  public int idleCheck=1000*60*5; //5 minutes
+  public int idleCheck=1000*60*30; //30 minutes
   public int starUpdate=1000*60*120; //updates stars of mobs in database every 2 hours
-  public int averagePingUpdate=1000*60*5; //5 minutes
-  public int moveEntityUpdate=1000*60*3; //3 minutes
+  public int averagePingUpdate=1000*60*10; //10 minutes
+  public int moveEntityUpdate=1000*60*10; //10 minutes
+  public int worldSaveUpdate=1000*60*60*3; //3 hours
   public int worldMarket=10111; //mapID of world market
   public Map<Integer, Integer> teleports=new HashMap<Integer, Integer>();
   public boolean mapAsBlocked=false, fightAsBlocked=false, tradeAsBlocked=false;
+  public int doppleTime=0; //1000*60*60*24; //24 hours between dopple fights
 
   /** Connection data */
   public String key="rushu";

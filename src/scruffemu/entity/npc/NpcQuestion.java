@@ -7,6 +7,7 @@ import scruffemu.entity.Npc;
 import scruffemu.game.World;
 import scruffemu.utility.Pair;
 import scruffemu.job.JobStat;
+import scruffemu.main.Config;
 import scruffemu.main.Constant;
 import scruffemu.object.GameObject;
 import scruffemu.other.Action;
@@ -383,7 +384,7 @@ public class NpcQuestion
                 {
                   String date=player.getItemTemplate(certificat,1).getTxtStat().get(Constant.STATS_DATE);
                   long timeStamp=Long.parseLong(date.split("#")[3]);
-                  if(System.currentTimeMillis()-timeStamp<=86400000)
+                  if(System.currentTimeMillis()-timeStamp<=Config.getInstance().doppleTime)
                   {
                     ok=false;
                   }
@@ -408,7 +409,7 @@ public class NpcQuestion
                   long timeStamp=0;
                   try
                   {
-                    timeStamp=Long.parseLong(date);
+                    timeStamp=Long.parseLong(date.split("#")[3]);
                   }
                   catch(Exception e)
                   {
@@ -417,7 +418,7 @@ public class NpcQuestion
                   }
                   if(timeStamp!=0)
                   {
-                    if(System.currentTimeMillis()-timeStamp<=86400000)
+                    if(System.currentTimeMillis()-timeStamp<=Config.getInstance().doppleTime)
                     {
                       ok=false;
                     }

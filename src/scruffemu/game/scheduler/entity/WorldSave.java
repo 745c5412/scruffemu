@@ -8,6 +8,7 @@ import scruffemu.entity.Prism;
 import scruffemu.entity.monster.MobGroup;
 import scruffemu.game.Updatable;
 import scruffemu.game.World;
+import scruffemu.main.Config;
 import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.utility.Pair;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class WorldSave extends Updatable
 {
-  public final static Updatable updatable=new WorldSave(7200000);
+  public final static Updatable updatable=new WorldSave(Config.getInstance().worldSaveUpdate);
   private static Thread thread;
 
   private WorldSave(int wait)

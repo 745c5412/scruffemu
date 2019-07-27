@@ -37,6 +37,7 @@ import scruffemu.utility.TimerWaiterPlus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import scruffemu.other.Action;
@@ -170,21 +171,21 @@ public class Action
 
       case -6://Dopeuls
         GameMap mapActuel=player.getCurMap();
-        java.util.Map<Integer, Pair<Integer, Integer>> dopeuls=Dopeul.getDopeul();
+        Map<Integer, Pair<Integer, Integer>> dopeuls=Dopeul.getDopeul();
         Integer IDmob=null;
         if(dopeuls.containsKey((int)mapActuel.getId()))
         {
           IDmob=dopeuls.get((int)mapActuel.getId()).getLeft();
         } else
         {
-          SocketManager.GAME_SEND_MESSAGE(player,"Erreur de dopeul, veuillez nous avertir sur le forum.");
+          SocketManager.GAME_SEND_MESSAGE(player,"Dopple error, please report this on the bug report channel on discord.");
           return true;
         }
 
         int LVLmob=Formulas.getLvlDopeuls(player.getLevel());
         if(player.getLevel()<11)
         {
-          SocketManager.GAME_SEND_MESSAGE(player,"Il faut être niveau 11 minimum pour combattre les dopeuls des temples.");
+          SocketManager.GAME_SEND_MESSAGE(player,"You have to be at least level 11 to fight a dopple.");
           return true;
         }
         int certificat=Constant.getCertificatByDopeuls(IDmob);
@@ -194,9 +195,9 @@ public class Action
         {
           String date=player.getItemTemplate(certificat,1).getTxtStat().get(Constant.STATS_DATE);
           long timeStamp=Long.parseLong(date.split("#")[3]);
-          if(System.currentTimeMillis()-timeStamp<=86400000)
+          if(System.currentTimeMillis()-timeStamp<=Config.getInstance().doppleTime)
           {
-            SocketManager.GAME_SEND_MESSAGE(player,"Il faut que tu attende 24 heures avant de pouvoir combattre ce dopeul.");
+            SocketManager.GAME_SEND_MESSAGE(player,"You have to wait at least 24 hours to fight this dopple.");
             return true;
           } else
             player.removeByTemplateID(certificat,1);

@@ -171,7 +171,7 @@ public class World
     return players.get(id);
   }
 
-  public List<Player> getOnlinePlayers()
+  public synchronized List<Player> getOnlinePlayers()
   {
     final List<Player> online=new ArrayList<Player>();
     for(final Map.Entry<Integer, Player> perso : World.world.players.entrySet())

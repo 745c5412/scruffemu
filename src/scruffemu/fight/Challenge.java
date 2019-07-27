@@ -382,14 +382,14 @@ public class Challenge
         }
         break;
       case 32: // Elitiste
-      case 34: // Imprï¿½visible
+      case 34: // Imprévisible
         if(caster.getTeam()==0&&DamagingEffects.contains("|"+effectID+"|"))
         {
           for(Fighter target : targets)
           {
             if(target.getTeam()==1)
             {
-              if(target==null||target.getId()!=target.getId())
+              if(target!=null||target.getId()!=target.getId())
                 challengeLoose(caster);
             }
           }

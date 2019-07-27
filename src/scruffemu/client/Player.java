@@ -228,6 +228,7 @@ public class Player
   //IPDrop system
   public boolean ipDrop=false;
   private Pair<InteractiveObject,GameCase> inInteractiveObject=null;
+  private boolean canDrop=true;
 
   public ArrayList<Integer> getIsCraftingType()
   {
@@ -6554,6 +6555,16 @@ public class Player
   public void setInInteractiveObject(Pair<InteractiveObject,GameCase> inInteractiveObject)
   {
     this.inInteractiveObject = inInteractiveObject;
+  }
+
+  public boolean getCanDrop()
+  {
+    return canDrop;
+  }
+
+  public void setCanDrop(boolean canDrop)
+  {
+    this.canDrop = canDrop;
   }
 
 }

@@ -2,11 +2,11 @@ package scruffemu.fight.ia.type;
 
 import scruffemu.fight.Fight;
 import scruffemu.fight.Fighter;
-import scruffemu.fight.ia.AbstractIA;
+import scruffemu.fight.ia.AbstractNeedSpell;
 import scruffemu.fight.ia.util.Function;
 import scruffemu.fight.spells.Spell.SortStats;
 
-public class IA16 extends AbstractIA
+public class IA16 extends AbstractNeedSpell
 {
 
   public IA16(Fight fight, Fighter fighter, byte count)
@@ -17,31 +17,93 @@ public class IA16 extends AbstractIA
   @Override
   public void apply()
   {
-    if(this.count>0&&this.fighter.canPlay()&&!this.stop)
+    if(!this.stop&&this.fighter.canPlay()&&this.count>0)
     {
-      Fighter target=Function.getInstance().getNearestEnnemy(this.fight,this.fighter);
+      int time=100,maxPo=1;
+      boolean action=false;
+      Fighter E=Function.getInstance().getNearestEnnemy(this.fight,this.fighter);
 
-      if(target==null)
-        return;
+      for(SortStats spellStats : this.highests)
+        if(spellStats!=null&&spellStats.getMaxPO()>maxPo)
+          maxPo=spellStats.getMaxPO();
 
-      int value=Function.getInstance().moveToAttackIfPossible(this.fight,this.fighter),cellId=value-(value/1000)*1000;;
-      SortStats spellStats=this.fighter.getMob().getSpells().get(value/1000);
+      Fighter firstEnnemy=Function.getInstance().getNearestEnnemynbrcasemax(this.fight,this.fighter,1,maxPo+1);
+      Fighter secondEnnemy=Function.getInstance().getNearestEnnemynbrcasemax(this.fight,this.fighter,0,2);
 
-      if(cellId!=-1)
+      if(maxPo==1)
+        firstEnnemy=null;
+      if(secondEnnemy!=null)
+        if(secondEnnemy.isHide())
+          secondEnnemy=null;
+      if(firstEnnemy!=null)
+        if(firstEnnemy.isHide())
+          firstEnnemy=null;
+
+      if(this.fighter.getCurPm(this.fight)>0&&firstEnnemy==null&&secondEnnemy==null)
       {
-        if(this.fight.canCastSpell1(this.fighter,spellStats,this.fighter.getCell(),cellId))
+        int num=Function.getInstance().moveautourIfPossible(this.fight,this.fighter,E);
+        if(num!=0)
         {
-          this.fight.tryCastSpell(this.fighter,spellStats,cellId);
-        } else
-        {
-          if(!Function.getInstance().moveNearIfPossible(this.fight,this.fighter,target))
-            if(!Function.getInstance().invocIfPossible(this.fight,this.fighter))
-              this.stop=true;
+          time=num;
+          action=true;
+          firstEnnemy=Function.getInstance().getNearestEnnemynbrcasemax(this.fight,this.fighter,1,maxPo+1);
+          secondEnnemy=Function.getInstance().getNearestEnnemynbrcasemax(this.fight,this.fighter,0,2);
+          if(maxPo==1)
+            firstEnnemy=null;
         }
       }
 
-      addNext(this::decrementCount,800);
-    } else
+      if(this.fighter.getCurPa(this.fight)>0&&firstEnnemy!=null&&secondEnnemy==null&&!action)
+      {
+        int num=Function.getInstance().attackIfPossible(this.fight,this.fighter,this.highests);
+        if(num!=0)
+        {
+          time=num;
+          action=true;
+        }
+      }
+      else if(this.fighter.getCurPa(this.fight)>0&&secondEnnemy!=null&&!action)
+      {
+        int num=Function.getInstance().attackIfPossible(this.fight,this.fighter,this.cacs);
+        if(num!=0)
+        {
+          time=num;
+          action=true;
+        }
+      }
+
+      if(this.fighter.getCurPa(this.fight)>0&&secondEnnemy!=null&&!action)
+      {
+        if(Function.getInstance().buffIfPossible(this.fight,this.fighter,this.fighter))
+        {
+          time=800;
+          action=true;
+        }
+      }
+
+      if(this.fighter.getCurPm(this.fight)>0&&!action)
+      {
+        int num=Function.getInstance().moveautourIfPossible(this.fight,this.fighter,E);
+        if(num!=0)
+          time=num;
+      }
+
+      if(this.fighter.getCurPa(this.fight)>0&&!action)
+      {
+        if(Function.getInstance().invocIfPossible(this.fight,this.fighter,this.invocations))
+        {
+          time=600;
+          action=true;
+        }
+      }
+
+      if(this.fighter.getCurPa(this.fight)==0&&this.fighter.getCurPm(this.fight)==0)
+        this.stop=true;
+      addNext(this::decrementCount,time);
+    }
+    else
+    {
       this.stop=true;
+    }
   }
 }

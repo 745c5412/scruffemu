@@ -71,7 +71,7 @@ public class GameServer
   }
 
   @SuppressWarnings("deprecation")
-  public List<GameClient> getClients()
+  public synchronized List<GameClient> getClients()
   {
     return acceptor.getManagedSessions().values().stream().filter(session -> session.getAttachment()!=null).map(session -> (GameClient)session.getAttachment()).collect(Collectors.toList());
   }
@@ -79,7 +79,6 @@ public class GameServer
   //v2.8 - correct number
   public int getPlayersNumberByIp()
   {
-    //return (int)this.getClients().stream().filter(client -> client!=null&&client.getAccount()!=null).map(client -> client.getAccount().getCurrentIp()).distinct().count();
     ArrayList<String> IPs=new ArrayList<String>();
     for(Player player : World.world.getOnlinePlayers())
       if(player.getGameClient()!=null)

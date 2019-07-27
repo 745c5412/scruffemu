@@ -8,7 +8,7 @@ import scruffemu.main.Config;
 
 public class MoveEntities extends Updatable
 {
-  public final static Updatable updatable=new MoveEntities(Config.getInstance().averagePingUpdate);
+  public final static Updatable updatable=new MoveEntities(Config.getInstance().moveEntityUpdate);
   public MoveEntities(int wait)
   {
     super(wait);

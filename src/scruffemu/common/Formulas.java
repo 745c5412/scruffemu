@@ -174,25 +174,41 @@ public class Formulas
     return esquive;
   }
 
-  public static int calculFinalHeal(Player caster, int jet)
+  public static int calculFinalHeal(Fighter healer, int roll, boolean isCac)
   {
-    int statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_INTE);
-    int soins=caster.getTotalStats().getEffect(Constant.STATS_ADD_SOIN);
-    if(statC<0)
-      statC=0;
-    return jet*(100+statC)/100+soins;
-  }
-
-  public static int calculFinalHealCac(Fighter healer, int rank, boolean isCac)
-  {
-    int intel=healer.getTotalStats().getEffect(126);
-    int heals=healer.getTotalStats().getEffect(178);
+    int intel=healer.getTotalStats().getEffect(Constant.STATS_ADD_INTE);
+    int heals=healer.getTotalStats().getEffect(Constant.STATS_ADD_SOIN);
     if(intel<0)
       intel=0;
-    float adic=100;
+    float a=1;
+
+    //v2.1 - bonus without weapon attack fix
     if(isCac)
-      adic=105;
-    return (int)(rank*((100.00+intel)/adic)+heals/2);
+      if(healer.getPersonnage()!=null&&healer.getPersonnage().getObjetByPos(1)!=null)
+      {
+        float i=0; //Bonus maitrise
+        float j=Constant.getWeaponClassModifier(healer.getPersonnage());
+        int ArmeType=healer.getPersonnage().getObjetByPos(1).getTemplate().getType();
+        if((healer.getSpellValueBool(392))&&ArmeType==2)//ARC
+          i=healer.getMaitriseDmg(392);
+        if((healer.getSpellValueBool(390))&&ArmeType==4)//BATON
+          i=healer.getMaitriseDmg(390);
+        if((healer.getSpellValueBool(391))&&ArmeType==6)//EPEE
+          i=healer.getMaitriseDmg(391);
+        if((healer.getSpellValueBool(393))&&ArmeType==7)//MARTEAUX
+          i=healer.getMaitriseDmg(393);
+        if((healer.getSpellValueBool(394))&&ArmeType==3)//BAGUETTE
+          i=healer.getMaitriseDmg(394);
+        if((healer.getSpellValueBool(395))&&ArmeType==5)//DAGUES
+          i=healer.getMaitriseDmg(395);
+        if((healer.getSpellValueBool(396))&&ArmeType==8)//PELLE
+          i=healer.getMaitriseDmg(396);
+        if((healer.getSpellValueBool(397))&&ArmeType==19)//HACHE
+          i=healer.getMaitriseDmg(397);
+        a=(((100+i)/100)*(j/100));
+      }
+    
+    return (int)(a*(roll*((100.00+intel)/100)+heals));
   }
 
   public static int calculXpWinCraft(int lvl, int numCase)
@@ -1158,7 +1174,7 @@ public class Formulas
 
     final float averageItemPower=(float)Math.round(((float)(maxItemPower+minItemPower)/2)*100)/100; //rounded to two decimals to avoid small errors
     final float statPower=runePower/runeStat;
-    
+
     float twentyPowerRule=(float)((itemPower/averageItemPower)/coef); //0.5 if half of average item power, 2 if double of average item power, when exo limit / 0.5 = * 2
     if(twentyPowerRule<0.5f)
       twentyPowerRule=0.5f;

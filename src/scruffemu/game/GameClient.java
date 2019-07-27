@@ -5029,6 +5029,7 @@ public class GameClient
     if(cellID==-1||actionID==-1||this.player==null||this.player.getCurMap()==null||this.player.getCurMap().getCase(cellID)==null)
       return;
 
+    this.player.setOldCell(player.getCurCell().getId());
     GA.args=cellID+";"+actionID;
     this.player.getGameClient().addAction(GA);
     if(this.player.isDead()==0)
@@ -8475,7 +8476,8 @@ public class GameClient
     if(this.account!=null&&this.player!=null)
     {
       this.account.disconnect(this.player);
-      kickSession();
+      if(this.getSession()!=null)
+        kickSession();
     }
     Main.refreshTitle();
   }
@@ -8761,7 +8763,7 @@ public class GameClient
 
   public void setCreatingCharacter(boolean creatingCharacter)
   {
-    this.creatingCharacter = creatingCharacter;
+    this.creatingCharacter=creatingCharacter;
   }
 
   public boolean getCharacterSelect()
@@ -8771,6 +8773,6 @@ public class GameClient
 
   public void setCharacterSelect(boolean characterSelect)
   {
-    this.characterSelect = characterSelect;
+    this.characterSelect=characterSelect;
   }
 }

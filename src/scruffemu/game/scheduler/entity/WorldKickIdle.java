@@ -43,29 +43,26 @@ public class WorldKickIdle extends Updatable
         boolean found=false;
         for(Player player : World.world.getOnlinePlayers())
           if(client.getPlayer()==player)
-          {
             if(!client.getCharacterSelect()==true)
             {
               found=true;
               break;
             }
-          }
         if(!found)
         {
           if(!client.getCharacterSelect()==true)
-          {
-            client.kickSession();
-            idleSession++;
-          }
+            if(client.getSession()!=null)
+            {
+              client.kickSession();
+              idleSession++;
+            }
         }
         else if(System.currentTimeMillis()-client.timeLastAct>Config.getInstance().idleTime)
-        {
           if(!client.getCharacterSelect()==true)
           {
             client.disconnect();
             idleClient++;
           }
-        }
       }
       System.out.println("Purged "+idleClient+" idle client(s), "+idleSession+" idle session(s) and "+idlePlayer+" idle player(s).");
     }

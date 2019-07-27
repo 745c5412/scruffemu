@@ -1028,18 +1028,6 @@ public class Fight
 
   void scheduleTimer(int time)
   {
-    /*TimerWaiter.addNext(() -> {
-      if(!this.isBegin)
-      {
-        if(this.collector!=null&&!this.collectorProtect)
-          this.collector.removeTimeTurn(1000);
-    
-        if(this.getState()!=Constant.FIGHT_STATE_ACTIVE)
-          this.startFight();
-        else if(this.collector!=null&&!this.collectorProtect)
-          this.collector.setTimeTurn(60000);
-      }
-    },time,TimeUnit.SECONDS,TimerWaiter.DataType.FIGHT);*/
     new TimerWaiterPlus(() -> {
       if(!this.isBegin)
       {
@@ -1094,15 +1082,6 @@ public class Fight
 
     if(getState()>=Constant.FIGHT_STATE_ACTIVE)
       return;
-
-    if(this.getType()==Constant.FIGHT_TYPE_PVM)
-    {
-      if(this.getMobGroup().isFix()&&isCheckTimer()&&this.getMapOld().getId()!=6826&&this.getMapOld().getId()!=10332&&this.getMapOld().getId()!=7388)
-        this.getMapOld().spawnAfterTimeGroupFix(this.getMobGroup().getCellId());
-      else if(!Config.getInstance().HEROIC)
-        if(!this.getMobGroup().isFix()&&this.isCheckTimer())
-          this.getMapOld().spawnAfterTimeGroup();// Respawn d'un groupe
-    }
 
     if(getType()==Constant.FIGHT_TYPE_CONQUETE)
     {
@@ -1175,8 +1154,8 @@ public class Fight
               break;
           }
 
-          /*player.setOldMap(player.getCurMap().getId());
-          player.setOldCell(player.getCurCell().getId());*/
+          player.setOldMap(player.getCurMap().getId());
+          player.setOldCell(player.getCurCell().getId());
 
           if(player.hasSpell(367))
             hasCawotte=true;
@@ -2692,17 +2671,14 @@ public class Fight
           {
             int heal=Formulas.getRandomValue(heals.getLeft(),heals.getRight());
             if(isCC)
-              heal=heal+arme.getTemplate().getBonusCC();
-            int intel=perso.getStats().getEffect(Constant.STATS_ADD_INTE)+perso.getStuffStats().getEffect(Constant.STATS_ADD_INTE)+perso.getDonsStats().getEffect(Constant.STATS_ADD_INTE)+perso.getBuffsStats().getEffect(Constant.STATS_ADD_INTE);
-            int soins=perso.getStats().getEffect(Constant.STATS_ADD_SOIN)+perso.getStuffStats().getEffect(Constant.STATS_ADD_SOIN)+perso.getDonsStats().getEffect(Constant.STATS_ADD_SOIN)+perso.getBuffsStats().getEffect(Constant.STATS_ADD_SOIN);
-            heal=heal*(100+intel)/100+soins;
-
+              heal+=arme.getTemplate().getBonusCC();
+            heal=Formulas.calculFinalHeal(caster,heal,true);
             for(Fighter target : cibles)
             {
               if(target==null)
                 continue;
               if((heal+target.getPdv())>target.getPdvMax())
-                heal=target.getPdvMax()-target.getPdv(); // Target
+                heal=target.getPdvMax()-target.getPdv(); //Target
 
               target.removePdv(target,-heal);
               SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this,7,100,target.getId()+"",target.getId()+",+"+heal);
@@ -4331,7 +4307,6 @@ public class Fight
   public String getGE(int win)
   {
     int type=Constant.FIGHT_TYPE_CHALLENGE;
-
     if(this.getType()==Constant.FIGHT_TYPE_AGRESSION||getType()==Constant.FIGHT_TYPE_CONQUETE)
       type=1;
     if(this.getType()==Constant.FIGHT_TYPE_PVT)
@@ -4705,6 +4680,7 @@ public class Fight
         }
         temporary1.add(higherFighter);
       }
+
       winners.clear();
       winners.addAll(temporary1);
       final NumberFormat formatter=new DecimalFormat("#0.000");
@@ -4850,6 +4826,32 @@ public class Fight
             {
               e.printStackTrace();
             }
+        }
+      }
+      else
+      {
+        if(this.getType()==Constant.FIGHT_TYPE_PVM)
+        {
+          try
+          {
+            final MobGroup group=this.getMobGroup();
+
+            if(team) //players lost, respawn same group
+            {
+              this.getMapOld().respawnGroup(group);
+            }
+            else //players won, spawn new group
+            {
+              if(group.isFix()) //players won against fixed mobgroup
+                this.getMapOld().spawnAfterTimeGroupFix(mobGroup.getSpawnCellId());
+              else //players won against normal mobgroup
+                this.getMapOld().spawnAfterTimeGroup();
+            }
+          }
+          catch(Exception e)
+          {
+            e.printStackTrace();
+          }
         }
       }
       /** End heroic **/
@@ -5179,17 +5181,38 @@ public class Fight
                 break;
               if(objectTemplate==null||i.isDouble())
                 continue;
-              if(drops.length()>0)
-                drops+=",";
 
-              drops+=entry.getKey()+"~"+entry.getValue();
+              Fighter target=i.getPersonnage()==null ? i.getInvocator() : i;
+              Player playerTarget=target.getPersonnage();
 
-              Player target=player!=null ? player : i.getInvocator().getPersonnage();
+              if(objectTemplate.getType()!=24) //not a quest item
+              {
+                //v2.8 - ipdrop system
+                for(Player p : getPlayersSameIP(playerTarget,winners))
+                {
+                  if(p.ipDrop==true&&playerTarget!=p)
+                  {
+                    playerTarget=p;
+                    break;
+                  }
+                }
 
-              //v2.8 - ipdrop system
-              for(Player p : World.getOnlinePlayersSameIP(target.getGameClient()))
-                if(p.ipDrop==true&&p.getFight()==this&&p!=target)
-                  target=p;
+                //v2.9 - nodrop system
+                if(playerTarget.getCanDrop()==false)
+                  continue;
+                else
+                {
+                  if(drops.length()>0)
+                    drops+=",";
+                  drops+=entry.getKey()+"~"+entry.getValue();
+                }
+              }
+              else
+              {
+                if(drops.length()>0)
+                  drops+=",";
+                drops+=entry.getKey()+"~"+entry.getValue();
+              }
 
               if(objectTemplate.getType()==32&&player!=null)
               {
@@ -5202,28 +5225,28 @@ public class Fight
                 if(objectTemplate.getType()==Constant.ITEM_TYPE_FAMILIER)
                 {
                   newObj=objectTemplate.createNewItem(entry.getValue(),false);
-                  if(target.addObjet(newObj,true))
+                  if(playerTarget.addObjet(newObj,true))
                     World.addGameObject(newObj,true);
                 }
                 else
                 {
-                  newObj=objectTemplate.createNewItemWithoutDuplication(target.getItems().values(),entry.getValue(),false);
+                  newObj=objectTemplate.createNewItemWithoutDuplication(playerTarget.getItems().values(),entry.getValue(),false);
                   int guid=newObj.getGuid();
                   if(guid==-1)
                   { // Don't exist
                     guid=newObj.setId();
-                    target.getItems().put(guid,newObj);
-                    SocketManager.GAME_SEND_OAKO_PACKET(target,newObj);
+                    playerTarget.getItems().put(guid,newObj);
+                    SocketManager.GAME_SEND_OAKO_PACKET(playerTarget,newObj);
                     World.addGameObject(newObj,true);
                   }
                   else
                   {
-                    GameObject object=target.getItems().get(guid);
+                    GameObject object=playerTarget.getItems().get(guid);
 
                     if(object!=null)
                     {
                       object.setQuantity(object.getQuantity()+entry.getValue());
-                      SocketManager.GAME_SEND_OBJECT_QUANTITY_PACKET(target,object);
+                      SocketManager.GAME_SEND_OBJECT_QUANTITY_PACKET(playerTarget,object);
                     }
                   }
                 }
@@ -5238,22 +5261,43 @@ public class Fight
                 break;
               if(objectTemplate==null)
                 continue;
-              if(drops.length()>0)
-                drops+=",";
-
-              drops+=entry.getKey()+"~"+entry.getValue();
 
               Player target=player!=null ? player : i.getInvocator().getPersonnage();
-              //v2.8 - ipdrop system
-              for(Player p : World.getOnlinePlayersSameIP(player.getGameClient()))
-                if(p.ipDrop==true&&p.getFight()==this&&p!=player)
-                  target=p;
+
+              if(objectTemplate.getType()!=24) //not a quest item
+              {
+                //v2.8 - ipdrop system
+                for(Player p : getPlayersSameIP(target,winners))
+                {
+                  if(p.ipDrop==true&&target!=p)
+                  {
+                    target=p;
+                    break;
+                  }
+                }
+
+                //v2.9 - nodrop system
+                if(target.getCanDrop()==false)
+                  continue;
+                else
+                {
+                  if(drops.length()>0)
+                    drops+=",";
+                  drops+=entry.getKey()+"~"+entry.getValue();
+                }
+              }
+              else
+              {
+                if(drops.length()>0)
+                  drops+=",";
+                drops+=entry.getKey()+"~"+entry.getValue();
+              }
 
               GameObject newObj=World.world.getObjTemplate(objectTemplate.getId()).createNewItemWithoutDuplication(target.getItems().values(),entry.getValue(),false);
-              int guid=newObj.getGuid();//FIXME: Ne pas recrée un item pour l'empiler après
+              int guid=newObj.getGuid(); //FIXME: Ne pas recrée un item pour l'empiler après
 
               if(guid==-1)
-              { // Don't exist
+              {
                 guid=newObj.setId();
                 target.getItems().put(guid,newObj);
                 SocketManager.GAME_SEND_OAKO_PACKET(target,newObj);
@@ -5393,13 +5437,17 @@ public class Fight
           //v2.8 - ipdrop system
           Fighter target=i;
           if(player!=null)
+          {
             for(Fighter fighter : winners)
+            {
               if(fighter.getPersonnage()!=null)
                 if(fighter.getPersonnage().ipDrop&&fighter.getPersonnage()!=player)
                 {
                   target=fighter;
                   break;
                 }
+            }
+          }
 
           StringBuilder p=new StringBuilder();
           p.append("2;");
@@ -5417,9 +5465,19 @@ public class Fight
             if(target.getPersonnage()==i.getPersonnage()&&i.getPersonnage().ipDrop) //take ipDrops
             {
               if(!drops.isEmpty())
-                p.append(stackDrops(drops,ipDrops.toString())+";");
+              {
+                if(i.getPersonnage()!=null)
+                  if(i.getPersonnage().getCanDrop()==true)
+                    p.append(stackDrops(drops,ipDrops.toString()));
+                p.append(";");
+              }
               else
-                p.append(ipDrops).append(";");
+              {
+                if(i.getPersonnage()!=null)
+                  if(i.getPersonnage().getCanDrop()==true)
+                    p.append(ipDrops.toString());
+                p.append(";");
+              }
             }
             else if(target!=i) //give ipDrops away person
             {
@@ -5433,8 +5491,19 @@ public class Fight
                 ipDrops=temp;
               }
             }
+            else //no ipDrop enabled
+            {
+              if(i.getPersonnage()!=null)
+              {
+                if(i.getPersonnage().getCanDrop()==true)
+                  p.append(drops);
+                p.append(";");
+              }
+              else
+                p.append(drops).append(";");
+            }
           }
-          else if(target!=i) //give ipDrops away summon
+          else if(target!=i) //give ipDrops away summon (living chest)
           {
             p.append(";");
             if(ipDrops.toString().isEmpty())
@@ -5446,10 +5515,9 @@ public class Fight
               ipDrops=temp;
             }
           }
-          else //no ipDrop enabled
+          else
             p.append(drops).append(";");
 
-          p.append(drops).append(";"); // Drop
           p.append((winKamas==0 ? "" : winKamas)).append("|");
           gains.put(i.getId(),p);
         }
@@ -5825,6 +5893,7 @@ public class Fight
 
         Database.getDynamics().getCollectorData().update(collector);
       }
+
       return packet.toString();
     }
     catch(Exception e)
@@ -6094,7 +6163,6 @@ public class Fight
       return b;
     else if(b.isEmpty())
       return a;
-
     ArrayList<String> aSplit=new ArrayList<String>(Arrays.asList(a.split(",")));
     ArrayList<String> bSplit=new ArrayList<String>(Arrays.asList(b.split(",")));
     StringBuilder doneString=new StringBuilder();
@@ -6124,5 +6192,31 @@ public class Fight
     if(doneString.charAt(doneString.length()-1)==',')
       doneString.deleteCharAt(doneString.length()-1);
     return doneString.toString();
+  }
+
+  //v2.8 - same IP player list for .ipdrop command
+  public static ArrayList<Player> getPlayersSameIP(Player source, ArrayList<Fighter> fighters)
+  {
+    ArrayList<Player> sameIpPlayers=new ArrayList<>();
+    final List<Player> online=new ArrayList<Player>();
+    for(Fighter f : fighters)
+    {
+      if(f.getPersonnage()==null)
+      {
+        continue;
+      }
+      if(!f.getPersonnage().isOnline()||f.getPersonnage().getGameClient()==null)
+      {
+        continue;
+      }
+      online.add(f.getPersonnage());
+    }
+    for(Player player : online)
+    {
+      if(player.getAccount()!=null&&player.getAccount().getCurrentIp()!=null)
+        if(player.getAccount().getCurrentIp().compareTo(source.getAccount().getCurrentIp())==0)
+          sameIpPlayers.add(player);
+    }
+    return sameIpPlayers;
   }
 }

@@ -7,6 +7,7 @@ import scruffemu.area.map.GameMap;
 import scruffemu.client.Player;
 import scruffemu.utility.Pair;
 import scruffemu.job.JobStat;
+import scruffemu.main.Config;
 import scruffemu.main.Constant;
 import scruffemu.object.GameObject;
 import scruffemu.other.Dopeul;
@@ -110,7 +111,7 @@ public class ConditionParser
       jep.parse(req);
       Object result=jep.evaluate();
       boolean ok=false;
-      
+
       if(result!=null)
         ok=Boolean.valueOf(result.toString());
       return ok;
@@ -280,8 +281,9 @@ public class ConditionParser
         if(txt.contains("#"))
           txt=txt.split("#")[3];
         long timeStamp=Long.parseLong(txt);
-        return System.currentTimeMillis()-timeStamp>86400000;
-      } else
+        return System.currentTimeMillis()-timeStamp>Config.getInstance().doppleTime;
+      }
+      else
         return true;
     }
     return false;
@@ -297,7 +299,8 @@ public class ConditionParser
     if(req.contains("=="))
     {
       return qp!=null&&!qp.isFinish();
-    } else
+    }
+    else
     {
       return qp==null||qp.isFinish();
     }
@@ -346,7 +349,8 @@ public class ConditionParser
           {
             player.removeByTemplateID(id,qua);
             return true;
-          } else
+          }
+          else
           {
             SocketManager.GAME_SEND_Im_PACKET(player,"14");
             return false;
@@ -423,7 +427,8 @@ public class ConditionParser
             if(perso.hasItemTemplate(Integer.parseInt(cur2),1))
             {
               copyCond+=Integer.parseInt(cur2)+"=="+Integer.parseInt(cur2);
-            } else
+            }
+            else
             {
               copyCond+=Integer.parseInt(cur2)+"=="+0;
             }
@@ -456,7 +461,8 @@ public class ConditionParser
             if(perso.hasItemTemplate(Integer.parseInt(cur2),1))
             {
               copyCond+=Integer.parseInt(cur2)+"!="+Integer.parseInt(cur2);
-            } else
+            }
+            else
             {
               copyCond+=Integer.parseInt(cur2)+"!="+0;
             }
@@ -464,7 +470,8 @@ public class ConditionParser
         }
         copyCond+="&&";
       }
-    } else if(cond.contains("||"))
+    }
+    else if(cond.contains("||"))
     {
       for(String cur : cond.split("\\|\\|"))
       {
@@ -495,7 +502,8 @@ public class ConditionParser
             if(perso.hasItemTemplate(Integer.parseInt(cur2),1))
             {
               copyCond+=Integer.parseInt(cur2)+"=="+Integer.parseInt(cur2);
-            } else
+            }
+            else
             {
               copyCond+=Integer.parseInt(cur2)+"=="+0;
             }
@@ -528,7 +536,8 @@ public class ConditionParser
             if(perso.hasItemTemplate(Integer.parseInt(cur2),1))
             {
               copyCond+=Integer.parseInt(cur2)+"!="+Integer.parseInt(cur2);
-            } else
+            }
+            else
             {
               copyCond+=Integer.parseInt(cur2)+"!="+0;
             }
@@ -536,7 +545,8 @@ public class ConditionParser
         }
         copyCond+="||";
       }
-    } else
+    }
+    else
     {
       CutFinalLenght=false;
       if(cond.contains("=="))
@@ -604,7 +614,8 @@ public class ConditionParser
         copyCond="1==1";
       else
         copyCond="1==0";
-    } else if(cond.contains(">"))
+    }
+    else if(cond.contains(">"))
     {
       if(cond.contains("||"))
       {
@@ -624,7 +635,8 @@ public class ConditionParser
           else
             copyCond+="1==0";
         }
-      } else
+      }
+      else
       {
         String[] cur=cond.split(">");
         String[] m=cur[1].split(",");

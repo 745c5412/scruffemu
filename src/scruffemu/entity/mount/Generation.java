@@ -20,7 +20,7 @@ public class Generation
 
   public static short getTimeGestation(int generation)
   {
-    return (short)(36+12*generation);
+    return (short)(12*generation);
   }
 
   public static short getLearningRate(int generation)
