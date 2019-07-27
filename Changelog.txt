@@ -1669,3 +1669,59 @@ Fixed a bug where the set bonus of the Cherry Blop set was incorrect
 Fixed a bug where the set bonus of the Pippin Blop set was incorrect
 Fixed a bug where the set bonus of the Coco Blop set was incorrect
 Fixed a bug where the set bonus of the Indigo Blop set was incorrect
+
+21-07-2019
+Fixed a bug where reinforcementex would print it gave +5% bonus damage instead of +1/2% bonus damage
+Fixed a nullpointerexception where wild mounts would disappear, but the rest of the code would not be executed correctly
+Reduced pregnant time of mounts to 12*generation (was 36+12*generation)
+Fixed a bug where the total healing formula would use your character's heals/2 instead of just your character's heals
+Removed 2 different unused healing formulas
+Made getClients and getOnlinePlayers functions synchronized (think this might be the cause of some bugs with the client kicker)
+Player positioning is now updated correctly when harvesting resources
+Added .nodrop command that toggles you being able to get drops from monsters
+Fixed a bug where Feca's Blindness at level 6 would apply a 1-turn poison instead of doing damage with a critical hit
+
+22-07-2019
+Added First Part of Dragon Pig Maze Key as drop from Piglet at 1%
+Added First Part of Dragon Pig Maze Key as drop from Piglet archmob at 1%
+Fixed a bug where Lord Crow's Carapace of Wings did not correctly apply its effects
+Fixed a bug where Piralak's Brandy also affected enemies
+Fixed a bug where the Zoth Door Keepers area had a spacebar in front of it
+Changed idle kick updatable to run once every 30 minutes (was once every 5 minutes)
+Changed average ping updatable to run once every 10 minutes (was once every 5 minutes)
+Changed world save updatable to run once every 3 hours (was once every 2 hours)
+Fixed a bug with the drops system that made .ipdrop not work in certain situations (dungeon fights)
+Fixed a bug where the endfight screen packet did not correctly add drops to a character with .ipdrop activated, making the drops and amount of drops on the endfight screen incorrect
+Redid Tanukouï San's AI (now it actually summons tanuki chans and uses tanukick correctly)
+Fixed a bug where if ipdrop was enabled in a fight, it'd cause the packet structure of the endfight screen packet to be incorrect after drops, causing kamas to not show up on the screen
+
+23-07-2019
+Made the nodrop and ipdrop commands exclude quest items from dropping or make quest items go to a different target
+Fixed a bug with where the nodrop command would cause an incorrect packet structure of the endfight screen packet, causing you to see items with a nan quantity in the endfight screen
+Redid the mob respawning system
+	- if players lose to a mob, spawns the same mob again immediately including stars
+	- if players win against a mob and it's a normal mob, spawns a new randomized mob after a random delay between two values determined by the database (12-30 seconds is the standard)
+	- if players win against a mob and it's a dungeon mob, spawns a new dungeon mob with the same monsters after a random delay between tow values determined by the database (12-30 seconds is the standard)
+Fixed a bug where the unpredictable and elitist challenges could not fail
+Xelor's Hand now no longer gives an AP boost if it doesn't hit a target
+Ecaflip's Kitten's Catatack now deals water damage (was neutral damage)
+Cra's Magic Arrow now steals range before doing damage (you still steal range if you kill the mob)
+Cra's Paralyzing Arrow now steals MP before doing damage
+Enutrof's Prime of Life now steals MP before doing damage
+Feca's Backlash now steals strength before doing damage
+Sacrier's Sacrier's Foot now steals agility before doing damage
+Sram's Mistake now steals agility before doing damage
+Xelor's Hand now gives an AP boost before doing damage
+Xelor's Clock now steals AP before doing damage
+Fixed 8 broken map connections
+Added fighting positions to 12 maps
+
+27-07-2019
+Fixed a bug with the parsing of the dopple certificates that caused you to not be able to rebattle dopples after killing them once
+Changed spells so their damaging effect happens before their secondary effect, this makes the spell take up less time if it kills the target with its damage. Spells affected are:
+	- Bat's Eye
+	- Lashing Arrow
+	- Slow Down Arrow
+	- Blindness
+	- Wild Grass
+	- Temporal Dust
