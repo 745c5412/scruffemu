@@ -134,122 +134,135 @@ public class GameObject
 
   public void parseStringToStats(String strStats, boolean save)
   {
-    if(this.template!=null&this.template.getId()==7010)
+    if(this.template!=null&&this.template.getId()==7010)
       return;
     String dj1="";
     if(!strStats.equalsIgnoreCase(""))
     {
-      final String[] split=strStats.split(",");
-      String[] array;
-      for(int length=(array=split).length,i=0;i<length;++i)
+      for(String split : strStats.split(","))
       {
-        final String s=array[i];
         try
         {
-          if(!s.equalsIgnoreCase(""))
+          if(split.equalsIgnoreCase(""))
+            continue;
+          if(split.substring(0,3).equalsIgnoreCase("325")&&(this.getTemplate().getId()==10207||this.getTemplate().getId()==10601))
           {
-            if(s.substring(0,3).equalsIgnoreCase("325")&&(this.getTemplate().getId()==10207||this.getTemplate().getId()==10601))
+            txtStats.put(Constant.STATS_DATE,split.substring(3)+"");
+            continue;
+          }
+          if(split.substring(0,3).equalsIgnoreCase("3dc"))
+          {// Si c'est une rune de signature cr�e
+            txtStats.put(Constant.STATS_SIGNATURE,split.split("#")[4]);
+            continue;
+          }
+          if(split.substring(0,3).equalsIgnoreCase("3d9"))
+          {// Si c'est une rune de signature modifi�
+            txtStats.put(Constant.STATS_CHANGE_BY,split.split("#")[4]);
+            continue;
+          }
+
+          String[] stats=split.split("#");
+          int id=Integer.parseInt(stats[0],16);
+
+          if(id>=281&&id<=294)
+          {
+            this.getSpellStats().add(split);
+            continue;
+          }
+          if(id==Constant.STATS_PETS_DATE&&this.getTemplate().getType()==Constant.ITEM_TYPE_CERTIFICAT_CHANIL)
+          {
+            txtStats.put(id,split.substring(3));
+            continue;
+          }
+          if(id==Constant.STATS_CHANGE_BY||id==Constant.STATS_NAME_TRAQUE||id==Constant.STATS_OWNER_1)
+          {
+            txtStats.put(id,stats[4]);
+            continue;
+          }
+          if(id==Constant.STATS_GRADE_TRAQUE||id==Constant.STATS_ALIGNEMENT_TRAQUE||id==Constant.STATS_NIVEAU_TRAQUE)
+          {
+            txtStats.put(id,stats[3]);
+            continue;
+          }
+          if(id==Constant.STATS_PETS_SOUL)
+          {
+            SoulStats.put(Integer.parseInt(stats[1],16),Integer.parseInt(stats[3],16)); // put(id_monstre, nombre_tu�)
+            continue;
+          }
+          if(id==Constant.STATS_NAME_DJ)
+          {
+            dj1+=(!dj1.isEmpty() ? "," : "")+stats[3];
+            txtStats.put(Constant.STATS_NAME_DJ,dj1);
+            continue;
+          }
+          if(id==997||id==996)
+          {
+            txtStats.put(id,stats[4]);
+            continue;
+          }
+          if(this.template!=null&&this.template.getId()==77&&id==Constant.STATS_PETS_DATE)
+          {
+            txtStats.put(id,split.substring(3));
+            continue;
+          }
+          if(id==Constant.STATS_DATE)
+          {
+            txtStats.put(id,stats[3]);
+            continue;
+          }
+          //Si stats avec Texte (Signature, apartenance, etc)//FIXME
+          if(id!=Constant.STATS_RESIST&&(!stats[3].equals("")&&(!stats[3].equals("0")||id==Constant.STATS_PETS_DATE||id==Constant.STATS_PETS_PDV||id==Constant.STATS_PETS_POIDS||id==Constant.STATS_PETS_EPO||id==Constant.STATS_PETS_REPAS)))
+          {//Si le stats n'est pas vide et (n'est pas �gale � 0 ou est de type familier)
+            if(!(this.getTemplate().getType()==Constant.ITEM_TYPE_CERTIFICAT_CHANIL&&id==Constant.STATS_PETS_DATE))
             {
-              this.txtStats.put(805,new StringBuilder(String.valueOf(s.substring(3))).toString());
-            }
-            else if(s.substring(0,3).equalsIgnoreCase("3dc"))
-            {
-              this.txtStats.put(988,s.split("#")[4]);
-            }
-            else if(s.substring(0,3).equalsIgnoreCase("3d9"))
-            {
-              this.txtStats.put(985,s.split("#")[4]);
-            }
-            else
-            {
-              final String spell=s;
-              final String[] stats=s.split("#");
-              final int id=Integer.parseInt(stats[0],16);
-              if(id==808&&this.getTemplate().getType()==77)
-              {
-                this.txtStats.put(id,s.substring(3));
-              }
-              else if(id==985||id==989)
-              {
-                this.txtStats.put(id,stats[4]);
-              }
-              else if(id==717)
-              {
-                this.SoulStats.put(Integer.parseInt(stats[1],16),Integer.parseInt(stats[3],16));
-              }
-              else if(id==814)
-              {
-                dj1=String.valueOf(dj1)+(dj1.isEmpty() ? "" : ",")+stats[3];
-                this.txtStats.put(814,dj1);
-              }
-              else if(id==997||id==996)
-              {
-                this.txtStats.put(id,stats[4]);
-              }
-              else if(this.template.getId()==77&&id==808)
-              {
-                this.txtStats.put(id,s.substring(3));
-              }
-              else if(id==805)
-              {
-                this.txtStats.put(id,stats[3]);
-              }
-              else if(id!=814&&id!=812&&!stats[3].equals("")&&(!stats[3].equals("0")||id==808||id==800||id==806||id==940||id==807)&&(this.getTemplate().getType()!=77||id!=808))
-              {
-                this.txtStats.put(id,stats[3]);
-              }
-              else if(id==812&&this.getTemplate().getType()==93)
-              {
-                this.txtStats.put(id,stats[4]);
-              }
-              else if(id==812)
-              {
-                this.txtStats.put(id,stats[4]);
-              }
-              else if(id>=281&&id<=294)
-              {
-                this.SortStats.add(spell);
-              }
-              else
-              {
-                boolean follow1=true;
-                switch(id)
-                {
-                  case 110:
-                  case 139:
-                  case 605:
-                  case 614:
-                  {
-                    final String min=stats[1];
-                    final String max=stats[2];
-                    final String jet=stats[4];
-                    final String args=String.valueOf(min)+";"+max+";-1;-1;0;"+jet;
-                    this.Effects.add(new SpellEffect(id,args,0,-1));
-                    follow1=false;
-                    break;
-                  }
-                }
-                if(follow1)
-                {
-                  boolean follow2=true;
-                  int[] armes_EFFECT_IDS;
-                  for(int length2=(armes_EFFECT_IDS=Constant.ARMES_EFFECT_IDS).length,j=0;j<length2;++j)
-                  {
-                    final int a=armes_EFFECT_IDS[j];
-                    if(a==id)
-                    {
-                      this.Effects.add(new SpellEffect(id,String.valueOf(stats[1])+";"+stats[2]+";-1;-1;0;"+stats[4],0,-1));
-                      follow2=false;
-                    }
-                  }
-                  if(follow2)
-                  {
-                    this.Stats.addOneStat(id,Integer.parseInt(stats[1],16));
-                  }
-                }
-              }
+              txtStats.put(id,stats[3]);
+              continue;
             }
           }
+          if(id==Constant.STATS_RESIST&&this.getTemplate()!=null&&this.getTemplate().getType()==93)
+          {
+            txtStats.put(id,stats[4]);
+            continue;
+          }
+          if(id==Constant.STATS_RESIST)
+          {
+            txtStats.put(id,stats[4]);
+            continue;
+          }
+
+          boolean follow1=true;
+          switch(id)
+          {
+            case 110:
+            case 139:
+            case 605:
+            case 614:
+              String min=stats[1];
+              String max=stats[2];
+              String jet=stats[4];
+              String args=min+";"+max+";-1;-1;0;"+jet;
+              Effects.add(new SpellEffect(id,args,0,-1));
+              follow1=false;
+              break;
+          }
+          if(!follow1)
+          {
+            continue;
+          }
+
+          boolean follow2=true;
+          for(int a : Constant.ARMES_EFFECT_IDS)
+          {
+            if(a==id)
+            {
+              Effects.add(new SpellEffect(id,stats[1]+";"+stats[2]+";-1;-1;0;"+stats[4],0,-1));
+              follow2=false;
+            }
+          }
+          if(!follow2)
+            continue;//Si c'�tait un effet Actif d'arme ou une signature
+
+          Stats.addOneStat(id,Integer.parseInt(stats[1],16));
         }
         catch(Exception e)
         {
@@ -1094,25 +1107,25 @@ public class GameObject
   //v2.7 - Replaced String += with StringBuilder
   public String parseStringStatsEC_FM(GameObject obj, double power, int stat)
   {
-    StringBuilder stats=new StringBuilder();
-    StringBuilder statsNoRuneStat=new StringBuilder();
-    statsNoRuneStat.append(0); //not empty upon first loop
-    stats.append(0);
+    String stats="notEmpty";
     double lost=0.0;
     boolean stop=false;
-    while(lost<power&&!stats.toString().isEmpty()) //stop looping when power limit is reached or item doesnt have stats
+    
+    System.out.println("lost: "+lost);
+    System.out.println("power: "+power);
+    
+    while(lost<power&&!stats.isEmpty()) //stop looping when power limit is reached or item doesnt have stats
     {
-      statsNoRuneStat=new StringBuilder();
-      stats=new StringBuilder();
+      stats="";
       boolean first=false;
       for(SpellEffect EH : obj.Effects)
       {
         if(first)
-          stats.append(",");
+          stats+=",";
         String[] infos=EH.getArgs().split(";");
         try
         {
-          stats.append(Integer.toHexString(EH.getEffectID())+"#"+infos[0]+"#"+infos[1]+"#0#"+infos[5]);
+          stats+=Integer.toHexString(EH.getEffectID())+"#"+infos[0]+"#"+infos[1]+"#0#"+infos[5];
         }
         catch(Exception e)
         {
@@ -1121,6 +1134,7 @@ public class GameObject
         }
         first=true;
       }
+      
       Map<Integer, Integer> statsObj=new HashMap<Integer, Integer>(obj.Stats.getMap());
       ArrayList<Integer> keys=new ArrayList<Integer>(obj.Stats.getMap().keySet());
       ArrayList<Integer> noNegativeMaxKeys=new ArrayList<Integer>();
@@ -1128,8 +1142,10 @@ public class GameObject
       ArrayList<Integer> removedStats=new ArrayList<Integer>();
       ArrayList<Integer> overmageKeys=new ArrayList<Integer>();
       Collections.shuffle(keys);
+      
       for(Integer i : keys)
       {
+        System.out.println("key: "+i);
         if(Rune.isNegativeStat(Integer.toHexString(i)))
         {
           if(statsObj.get(i)!=JobAction.getBaseMaxJet(obj.getTemplate().getId(),Rune.getNegativeStatByRuneStat(Integer.toHexString(i)))) //if current stat
@@ -1145,7 +1161,7 @@ public class GameObject
       {
         for(Integer i : noNegativeMaxKeys)
         {
-          if(i!=stat&&i!=Integer.parseInt( Rune.getNegativeStatByRuneStat(Integer.toHexString(stat)) ,16))
+          if(i!=stat&&i!=Integer.parseInt(Rune.getNegativeStatByRuneStat(Integer.toHexString(stat)),16))
             filteredKeys.add(i);
           else
             removedStats.add(i); //remove key if runestat or negative runestat
@@ -1160,11 +1176,10 @@ public class GameObject
           if(isOverFm(i,statsObj.get(i))) //stat, valueOfStat
             overmageKeys.add(i);
         for(Integer i : overmageKeys) //move overmaged stats to front of stats not being maged
-          if(i!=0)
-          {
-            filteredKeys.remove(i);
-            filteredKeys.add(0,i);
-          }
+        {
+          filteredKeys.remove(i);
+          filteredKeys.add(0,i);
+        }
       }
 
       if(filteredKeys.size()==0)
@@ -1218,34 +1233,30 @@ public class GameObject
         if(newstats<1)
           continue;
         if(first)
-        {
-          stats.append(",");
-          statsNoRuneStat.append(",");
-        }
-        stats.append(Integer.toHexString(statID)+"#"+Integer.toHexString(newstats)+"#0#0#0d0+"+newstats);
-        statsNoRuneStat.append(Integer.toHexString(statID)+"#"+Integer.toHexString(newstats)+"#0#0#0d0+"+newstats);
+          stats+=",";
+        stats+=Integer.toHexString(statID)+"#"+Integer.toHexString(newstats)+"#0#0#0d0+"+newstats;
         first=true;
       }
       for(Integer i : removedStats) //add back filtered stats (stat currently being maged)
       {
         if(first)
-          stats.append(",");
-        stats.append(Integer.toHexString(i)+"#"+Integer.toHexString(statsObj.get(i))+"#0#0#0d0+"+statsObj.get(i));
+          stats+=",";
+        stats+=Integer.toHexString(i)+"#"+Integer.toHexString(statsObj.get(i))+"#0#0#0d0+"+statsObj.get(i);
         first=true;
       }
       for(Entry<Integer, String> entry : obj.txtStats.entrySet()) //add back textstats
       {
         if(first)
-          stats.append(",");
-        stats.append(Integer.toHexString((entry.getKey()))+"#0#0#0#"+entry.getValue());
+          stats+=",";
+        stats+=Integer.toHexString((entry.getKey()))+"#0#0#0#"+entry.getValue();
         first=true;
       }
       obj.clearStats();
-      obj.parseStringToStats(stats.toString(),true);
+      obj.parseStringToStats(stats,true);
       if(stop)
-        return stats.toString();
+        return stats;
     }
-    return stats.toString();
+    return stats;
   }
 
   public boolean isOverFm(int stat, int val)
@@ -1411,5 +1422,10 @@ public class GameObject
       }
     }
     return true;
+  }
+  
+  public ArrayList<String> getSpellStats()
+  {
+    return SortStats;
   }
 }

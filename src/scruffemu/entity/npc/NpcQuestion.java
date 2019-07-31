@@ -16,6 +16,7 @@ import scruffemu.quest.Quest;
 import scruffemu.quest.QuestStep;
 import scruffemu.quest.QuestPlayer;
 
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class NpcQuestion
@@ -195,7 +196,7 @@ public class NpcQuestion
             GameMap mapActuel=player.getCurMap();
             Integer IDmob=null;
             int certificat=-1;
-            java.util.Map<Integer, Pair<Integer, Integer>> dopeuls=Dopeul.getDopeul();
+            Map<Integer, Pair<Integer, Integer>> dopeuls=Dopeul.getDopeul();
             switch(answer.getId())
             {
               case 4643:
@@ -368,61 +369,42 @@ public class NpcQuestion
                 if((!player.hasItemTemplate(2039,1))||(player.hasItemTemplate(2041,1)))
                   ok=false;
                 break;
+
               case 1509: // S'entrainer avec un dopeul
                 if(dopeuls.containsKey((int)mapActuel.getId()))
-                {
                   IDmob=dopeuls.get((int)mapActuel.getId()).getLeft();
-                }
                 else
                   break;
 
                 certificat=Constant.getCertificatByDopeuls(IDmob);
-                if(certificat==-1)
-                  break;
 
                 if(player.hasItemTemplate(certificat,1))
                 {
                   String date=player.getItemTemplate(certificat,1).getTxtStat().get(Constant.STATS_DATE);
-                  long timeStamp=Long.parseLong(date.split("#")[3]);
+                  if(date.contains("#"))
+                    date=date.split("#")[3];
+                  long timeStamp=Long.parseLong(date);
                   if(System.currentTimeMillis()-timeStamp<=Config.getInstance().doppleTime)
-                  {
                     ok=false;
-                  }
                 }
                 break;
 
               case 1419: // se renseigner avec un dopeul
                 if(dopeuls.containsKey((int)mapActuel.getId()))
-                {
                   IDmob=dopeuls.get((int)mapActuel.getId()).getLeft();
-                }
                 else
                   break;
 
                 certificat=Constant.getCertificatByDopeuls(IDmob);
-                if(certificat==-1)
-                  break;
 
                 if(player.hasItemTemplate(certificat,1))
                 {
                   String date=player.getItemTemplate(certificat,1).getTxtStat().get(Constant.STATS_DATE);
-                  long timeStamp=0;
-                  try
-                  {
-                    timeStamp=Long.parseLong(date.split("#")[3]);
-                  }
-                  catch(Exception e)
-                  {
-                    World.world.logger.error("!A REPPORTER! Erreur de date avec l'item : "+player.getItemTemplate(certificat,1).getGuid()+".");
-                    return "";
-                  }
-                  if(timeStamp!=0)
-                  {
-                    if(System.currentTimeMillis()-timeStamp<=Config.getInstance().doppleTime)
-                    {
-                      ok=false;
-                    }
-                  }
+                  if(date.contains("#"))
+                    date=date.split("#")[3];
+                  long timeStamp=Long.parseLong(date);
+                  if(System.currentTimeMillis()-timeStamp<=Config.getInstance().doppleTime)
+                    ok=false;
                 }
                 break;
 
@@ -430,12 +412,8 @@ public class NpcQuestion
                 if(!player.getQuestPerso().isEmpty())
                 {
                   for(QuestPlayer QP : player.getQuestPerso().values())
-                  {
                     if(QP.getQuest().getId()==470)
-                    {
                       ok=false;
-                    }
-                  }
                 }
                 break;
 

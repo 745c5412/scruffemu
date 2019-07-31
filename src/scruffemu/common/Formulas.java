@@ -508,9 +508,9 @@ public class Formulas
           resfT+=target.getTotalStats().getEffect(Constant.STATS_ADD_R_PVP_NEU);
         }
         //on ajoute les dom Physique
-        domC+=caster.getTotalStats().getEffect(142);
+        domC+=caster.getTotalStats().getEffect(Constant.STATS_ADD_PDOM);
         //Ajout de la resist Physique
-        resfT=target.getTotalStats().getEffect(184);
+        resfT=target.getTotalStats().getEffect(Constant.STATS_ADD_RES_P);
         break;
       case Constant.ELEMENT_TERRE://force
         statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_FORC);
@@ -522,9 +522,9 @@ public class Formulas
           resfT+=target.getTotalStats().getEffect(Constant.STATS_ADD_R_PVP_TER);
         }
         //on ajout les dom Physique
-        domC+=caster.getTotalStats().getEffect(142);
+        domC+=caster.getTotalStats().getEffect(Constant.STATS_ADD_PDOM);
         //Ajout de la resist Physique
-        resfT=target.getTotalStats().getEffect(184);
+        resfT=target.getTotalStats().getEffect(Constant.STATS_ADD_RES_P);
         break;
       case Constant.ELEMENT_EAU://chance
         statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_CHAN);
@@ -536,7 +536,7 @@ public class Formulas
           resfT+=target.getTotalStats().getEffect(Constant.STATS_ADD_R_PVP_EAU);
         }
         //Ajout de la resist Magique
-        resfT=target.getTotalStats().getEffect(183);
+        resfT=target.getTotalStats().getEffect(Constant.STATS_ADD_RES_M);
         break;
       case Constant.ELEMENT_FEU://intell
         statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_INTE);
@@ -548,7 +548,7 @@ public class Formulas
           resfT+=target.getTotalStats().getEffect(Constant.STATS_ADD_R_PVP_FEU);
         }
         //Ajout de la resist Magique
-        resfT=target.getTotalStats().getEffect(183);
+        resfT=target.getTotalStats().getEffect(Constant.STATS_ADD_RES_M);
         break;
       case Constant.ELEMENT_AIR://agilitÃ¯Â¿Â½
         statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_AGIL);
@@ -560,7 +560,7 @@ public class Formulas
           resfT+=target.getTotalStats().getEffect(Constant.STATS_ADD_R_PVP_AIR);
         }
         //Ajout de la resist Magique
-        resfT=target.getTotalStats().getEffect(183);
+        resfT=target.getTotalStats().getEffect(Constant.STATS_ADD_RES_M);
         break;
     }
     //On bride la resistance a 50% si c'est un joueur
@@ -596,7 +596,7 @@ public class Formulas
     }
 
     num=a*mulT*(jet*((100+statC+perdomC)/100))+domC; //dÃ¯Â¿Â½gats bruts
-
+    
     //Poisons
     if(spellid!=-1)
     {
@@ -674,6 +674,7 @@ public class Formulas
     }
 
     int reduc=(int)((num/(float)100)*respT);//Reduc %resis
+    System.out.println("reduc: "+reduc);
     if(!isHeal)
       num-=reduc;
     int armor=getArmorResist(target,statID);

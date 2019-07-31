@@ -6450,7 +6450,7 @@ public class Player
   public void setTokens(final int i)
   {
     this.tokens=i;
-    Database.getStatics().getPlayerData().updateTokens(this.id,this.tokens);
+    Database.getStatics().getPlayerData().updateTokens(this.name,this.tokens);
   }
 
   public int getTokens()

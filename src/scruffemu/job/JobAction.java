@@ -1147,7 +1147,7 @@ public class JobAction
       else //nSuccess targeting normal stats
       {
         String exoStatStr=objectFm.findOverExo(objectFm,Integer.parseInt(runeStat,16));
-        int exoPower=0;
+        float exoPower=0;
         if(exoStatStr!="") //item has exo
         {
           String[] exoSplit=exoStatStr.split(";"); //calculate total exo power
@@ -1155,9 +1155,10 @@ public class JobAction
           {
             String[] exoSplit2=exoSplit[i].split(",");
             float statPwr=Constant.getPowerByStatId(Integer.valueOf(exoSplit2[0]),false);
-            int entryPower=(int)(statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16))));
+            float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
             exoPower=exoPower+entryPower;
           }
+          exoPower=(float)Math.round(exoPower*100)/100; //rounding to two decimals
 
           if(exoPower>=runePower) //reduce all from exo stats, do not give sink, do not consume sink
           {
@@ -1226,7 +1227,7 @@ public class JobAction
       else //nSuccess targeting normal stats
       {
         String exoStatStr=objectFm.findOverExo(objectFm,Integer.parseInt(runeStat,16));
-        int exoPower=0;
+        float exoPower=0;
         if(exoStatStr!="") //item has exo
         {
           String[] exoSplit=exoStatStr.split(";"); //calculate total exo power
@@ -1234,9 +1235,11 @@ public class JobAction
           {
             String[] exoSplit2=exoSplit[i].split(",");
             float statPwr=Constant.getPowerByStatId(Integer.valueOf(exoSplit2[0]),false);
-            int entryPower=(int)(statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16))));
+            float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
             exoPower=exoPower+entryPower;
           }
+          exoPower=(float)Math.round(exoPower*100)/100; //rounding to two decimals
+
           if(exoPower>=runePower) //reduce all from exo stats, do not give sink, do not consume sink
           {
             final String statsStr=String.valueOf(updateItemStatsEC(objectFm,runePower,runeStat)+","+runeStat+"#"+Integer.toHexString(rune.getStatsAdd())+"#0#0#0d0+"+rune.getStatsAdd());
@@ -1315,17 +1318,18 @@ public class JobAction
     else //nSuccess targeting normal stats
     {
       String exoStatStr=objectFm.findOverExo(objectFm,Integer.parseInt(runeStat,16));
-      int exoPower=0;
+      float exoPower=0f;
       if(exoStatStr!="") //item has exo
       {
-        String[] exoSplit=exoStatStr.split(";"); //calculate total exo power
+        String[] exoSplit=exoStatStr.split(";"); //split string per stat
         for(int i=0;i<exoSplit.length;i++)
         {
-          String[] exoSplit2=exoSplit[i].split(",");
+          String[] exoSplit2=exoSplit[i].split(","); //split stat per value
           float statPwr=Constant.getPowerByStatId(Integer.valueOf(exoSplit2[0]),false);
-          int entryPower=(int)(statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16))));
+          float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
           exoPower=exoPower+entryPower;
         }
+        exoPower=(float)Math.round(exoPower*100)/100; //rounding to two decimals
 
         if(exoPower>=runePower) //reduce all from exo stats, do not give sink, do not consume sink
         {

@@ -277,10 +277,10 @@ public class ConditionParser
 
       if(player.hasItemTemplate(certificat,1))
       {
-        String txt=player.getItemTemplate(certificat,1).getTxtStat().get(Constant.STATS_DATE);
-        if(txt.contains("#"))
-          txt=txt.split("#")[3];
-        long timeStamp=Long.parseLong(txt);
+        String date=player.getItemTemplate(certificat,1).getTxtStat().get(Constant.STATS_DATE);
+        if(date.contains("#"))
+          date=date.split("#")[3];
+        long timeStamp=Long.parseLong(date);
         return System.currentTimeMillis()-timeStamp>Config.getInstance().doppleTime;
       }
       else
@@ -388,7 +388,7 @@ public class ConditionParser
     return false;
   }
 
-  public static String havePO(String cond, Player perso)//On remplace les PO par leurs valeurs si possession de l'item
+  public static String havePO(String cond, Player perso) //On remplace les PO par leurs valeurs si possession de l'item
   {
     boolean Jump=false;
     boolean ContainsPO=false;

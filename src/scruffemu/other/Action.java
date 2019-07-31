@@ -194,7 +194,9 @@ public class Action
         if(player.hasItemTemplate(certificat,1))
         {
           String date=player.getItemTemplate(certificat,1).getTxtStat().get(Constant.STATS_DATE);
-          long timeStamp=Long.parseLong(date.split("#")[3]);
+          if(date.contains("#"))
+            date=date.split("#")[3];
+          long timeStamp=Long.parseLong(date);
           if(System.currentTimeMillis()-timeStamp<=Config.getInstance().doppleTime)
           {
             SocketManager.GAME_SEND_MESSAGE(player,"You have to wait at least 24 hours to fight this dopple.");
@@ -2272,7 +2274,7 @@ public class Action
           if(player.hasItemTemplate(6653,1))
           {
             String date=player.getItemTemplate(6653,1).getTxtStat().get(Constant.STATS_DATE);
-            long timeStamp=Long.parseLong(date.split("#")[3]);
+            long timeStamp=Long.parseLong(date);
             if(System.currentTimeMillis()-timeStamp<=86400000)
             {
               SocketManager.GAME_SEND_MESSAGE(player,"Your ticket is valid.");

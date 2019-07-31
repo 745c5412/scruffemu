@@ -389,7 +389,7 @@ public class Challenge
           {
             if(target.getTeam()==1)
             {
-              if(target!=null||target.getId()!=target.getId())
+              if(this.target.getId()!=target.getId())
                 challengeLoose(caster);
             }
           }

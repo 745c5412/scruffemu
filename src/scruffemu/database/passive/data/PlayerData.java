@@ -620,16 +620,16 @@ public class PlayerData extends AbstractDAO<Player>
   }
 
   //v0.01 - Token Shop
-  public void updateTokens(int id, int tokens)
+  public void updateTokens(String user, int tokens)
   {
     PreparedStatement p=null;
     try
     {
       try
       {
-        p=this.getPreparedStatement("UPDATE players SET `tokens` = ? WHERE `id` = ?");
+        p=this.getPreparedStatement("UPDATE players SET `tokens` = ? WHERE `name` = ?");
         p.setInt(1,tokens);
-        p.setInt(2,id);
+        p.setString(2,user);
         this.execute(p);
       }
       catch(SQLException e)
@@ -651,12 +651,10 @@ public class PlayerData extends AbstractDAO<Player>
     {
       try
       {
-        result=super.getData("SELECT * from players WHERE `name` LIKE '"+user+"'");
+        result=super.getData("SELECT * from players WHERE `name` = '"+user+"'");
         ResultSet RS=result.resultSet;
         if(RS.next())
-        {
           tokens=RS.getInt("tokens");
-        }
       }
       catch(SQLException e)
       {

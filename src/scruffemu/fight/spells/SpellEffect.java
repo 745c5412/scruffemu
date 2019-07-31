@@ -3280,7 +3280,7 @@ public class SpellEffect
     }
   }
 
-  private void applyEffect_96(ArrayList<Fighter> cibles, Fight fight, boolean isCaC)//dmg eau
+  private void applyEffect_96(ArrayList<Fighter> cibles, Fight fight, boolean isCaC) //dmg eau
   {
     if(isCaC)//CaC Eau
     {
@@ -3650,7 +3650,7 @@ public class SpellEffect
     }
   }
 
-  private void applyEffect_98(ArrayList<Fighter> cibles, Fight fight, boolean isCaC)//dmg air
+  private void applyEffect_98(ArrayList<Fighter> cibles, Fight fight, boolean isCaC) //dmg air
   {
     if(isCaC)//CaC Air
     {
@@ -3827,7 +3827,7 @@ public class SpellEffect
     }
   }
 
-  private void applyEffect_99(ArrayList<Fighter> cibles, Fight fight, boolean isCaC)//dmg feu
+  private void applyEffect_99(ArrayList<Fighter> cibles, Fight fight, boolean isCaC) //dmg feu
   {
     if(caster.isHide())
       caster.unHide(spell);
@@ -4490,7 +4490,6 @@ public class SpellEffect
     int val=Formulas.getRandomJet(jet);
     if(val==-1)
     {
-
       return;
     }
     if(duration<1)

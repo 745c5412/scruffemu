@@ -52,15 +52,15 @@ public class Config
   public int worldMarket=10111; //mapID of world market
   public Map<Integer, Integer> teleports=new HashMap<Integer, Integer>();
   public boolean mapAsBlocked=false, fightAsBlocked=false, tradeAsBlocked=false;
-  public int doppleTime=0; //1000*60*60*24; //24 hours between dopple fights
+  public int doppleTime=1000*60*60*24; //24 hours between dopple fights
 
   /** Connection data */
   public String key="rushu";
   public int serverId=2, exchangePort=547;
   public String exchangeIp="127.0.0.1";
-  public String loginHostDB="127.0.0.1", loginNameDB="scruffemu_login", loginUserDB="root", loginPassDB="", loginPortDB="3306";
+  public String loginHostDB="127.0.0.1", loginNameDB="scruffemu_login", loginUserDB="root", loginPassDB="unknownboon", loginPortDB="3306";
   public int gamePort=5555;
-  public String hostDB="127.0.0.1", nameDB="scruffemu_game", userDB="root", passDB="", portDB="3306";
+  public String hostDB="127.0.0.1", nameDB="scruffemu_game", userDB="root", passDB="unknownboon", portDB="3306";
   public String Ip="62.210.69.13"; //62.210.69.13
 
   public Points points=new Points()

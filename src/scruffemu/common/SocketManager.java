@@ -2107,7 +2107,6 @@ public class SocketManager
   public static void GAME_SEND_gS_PACKET(Player p, GuildMember gm)
   {
     send(p,"gS"+gm.getGuild().getName()+"|"+gm.getGuild().getEmblem().replace(',','|')+"|"+gm.parseRights());
-
   }
 
   public static void GAME_SEND_gJ_PACKET(Player p, String str)

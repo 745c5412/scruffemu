@@ -1725,3 +1725,15 @@ Changed spells so their damaging effect happens before their secondary effect, t
 	- Blindness
 	- Wild Grass
 	- Temporal Dust
+Fixed a bug where players would lose their alignment when leaving a guild with ID 1
+Fixed a bug where modifying rights of an offline guild member would kick you
+Fixed a bug where modifying xp of an offline guild member would kick you
+Fixed a bug where kicking an offline guild member would kick you
+Fixed a bug where the PvP cooldown timer was incorrect
+Changed token system to now work by character name instead of character ID
+
+30-07-2019
+Fixed a bug with the elitist and unpredictable challenges where they failed when attacking the target
+
+31-07-2019
+Fixed a bug where due to a rounding error and an invalid input check, failing a rune on an item with overmaged stats had a chance to completely remove all stats from the item

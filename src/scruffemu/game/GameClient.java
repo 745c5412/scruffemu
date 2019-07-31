@@ -2202,8 +2202,6 @@ public class GameClient
             for(Rune rune : Rune.runes)
             {
               short characteristic=Short.parseShort(World.world.getObjTemplate(rune.getTemplateId()).getStrTemplate().split("#")[0],16);
-              if(characteristic==112)
-                characteristic=Constant.STATS_ADD_DOMA;
 
               if(entry1.getKey()==characteristic)
               {
@@ -5251,21 +5249,15 @@ public class GameClient
       Player target=World.world.getPlayer(id);
       if(target==null||!target.isOnline()||target.getFight()!=null||target.getCurMap().getId()!=this.player.getCurMap().getId()||target.get_align()==this.player.get_align()||this.player.getCurMap().getPlaces().equalsIgnoreCase("|")||!target.canAggro()||target.isDead()==1)
         return;
-      /*if(target.getAccount().getCurrentIp().equals(this.getAccount().getCurrentIp())) {
-          this.player.sendMessage("Vous ne pouvez pas aggresser votre propre personnage.");
-          return;
-      }*/
       if(this.player.restriction.aggros.containsKey(target.getAccount().getCurrentIp()))
       {
         if((System.currentTimeMillis()-this.player.restriction.aggros.get(target.getAccount().getCurrentIp()))<1000*60*60)
         {
-          SocketManager.GAME_SEND_MESSAGE(this.player,"You have to wait "+(((System.currentTimeMillis()-this.player.restriction.aggros.get(target.getAccount().getCurrentIp()))/60)/1000)+" more minute(s) before attacking.");
+          SocketManager.GAME_SEND_MESSAGE(this.player,"You have to wait "+((((1000*60*60-((System.currentTimeMillis()-this.player.restriction.aggros.get(target.getAccount().getCurrentIp()))))/60)/1000))+" more minute(s) before attacking.");
           return;
         }
         else
-        {
           this.player.restriction.aggros.remove(target.getAccount().getCurrentIp());
-        }
       }
 
       this.player.restriction.aggros.put(target.getAccount().getCurrentIp(),System.currentTimeMillis());
@@ -6346,11 +6338,10 @@ public class GameClient
         return;
 
       toRemGuild.removeMember(toRemMember.getPlayer());
-      if(P!=null)
-        P.setGuildMember(null);
+      toRemMember.getPlayer().setGuildMember(null);
       SocketManager.GAME_SEND_gK_PACKET(this.player,"K"+this.player.getName()+"|"+name);
-      if(P!=null)
-        SocketManager.GAME_SEND_gK_PACKET(P,"K"+this.player.getName());
+      if(toRemMember.getPlayer().isOnline())
+        SocketManager.GAME_SEND_gK_PACKET(toRemMember.getPlayer(),"K"+this.player.getName());
     }
     else
     //si quitter
@@ -6363,9 +6354,6 @@ public class GameClient
       }
       G.removeMember(this.player);
       this.player.setGuildMember(null);
-      if(G.getId()==1)
-        this.player.modifAlignement(0);
-      //S'il n'y a plus this.playernne
       if(G.getMembers().isEmpty())
         World.world.removeGuild(G.getId());
       SocketManager.GAME_SEND_gK_PACKET(this.player,"K"+name+"|"+name);
@@ -6465,7 +6453,7 @@ public class GameClient
     }
     toChange.setAllRights(rank,xpGive,right,this.player);
     SocketManager.GAME_SEND_gS_PACKET(this.player,this.player.getGuildMember());
-    if(p!=null&&p.getId()!=this.player.getId())
+    if(p!=null&&p.getId()!=this.player.getId()&&p.isOnline())
       SocketManager.GAME_SEND_gS_PACKET(p,p.getGuildMember());
   }
 
