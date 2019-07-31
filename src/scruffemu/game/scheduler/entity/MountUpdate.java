@@ -8,7 +8,7 @@ import scruffemu.main.Config;
 
 public class MountUpdate extends Updatable
 {
-  public final static Updatable updatable=new MoveEntities(Config.getInstance().mountUpdate);
+  public final static Updatable updatable=new MountUpdate(Config.getInstance().mountUpdate);
   public MountUpdate(int wait)
   {
     super(wait);
@@ -18,10 +18,11 @@ public class MountUpdate extends Updatable
   {
     if(this.verify())
     {
-      for(GameMap map : World.world.getMaps())
+      for(String s : Config.getInstance().mountMaps)
       {
-        if(map.getMountPark()!=null)
-          map.getMountPark().startMoveMounts();
+        short mapId=(short)Integer.parseInt(s);
+        GameMap map = World.world.getMap(mapId);
+        map.getMountPark().startMoveMounts();
       }
 
       for(Mount mount : World.world.getMounts().values())
