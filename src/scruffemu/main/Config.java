@@ -48,6 +48,7 @@ public class Config
   public int starUpdate=1000*60*120; //updates stars of mobs in database every 2 hours
   public int averagePingUpdate=1000*60*10; //10 minutes
   public int moveEntityUpdate=1000*60*10; //10 minutes
+  public int mountUpdate=1000*60*3; //3 minutes
   public int worldSaveUpdate=1000*60*60*3; //3 hours
   public int worldMarket=10111; //mapID of world market
   public Map<Integer, Integer> teleports=new HashMap<Integer, Integer>();

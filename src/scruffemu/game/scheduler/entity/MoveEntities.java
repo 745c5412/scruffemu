@@ -19,11 +19,7 @@ public class MoveEntities extends Updatable
     if(this.verify())
     {
       for(GameMap map : World.world.getMaps())
-      {
         map.onMapMonsterDeplacement();
-        if(map.getMountPark()!=null)
-          map.getMountPark().startMoveMounts();
-      }
       NpcMovable.moveAll();
     }
   }

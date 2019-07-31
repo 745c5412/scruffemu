@@ -8,11 +8,11 @@ import scruffemu.guild.Guild;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MountPark
 {
-
   private int owner;
   private int size;
   private Guild guild;
@@ -23,9 +23,9 @@ public class MountPark
   private int maxObject;
   private int door;
   private ArrayList<Integer> cellOfObject=new ArrayList<Integer>();
-  private java.util.Map<Integer, Integer> cellAndObject=new HashMap<Integer, Integer>();
-  private java.util.Map<Integer, java.util.Map<Integer, Integer>> objDurab=new HashMap<Integer, java.util.Map<Integer, Integer>>();
-  private java.util.Map<Integer, java.util.Map<Integer, Integer>> breedingObject=new HashMap<Integer, java.util.Map<Integer, Integer>>();
+  private Map<Integer, Integer> cellAndObject=new HashMap<Integer, Integer>();
+  private Map<Integer, Map<Integer, Integer>> objDurab=new HashMap<Integer, Map<Integer, Integer>>();
+  private Map<Integer, Map<Integer, Integer>> breedingObject=new HashMap<Integer, Map<Integer, Integer>>();
   private CopyOnWriteArrayList<Integer> raising=new CopyOnWriteArrayList<Integer>();
   private ArrayList<Mount> etable=new ArrayList<Mount>();
 
@@ -89,7 +89,7 @@ public class MountPark
         int cellId=Integer.parseInt(infos[0]);
         int durability=Integer.parseInt(infos[1]);
         int durabilityMax=Integer.parseInt(infos[2]);
-        java.util.Map<Integer, Integer> inDurab=new HashMap<Integer, Integer>();
+        Map<Integer, Integer> inDurab=new HashMap<Integer, Integer>();
         inDurab.put(durability,durabilityMax);
         this.objDurab.put(cellId,inDurab);
       }
@@ -166,103 +166,6 @@ public class MountPark
   {
     this.cellOfObject=(ArrayList<Integer>)array.clone();
   }
-
-  /*public void setInfos(int owner, GameMap map, int cell, int size, int guild, int price, int placeOfSpawn, String raising, int door, String cellOfObject, int maxObject, String objects, String objDurab, String etable)
-  {
-
-    this.owner=owner;
-    this.size=size;
-    this.guild=World.world.getGuild(guild);
-    this.map.setMountPark(null);
-    this.map=map;
-    if(this.map!=null)
-      this.map.setMountPark(this);
-    this.cell=cell;
-    this.price=price;
-    this.placeOfSpawn=placeOfSpawn;
-    this.door=door;
-    this.maxObject=maxObject;
-
-    this.cellAndObject.clear();
-    this.breedingObject.clear();
-    if(!objects.isEmpty())
-    {
-      for(String object : objects.split("\\|"))
-      {
-        String[] infos=object.split(";");
-        int cellId=Integer.parseInt(infos[0]);
-        int objectId=Integer.parseInt(infos[1]);
-        int proprietor=Integer.parseInt(infos[2]);
-        java.util.Map<Integer, Integer> other=new HashMap<Integer, Integer>();
-        other.put(objectId,proprietor);
-        this.cellAndObject.put(cellId,objectId);
-        this.breedingObject.put(cellId,other);
-      }
-    }
-    //chargement de la liste des dragodinde dans l'Ã©table
-    this.etable.clear();
-    for(String i : etable.split(";"))
-    {
-      try
-      {
-        Mount DD=World.world.getMountById(Integer.parseInt(i));
-        if(DD!=null)
-          this.etable.add(DD);
-      }
-      catch(Exception e)
-      {
-        e.printStackTrace();
-      }
-    }
-    this.objDurab.clear();
-    if(!objDurab.isEmpty())
-    {
-      for(String object : objDurab.split("\\|"))
-      {
-        String[] infos=object.split(";");
-        int cellId=Integer.parseInt(infos[0]);
-        int durability=Integer.parseInt(infos[1]);
-        int durabilityMax=Integer.parseInt(infos[2]);
-        java.util.Map<Integer, Integer> inDurab=new HashMap<Integer, Integer>();
-        inDurab.put(durability,durabilityMax);
-        this.objDurab.put(cellId,inDurab);
-      }
-    }
-    this.cellOfObject.clear();
-    if(!cellOfObject.isEmpty())
-    {
-      for(String cases : cellOfObject.split(";"))
-      {
-        int cellId=Integer.parseInt(cases);
-        if(cellId<=0)
-          continue;
-        this.cellOfObject.add(cellId);
-      }
-    }
-    this.raising.clear();
-    if(!raising.isEmpty())
-    {
-      String[] dragodinde=raising.split(";");
-      for(String dd : dragodinde)
-        this.raising.add(Integer.parseInt(dd));
-    }
-    this.raising.clear();
-    for(String firstCut : raising.split(";"))//PosseseurID,DragoID;PosseseurID2,DragoID2;PosseseurID,DragoID3
-    {
-      try
-      {
-        String[] secondCut=firstCut.split(",");
-        Mount DD=World.world.getMountById(Integer.parseInt(secondCut[1]));
-        if(DD==null)
-          continue;
-        this.raising.add(Integer.parseInt(secondCut[1]),Integer.parseInt(secondCut[0]));
-      }
-      catch(Exception e)
-      {
-        e.printStackTrace();
-      }
-    }
-  }*/
 
   public int getOwner()
   {
@@ -383,7 +286,7 @@ public class MountPark
     return cell.toString();
   }
 
-  public java.util.Map<Integer, Integer> getCellAndObject()
+  public Map<Integer, Integer> getCellAndObject()
   {
     return this.cellAndObject;
   }
@@ -395,10 +298,10 @@ public class MountPark
       this.breedingObject.remove(cell);
       this.cellAndObject.remove(cell);
     }
-    java.util.Map<Integer, Integer> other=new HashMap<Integer, Integer>();
+    Map<Integer, Integer> other=new HashMap<Integer, Integer>();
     other.put(object,owner);
 
-    java.util.Map<Integer, Integer> inDurab=new HashMap<Integer, Integer>();
+    Map<Integer, Integer> inDurab=new HashMap<Integer, Integer>();
     inDurab.put(durability,durabilityMax);
 
     this.cellAndObject.put(cell,object);
@@ -416,12 +319,12 @@ public class MountPark
     return true;
   }
 
-  public java.util.Map<Integer, java.util.Map<Integer, Integer>> getObjDurab()
+  public Map<Integer, Map<Integer, Integer>> getObjDurab()
   {
     return this.objDurab;
   }
 
-  public java.util.Map<Integer, java.util.Map<Integer, Integer>> getObject()
+  public Map<Integer, Map<Integer, Integer>> getObject()
   {
     return this.breedingObject;
   }
@@ -472,13 +375,13 @@ public class MountPark
     if(this.breedingObject.size()==0)
       return str.toString();
 
-    for(java.util.Map.Entry<Integer, java.util.Map<Integer, Integer>> entry : this.breedingObject.entrySet())
+    for(Map.Entry<Integer, Map<Integer, Integer>> entry : this.breedingObject.entrySet())
     {
       if(first)
         str.append("|");
       str.append(entry.getKey());
 
-      for(java.util.Map.Entry<Integer, Integer> entry2 : entry.getValue().entrySet())
+      for(Map.Entry<Integer, Integer> entry2 : entry.getValue().entrySet())
         str.append(";"+entry2.getKey()+";"+entry2.getValue());
       first=true;
     }
@@ -492,12 +395,12 @@ public class MountPark
     boolean first=false;
     if(this.objDurab.size()==0)
       return str.toString();
-    for(java.util.Map.Entry<Integer, java.util.Map<Integer, Integer>> entry : this.objDurab.entrySet())
+    for(Map.Entry<Integer, java.util.Map<Integer, Integer>> entry : this.objDurab.entrySet())
     {
       if(first)
         str.append("|");
       str.append(entry.getKey());
-      for(java.util.Map.Entry<Integer, Integer> entry2 : entry.getValue().entrySet())
+      for(Map.Entry<Integer, Integer> entry2 : entry.getValue().entrySet())
       {
         str.append(";"+entry2.getKey()+";"+entry2.getValue());
       }

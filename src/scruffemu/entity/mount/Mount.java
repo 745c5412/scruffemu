@@ -2,6 +2,7 @@ package scruffemu.entity.mount;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.HashMap;
 
 import scruffemu.area.map.GameMap;
@@ -12,7 +13,6 @@ import scruffemu.common.Formulas;
 import scruffemu.common.PathFinding;
 import scruffemu.common.SocketManager;
 import scruffemu.database.Database;
-import scruffemu.game.Updatable;
 import scruffemu.game.World;
 import scruffemu.main.Constant;
 import scruffemu.object.GameObject;
@@ -20,32 +20,6 @@ import scruffemu.utility.TimerWaiterPlus;
 
 public class Mount
 {
-
-  public final static Updatable updatable=new Updatable(3600000)
-  {
-    @Override
-    public void update()
-    {
-      if(this.verify())
-      {
-        for(Mount mount : World.world.getMounts().values())
-        {
-          if(mount.getFatigue()<=0)
-            continue;
-          mount.setFatigue(mount.getFatigue()-10);
-          if(mount.getFatigue()<0)
-            mount.setFatigue(0);
-        }
-      }
-    }
-
-    @Override
-    public Object get()
-    {
-      return null;
-    }
-  };
-
   private int id, color, sex, size;
   private String name;
   private int level;
@@ -66,7 +40,7 @@ public class Mount
   private int couple;
 
   private Stats stats=new Stats();
-  private java.util.Map<Integer, GameObject> objects=new HashMap<>();
+  private Map<Integer, GameObject> objects=new HashMap<>();
   private List<Integer> capacitys=new ArrayList<>(2);
 
   public Mount(int color, int owner, boolean savage)

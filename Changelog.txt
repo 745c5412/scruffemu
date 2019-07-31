@@ -1737,3 +1737,8 @@ Fixed a bug with the elitist and unpredictable challenges where they failed when
 
 31-07-2019
 Fixed a bug where due to a rounding error and an invalid input check, failing a rune on an item with overmaged stats had a chance to completely remove all stats from the item
+Made the anti-lag button now also skip death animations
+Reduced death animations from 1.5s to 800ms
+Reduced critical hit delay from 3s to 1.5s
+Increased mount tiredness reduction to 60 per hour (was 10 per hour)
+Added seperate mount updatable that runs every 3 minutes that moves the mounts and reduces their tiredness

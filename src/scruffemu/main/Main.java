@@ -7,10 +7,10 @@ import ch.qos.logback.classic.Logger;
 import scruffemu.area.map.entity.InteractiveObject;
 import scruffemu.comhandler.ExchangeClient;
 import scruffemu.database.Database;
-import scruffemu.entity.mount.Mount;
 import scruffemu.game.GameServer;
 import scruffemu.game.World;
 import scruffemu.game.scheduler.entity.AveragePing;
+import scruffemu.game.scheduler.entity.MountUpdate;
 import scruffemu.game.scheduler.entity.MoveEntities;
 import scruffemu.game.scheduler.entity.UpdateStarBonus;
 import scruffemu.game.scheduler.entity.WorldKickIdle;
@@ -99,13 +99,13 @@ public class Main
         {
           WorldSave.updatable.update();
           InteractiveObject.updatable.update();
-          Mount.updatable.update();
           WorldPlayerOption.updatable.update();
           WorldPub.updatable.update();
           WorldKickIdle.updatable.update();
           UpdateStarBonus.updatable.update();
           AveragePing.updatable.update();
           MoveEntities.updatable.update();
+          MountUpdate.updatable.update();
           if(!runnables.isEmpty())
           {
             List<Runnable> copyRunnables=new LinkedList<Runnable>(runnables);
