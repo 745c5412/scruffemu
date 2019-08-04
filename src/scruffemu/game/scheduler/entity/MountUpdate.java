@@ -14,7 +14,7 @@ public class MountUpdate extends Updatable
     super(wait);
   }
 
-  public void update()
+  public synchronized void update()
   {
     if(this.verify())
     {

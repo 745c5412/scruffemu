@@ -3424,7 +3424,7 @@ public class GameClient
       catch(Exception ignored)
       {
       }
-
+      
       switch(packet.charAt(2))
       {
         case 'C':// Certificats -> Etable

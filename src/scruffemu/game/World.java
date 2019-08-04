@@ -554,7 +554,7 @@ public class World
     logger.debug("Runes have been added succesfully");
     Potion.addPotions();
     logger.debug("Runes have been added succesfully");
-
+    
     Database.getStatics().getServerData().updateTime(time);
     logger.info("All data was loaded successfully at "+new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss",Locale.FRANCE).format(new Date())+" in "+new SimpleDateFormat("mm",Locale.FRANCE).format((System.currentTimeMillis()-time))+" min "+new SimpleDateFormat("ss",Locale.FRANCE).format((System.currentTimeMillis()-time))+" s.");
     logger.setLevel(Level.ALL);

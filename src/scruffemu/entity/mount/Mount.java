@@ -14,6 +14,7 @@ import scruffemu.common.PathFinding;
 import scruffemu.common.SocketManager;
 import scruffemu.database.Database;
 import scruffemu.game.World;
+import scruffemu.main.Config;
 import scruffemu.main.Constant;
 import scruffemu.object.GameObject;
 import scruffemu.utility.TimerWaiterPlus;
@@ -603,9 +604,9 @@ public class Mount
 
   public void aumEndurance(int endurance)
   {
-    this.endurance+=(endurance/100)*this.getBonusFatigue()*Generation.getLearningRate(Constant.getGeneration(this.color));
+    this.endurance+=Config.getInstance().rateMount*((endurance/100)*this.getBonusFatigue()*Generation.getLearningRate(Constant.getGeneration(this.color)));
     if(this.capacitys.contains(5))
-      this.endurance+=1;
+      this.endurance+=Config.getInstance().rateMount*1;
     if(this.endurance>10000)
       this.endurance=10000;
     Database.getStatics().getMountData().update(this);
@@ -615,9 +616,9 @@ public class Mount
   {
     if(this.maturity<this.getMaxMaturity())
     {
-      this.maturity+=(Resist/100)*this.getBonusFatigue();
+      this.maturity+=Config.getInstance().rateMount*((Resist/100)*this.getBonusFatigue());
       if(this.capacitys.contains(7))
-        this.maturity+=Resist/100;
+        this.maturity+=Config.getInstance().rateMount*(Resist/100);
       if(this.size<100)
       {
         GameMap map=World.world.getMap(this.mapId);
@@ -650,25 +651,25 @@ public class Mount
 
   public void aumAmor(int amour)
   {
-    this.amour+=(amour/100)*this.getBonusFatigue();
+    this.amour+=Config.getInstance().rateMount*((amour/100)*this.getBonusFatigue());
     if(this.capacitys.contains(6))
-      this.amour+=amour/500;
+      this.amour+=Config.getInstance().rateMount*(amour/500);
     if(this.amour>10000)
       this.amour=10000;
   }
 
   public void aumState(int state)
   {
-    this.state+=(state/100)*this.getBonusFatigue();
+    this.state+=Config.getInstance().rateMount*((state/100)*this.getBonusFatigue());
     if(this.state>10000)
       this.state=10000;
   }
 
   public void aumEnergy(int energy)
   {
-    this.energy+=(energy/500)*this.getBonusFatigue();
+    this.energy+=Config.getInstance().rateMount*((energy/500)*this.getBonusFatigue());
     if(this.capacitys.contains(1))
-      this.energy+=energy/500;
+      this.energy+=Config.getInstance().rateMount*(energy/500);
     if(this.energy>this.getMaxEnergy())
       this.setMaxEnergy();
   }
@@ -681,9 +682,9 @@ public class Mount
 
   public void resFatige()
   {
-    this.fatigue-=20;
-    if(this.fatigue<0)
-      this.fatigue=0;
+    this.setFatigue(this.getFatigue()-20);
+    if(this.getFatigue()<0)
+      this.setFatigue(0);
   }
 
   public void resAmor(int amor)
@@ -702,7 +703,7 @@ public class Mount
 
   public void resState(int state)
   {
-    this.state-=(state/100)*this.getBonusFatigue();
+    this.state-=Config.getInstance().rateMount*((state/100)*this.getBonusFatigue());
     if(this.state<-10000)
       this.state=-10000;
   }
@@ -763,95 +764,73 @@ public class Mount
       if(MP.getCellAndObject().containsKey(cellTest))
       {
         int item=MP.getCellAndObject().get(cellTest);
-        // liste objet elevage
-        if(item==7755||item==7756||item==7757||item==7758||item==7759||item==7760||item==7761||item==7762||item==7763||item==7764||item==7765||item==7766||item==7767||item==7768||item==7769||item==7770||item==7771||item==7772||item==7773||item==7774||item==7625||item==7626||item==7627||item==7629)
-        {// Baffeur
-          resState(GameMap.getObjResist(player,cellTest,item));
-          if(this.sex==0)
-          {
-            this.stateMale();
-          }
-          else
-          {
-            this.stateFemale();
-          }
+        if(item==7755||item==7756||item==7757||item==7758||item==7759||item==7760||item==7761||item==7762||item==7763||item==7764||item==7765||item==7766||item==7767||item==7768||item==7769||item==7770||item==7771||item==7772||item==7773||item==7774||item==7625||item==7626||item==7627||item==7629)// 
+        {
+          //Slapper
+          resState(GameMap.getObjResist(MP,cellTest,item));
           aumFatige();
+          if(this.sex==0)
+            this.stateMale();
+          else
+            this.stateFemale();
         }
         else if(item==7775||item==7776||item==7777||item==7778||item==7779||item==7780||item==7781||item==7782||item==7783||item==7784||item==7785||item==7786||item==7787||item==7788||item==7789||item==7790||item==7791||item==7792||item==7793||item==7794||item==7795||item==7796||item==7797||item==7798)
-        {//Foudroyeur
+        { //Lightning Rod
           if(this.state<0)
-            this.aumEndurance(GameMap.getObjResist(player,cellTest,item));
-          if(this.sex==0)
           {
-            this.stateMale();
+            this.aumEndurance(GameMap.getObjResist(MP,cellTest,item));
+            aumFatige();
+            if(this.sex==0)
+              this.stateMale();
+            else
+              this.stateFemale();
           }
-          else
-          {
-            this.stateFemale();
-          }
-          aumFatige();
         }
         else if(item==7606||item==7607||item==7608||item==7609||item==7610||item==7611||item==7612||item==7613||item==7614||item==7615||item==7616||item==7617||item==7618||item==7619||item==7620||item==7621||item==7683||item==7684||item==7685||item==7686||item==7687||item==7688||item==7689||item==7690)
-        {// Mangeoire
-          resFatige();
-          this.aumEnergy(GameMap.getObjResist(player,cellTest,item));
+        { //Manger
+          this.aumEnergy(GameMap.getObjResist(MP,cellTest,item));
+          aumFatige();
           if(this.sex==0)
-          {
             this.stateMale();
-          }
           else
-          {
             this.stateFemale();
-          }
         }
         else if(item==7634||item==7635||item==7636||item==7637||item==7691||item==7692||item==7693||item==7694||item==7695||item==7696||item==7697||item==7698||item==7699||item==7700)
-        {// Dragofesse
+        { //Dragobutt
           if(this.state>0)
-            this.aumAmor(GameMap.getObjResist(player,cellTest,item));
-          if(this.sex==0)
           {
-            this.stateMale();
+            this.aumAmor(GameMap.getObjResist(MP,cellTest,item));
+            aumFatige();
+            if(this.sex==0)
+              this.stateMale();
+            else
+              this.stateFemale();
           }
-          else
-          {
-            this.stateFemale();
-          }
-          aumFatige();
         }
         else if(item==7628||item==7622||item==7623||item==7624||item==7733||item==7734||item==7735||item==7736||item==7737||item==7738||item==7739||item==7740||item==7741||item==7742||item==7743||item==7744||item==7745||item==7746)
-        {// Caresseur
-          aumState(GameMap.getObjResist(player,cellTest,item));
-          if(this.sex==0)
-          {
-            this.stateMale();
-          }
-          else
-          {
-            this.stateFemale();
-          }
-          aumFatige();
+        { //Patter
+            aumState(GameMap.getObjResist(MP,cellTest,item));
+            aumFatige();
+            if(this.sex==0)
+              this.stateMale();
+            else
+              this.stateFemale();
         }
         else if(item==7590||item==7591||item==7592||item==7593||item==7594||item==7595||item==7596||item==7597||item==7598||item==7599||item==7600||item==7601||item==7602||item==7603||item==7604||item==7605||item==7673||item==7674||item==7675||item==7676||item==7677||item==7678||item==7679||item==7682)
-        {// Abreuvoir
-          if(this.state<=2000&&this.state>=-2000)
-            this.aumMaturity(GameMap.getObjResist(player,cellTest,item));
-          if(this.sex==0)
+        { //Drinking Well
+          if(this.state>=-2000&&this.state<=2000)
           {
-            this.stateMale();
+            this.aumMaturity(GameMap.getObjResist(MP,cellTest,item));
+            aumFatige();
+            if(this.sex==0)
+              this.stateMale();
+            else
+              this.stateFemale();
           }
-          else
-          {
-            this.stateFemale();
-          }
-          aumFatige();
-        }
-        if(item!=7590&&item!=7591&&item!=7592&&item!=7593&&item!=7594&&item!=7595&&item!=7596&&item!=7597&&item!=7598&&item!=7599&&item!=7600&&item!=7601&&item!=7602&&item!=7603&&item!=7604&&item!=7605&&item!=7673&&item!=7674&&item!=7675&&item!=7676&&item!=7677&&item!=7678&&item!=7679&&item!=7682&&item!=7606&&item!=7607&&item!=7608&&item!=7609&&item!=7610&&item!=7611&&item!=7612&&item!=7613&&item!=7614&&item!=7615&&item!=7616&&item!=7617&&item!=7618&&item!=7619&&item!=7620&&item!=7621&&item!=7683&&item!=7684&&item!=7685&&item!=7686&&item!=7687&&item!=7688&&item!=7689&&item!=7690&&item!=7755&&item!=7756&&item!=7757&&item!=7758&&item!=7759&&item!=7760&&item!=7761&&item!=7762&&item!=7763&&item!=7764&&item!=7765&&item!=7766&&item!=7767&&item!=7768&&item!=7769&&item!=7770&&item!=7771&&item!=7772&&item!=7773&&item!=7774&&item!=7625&&item!=7626&&item!=7627&&item!=7629&&item!=7628&&item!=7622&&item!=7623&&item!=7624&&item!=7733&&item!=7734&&item!=7735&&item!=7736&&item!=7737&&item!=7738&&item!=7739&&item!=7740&&item!=7741&&item!=7742&&item!=7743&&item!=7744&&item!=7745&&item!=7746&&item!=7634&&item!=7635&&item!=7636&&item!=7637&&item!=7691&&item!=7692&&item!=7693&&item!=7694&&item!=7695&&item!=7696&&item!=7697&&item!=7698&&item!=7699&&item!=7700&&item!=7775&&item!=7776&&item!=7777&&item!=7778&&item!=7779&&item!=7780&&item!=7781&&item!=7782&&item!=7783&&item!=7784&&item!=7785&&item!=7786&&item!=7787&&item!=7788&&item!=7789&&item!=7790&&item!=7791&&item!=7792&&item!=7793&&item!=7794&&item!=7795&&item!=7796&&item!=7797&&item!=7798)
-        {
-
         }
         break;
       }
-      if(map.getCase(cellTest).isWalkable(true)&&MP.getDoor()!=cellTest&&!map.cellSide(cell,cellTest))
+      if(map.getCase(cellTest).isWalkable(false)&&MP.getDoor()!=cellTest&&!map.cellSide(cell,cellTest))
       {
         cell=cellTest;
         path.append(dir+World.world.getCryptManager().cellID_To_Code(cell));
@@ -911,89 +890,72 @@ public class Mount
         return;
       if(MP.getCellAndObject().containsKey(cellTest)&&(this.fatigue>=240||this.isFecund()==10))
         break;
-      if(MP.getCellAndObject().containsKey(cellTest)&&this.fatigue<240)
+      if(MP.getCellAndObject().containsKey(cellTest))
       {
         int item=MP.getCellAndObject().get(cellTest);
         if(item==7755||item==7756||item==7757||item==7758||item==7759||item==7760||item==7761||item==7762||item==7763||item==7764||item==7765||item==7766||item==7767||item==7768||item==7769||item==7770||item==7771||item==7772||item==7773||item==7774||item==7625||item==7626||item==7627||item==7629)// 
         {
+          //Slapper
           resState(GameMap.getObjResist(MP,cellTest,item));
-          if(this.sex==0)
-          {
-            this.stateMale();
-          }
-          else
-          {
-            this.stateFemale();
-          }
           aumFatige();
+          if(this.sex==0)
+            this.stateMale();
+          else
+            this.stateFemale();
         }
         else if(item==7775||item==7776||item==7777||item==7778||item==7779||item==7780||item==7781||item==7782||item==7783||item==7784||item==7785||item==7786||item==7787||item==7788||item==7789||item==7790||item==7791||item==7792||item==7793||item==7794||item==7795||item==7796||item==7797||item==7798)
-        {// Baffeur
+        { //Lightning Rod
           if(this.state<0)
+          {
             this.aumEndurance(GameMap.getObjResist(MP,cellTest,item));
-          if(this.sex==0)
-          {
-            this.stateMale();
+            aumFatige();
+            if(this.sex==0)
+              this.stateMale();
+            else
+              this.stateFemale();
           }
-          else
-          {
-            this.stateFemale();
-          }
-          aumFatige();
         }
         else if(item==7606||item==7607||item==7608||item==7609||item==7610||item==7611||item==7612||item==7613||item==7614||item==7615||item==7616||item==7617||item==7618||item==7619||item==7620||item==7621||item==7683||item==7684||item==7685||item==7686||item==7687||item==7688||item==7689||item==7690)
-        {// Foudroyeur
-          aumFatige();
+        { //Manger
           this.aumEnergy(GameMap.getObjResist(MP,cellTest,item));
+          aumFatige();
           if(this.sex==0)
-          {
             this.stateMale();
-          }
           else
-          {
             this.stateFemale();
-          }
         }
         else if(item==7634||item==7635||item==7636||item==7637||item==7691||item==7692||item==7693||item==7694||item==7695||item==7696||item==7697||item==7698||item==7699||item==7700)
-        {// Mangeoire
+        { //Dragobutt
           if(this.state>0)
+          {
             this.aumAmor(GameMap.getObjResist(MP,cellTest,item));
-          if(this.sex==0)
-          {
-            this.stateMale();
+            aumFatige();
+            if(this.sex==0)
+              this.stateMale();
+            else
+              this.stateFemale();
           }
-          else
-          {
-            this.stateFemale();
-          }
-          aumFatige();
         }
         else if(item==7628||item==7622||item==7623||item==7624||item==7733||item==7734||item==7735||item==7736||item==7737||item==7738||item==7739||item==7740||item==7741||item==7742||item==7743||item==7744||item==7745||item==7746)
-        {// Dragofesse
-          aumState(GameMap.getObjResist(MP,cellTest,item));
-          if(this.sex==0)
-          {
-            this.stateMale();
-          }
-          else
-          {
-            this.stateFemale();
-          }
-          aumFatige();
+        { //Patter
+            aumState(GameMap.getObjResist(MP,cellTest,item));
+            aumFatige();
+            if(this.sex==0)
+              this.stateMale();
+            else
+              this.stateFemale();
         }
         else if(item==7590||item==7591||item==7592||item==7593||item==7594||item==7595||item==7596||item==7597||item==7598||item==7599||item==7600||item==7601||item==7602||item==7603||item==7604||item==7605||item==7673||item==7674||item==7675||item==7676||item==7677||item==7678||item==7679||item==7682)
-        {// Abreuvoir
-          if(this.state<=2000&&this.state>=-2000)
+        { //Drinking Well
+          if(this.state>=-2000&&this.state<=2000)
+          {
             this.aumMaturity(GameMap.getObjResist(MP,cellTest,item));
-          if(this.sex==0)
-          {
-            this.stateMale();
+            aumFatige();
+            if(this.sex==0)
+              this.stateMale();
+            else
+              this.stateFemale();
           }
-          else
-          {
-            this.stateFemale();
-          }
-          aumFatige();
         }
         break;
       }
