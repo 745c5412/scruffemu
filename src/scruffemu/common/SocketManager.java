@@ -2280,7 +2280,6 @@ public class SocketManager
   {
     String packet="SF"+sign;
     send(perso,packet);
-
   }
 
   public static void GAME_SEND_R_PACKET(Player perso, String str)

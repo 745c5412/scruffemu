@@ -111,7 +111,7 @@ public class IAHandler
           ia=new IA31(fight,fighter,(byte)3);
           break;
         case 32://IA ARCHER attaque,pm loin d'enemie,attaque,pmvers enemie
-          ia=new IA32(fight,fighter,(byte)4);
+          ia=new IA32(fight,fighter,(byte)8);
           break;
         case 33://IA BASIQUE buff allier,attaque,pm,attaque,pm
           ia=new IA33(fight,fighter,(byte)4);
@@ -231,7 +231,7 @@ public class IAHandler
           ia=new IA71(fight,fighter,(byte)8);
           break;
         case 72://Healing AI with anti-summon clause with only close-combat damage spells and abolition
-          ia=new IA72(fight,fighter,(byte)8);
+          ia=new IA72(fight,fighter,(byte)5);
           break;
         case 73://Bomberfu AI
           ia=new IA73(fight,fighter,(byte)8);
@@ -277,6 +277,9 @@ public class IAHandler
           break;
         case 87://Ancestral Treechnid
           ia=new IA87(fight,fighter,(byte)8);
+          break;
+        case 88: //Almond Dragoturkey AI
+          ia=new IA88(fight,fighter,(byte)3);
           break;
       }
     }

@@ -55,7 +55,7 @@ public class Mount
     this.fatigue=0;
     this.energy=0;
     this.reproduction=((color==75||color==88) ? -1 : 0);
-    this.maturity=0;
+    this.maturity=(savage ? 1000 : 0);
     this.state=0;
     this.stats=Constant.getMountStats(this.color,this.level);
     this.ancestors="?,?,?,?,?,?,?,?,?,?,?,?,?,?";
@@ -277,13 +277,16 @@ public class Mount
       if(father!=null&&father.getSavage()==1)
       {
         Database.getStatics().getMountData().delete(father.getId());
+        player.getCurMap().getMountPark().delRaising(father.getId());
+        player.getCurMap().getMountPark().getEtable().remove(father);
         World.world.removeMount(father.getId());
       }
       if(this.getSavage()==1)
       {
         Database.getStatics().getMountData().delete(this.getId());
-        World.world.removeMount(this.getId());
         player.getCurMap().getMountPark().delRaising(this.getId());
+        player.getCurMap().getMountPark().getEtable().remove(this);
+        World.world.removeMount(this.getId());
         player.send("Im0112; "+this.getName());
       }
     }

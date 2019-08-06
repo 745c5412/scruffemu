@@ -789,7 +789,7 @@ public class GameMap
         }
       }
 
-      cases.add(new GameCase(map,gameCase.getId(),gameCase.isWalkable(true,true,-1),gameCase.isLoS(),(gameCase.getObject()==null ? -1 : gameCase.getObject().getId())));
+      cases.add(new GameCase(map,gameCase.getId(),gameCase.getActivo(),gameCase.getMovimiento(),gameCase.getLevel(),gameCase.getSlope(),gameCase.isWalkable(true,true,-1),gameCase.isLoS(),(gameCase.getObject()==null ? -1 : gameCase.getObject().getId())));
     }
     map.setCases(cases);
     return map;
@@ -798,7 +798,7 @@ public class GameMap
   public GameMap getMapCopyIdentic()
   {
     GameMap map=new GameMap(id,date,w,h,key,placesStr,X,Y,maxGroup,fixSize,minSize,maxSize,minRespawnTime,maxRespawnTime);
-    List<GameCase> cases=this.cases.stream().map(entry -> new GameCase(map,entry.getId(),entry.isWalkable(false),entry.isLoS(),(entry.getObject()==null ? -1 : entry.getObject().getId()))).collect(Collectors.toList());
+    List<GameCase> cases=this.cases.stream().map(entry -> new GameCase(map,entry.getId(),entry.getActivo(),entry.getMovimiento(),entry.getLevel(),entry.getSlope(),entry.isWalkable(false),entry.isLoS(),(entry.getObject()==null ? -1 : entry.getObject().getId()))).collect(Collectors.toList());
     map.setCases(cases);
     return map;
   }

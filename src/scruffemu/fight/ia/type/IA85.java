@@ -75,7 +75,8 @@ public class IA85 extends AbstractNeedSpell
         {
           time=value;
         }
-      } else if(this.fighter.getCurPa(this.fight)>0&&ennemy1!=null)
+      }
+      else if(this.fighter.getCurPa(this.fight)>0&&ennemy1!=null)
       {
         int value=Function.getInstance().attackIfPossibleAll(this.fight,this.fighter,ennemy1);
         if(value!=0)
@@ -87,7 +88,8 @@ public class IA85 extends AbstractNeedSpell
       if(this.fighter.getCurPa(this.fight)==0&&this.fighter.getCurPm(this.fight)==0)
         this.stop=true;
       this.addNext(this::decrementCount,time);
-    } else
+    }
+    else
     {
       this.stop=true;
     }

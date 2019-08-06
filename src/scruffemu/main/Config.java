@@ -33,7 +33,7 @@ public class Config
   public float rateXp=4;
 
   /** Config data */
-  public boolean encryptPackets=false;
+  public boolean encryptPackets=true;
   public boolean allowMulePvp=false; //honor for killing character on same IP
   public boolean HEROIC=false;
   public boolean VOTESHOP=false;
@@ -42,7 +42,7 @@ public class Config
   public int starHour=2; //how many hours for a mob to gain one star
   public int AIDelay=100, craftDelay=200, gameActionDelay=5; //delay in ms
   public int weaponBonusBase=80, primaryWeaponBonus=30, secondaryWeaponBonus=20, daggerSwordNerf=5; //class weapon bonus
-  public String lessDurationSpells=",95,98,148,149,577,612,741,760,811,813,962,1004,1092,1122,1129,1143,2079,2081,53,170,1164,1169,1172,2118,"; //spells with one turn less duration when selfcast, e.g. amplification, mutilation, clock
+  public String lessDurationSpells=",16,20,95,98,148,149,577,612,741,760,811,813,962,1004,1092,1122,1129,1143,2079,2081,53,170,1164,1169,1172,2118,"; //spells with one turn less duration when selfcast, e.g. amplification, mutilation, clock
   public int erosion=10;
   public int basePods=3000;
   public int idleTime=1000*60*20; //20 minutes

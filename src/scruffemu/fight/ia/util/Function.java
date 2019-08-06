@@ -70,7 +70,8 @@ public class Function
       {
         fight.tryCastSpell(fighter,spell,cell);
         return true;
-      } else
+      }
+      else
       {
         byte count=0;
         List<Integer> cells=new ArrayList<>();
@@ -85,7 +86,8 @@ public class Function
           {
             fight.tryCastSpell(fighter,spell,nearestCell);
             return true;
-          } else
+          }
+          else
           {
             cells.add(nearestCell);
           }
@@ -147,7 +149,8 @@ public class Function
         {
           fight.tryCastSpell(fighter,spell,nearestCell);
           return true;
-        } else
+        }
+        else
         {
           cells.add(nearestCell);
         }
@@ -232,7 +235,8 @@ public class Function
                 bestSS=S;
               }
 
-            } else
+            }
+            else
             {
               if(dist<bestFighter[0])
               {
@@ -245,7 +249,8 @@ public class Function
               }
 
             }
-          } else
+          }
+          else
           {
             if(dist<bestFighter[0])
             {
@@ -264,17 +269,21 @@ public class Function
     {
       CellDest=bestFighter[1];
       targetCell=bestFighter[4];
-    } else if(bestInvok[1]!=0)
+    }
+    else if(bestInvok[1]!=0)
     {
       CellDest=bestInvok[1];
       targetCell=bestInvok[4];
-    } else
+    }
+    else
       return -1;
     if(CellDest==0)
       return -1;
     if(CellDest==fighter.getCell().getId())
       return targetCell+bestSS.getSpellID()*1000;
+    
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,fighter.getCell().getId(),CellDest).getShortestPath(-1);
+    
     if(path==null)
       return -1;
     String pathstr="";
@@ -553,7 +562,8 @@ public class Function
                 curSS=ss.getValue();
               }
             }
-          } else
+          }
+          else
           {
             for(Map.Entry<Integer, SortStats> ss : f.getMob().getSpells().entrySet())
             {
@@ -663,7 +673,7 @@ public class Function
   public int attackIfPossibleRN(Fight fight, Fighter fighter, Fighter target)// 0 = Rien, 5 = EC, 666 = NULL, 10 = SpellNull ou ActionEnCour ou Can'tCastSpell, 0 = AttaqueOK
   {
     if(fight==null||fighter==null||target==null)
-      return 0;
+      return -1;
     SortStats SS=null;
     int cell=0;
     for(Map.Entry<Integer, SortStats> S : fighter.getMob().getSpells().entrySet())
@@ -676,18 +686,18 @@ public class Function
       }
     }
     if(!fight.canCastSpell1(fighter,SS,fight.getMap().getCase(cell),-1))
-      return 0;
+      return -1;
     int attack=fight.tryCastSpell(fighter,SS,cell);
 
     if(attack!=0)
       return 2000;
-    return 0;
+    return -1;
   }
 
   public int attackIfPossibleBuveur(Fight fight, Fighter fighter, Fighter target)// 0 = Rien, 5 = EC, 666 = NULL, 10 = SpellNull ou ActionEnCour ou Can'tCastSpell, 0 = AttaqueOK
   {
     if(fight==null||fighter==null)
-      return 0;
+      return -1;
     SortStats SS=null;
     int cell=0;
     for(Map.Entry<Integer, SortStats> S : fighter.getMob().getSpells().entrySet())
@@ -705,13 +715,13 @@ public class Function
 
     if(attack!=0)
       return 800;
-    return 0;
+    return -1;
   }
 
   public int attackIfPossibleWobot(Fight fight, Fighter fighter)// 0 = Rien, 5 = EC, 666 = NULL, 10 = SpellNull ou ActionEnCour ou Can'tCastSpell, 0 = AttaqueOK
   {
     if(fight==null||fighter==null)
-      return 0;
+      return -1;
     SortStats SS=null;
     int cell=0;
     for(Map.Entry<Integer, SortStats> S : fighter.getMob().getSpells().entrySet())
@@ -727,7 +737,7 @@ public class Function
 
     if(attack!=0)
       return 800;
-    return 0;
+    return -1;
   }
   public int attackIfPossibleTynril(Fight fight, Fighter fighter, Fighter target)// 0 = Rien, 5 = EC, 666 = NULL, 10 = SpellNull ou ActionEnCour ou Can'tCastSpell, 0 = AttaqueOK
   {
@@ -741,34 +751,41 @@ public class Function
       if(target.hasBuff(215))
       {
         SS=findSpell(fighter,1059);
-      } else
+      }
+      else
       {
         SS=findSpell(fighter,1058);
       }
-    } else if(fighter.getMob().getTemplate().getId()==1085)
+    }
+    else if(fighter.getMob().getTemplate().getId()==1085)
     {//deconcerter  /faiblesse eau
       if(target.hasBuff(216))
       {
         SS=findSpell(fighter,1059);
-      } else
+      }
+      else
       {
         SS=findSpell(fighter,1058);
       }
-    } else if(fighter.getMob().getTemplate().getId()==1072)
+    }
+    else if(fighter.getMob().getTemplate().getId()==1072)
     {//consterner  /faiblesse air
       if(target.hasBuff(217))
       {
         SS=findSpell(fighter,1059);
-      } else
+      }
+      else
       {
         SS=findSpell(fighter,1058);
       }
-    } else if(fighter.getMob().getTemplate().getId()==1086)
+    }
+    else if(fighter.getMob().getTemplate().getId()==1086)
     {//perfide  /faiblesse feu
       if(target.hasBuff(218))
       {
         SS=findSpell(fighter,1059);
-      } else
+      }
+      else
       {
         SS=findSpell(fighter,1058);
       }
@@ -829,7 +846,9 @@ public class Function
         }
       }
     }
+    
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,cell.getId(),cell2.getId()).getShortestPath(-1);
+
     if(path==null||path.isEmpty())
       return false;
     ArrayList<GameCase> finalPath=new ArrayList<GameCase>();
@@ -882,6 +901,7 @@ public class Function
 
     if(map==null||cell==null||cell2==null||PathFinding.isNextTo(map,cell.getId(),cell2.getId()))
       return -1;
+
 
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,cell.getId(),cell2.getId()).getShortestPath(-1);
 
@@ -950,7 +970,8 @@ public class Function
       {
         cell=cellID;
         SS2=S.getValue();
-      } else
+      }
+      else
       {
         cell=target.getCell().getId();
         SS2=S.getValue();
@@ -961,7 +982,8 @@ public class Function
       int attack=fight.tryCastSpell(fighter,SS2,cell);
       if(attack!=0)
         return SS2.getSpell().getDuration();
-    } else
+    }
+    else
     {
       if(target==null||SS2==null)
         return 0;
@@ -1114,7 +1136,9 @@ public class Function
 
     if(F.getPm()<=0)
       return 0;
+    
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMap(),fight,F.getCell().getId(),destCase).getShortestPath(-1);
+    
     if(path==null)
       return 0;
     ArrayList<GameCase> finalPath=new ArrayList<GameCase>();
@@ -1330,7 +1354,8 @@ public class Function
         target=f;
         SS=getHealSpell(fight,f,target);
       }
-    } else
+    }
+    else
     //s�lection joueur ayant le moins de pv
     {
       Fighter curF=null;
@@ -1362,7 +1387,8 @@ public class Function
                   curSS=ss.getValue();
                 }
               }
-            } else
+            }
+            else
             {
               for(Map.Entry<Integer, SortStats> ss : f.getMob().getSpells().entrySet())
               {
@@ -1445,7 +1471,8 @@ public class Function
     {
       target=f;
       SS=getHealSpell(fight,f,target);
-    } else
+    }
+    else
     //s�lection joueur ayant le moins de pv
     {
       Fighter curF=null;
@@ -1477,7 +1504,8 @@ public class Function
                   curSS=ss.getValue();
                 }
               }
-            } else
+            }
+            else
             {
               for(Map.Entry<Integer, SortStats> ss : f.getMob().getSpells().entrySet())
               {
@@ -1545,7 +1573,8 @@ public class Function
           ss=SS.getValue();
         }
       }
-    } else
+    }
+    else
     {
       for(Map.Entry<Integer, SortStats> SS : F.getMob().getSpells().entrySet())
       {
@@ -1612,7 +1641,8 @@ public class Function
           ss=SS.getValue();
         }
       }
-    } else
+    }
+    else
     {
       for(Map.Entry<Integer, SortStats> SS : F.getMob().getSpells().entrySet())
       {
@@ -1647,7 +1677,7 @@ public class Function
       return 0;
     int nbrcase=0;
     int cellID=PathFinding.getNearestCellAroundGA(map,cell2.getId(),cell.getId(),null);
-    
+
     if(cellID==-1)
     {
       Map<Integer, Fighter> ennemys=getLowHpEnnemyList(fight,F);
@@ -1661,8 +1691,9 @@ public class Function
         }
       }
     }
-    
+   
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,cell.getId(),cellID).getShortestPath(-1);
+
     if(path==null||path.isEmpty())
       return 0;
 
@@ -1673,7 +1704,7 @@ public class Function
         break;
       finalPath.add(path.get(a));
     }
-    
+
     String pathstr="";
     try
     {
@@ -1749,7 +1780,9 @@ public class Function
         }
       }
     }
+    
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,cell.getId(),cellID).getShortestPath(-1);
+    
     if(path==null||path.isEmpty())
       return 0;
 
@@ -1835,6 +1868,8 @@ public class Function
         }
       }
     }
+    
+
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,cell.getId(),cellID).getShortestPath(-1);
     if(path==null||path.isEmpty())
       return 0;
@@ -1906,7 +1941,7 @@ public class Function
     int nbrcase=0;
 
     int cellID=PathFinding.getNearestligneGA(fight,cell2.getId(),cell.getId(),null,dist);
-    
+
     if(cellID==-1)
     {
       Map<Integer, Fighter> ennemys=getLowHpEnnemyList(fight,F);
@@ -1920,6 +1955,7 @@ public class Function
         }
       }
     }
+    
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,cell.getId(),cellID).getShortestPath(0); //0pour en ligne
     if(path==null||path.isEmpty())
       return 0;
@@ -2006,7 +2042,9 @@ public class Function
         }
       }
     }
-    ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,cell.getId(),cell2.getId()).getShortestPath(-1);
+    
+    ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,cell.getId(),cellID).getShortestPath(-1);
+
     if(path==null||path.isEmpty())
       return 0;
 
@@ -2345,7 +2383,7 @@ public class Function
     }
     return curF;
   }
-  
+
   public Fighter getNearestinvocateurnbrcasemax(Fight fight, Fighter fighter, int distmin, int distmax)
   {
     if(fight==null||fighter==null)
@@ -2457,10 +2495,11 @@ public class Function
   public int attackIfPossible(Fight fight, Fighter fighter, List<SortStats> Spell)// 0 = Rien, 5 = EC, 666 = NULL, 10 = SpellNull ou ActionEnCour ou Can'tCastSpell, 0 = AttaqueOK
   {
     if(fight==null||fighter==null)
-      return 0;
+      return -1;
     Map<Integer, Fighter> ennemyList=getLowHpEnnemyList(fight,fighter);
     SortStats SS=null;
     Fighter target=null;
+
     for(Map.Entry<Integer, Fighter> t : ennemyList.entrySet())
     {
       SS=getBestSpellForTargetDopeul(fight,fighter,t.getValue(),fighter.getCell().getId(),Spell);
@@ -2471,6 +2510,7 @@ public class Function
         break;
       }
     }
+
     int curTarget=0,cell=0;
     SortStats SS2=null;
 
@@ -2488,20 +2528,23 @@ public class Function
         SS2=S;
       }
     }
+
     if(curTarget>0&&cell>=15&&cell<=463&&SS2!=null)
     {
       int attack=fight.tryCastSpell(fighter,SS2,cell);
-      if(attack!=0)
+      if(attack==0)
         return SS2.getSpell().getDuration();
-    } else
+    }
+
+    else
     {
       if(target==null||SS==null)
-        return 0;
+        return -1;
       int attack=fight.tryCastSpell(fighter,SS,target.getCell().getId());
-      if(attack!=0)
+      if(attack==0)
         return SS.getSpell().getDuration();
     }
-    return 0;
+    return -1;
   }
 
   public int attackIfPossibleglyph(Fight fight, Fighter fighter, Fighter f, List<SortStats> Spell)// 0 = Rien, 5 = EC, 666 = NULL, 10 = SpellNull ou ActionEnCour ou Can'tCastSpell, 0 = AttaqueOK
@@ -2593,7 +2636,7 @@ public class Function
   public int attackIfPossiblevisee(Fight fight, Fighter fighter, Fighter target, List<SortStats> Spell)// 0 = Rien, 5 = EC, 666 = NULL, 10 = SpellNull ou ActionEnCour ou Can'tCastSpell, 0 = AttaqueOK
   {
     if(fight==null||fighter==null)
-      return 0;
+      return -1;
     SortStats SS=null;
 
     SS=getBestSpellForTargetDopeul(fight,fighter,target,fighter.getCell().getId(),Spell);
@@ -2602,7 +2645,7 @@ public class Function
     int attack=fight.tryCastSpell(fighter,SS,target.getCell().getId());
     if(attack!=0)
       return SS.getSpell().getDuration();
-    return 0;
+    return -1;
   }
 
   public int attackAllIfPossible(Fight fight, Fighter fighter, List<SortStats> Spell)// 0 = Rien, 5 = EC, 666 = NULL, 10 = SpellNull ou ActionEnCour ou Can'tCastSpell, 0 = AttaqueOK
@@ -2640,7 +2683,8 @@ public class Function
       int attack=fight.tryCastSpell(fighter,SS2,cell);
       if(attack!=0)
         return SS2.getSpell().getDuration();
-    } else
+    }
+    else
     {
       if(target==null||SS==null)
         return 0;
@@ -2661,7 +2705,9 @@ public class Function
       return 2;
 
     boolean canAttack=false;
+    
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,current.getCell().getId(),getNearestEnnemy(fight,current).getCell().getId()).getShortestPath(-1);
+
     int caseLaunch=-1;
     int newCase=-1;
     int bestNbTarget=0;
@@ -2693,7 +2739,8 @@ public class Function
           {
             nbTarget=targetVal/1000;
             cellID=targetVal-nbTarget*1000;
-          } else
+          }
+          else
           {
             cellID=target.getCell().getId();
             nbTarget=1;
@@ -2764,7 +2811,8 @@ public class Function
         fight.tryCastSpell(current,bestSort,caseLaunch);
         return 1;
       }
-    } else if(result&&!canAttack)
+    }
+    else if(result&&!canAttack)
       return 1;
 
     return 3;
@@ -2826,7 +2874,8 @@ public class Function
               }
             }
           }
-        } else
+        }
+        else
         {
           for(Fighter T : targets)
           {
@@ -2847,7 +2896,8 @@ public class Function
                     bestSS=S;
                   }
 
-                } else
+                }
+                else
                 {
                   if(dist<bestFighter[0])
                   {
@@ -2860,7 +2910,8 @@ public class Function
                   }
 
                 }
-              } else
+              }
+              else
               {
                 if(dist<bestFighter[0])
                 {
@@ -2882,17 +2933,21 @@ public class Function
     {
       CellDest=bestFighter[1];
       targetCell=bestFighter[4];
-    } else if(bestInvok[1]!=0)
+    }
+    else if(bestInvok[1]!=0)
     {
       CellDest=bestInvok[1];
       targetCell=bestInvok[4];
-    } else
+    }
+    else
       return -1;
     if(CellDest==0)
       return -1;
     if(CellDest==fighter.getCell().getId())
       return targetCell+bestSS.getSpellID()*1000;
+    
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,fighter.getCell().getId(),CellDest).getShortestPath(-1);
+    
     if(path==null)
       return -1;
     String pathstr="";
@@ -3113,7 +3168,8 @@ public class Function
           }
         }
       }
-    } else
+    }
+    else
     {
       for(Map.Entry<Integer, SortStats> SS : F.getMob().getSpells().entrySet())
       {
@@ -3331,13 +3387,15 @@ public class Function
       if(spell.getMaxPO()>20)
       {
         arg2='u';
-      } else
+      }
+      else
       {
         arg2=table[spell.getMaxPO()];
       }
       String args=Character.toString(arg1)+Character.toString(arg2);
       possibleLaunch=PathFinding.getCellListFromAreaString(fight.getMap(),launchCell,launchCell,args,0,false);
-    } else
+    }
+    else
     {
       possibleLaunch.add(fight.getMap().getCase(launchCell));
     }

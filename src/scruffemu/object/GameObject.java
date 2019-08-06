@@ -1111,9 +1111,6 @@ public class GameObject
     double lost=0.0;
     boolean stop=false;
     
-    System.out.println("lost: "+lost);
-    System.out.println("power: "+power);
-    
     while(lost<power&&!stats.isEmpty()) //stop looping when power limit is reached or item doesnt have stats
     {
       stats="";
@@ -1145,7 +1142,6 @@ public class GameObject
       
       for(Integer i : keys)
       {
-        System.out.println("key: "+i);
         if(Rune.isNegativeStat(Integer.toHexString(i)))
         {
           if(statsObj.get(i)!=JobAction.getBaseMaxJet(obj.getTemplate().getId(),Rune.getNegativeStatByRuneStat(Integer.toHexString(i)))) //if current stat

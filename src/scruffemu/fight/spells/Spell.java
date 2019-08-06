@@ -466,7 +466,7 @@ public class Spell
           }
         }
 
-        SE.applyToFight(fight,perso,cell,cibles);
+        SE.applyToFight(fight,perso,cell,cibles,(cells.size()>1) ? true : false, false);
       }
     }
 
@@ -583,7 +583,7 @@ public class Spell
               c.getValue().onFightersAttacked(cibles,perso,SE,this.getSpellID(),isTrap);
             }
           }
-          SE.applyToFight(fight,perso,cell,cibles);
+          SE.applyToFight(fight,perso,cell,cibles,(cells.size()>1) ? true : false,isTrap);
           num++;
         }
         catch(Exception e)

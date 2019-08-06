@@ -122,7 +122,8 @@ public class ObjectAction
               {
                 statId1=Integer.parseInt(arg.split(";")[0]);
                 val=World.getGameObject(objet).getRandomValue(World.getGameObject(objet).parseStatsString(),Integer.parseInt(arg.split(";")[0]));
-              } else
+              }
+              else
               {
                 statId1=Integer.parseInt(arg0);
                 val=World.getGameObject(objet).getRandomValue(World.getGameObject(objet).parseStatsString(),Integer.parseInt(arg0));
@@ -374,7 +375,8 @@ public class ObjectAction
             {
               SocketManager.GAME_SEND_Im_PACKET(player,"19");
               return;
-            } else
+            }
+            else
             {
               if(job==27)
               {
@@ -382,7 +384,8 @@ public class ObjectAction
                   return;
                 SocketManager.GAME_SEND_Im_PACKET(player,"022;"+966+"~"+1);
                 player.learnJob(World.world.getMetier(job));
-              } else
+              }
+              else
               {
                 player.learnJob(World.world.getMetier(job));
               }
@@ -470,7 +473,8 @@ public class ObjectAction
             {
               MP.addObject(cellid,id0,player.getId(),resistMax,resist);
               SocketManager.SEND_GDO_PUT_OBJECT_MOUNT(map0,cellid+";"+id0+";1;"+resist+";"+resistMax);
-            } else
+            }
+            else
             {
               SocketManager.GAME_SEND_Im_PACKET(player,"1107");
               return;
@@ -532,9 +536,9 @@ public class ObjectAction
               Prisme.setConquestArea(area.getId());
             }
             World.world.addPrisme(Prisme);
-           Database.getDynamics().getPrismData().add(Prisme);
+            Database.getDynamics().getPrismData().add(Prisme);
             player.getCurMap().getSubArea().setAlignement(player.get_align());
-           Database.getDynamics().getSubAreaData().update(player.getCurMap().getSubArea());
+            Database.getDynamics().getSubAreaData().update(player.getCurMap().getSubArea());
             SocketManager.GAME_SEND_PRISME_TO_MAP(map0,Prisme);
             break;
 
@@ -579,7 +583,8 @@ public class ObjectAction
             if(arg.split(";")[1].equals("1"))
             {
               groupData=arg.split(";")[2];
-            } else
+            }
+            else
             {
               SoulStone soulStone=(SoulStone)World.getGameObject(objet);
               groupData=soulStone.parseGroupData();
@@ -715,12 +720,26 @@ public class ObjectAction
               SocketManager.GAME_SEND_STATS_PACKET(player);
               SocketManager.GAME_SEND_UPDATE_ITEM(player,gameObject);
               player.sendMessage("Your weapon has been modified succesfully.");
-            } else
+            }
+            else
             {
               player.sendMessage("Your weapon does not have neutral damage.");
               isOk=false;
               send=false;
             }
+            break;
+          case 35: //forgetfulness potion
+            player.getStats().addOneStat(125,-(player.getStats().getEffect(125)-player.getStatsParcho().getEffect(125)));
+            player.getStats().addOneStat(124,-(player.getStats().getEffect(124)-player.getStatsParcho().getEffect(124)));
+            player.getStats().addOneStat(118,-(player.getStats().getEffect(118)-player.getStatsParcho().getEffect(118)));
+            player.getStats().addOneStat(123,-(player.getStats().getEffect(123)-player.getStatsParcho().getEffect(123)));
+            player.getStats().addOneStat(119,-(player.getStats().getEffect(119)-player.getStatsParcho().getEffect(119)));
+            player.getStats().addOneStat(126,-(player.getStats().getEffect(126)-player.getStatsParcho().getEffect(126)));
+            player.setCapital((player.getLevel()*5)-5);
+            SocketManager.GAME_SEND_STATS_PACKET(player);
+            player.setisForgetingSpell(true);
+            player.getSorts().forEach((key,value) -> player.getGameClient().forgetSpell(key));
+            player.setisForgetingSpell(false);
             break;
         }
         turn++;
@@ -856,7 +875,6 @@ public class ObjectAction
         return false;
       case 10914://Cadeau nowel 3
         return false;
-
     }
     return false;
   }

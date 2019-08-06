@@ -76,7 +76,8 @@ public class IA81 extends AbstractNeedSpell
           if(maxPo==1)
             firstEnnemy=null;
         }
-      } else if(this.fighter.getCurPm(this.fight)>0&&firstEnnemy==null&&secondEnnemy==null)
+      }
+      else if(this.fighter.getCurPm(this.fight)>0&&firstEnnemy==null&&secondEnnemy==null)
       {
         int num=Function.getInstance().moveautourIfPossible(this.fight,this.fighter,E);
         if(num!=0)
@@ -99,7 +100,7 @@ public class IA81 extends AbstractNeedSpell
         }
         this.buff2++;
       }
-      
+
       if(this.fighter.getCurPa(this.fight)>0&&secondEnnemy!=null&&!action&&this.hasSummons&&this.summon!=null)
       {
         int value=Function.getInstance().attackIfPossibleAll(this.fight,this.fighter,summon);
@@ -122,7 +123,8 @@ public class IA81 extends AbstractNeedSpell
       if(this.fighter.getCurPa(this.fight)==0&&this.fighter.getCurPm(this.fight)==0)
         this.stop=true;
       addNext(this::decrementCount,time+Config.getInstance().AIDelay);
-    } else
+    }
+    else
     {
       this.stop=true;
     }

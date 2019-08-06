@@ -254,14 +254,14 @@ public class InteractiveDoor
 
     if(active)
     {
-      temporaryCell=new GameCase(gameMap,cell,true,true,-1);
+      temporaryCell=new GameCase(gameMap,cell,true,(byte)0,(byte)0,(byte)0,true,true,-1);
       temporaryCell.setOnCellStop(gameCase.getOnCellStop());
       gameMap.getCases().add(temporaryCell);
       packet+=";aaGaaaaaaa801;1";
     }
     else
     {
-      temporaryCell=new GameCase(gameMap,cell,false,false,-1);
+      temporaryCell=new GameCase(gameMap,cell,true,(byte)0,(byte)0,(byte)0,false,false,-1);
       temporaryCell.setOnCellStop(gameCase.getOnCellStop());
       gameMap.getCases().add(temporaryCell);
       packet+=";aaaaaaaaaa801;1";

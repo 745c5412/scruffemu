@@ -6,12 +6,12 @@ import scruffemu.fight.ia.AbstractNeedSpell;
 import scruffemu.fight.ia.util.Function;
 import scruffemu.fight.spells.Spell;
 
-public class IA32 extends AbstractNeedSpell
+public class IA88 extends AbstractNeedSpell
 {
   private int movedDiag=0;
   private int attack=0;
 
-  public IA32(Fight fight, Fighter fighter, byte count)
+  public IA88(Fight fight, Fighter fighter, byte count)
   {
     super(fight,fighter,count);
   }
@@ -33,16 +33,20 @@ public class IA32 extends AbstractNeedSpell
       if(longestEnnemy!=null)
         if(longestEnnemy.isHide())
           longestEnnemy=null;
+      if(nearestEnnemy!=null)
+        if(nearestEnnemy.isHide())
+          nearestEnnemy=null;
 
       if(this.fighter.getCurPm(this.fight)>0&&longestEnnemy==null&&this.attack==0&&this.movedDiag<1)
       {
-        int value=Function.getInstance().movediagIfPossible(this.fight,this.fighter,nearestEnnemy);
+        int value=Function.getInstance().movecacIfPossible(this.fight,this.fighter,nearestEnnemy);
         if(value!=0)
         {
           movedDiag++;
           time=value;
           action=true;
           longestEnnemy=Function.getInstance().getNearestEnnemynbrcasemax(this.fight,this.fighter,0,maxPo+1);
+          nearestEnnemy=Function.getInstance().getNearestEnnemynbrcasemax(this.fight,this.fighter,0,2); //2 = po min 1 + 1;
         }
       }
       if(this.fighter.getCurPa(this.fight)>0&&!action)
@@ -75,14 +79,26 @@ public class IA32 extends AbstractNeedSpell
         }
         else if(this.fighter.getCurPm(this.fight)>0&&this.attack==0&&this.movedDiag<1)
         {
-          value=Function.getInstance().movediagIfPossible(this.fight,this.fighter,nearestEnnemy);
+          value=Function.getInstance().movecacIfPossible(this.fight,this.fighter,nearestEnnemy);
           if(value!=0)
           {
             movedDiag++;
             time=value;
             action=true;
-            Function.getInstance().getNearestEnnemynbrcasemax(this.fight,this.fighter,0,maxPo+1);
+            nearestEnnemy=Function.getInstance().getNearestEnnemynbrcasemax(this.fight,this.fighter,0,2); //2 = po min 1 + 1;
           }
+        }
+      }
+
+      if(this.fighter.getCurPa(this.fight)>0&&nearestEnnemy!=null&&!action)
+      {
+        int value=Function.getInstance().attackIfPossible(this.fight,this.fighter,this.cacs);
+        if(value!=-1)
+        {
+          time=value;
+          action=true;
+          this.attack++;
+          this.movedDiag=0;
         }
       }
 

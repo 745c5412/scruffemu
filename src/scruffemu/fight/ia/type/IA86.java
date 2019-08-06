@@ -82,7 +82,7 @@ public class IA86 extends AbstractNeedSpell
       if(this.fighter.getCurPa(this.fight)>0&&nearestEnnemy!=null&&!action)
       {
         int value=Function.getInstance().attackIfPossible(this.fight,this.fighter,this.cacs);
-        if(value!=0)
+        if(value!=-1)
         {
           time=value;
           action=true;
@@ -91,7 +91,7 @@ public class IA86 extends AbstractNeedSpell
       if(this.fighter.getCurPa(this.fight)>0&&ennemy!=null&&!action)
       {
         int value=Function.getInstance().attackIfPossible(this.fight,this.fighter,this.cacs);
-        if(value!=0)
+        if(value!=-1)
         {
           time=value;
           action=true;

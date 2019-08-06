@@ -69,7 +69,7 @@ public class IA84 extends AbstractNeedSpell
           }
         }
         int num=Function.getInstance().attackIfPossible(this.fight,this.fighter,this.cacs);
-        if(num!=0)
+        if(num!=-1)
         {
           time=num+50;
           action=true;
@@ -79,7 +79,7 @@ public class IA84 extends AbstractNeedSpell
       if(this.fighter.getCurPa(this.fight)>0&&firstEnnemy!=null&&!action)
       {
         int num=Function.getInstance().attackIfPossible(this.fight,this.fighter,this.highests);
-        if(num!=0)
+        if(num!=-1)
         {
           time=num+50;
           action=true;

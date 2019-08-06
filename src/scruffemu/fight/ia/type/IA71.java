@@ -101,15 +101,16 @@ public class IA71 extends AbstractNeedSpell
       if(this.fighter.getCurPa(this.fight)>0&&ennemy1!=null&&ennemy2==null&&!action)
       {
         int value=Function.getInstance().attackIfPossible(this.fight,this.fighter,this.highests);
-        if(value!=0)
+        if(value!=-1)
         {
           time=value;
           action=true;
         }
-      } else if(this.fighter.getCurPa(this.fight)>0&&ennemy2!=null&&!action)
+      }
+      else if(this.fighter.getCurPa(this.fight)>0&&ennemy2!=null&&!action)
       {
         int value=Function.getInstance().attackIfPossible(this.fight,this.fighter,this.cacs);
-        if(value!=0)
+        if(value!=-1)
         {
           time=value;
           action=true;
@@ -126,7 +127,8 @@ public class IA71 extends AbstractNeedSpell
       if(this.fighter.getCurPa(this.fight)==0&&this.fighter.getCurPm(this.fight)==0)
         this.stop=true;
       addNext(this::decrementCount,time+Config.getInstance().AIDelay);
-    } else
+    }
+    else
     {
       this.stop=true;
     }

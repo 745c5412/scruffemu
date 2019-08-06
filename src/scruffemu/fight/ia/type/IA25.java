@@ -62,7 +62,7 @@ public class IA25 extends AbstractNeedSpell
       if(this.fighter.getCurPa(this.fight)>0&&target!=null&&!action) //attack if next to enemy
       {
         int num=Function.getInstance().attackIfPossible(this.fight,this.fighter,this.cacs);
-        if(num!=0)
+        if(num!=-1)
         {
           time=num;
           action=true;

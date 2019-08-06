@@ -12,7 +12,7 @@ public abstract class AbstractNeedSpell extends AbstractIA
 {
 
   protected List<SortStats> buffs, glyphs, invocations, cacs, highests, heal,
-      linear;
+      linear, antisummon;
 
   public AbstractNeedSpell(Fight fight, Fighter fighter, byte count)
   {
@@ -25,6 +25,7 @@ public abstract class AbstractNeedSpell extends AbstractIA
     this.highests=AbstractNeedSpell.getListSpellOf(fighter,"HIGHEST");
     this.heal=AbstractNeedSpell.getListSpellOf(fighter,"HEAL");
     this.linear=AbstractNeedSpell.getListSpellOf(fighter,"LINEAR");
+    this.antisummon=AbstractNeedSpell.getListSpellOf(fighter,"ANTISUMMON");
   }
 
   private static List<SortStats> getListSpellOf(Fighter fighter, String type)
@@ -79,6 +80,12 @@ public abstract class AbstractNeedSpell extends AbstractIA
           break;
         case "LINEAR":
           if(spell.getSpell().getType()==6)
+          {
+            spells.add(spell);
+          }
+          break;
+        case "ANTISUMMON":
+          if(spell.getSpell().getType()==7)
           {
             spells.add(spell);
           }

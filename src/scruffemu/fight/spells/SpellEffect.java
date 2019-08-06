@@ -34,6 +34,8 @@ public class SpellEffect
   private boolean debuffable=true;
   private int duration=0;
   private GameCase cell=null;
+  private boolean aoe=false;
+  private boolean isTrap=false;
 
   public SpellEffect(int aID, String aArgs, int aSpell, int aSpellLevel)
   {
@@ -663,7 +665,7 @@ public class SpellEffect
               }
             }
 
-            int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,false,spell);
+            int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,false,spell,this.cell,target.getCell(),aoe,isTrap);
             finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_TERRE);//S'il y a des buffs sp�ciaux
             if(finalDommage>target.getPdv())
               finalDommage=target.getPdv();//Target va mourrir
@@ -753,7 +755,7 @@ public class SpellEffect
               }
             }
 
-            int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_FEU,dmg,false,false,spell);
+            int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_FEU,dmg,false,false,spell,this.cell,target.getCell(),aoe,isTrap);
             finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_FEU);//S'il y a des buffs sp�ciaux
             if(finalDommage>target.getPdv())
               finalDommage=target.getPdv();//Target va mourrir
@@ -843,7 +845,7 @@ public class SpellEffect
               }
             }
 
-            int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_EAU,dmg,false,false,spell);
+            int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_EAU,dmg,false,false,spell,this.cell,target.getCell(),aoe,isTrap);
             finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_EAU);//S'il y a des buffs sp�ciaux
             if(finalDommage>target.getPdv())
               finalDommage=target.getPdv();//Target va mourrir
@@ -933,7 +935,7 @@ public class SpellEffect
               }
             }
 
-            int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_AIR,dmg,false,false,spell);
+            int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_AIR,dmg,false,false,spell,this.cell,target.getCell(),aoe,isTrap);
             finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_AIR);//S'il y a des buffs sp�ciaux
             if(finalDommage>target.getPdv())
               finalDommage=target.getPdv();//Target va mourrir
@@ -1081,9 +1083,11 @@ public class SpellEffect
       this.applyToFight(fight,this.caster,targets,false);
   }
 
-  public void applyToFight(Fight fight, Fighter perso, GameCase Cell, ArrayList<Fighter> cibles)
+  public void applyToFight(Fight fight, Fighter perso, GameCase Cell, ArrayList<Fighter> cibles, boolean aoe, boolean isTrap)
   {
     cell=Cell;
+    this.aoe=aoe;
+    this.isTrap=isTrap;
     applyToFight(fight,perso,cibles,false);
   }
 
@@ -1619,6 +1623,12 @@ public class SpellEffect
         case 1028: //AP bonus if hitting target
           applyEffect_1028(cibles,fight);
           break;
+        case 1029: //Extra damage received by glyphs and traps
+          applyEffect_1029(cibles,fight);
+          break;
+        case 1030: //Teleglyph
+          applyEffect_1030(cibles,fight);
+          break;
         default:
           break;
       }
@@ -1649,6 +1659,7 @@ public class SpellEffect
         if(dist<=p.getSize())
           p.onTraped(caster);
       }
+      
       SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,4,caster.getId()+"",caster.getId()+","+cell.getId());
     }
   }
@@ -1875,9 +1886,7 @@ public class SpellEffect
   private void applyEffect_9(ArrayList<Fighter> cibles, Fight fight)
   {
     for(Fighter target : cibles)
-    {
       target.addBuff(effectID,value,turns,1,true,spell,args,caster,true);
-    }
   }
 
   private void applyEffect_50(Fight fight) //Karcham
@@ -2160,7 +2169,6 @@ public class SpellEffect
     {
       for(Fighter target : cibles)
       {
-
         if(target.hasBuff(765))//sacrifice
         {
           if(target.getBuff(765)!=null&&!target.getBuff(765).getCaster().isDead())
@@ -2674,7 +2682,7 @@ public class SpellEffect
         }
         else
           dmg=Formulas.getRandomJet(args.split(";")[5]);
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_EAU,dmg,false,true,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_EAU,dmg,false,true,spell,this.cell,target.getCell(),aoe,isTrap);
 
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_EAU);//S'il y a des buffs sp�ciaux
 
@@ -2737,7 +2745,7 @@ public class SpellEffect
         }
         else
           dmg=Formulas.getRandomJet(args.split(";")[5]);
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_EAU,dmg,false,false,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_EAU,dmg,false,false,spell,this.cell,target.getCell(),aoe,isTrap);
 
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_EAU);//S'il y a des buffs sp�ciaux
         if(finalDommage>target.getPdv())
@@ -2803,7 +2811,7 @@ public class SpellEffect
         }
         else
           dmg=Formulas.getRandomJet(args.split(";")[5]);
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,true,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,true,spell,this.cell,target.getCell(),aoe,isTrap);
 
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_TERRE);//S'il y a des buffs sp�ciaux
 
@@ -2863,7 +2871,7 @@ public class SpellEffect
         }
         else
           dmg=Formulas.getRandomJet(args.split(";")[5]);
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,false,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,false,spell,this.cell,target.getCell(),aoe,false);
 
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_TERRE);//S'il y a des buffs sp�ciaux
         if(finalDommage>target.getPdv())
@@ -2929,7 +2937,7 @@ public class SpellEffect
         }
         else
           dmg=Formulas.getRandomJet(args.split(";")[5]);
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_AIR,dmg,false,true,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_AIR,dmg,false,true,spell,this.cell,target.getCell(),aoe,isTrap);
 
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_AIR);//S'il y a des buffs sp�ciaux
 
@@ -2989,7 +2997,7 @@ public class SpellEffect
         }
         else
           dmg=Formulas.getRandomJet(args.split(";")[5]);
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_AIR,dmg,false,false,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_AIR,dmg,false,false,spell,this.cell,target.getCell(),aoe,isTrap);
 
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_AIR);//S'il y a des buffs sp�ciaux
         if(finalDommage>target.getPdv())
@@ -3055,7 +3063,7 @@ public class SpellEffect
         }
         else
           dmg=Formulas.getRandomJet(args.split(";")[5]);
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_FEU,dmg,false,true,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_FEU,dmg,false,true,spell,this.cell,target.getCell(),aoe,isTrap);
 
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_FEU);//S'il y a des buffs sp�ciaux
 
@@ -3116,7 +3124,7 @@ public class SpellEffect
         }
         else
           dmg=Formulas.getRandomJet(args.split(";")[5]);
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_FEU,dmg,false,false,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_FEU,dmg,false,false,spell,this.cell,target.getCell(),aoe,isTrap);
 
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_FEU);//S'il y a des buffs sp�ciaux
         if(finalDommage>target.getPdv())
@@ -3181,7 +3189,7 @@ public class SpellEffect
         }
         else
           dmg=Formulas.getRandomJet(args.split(";")[5]);
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_NEUTRE,dmg,false,true,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_NEUTRE,dmg,false,true,spell,this.cell,target.getCell(),aoe,isTrap);
 
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_NEUTRE);//S'il y a des buffs sp�ciaux
 
@@ -3242,7 +3250,7 @@ public class SpellEffect
         }
         else
           dmg=Formulas.getRandomJet(args.split(";")[5]);
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_NEUTRE,dmg,false,false,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_NEUTRE,dmg,false,false,spell,this.cell,target.getCell(),aoe,isTrap);
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_NEUTRE);//S'il y a des buffs sp�ciaux
         if(finalDommage>target.getPdv())
           finalDommage=target.getPdv();//Target va mourrir
@@ -3330,7 +3338,7 @@ public class SpellEffect
             dmg+=add;
           }
         }
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_EAU,dmg,false,true,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_EAU,dmg,false,true,spell,this.cell,target.getCell(),aoe,isTrap);
 
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_EAU);//S'il y a des buffs sp�ciaux
 
@@ -3416,7 +3424,7 @@ public class SpellEffect
           }
         }
 
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_EAU,dmg,false,false,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_EAU,dmg,false,false,spell,this.cell,target.getCell(),aoe,isTrap);
 
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_EAU);//S'il y a des buffs sp�ciaux
 
@@ -3506,7 +3514,7 @@ public class SpellEffect
             dmg+=add;
           }
         }
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,true,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,true,spell,this.cell,target.getCell(),aoe,isTrap);
 
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_TERRE); //S'il y a des buffs sp�ciaux
 
@@ -3602,7 +3610,7 @@ public class SpellEffect
           }
         }
 
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,false,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,false,spell,this.cell,target.getCell(),aoe,isTrap);
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_TERRE);//S'il y a des buffs sp�ciaux
         if(finalDommage>target.getPdv())
           finalDommage=target.getPdv();//Target va mourrir
@@ -3701,7 +3709,7 @@ public class SpellEffect
 
         // applyEffect_142
 
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_AIR,dmg,false,true,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_AIR,dmg,false,true,spell,this.cell,target.getCell(),aoe,isTrap);
 
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_AIR);//S'il y a des buffs sp�ciaux
 
@@ -3786,7 +3794,7 @@ public class SpellEffect
           }
         }
 
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_AIR,dmg,false,false,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_AIR,dmg,false,false,spell,this.cell,target.getCell(),aoe,isTrap);
 
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_AIR);//S'il y a des buffs sp�ciaux
 
@@ -3876,7 +3884,7 @@ public class SpellEffect
             dmg+=add;
           }
         }
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_FEU,dmg,false,true,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_FEU,dmg,false,true,spell,this.cell,target.getCell(),aoe,isTrap);
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_FEU);//S'il y a des buffs sp�ciaux
         if(finalDommage>target.getPdv())
           finalDommage=target.getPdv();//Target va mourrir
@@ -3961,7 +3969,7 @@ public class SpellEffect
             dmg+=add;
           }
         }
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_FEU,dmg,false,false,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_FEU,dmg,false,false,spell,this.cell,target.getCell(),aoe,isTrap);
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_FEU); //S'il y a des buffs sp�ciaux
         if(finalDommage>target.getPdv())
           finalDommage=target.getPdv();//Target va mourrir
@@ -4049,7 +4057,7 @@ public class SpellEffect
             dmg+=add;
           }
         }
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_NEUTRE,dmg,false,true,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_NEUTRE,dmg,false,true,spell,this.cell,target.getCell(),aoe,isTrap);
 
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_NEUTRE);//S'il y a des buffs sp�ciaux
 
@@ -4138,7 +4146,7 @@ public class SpellEffect
           }
         }
 
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_NEUTRE,dmg,false,false,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_NEUTRE,dmg,false,false,spell,this.cell,target.getCell(),aoe,isTrap);
 
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_NEUTRE);//S'il y a des buffs sp�ciaux
 
@@ -4370,7 +4378,7 @@ public class SpellEffect
         int healFinal=Formulas.calculFinalHeal(caster,heal,isCaC);
         if((healFinal+cible.getPdv())>pdvMax)
           healFinal=pdvMax-cible.getPdv();
-        if(healFinal<1)
+        if(healFinal<1||cible.haveState(Constant.STATE_UNHEALABLE))
           healFinal=0;
         cible.removePdv(caster,-healFinal);
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,108,caster.getId()+"",cible.getId()+","+healFinal);
@@ -4398,7 +4406,7 @@ public class SpellEffect
       }
       else
         dmg=Formulas.getRandomJet(args.split(";")[5]);
-      int finalDommage=Formulas.calculFinalDommage(fight,caster,caster,Constant.ELEMENT_NULL,dmg,false,false,spell);
+      int finalDommage=Formulas.calculFinalDommage(fight,caster,caster,Constant.ELEMENT_NULL,dmg,false,false,spell,this.cell,caster.getCell(),aoe,isTrap);
 
       finalDommage=applyOnHitBuffs(finalDommage,caster,caster,fight,Constant.ELEMENT_NULL);//S'il y a des buffs sp�ciaux
       if(finalDommage>caster.getPdv())
@@ -6191,8 +6199,8 @@ public class SpellEffect
   {
     if(!cell.isWalkable(false))
       return;//Si case pas marchable
-    if(cell.getFirstFighter()!=null)
-      return;//Si la case est prise par un joueur
+    /*if(cell.getFirstFighter()!=null)
+      return;//Si la case est prise par un joueur*/
 
     for(Trap p : fight.getAllTraps())
       if(p.getCell().getId()==cell.getId())
@@ -6207,6 +6215,8 @@ public class SpellEffect
     SortStats TS=World.world.getSort(spellID).getStatsByLevel(level);
     Glyph g=new Glyph(fight,caster,cell,size,TS,duration,spell);
     fight.getAllGlyphs().add(g);
+    if(spell==17&&fight.getAllGlyphs().size()>1) //move excursion glyph forward
+      Collections.swap(fight.getAllGlyphs(),0,fight.getAllGlyphs().size()-1);
     int unk=g.getColor();
     String str="GDZ+"+cell.getId()+";"+size+";"+unk;
     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,999,caster.getId()+"",str);
@@ -6325,7 +6335,7 @@ public class SpellEffect
         //le lanceur devient donc la cible
         target=caster;
       }
-      int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_NEUTRE,dgt,false,true,spell);
+      int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_NEUTRE,dgt,false,true,spell,this.cell,target.getCell(),aoe,isTrap);
       finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_NEUTRE); //S'il y a des buffs sp�ciaux
 
       int resi=target.getTotalStats().getEffect(Constant.STATS_ADD_RP_NEU);
@@ -6608,7 +6618,9 @@ public class SpellEffect
         }
         target.setState(id,turns);
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+id+",1");
-        target.addBuff(effectID,value,turns,1,false,spell,args,target,true);
+        if(spell==20&&caster==target)
+          turns--;
+        target.addBuff(effectID,value,turns,1,false,spell,args,caster,true);
       }
     }
   }
@@ -6992,7 +7004,7 @@ public class SpellEffect
           }
         }
 
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_EAU,dmg,false,false,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_EAU,dmg,false,false,spell,this.cell,target.getCell(),aoe,isTrap);
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_EAU); //S'il y a des buffs sp�ciaux
         if(finalDommage>target.getPdv())
           finalDommage=target.getPdv();
@@ -7126,7 +7138,7 @@ public class SpellEffect
         }
       }
 
-      int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,false,spell);
+      int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,false,spell,this.cell,target.getCell(),aoe,isTrap);
       finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_TERRE);//S'il y a des buffs sp�ciaux
       if(finalDommage>target.getPdv())
         finalDommage=target.getPdv();//Target va mourrir
@@ -7342,7 +7354,7 @@ public class SpellEffect
             dmg+=add;
           }
         }
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,true,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,true,spell,this.cell,target.getCell(),aoe,isTrap);
 
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_TERRE); //S'il y a des buffs sp�ciaux
 
@@ -7438,7 +7450,7 @@ public class SpellEffect
           }
         }
 
-        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,false,spell);
+        int finalDommage=Formulas.calculFinalDommage(fight,caster,target,Constant.ELEMENT_TERRE,dmg,false,false,spell,this.cell,target.getCell(),aoe,isTrap);
         finalDommage=applyOnHitBuffs(finalDommage,target,caster,fight,Constant.ELEMENT_TERRE);//S'il y a des buffs sp�ciaux
         if(finalDommage>target.getPdv())
           finalDommage=target.getPdv();//Target va mourrir
@@ -7501,6 +7513,53 @@ public class SpellEffect
     }
   }
 
+  private void applyEffect_1029(ArrayList<Fighter> cibles, Fight fight)
+  {
+    for(Fighter target : cibles)
+      target.addBuff(effectID,value,turns,duration,false,spell,args,caster,true);
+  }
+
+  private void applyEffect_1030(ArrayList<Fighter> cibles, Fight fight)
+  {
+    if(turns>1)
+      return; //Olol bondir 3 tours apres ?
+
+    if(cell.isWalkable(true)&&!fight.isOccuped(cell.getId()))//Si la case est prise, on va �viter que les joueurs se montent dessus *-*
+    {
+      caster.getCell().getFighters().clear();
+      caster.setCell(cell);
+      caster.getCell().addFighter(caster);
+
+      ArrayList<Trap> P=(new ArrayList<Trap>());
+      P.addAll(fight.getAllTraps());
+      for(Trap p : P)
+      {
+        int dist=PathFinding.getDistanceBetween(fight.getMap(),p.getCell().getId(),caster.getCell().getId());
+        //on active le piege
+        if(dist<=p.getSize())
+          p.onTraped(caster);
+      }
+      ArrayList<Glyph> glyphs=new ArrayList<>(caster.getFight().getAllGlyphs());// Copie du tableau
+      ArrayList<Glyph> targetGlyphs=new ArrayList<>();
+      for(Glyph glyph : glyphs)
+      {
+        if(PathFinding.getDistanceBetween(caster.getFight().getMap(),caster.getCell().getId(),glyph.getCell().getId())<=glyph.getSize()&&glyph.getSpell()!=476)
+          targetGlyphs.add(glyph);
+      }
+      for(Glyph glyph : targetGlyphs)
+      {
+        for(Fighter f : caster.getFight().getFighters(3))
+        {
+          if(f==caster)
+            continue;
+          else if(PathFinding.getDistanceBetween(f.getFight().getMap(),f.getCell().getId(),glyph.getCell().getId())<=glyph.getSize()&&Constant.isFecaGlyph(glyph.getSpell()))
+            glyph.onTrapped(f);
+        }
+      }
+      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,4,caster.getId()+"",caster.getId()+","+cell.getId());
+    }
+  }
+  
   private ArrayList<Fighter> trierCibles(ArrayList<Fighter> cibles, Fight fight)
   {
     ArrayList<Fighter> array=new ArrayList<>();

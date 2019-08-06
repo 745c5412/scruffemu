@@ -1760,3 +1760,47 @@ Added Major Arachnee Leg as a drop from Major Arachnee archmob at 100%
 Added Major Arachnee Egg as a drop from Major Arachnee at 1%
 Added Major Arachnee Egg as a drop from Major Arachnee archmob at 2%
 Fixed a bug where you'd get tokens in Otomai's Ark when reaching the boss room instead of after killing the boss
+Fixed a bug where wild dragoturkeys did not have maximum maturity upon capturing
+Added aoe damage system (more damage in center of aoe, less damage at sides of aoe
+Added limit of moving to diagonals of AI type 32 to prevent monsters with this AI type from keeping on moving from side to side without attacking
+Fixed a bug with the attacking algorithm that caused monsters to act as though they hadn't attacked when they already had
+Added new AI type for Wild Almond Dragoturkey
+Added support for anti-summon spells in monster AI
+Redid Royal Gobball AI so it properly uses Abolition
+Fixed a bug where Snack Whistle was listed as being 15 kamas even though it was actually 1000 kamas
+
+05-08-2019
+Reworked Feca (check server guide for details)
+Color coded all traps and glyphs
+	- grey for light neutral/mixed spells
+	- black for heavy neutral spells
+	- light brown for light earth spells (Tricky Trap)
+	- dark brown for heavy earth spells (Lethal Trap)
+	- light red for light fire spells (Aggressive Glyph)
+	- dark red for heavy fire spells (Burning Glyph)
+	- light blue for light water spells
+	- dark blue for heavy water spells
+	- light green for light air spells (Poisoned Trap)
+	- dark green for heavy air spells
+	- yellow for buffing spells
+	- white for mobility spells (Excursion Glyph, Repelling Trap)
+	- purple for AP-reducing spells (Glyph of Blindness)
+	- cyan for MP-reducing spells (Paralyzing Glyph)
+Fixed a bug where Immunity lasted one turn longer than intended
+
+06-08-2019
+Fixed a bug where Kryst O'Ball gave 1-5 crits instead of 3-5 crits
+Fixed a bug where potion maging an item would cause it to disappear
+Fixed a bug where Glyph of Blindness at level 1 had an infinite duration
+Increased spawn chance of Golden Dragoturkey from 1% to 5%
+Fixed a bug where wild mounts did not get deleted correctly after giving birth, causing them to become unusable but still in the paddock until the server restarted
+Fixed a bug where having the anti-lag button activated would cause the client to no longer track spell cooldowns
+Fixed a bug where Poisoned Trap's poison was named "Sram Poisoning"
+Fixed a bug where Trap of Silence's effect was named "Silence of the Srams"
+Fixed a bug where Paralyzing Trap's effect was named "Immobilization (Sram Trap)"
+Fixed a bug where Glyph of Blindness' effect was named "Slowing glyph"
+Fixed a bug where Paralyzing Glyph's effect was named "Immobilization (Feca Glyph)"
+Added shield category to global market
+Fixed a bug where Recall Potions said they were worth 250 kamas when they were actually worth 10
+Added a new item - Forgetfulness Potion - that makes you forget all your spells and characteristics
+Fixed a bug where the Munster Crusher's animation did not stop once activated

@@ -8278,6 +8278,18 @@ public class GameClient
       this.player.setisForgetingSpell(false);
     }
   }
+  
+  public void forgetSpell(int id)
+  {
+    if(this.player.isForgetingSpell()==false)
+      return;
+
+    if(this.player.forgetSpell(id))
+    {
+      SocketManager.GAME_SEND_SPELL_UPGRADE_SUCCED(this,id,this.player.getSortStatBySortIfHas(id).getLevel());
+      SocketManager.GAME_SEND_STATS_PACKET(this.player);
+    }
+  }
 
   private void moveToUsed(String packet)
   {

@@ -1171,6 +1171,9 @@ public class Quest
 
     if((kamas=questObjectif.getKamas())>0)
     { //Kams a donner
+      long newKamas=player.getKamas()+(long)kamas;
+      if(newKamas<0)
+        return;
       player.setKamas(player.getKamas()+(long)kamas);
       SocketManager.GAME_SEND_Im_PACKET(player,"045;"+kamas);
       SocketManager.GAME_SEND_STATS_PACKET(player);

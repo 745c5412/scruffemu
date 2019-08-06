@@ -284,6 +284,7 @@ public class JobAction
     {
       if(!this.player.hasItemGuid(e.getKey()))
       {
+        System.out.println("reached1");
         SocketManager.GAME_SEND_Ec_PACKET(this.player,"EI");
         return;
       }
@@ -292,11 +293,13 @@ public class JobAction
 
       if(obj==null)
       {
+        System.out.println("reached2");
         SocketManager.GAME_SEND_Ec_PACKET(this.player,"EI");
         return;
       }
       if(obj.getQuantity()<e.getValue())
       {
+        System.out.println("reached3");
         SocketManager.GAME_SEND_Ec_PACKET(this.player,"EI");
         return;
       }
@@ -843,18 +846,23 @@ public class JobAction
       SC+=(float)(SN/2);
       SN=0;
     }
-    if(objectFm.onlyStat(rune.getStatId()))
-    {
-      SC+=(float)(SN/6);
-      SN=0;
-    }
+    if(rune!=null)
+      if(objectFm.onlyStat(rune.getStatId()))
+      {
+        SC+=(float)(SN/6);
+        SN=0;
+      }
 
     final boolean successC=aleatoryChance<=SC;
     final boolean successN=aleatoryChance<=SC+SN;
 
     if(successC||successN)
     {
-      final int winXP=Formulas.calculXpWinFm(objectFm.getTemplate().getLevel(),rune.getPower())*Config.getInstance().rateJob;
+      int winXP=0;
+      if(potion!=null)
+        winXP=Formulas.calculXpWinFm(objectFm.getTemplate().getLevel(),potion.getPower())*Config.getInstance().rateJob;
+      else
+        winXP=Formulas.calculXpWinFm(objectFm.getTemplate().getLevel(),rune.getPower())*Config.getInstance().rateJob;
       if(winXP>0)
       {
         SM.addXp(this.player,winXP);
@@ -909,7 +917,10 @@ public class JobAction
     }
     else //Fail item stat maging
     {
-      lostPower=doFailRuneMage(rune,objectFm,statStringObj,oldSink);
+      if(potion!=null)
+        lostPower=doFailPotionMage(potion,objectFm,statStringObj,oldSink);
+      else
+        lostPower=doFailRuneMage(rune,objectFm,statStringObj,oldSink);
 
       String data=objectFm.getGuid()+"|1|"+objectFm.getTemplate().getId()+"|"+objectFm.parseStatsString();
       if(!repeat)
@@ -1373,6 +1384,76 @@ public class JobAction
         }
         else //reduce all from stats
           return new Pair<Integer, Float>(0,currentTotalPower-currentTotalPower(updateItemStatsEC(objectFm,runePower,runeStat),objectFm));
+      }
+    }
+    return new Pair<Integer, Float>(0,0f);
+  }
+
+  public Pair<Integer, Float> doFailPotionMage(Potion potion, GameObject objectFm, String statStringObj, float oldSink)
+  {
+    String potionStat=Integer.toHexString((int)potion.getStatId());
+    float currentTotalPower=currentTotalPower(statStringObj,objectFm);
+    float potionPower=potion.getPower();
+    if(statStringObj.isEmpty()) //item does not have stats
+      return new Pair<Integer, Float>(0,0f);
+    else //nSuccess targeting normal stats
+    {
+      String exoStatStr=objectFm.findOverExo(objectFm,Integer.parseInt(potionStat,16));
+      float exoPower=0f;
+      if(exoStatStr!="") //item has exo
+      {
+        String[] exoSplit=exoStatStr.split(";"); //split string per stat
+        for(int i=0;i<exoSplit.length;i++)
+        {
+          String[] exoSplit2=exoSplit[i].split(","); //split stat per value
+          float statPwr=Constant.getPowerByStatId(Integer.valueOf(exoSplit2[0]),false);
+          float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
+          exoPower=exoPower+entryPower;
+        }
+        exoPower=(float)Math.round(exoPower*100)/100; //rounding to two decimals
+
+        if(exoPower>=potionPower) //reduce all from exo stats, do not give sink, do not consume sink
+        {
+          updateItemStatsEC(objectFm,potionPower,potionStat);
+          return new Pair<Integer, Float>(-1,0f);
+        }
+        else if(exoPower<potionPower)
+        {
+          if(oldSink>0)
+          {
+            if(oldSink>=potionPower-exoPower) //remove exo and then reduce sink
+            {
+              updateItemStatsEC(objectFm,exoPower,potionStat);
+              return new Pair<Integer, Float>(0,0f);
+            }
+            else if(oldSink<potionPower-exoPower) //reduce from exo, then from sink, then from stats
+            {
+              updateItemStatsEC(objectFm,exoPower,potionStat);
+              float restPower=potionPower-(exoPower+oldSink);
+              return new Pair<Integer, Float>(0,currentTotalPower-currentTotalPower(updateItemStatsEC(objectFm,restPower,potionStat),objectFm));
+            }
+          }
+          else //remove exo then reduce stats
+          {
+            updateItemStatsEC(objectFm,exoPower,potionStat);
+            return new Pair<Integer, Float>(0,currentTotalPower-currentTotalPower(updateItemStatsEC(objectFm,potionPower-exoPower,potionStat),objectFm));
+          }
+        }
+      } //end of exo region
+      else //not-exo'd item with stats
+      {
+        if(oldSink>0)
+        {
+          if(oldSink>=potionPower) //reduce all from sink
+            return new Pair<Integer, Float>(0,0f);
+          else if(oldSink<potionPower) //reduce from sink then from stats
+          {
+            float restPower=potionPower-oldSink;
+            return new Pair<Integer, Float>(0,currentTotalPower-currentTotalPower(updateItemStatsEC(objectFm,restPower,potionStat),objectFm));
+          }
+        }
+        else //reduce all from stats
+          return new Pair<Integer, Float>(0,currentTotalPower-currentTotalPower(updateItemStatsEC(objectFm,potionPower,potionStat),objectFm));
       }
     }
     return new Pair<Integer, Float>(0,0f);

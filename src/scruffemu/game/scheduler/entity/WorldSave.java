@@ -157,7 +157,7 @@ public class WorldSave extends Updatable
 
     if(trys!=0)
       Main.gameServer.setState(1);
-
+    
     if(thread!=null)
     {
       Thread copy=thread;

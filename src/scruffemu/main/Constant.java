@@ -82,6 +82,8 @@ public class Constant
   public static final int STATE_COUNTDOWN_1=58;
   public static final int STATE_DEVOTED=60;
   public static final int STATE_AGGRESSIVE=61;
+  public static final int STATE_UNHEALABLE=62;
+  public static final int STATE_UNDODGEABLE=73;
 
   public static final int FIGHT_TYPE_CHALLENGE=0; //D�fies
   public static final int FIGHT_TYPE_AGRESSION=1; //Aggros
@@ -1792,53 +1794,59 @@ public class Constant
   public static int getGlyphColor(int spell)
   {
     switch(spell)
+    //0 = grey, 1 = black, 2 = light brown, 3 = dark brown, 4 = light red, 5 = dark red, 6 = light blue, 7 = dark blue, 8 = light green, 9 = dark green, 10 = yellow, 11 = white, 
+    //12 = purple, 13 = cyan
     {
-      case 10://Enflamm�
-      case 2033://Dopeul
-        return 4;//Rouge
-      case 12://Aveuglement
-      case 2034://Dopeul
-        return 3;
-      case 13://Silence
-      case 2035://Dopeul
-        return 6;//Bleu
-      case 15://Immobilisation
-      case 2036://Dopeul
-        return 5;//Vert
-      case 17://Aggressif
-      case 2037://Dopeul
-        return 2;
-      case 949://Karkargo
-        return 0;//Blanc
-      //case 476://Blop
-      default:
+      case 476: //Blop
+        return 0;
+      case 949: //Snailmet
+        return 1;
+      case 17: //Aggressive Glyph
+      case 2037: //Dopple Aggressive Glyph
         return 4;
+      case 10://Burning Glyph
+      case 2033://Dopple Burning Glyph
+        return 5;//Rouge
+      case 13://Glyph of Hope
+        return 10;
+      case 1: //Excursion Glyph  
+        return 11;
+      case 12: //Glyph of Blindness
+      case 2034: //Dopple Glyph of Blindness
+      case 2035://Dopple Glyph of Silence
+        return 12;
+      case 15://Paralyzing Glyph
+      case 2036://Dopple Paralyzing Glyph
+        return 13;
+      default:
+        return 0;
     }
   }
 
   public static int getTrapsColor(int spell)
   {
     switch(spell)
+    //0 = grey, 1 = black, 2 = light brown, 3 = dark brown, 4 = light red, 5 = dark red, 6 = light blue, 7 = dark blue, 8 = light green, 9 = dark green, 10 = yellow, 11 = white, 
+    //12 = purple, 13 = cyan
     {
       case 65://Sournois
-        return 7;
-      case 69://Immobilisation
-        return 10;
-      case 71://Empoisonn�e
-      case 2068://Dopeul
-        return 9;
-      case 73://Repulsif
-        return 12;
-      case 77://Silence
-      case 2071://Dopeul
-        return 11;
       case 79://Masse
       case 2072://Dopeul
-        return 8;
+        return 2;
       case 80://Mortel
+        return 3;
+      case 71://Empoisonn�e
+      case 2068://Dopeul
+        return 8;
+      case 73://Repulsif
+        return 11;
+      case 77://Silence
+      case 2071://Dopeul
+        return 12;
+      case 69://Immobilisation
         return 13;
       default:
-        return 7;
+        return 0;
     }
   }
 
@@ -4004,7 +4012,7 @@ public class Constant
     }
     return modifier;
   }
-  
+
   public static float getPowerByStatId(int statId, boolean zero)
   {
     float statX=1f;
@@ -4059,5 +4067,12 @@ public class Constant
     else if(statId==111) //ap
       statX=100;
     return statX;
+  }
+
+  public static boolean isFecaGlyph(int spellId)
+  {
+    if(spellId==1||spellId==10||spellId==12||spellId==13||spellId==15||spellId==17)
+      return true;
+    return false;
   }
 }

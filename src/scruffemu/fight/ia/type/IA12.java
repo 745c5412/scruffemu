@@ -56,7 +56,7 @@ public class IA12 extends AbstractNeedSpell
       if(PA>0&&target!=null&&!action)
       {
         int num=Function.getInstance().attackIfPossible(this.fight,this.fighter,this.highests);
-        if(num!=0)
+        if(num!=-1)
         {
           time=num;
           action=true;

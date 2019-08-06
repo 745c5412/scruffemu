@@ -9,12 +9,8 @@ import scruffemu.main.Config;
 
 import java.util.Iterator;
 
-/**
- * Created by Locos on 04/10/2015.
- */
 public class IA72 extends AbstractNeedSpell
 {
-
   boolean hasSummons=false;
   Fighter summon=null;
   public IA72(Fight fight, Fighter fighter, byte count)
@@ -106,20 +102,21 @@ public class IA72 extends AbstractNeedSpell
         }
       }
 
-      if(this.fighter.getCurPa(this.fight)>0&&L!=null&&C==null&&!action&&hasSummons&&summon!=null)
+      if(this.fighter.getCurPa(this.fight)>0&&!action&&hasSummons&&summon!=null)
       {
-        int value=Function.getInstance().attackIfPossibleAll(this.fight,this.fighter,summon);
-        if(value!=0)
+        int value=this.fight.tryCastSpell(this.fighter,this.antisummon.get(0),this.summon.getCell().getId());
+        if(value==0)
         {
           time=value;
           action=true;
           hasSummons=false;
           summon=null;
         }
-      } else if(this.fighter.getCurPa(this.fight)>0&&C!=null&&!action)
+      }
+      if(this.fighter.getCurPa(this.fight)>0&&C!=null&&!action)
       {
         int value=Function.getInstance().attackIfPossible(this.fight,this.fighter,this.cacs);
-        if(value!=0)
+        if(value!=-1)
         {
           time=value;
           action=true;
@@ -145,7 +142,8 @@ public class IA72 extends AbstractNeedSpell
       if(this.fighter.getCurPa(this.fight)==0&&this.fighter.getCurPm(this.fight)==0)
         this.stop=true;
       addNext(this::decrementCount,time+Config.getInstance().AIDelay);
-    } else
+    }
+    else
     {
       this.stop=true;
     }

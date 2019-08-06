@@ -2808,13 +2808,12 @@ public class Fight
           return 5;
         }
       }
-
     }
     else if(fighter.getMob()!=null||fighter.isInvocation())
     {
       try
       {
-        Thread.sleep(600);
+        Thread.sleep(100);
       }
       catch(InterruptedException e)
       {
@@ -3031,6 +3030,8 @@ public class Fight
     {
       int esquive=Formulas.getTacleChance(fighter,targetTacle);
       int rand=Formulas.getRandomValue(0,99);
+      if(targetTacle.haveState(Constant.STATE_UNDODGEABLE))
+        rand=1000000;
       if(rand>esquive)
       {
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this,7,GA.id,"104",fighter.getId()+";","");

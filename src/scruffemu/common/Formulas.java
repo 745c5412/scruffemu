@@ -1,5 +1,6 @@
 package scruffemu.common;
 
+import scruffemu.area.map.GameCase;
 import scruffemu.area.map.GameMap;
 import scruffemu.client.Player;
 import scruffemu.entity.Collector;
@@ -207,7 +208,7 @@ public class Formulas
           i=healer.getMaitriseDmg(397);
         a=(((100+i)/100)*(j/100));
       }
-    
+
     return (int)(a*(roll*((100.00+intel)/100)+heals));
   }
 
@@ -463,7 +464,7 @@ public class Formulas
     return base*Config.getInstance().rateHonor;
   }
 
-  public static int calculFinalDommage(Fight fight, Fighter caster, Fighter target, int statID, int jet, boolean isHeal, boolean isCaC, int spellid)
+  public static int calculFinalDommage(Fight fight, Fighter caster, Fighter target, int statID, int jet, boolean isHeal, boolean isCaC, int spellid, GameCase castCell, GameCase targetCell, boolean isAoe, boolean isTrap)
   {
     float a=1; //Calcul
     float num=0;
@@ -595,8 +596,25 @@ public class Formulas
       a=(((100+i)/100)*(j/100));
     }
 
-    num=a*mulT*(jet*((100+statC+perdomC)/100))+domC; //dÃ¯Â¿Â½gats bruts
+    float aoeMultiplier=1f;
+    if(isAoe)
+    {
+      aoeMultiplier+=0.1f;
+      Pair<Integer, ArrayList<GameCase>> distanceList=PathFinding.getPath(caster.getFight().getMap(),(short)castCell.getId(),(short)targetCell.getId(),-1);
+      if(distanceList!=null)
+        aoeMultiplier-=0.1f*distanceList.getRight().size();
+      aoeMultiplier=(float)Math.round(aoeMultiplier*10)/10; //rounds to one decimal
+      if(aoeMultiplier<0.7f)
+        aoeMultiplier=0.7f;
+    }
     
+    float trapMultiplier=1f;
+    if(isTrap)
+      for(SpellEffect SS : target.getBuffsByEffectID(1029))
+        trapMultiplier+=(float)SS.getValue()/100;
+
+    num=a*mulT*aoeMultiplier*trapMultiplier*(jet*((100+statC+perdomC)/100))+domC; //dÃ¯Â¿Â½gats bruts
+
     //Poisons
     if(spellid!=-1)
     {
@@ -674,7 +692,6 @@ public class Formulas
     }
 
     int reduc=(int)((num/(float)100)*respT);//Reduc %resis
-    System.out.println("reduc: "+reduc);
     if(!isHeal)
       num-=reduc;
     int armor=getArmorResist(target,statID);

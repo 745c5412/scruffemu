@@ -593,6 +593,8 @@ public class Fighter implements Comparable<Fighter>
         this.fightBuffs.add(new SpellEffect(id,val,9999999,turns,debuff,caster,args,spellID));
       else if(spellID==89&&id==101) //devotement fix
         this.fightBuffs.add(new SpellEffect(id,val,duration,turns,debuff,caster,args,spellID));
+      else if(spellID==908&&id==111) //devotement fix
+        this.fightBuffs.add(new SpellEffect(id,val,duration,turns,debuff,caster,args,spellID));
       else //normal
         this.fightBuffs.add(new SpellEffect(id,val,(this.canPlay ? duration+1 : duration),turns,debuff,caster,args,spellID));
     }
@@ -667,8 +669,48 @@ public class Fighter implements Comparable<Fighter>
           return;
         SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,""+val,""+valMax3,"",duration,spellID);
         break;
+      case 950:
+        if(spellID==16)
+        {
+          if(getId()!=caster.getId())
+            SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration,spellID);
+          else
+            SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration-1,spellID);
+        }
+        else if(spellID==20)
+        {
+          if(this!=caster)
+            SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration+1,spellID);
+          else
+            SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration,spellID);
+        }
+        else
+        {
+          if(duration==-1)
+            SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration-1,spellID);
+          else if(duration!=1||spellID==101||spellID==2083) //roulette and doplesque roulette two turns
+            SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration,spellID);
+          else if(duration==1&&spellID==83&&id==120) //Hand self-buff duration
+            SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration,spellID);
+          else
+            SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration-1,spellID);
+          break;
+        }
+        break;
       default:
-        if(duration==-1)
+        if(spellID==20)
+        {
+          if(this!=caster)
+            SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration,spellID);
+          else
+            SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration-1,spellID);
+        }
+        else if(spellID==908)
+        {
+          System.out.println("reached");
+          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration-1,spellID);
+        }
+        else if(duration==-1)
           SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration-1,spellID);
         else if(duration!=1||spellID==101||spellID==2083) //roulette and doplesque roulette two turns
           SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration,spellID);

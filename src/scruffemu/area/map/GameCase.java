@@ -24,7 +24,6 @@ import java.util.List;
 
 public class GameCase
 {
-
   private int id;
   private boolean walkable=true, loS=true;
 
@@ -33,12 +32,32 @@ public class GameCase
   private ArrayList<Action> onCellStop;
   private InteractiveObject object;
   private GameObject droppedItem;
-
-  public GameCase(GameMap map, int id, boolean walkable, boolean loS, int objId)
+  
+  private byte _level;
+  private byte _X;
+  private byte _Y;
+  private byte _slope;
+  private byte _movimiento;
+  private boolean _activo;
+  
+  public GameCase(GameMap map, int id, final boolean activo, final byte movimiento, final byte level, final byte slope, boolean walkable, boolean loS, int objId)
   {
     this.id=id;
     this.walkable=walkable;
+    
+    _activo=activo;
+    _level=level;
+    _movimiento=movimiento;
     this.loS=loS;
+    _slope=slope;
+    
+    final byte ancho=map.getW();
+    final int _loc5=(int)Math.floor(id/(ancho*2-1));
+    final int _loc6=id-_loc5*(ancho*2-1);
+    final int _loc7=_loc6%ancho;
+    _Y=(byte)(_loc5-_loc7);
+    _X=(byte)((id-(ancho-1)*_Y)/ancho);
+    
     if(objId!=-1)
       this.object=new InteractiveObject(objId,map,this);
   }
@@ -1204,11 +1223,12 @@ public class GameCase
       case 108://Modifier prix de vente
       case 157://Zaapi
       case 121://Briser une ressource
-      case 181://Concasseur
       case 110:
       case 153:
       case 183:
         break;
+      case 181:
+        this.object.desactive();
       case 42://Tas de patate
         if(this.object==null)
           return;
@@ -1237,5 +1257,43 @@ public class GameCase
         SocketManager.GAME_SEND_IQ_PACKET(perso,perso.getId(),qua);
         break;
     }
+  }
+  
+
+  public byte getX()
+  {
+    return _X;
+  }
+
+  public byte getY()
+  {
+    return _Y;
+  }
+
+  public byte getLevel()
+  {
+    return _level;
+  }
+
+  public byte getSlope()
+  {
+    return _slope;
+  }
+
+  public float getAlto()
+  {
+    float a=_slope==1 ? 0 : 0.5f;
+    int b=_level-7;
+    return a+b;
+  }
+  
+  public byte getMovimiento()
+  {
+    return _movimiento;
+  }
+  
+  public boolean getActivo()
+  {
+    return _activo;
   }
 }

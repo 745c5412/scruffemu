@@ -85,7 +85,7 @@ public class IA37 extends AbstractNeedSpell
       if(this.fighter.getCurPa(this.fight)>0&&L!=null&&C==null&&!action)
       {
         int value=Function.getInstance().attackIfPossible(this.fight,this.fighter,this.highests);
-        if(value!=0)
+        if(value!=-1)
         {
           time=value;
           action=true;
@@ -93,7 +93,7 @@ public class IA37 extends AbstractNeedSpell
       } else if(this.fighter.getCurPa(this.fight)>0&&C!=null&&!action)
       {
         int value=Function.getInstance().attackIfPossible(this.fight,this.fighter,this.cacs);
-        if(value!=0)
+        if(value!=-1)
         {
           time=value;
           action=true;

@@ -47,7 +47,7 @@ public class IA74 extends AbstractNeedSpell
         final int cellID=val-val/1000*1000;
         if(fight.canCastSpell1(fighter,SS,fighter.getCell(),cellID))
         {
-          final int path=PathFinding.getShortestPathBetween(fight.getMap(),fighter.getCell().getId(),cellID,fighter.getCurPm(fight)).size();
+          int path=PathFinding.getShortestPathBetween(fight.getMap(),fighter.getCell().getId(),cellID,fighter.getCurPm(fight)).size();
           if(path>0)
           {
             time=1000+path*100;
@@ -88,7 +88,8 @@ public class IA74 extends AbstractNeedSpell
           time=value+200;
           action=true;
           this.attack++;
-        } else if(this.fighter.getCurPm(this.fight)>0&&this.attack==0)
+        }
+        else if(this.fighter.getCurPm(this.fight)>0&&this.attack==0)
         {
           value=Function.getInstance().movediagIfPossible(this.fight,this.fighter,nearestEnnemy);
           if(value!=0)
@@ -111,7 +112,8 @@ public class IA74 extends AbstractNeedSpell
         this.stop=true;
 
       addNext(this::decrementCount,time+Config.getInstance().AIDelay);
-    } else
+    }
+    else
     {
       this.stop=true;
     }

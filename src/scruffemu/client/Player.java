@@ -6566,5 +6566,10 @@ public class Player
   {
     this.canDrop = canDrop;
   }
+  
+  public Map<Integer, Spell.SortStats> getSorts()
+  {
+    return _sorts;
+  }
 
 }

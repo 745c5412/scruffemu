@@ -10,9 +10,12 @@ import scruffemu.fight.traps.Glyph;
 import scruffemu.fight.traps.Trap;
 import scruffemu.main.Constant;
 import scruffemu.main.Main;
+import scruffemu.utility.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import scruffemu.game.World;
@@ -22,6 +25,15 @@ public class PathFinding
 
   @SuppressWarnings("deprecation")
   private static Integer nSteps=new Integer(0);
+  private static class CeldaCamino
+  {
+    private short num, f, h, v, g, d, m, l;
+    private CeldaCamino parent;
+
+    private CeldaCamino()
+    {
+    }
+  }
 
   //v2.7 - String += replaced with StringBuilder
   public static int isValidPath(GameMap map, int cellID, AtomicReference<String> pathRef, Fight fight, Player perso, int targetCell)
@@ -1877,7 +1889,7 @@ public class PathFinding
     ArrayList<GameCase> curPath=new ArrayList<GameCase>();
     ArrayList<GameCase> curPath2=new ArrayList<GameCase>();
     ArrayList<GameCase> closeCells=new ArrayList<GameCase>();
-    int limit=500;
+    int limit=1000;
     GameCase curCase=map.getCase(start);
     int stepNum=0;
     boolean stop=false;
@@ -1897,9 +1909,7 @@ public class PathFinding
             curCase=map.getCase(start);
         }
         else
-        {
           curCase=map.getCase(start);
-        }
       }
       else if(distMax==0&&nearestCell==dest)
       {
@@ -1923,9 +1933,7 @@ public class PathFinding
     curCase=map.getCase(start);
     closeCells.clear();
     if(!curPath.isEmpty())
-    {
       closeCells.add(curPath.get(0));
-    }
 
     while(!stop&&stepNum++<=limit)
     {
@@ -1975,7 +1983,11 @@ public class PathFinding
   {
     if(start==dest)
       return null;
-    ArrayList<GameCase> path=getShortestPathBetween(map,start,dest,distMax);
+    Pair<Integer, ArrayList<GameCase>> prePath=PathFinding.getPath(map,(short)start,(short)dest,distMax);
+    ArrayList<GameCase> path=null;
+    if(prePath!=null)
+      path=prePath.getRight();
+    //ArrayList<GameCase> path=getShortestPathBetween(map,start,dest,distMax);
     if(path==null)
       return null;
     String pathstr="";
@@ -2449,5 +2461,277 @@ public class PathFinding
       dist++;
     }
     return dist;
+  }
+
+  public static Pair<Integer, ArrayList<GameCase>> getPath(final GameMap mapa, final short celdaInicio, short celdaDestino, int PM)
+  {
+    int i=0;
+    while(i<5)
+    {
+      try
+      {
+        if(celdaInicio==celdaDestino)
+        {
+          return null;
+        }
+        if(PM==-1)
+        {
+          PM=500;
+        }
+        final int _PM=PM;
+        final byte _ancho=mapa.getW();
+        final int _nroLados=4;
+        final byte[] _diagonales= { _ancho, (byte)(_ancho-1), (byte)-_ancho, (byte)-(_ancho-1) };
+        final byte[] _unos= { 1, 1, 1, 1 };
+        final Map<Short, GameCase> _celdas=new TreeMap<Short, GameCase>();
+        for(GameCase cell : mapa.getCases())
+          _celdas.put((short)cell.getId(),cell);
+        final Map<Short, CeldaCamino> _celdasCamino1=new TreeMap<Short, CeldaCamino>();
+        final Map<Short, CeldaCamino> _celdasCamino2=new TreeMap<Short, CeldaCamino>();
+        boolean _loc18=false;
+        final CeldaCamino _newCeldaCamino=new CeldaCamino();
+        _newCeldaCamino.num=celdaInicio;
+        _newCeldaCamino.g=0;
+        _newCeldaCamino.v=0;
+        _newCeldaCamino.h=distanciaEstimada(mapa,celdaInicio,celdaDestino);
+        _newCeldaCamino.f=_newCeldaCamino.h;
+        _newCeldaCamino.l=_celdas.get(celdaInicio).getLevel();
+        _newCeldaCamino.m=_celdas.get(celdaInicio).getMovimiento();
+        _newCeldaCamino.parent=null;
+        _celdasCamino1.put(_newCeldaCamino.num,_newCeldaCamino);
+        while(!_loc18)
+        {
+          short _loc20=-1;
+          int _loc21=500000;
+          for(final CeldaCamino c : _celdasCamino1.values())
+          {
+            if(c.f<_loc21)
+            {
+              _loc21=c.f;
+              _loc20=c.num;
+            }
+          }
+          CeldaCamino _celdaCamino=_celdasCamino1.get(_loc20);
+          _celdasCamino1.remove(_loc20);
+          if(_celdaCamino.num==celdaDestino)
+          {
+            final ArrayList<GameCase> _tempCeldas=new ArrayList<GameCase>();
+            while(_celdaCamino.num!=celdaInicio)
+            {
+              if(_celdaCamino.m==0)
+              {
+                _tempCeldas.clear();
+              }
+              else
+              {
+                _tempCeldas.add(0,_celdas.get(_celdaCamino.num));
+              }
+              _celdaCamino=_celdaCamino.parent;
+            }
+            return new Pair<Integer, ArrayList<GameCase>>(i,_tempCeldas);
+          }
+          boolean _loc24=false;
+          for(byte _nDiagonal=0;_nDiagonal<_nroLados;_nDiagonal++)
+          {
+            final short _tempCeldaID=(short)(_celdaCamino.num+_diagonales[_nDiagonal]);
+            if(Math.abs(_celdas.get(_tempCeldaID).getX()-_celdas.get(_celdaCamino.num).getX())<=53)
+            {
+              final GameCase _tempCelda=_celdas.get(_tempCeldaID);
+              final byte _levelTempCelda=_tempCelda.getLevel();
+              final boolean _sinLuchador=_tempCeldaID==celdaDestino ? true : (_tempCelda.getFirstFighter()!=null ? false : true);
+              _loc24=_tempCeldaID==celdaDestino&&_tempCelda.getMovimiento()==1 ? true : false;
+              final boolean _loc30=_celdaCamino.l==-1||Math.abs(_levelTempCelda-_celdaCamino.l)<2;
+              if(_loc30&&_tempCelda.getActivo()&&_sinLuchador)
+              {
+                final short _loc31=_tempCeldaID;
+                final short _loc32=(short)(_celdaCamino.v+_unos[_nDiagonal]+(_tempCelda.getMovimiento()==0||_tempCelda.getMovimiento()==1 ? 1000+(_nDiagonal%2==0 ? 3 : 0) : 0)+(_tempCelda.getMovimiento()==1&&_loc24 ? -1000 : (_nDiagonal!=_celdaCamino.d ? 0.500000 : 0)+(5-_tempCelda.getMovimiento())/3));
+                final short _loc33=(short)(_celdaCamino.g+_unos[_nDiagonal]);
+                short _loc34=-1;
+                if(_celdasCamino1.get(_loc31)!=null)
+                {
+                  _loc34=_celdasCamino1.get(_loc31).v;
+                }
+                else if(_celdasCamino2.get(_loc31)!=null)
+                {
+                  _loc34=_celdasCamino2.get(_loc31).v;
+                } // end else if
+                if((_loc34==-1||_loc34>_loc32)&&_loc33<=_PM)
+                {
+                  if(_celdasCamino2.get(_loc31)!=null)
+                  {
+                    _celdasCamino2.remove(_loc31);
+                  } // end if
+                  final CeldaCamino _tempCeldaCamino=new CeldaCamino();
+                  _tempCeldaCamino.num=_tempCeldaID;
+                  _tempCeldaCamino.g=_loc33;
+                  _tempCeldaCamino.v=_loc32;
+                  _tempCeldaCamino.h=distanciaEstimada(mapa,_tempCeldaID,celdaDestino);
+                  _tempCeldaCamino.f=(short)(_tempCeldaCamino.v+_tempCeldaCamino.h);
+                  _tempCeldaCamino.d=_nDiagonal;
+                  _tempCeldaCamino.l=_levelTempCelda;
+                  _tempCeldaCamino.m=_tempCelda.getMovimiento();
+                  _tempCeldaCamino.parent=_celdaCamino;
+                  _celdasCamino1.put(_loc31,_tempCeldaCamino);
+                }
+              }
+            }
+          }
+          _celdasCamino2.put(_celdaCamino.num,new CeldaCamino());
+          _celdasCamino2.get(_celdaCamino.num).v=_celdaCamino.v;
+          _loc18=true;
+          for(final CeldaCamino c : _celdasCamino1.values())
+          {
+            if(c==null)
+            {
+              continue;
+            }
+            _loc18=false;
+            break;
+          }
+        }
+        return null;
+      }
+      catch(final Exception e)
+      {
+        celdaDestino=celdaMasCercanaACeldaObjetivo(mapa,celdaDestino,celdaInicio,null,false);
+        i++;
+      }
+    }
+    return null;
+  }
+  
+  public static short distanciaEstimada(final GameMap mapa, final short celdaInicio, final short celdaDestino)
+  {
+    if(celdaInicio==celdaDestino)
+    {
+      return 0;
+    }
+    GameCase cInicio=mapa.getCase(celdaInicio);
+    GameCase cDestino=mapa.getCase(celdaDestino);
+    final int difX=Math.abs(cInicio.getX()-cDestino.getX());
+    final int difY=Math.abs(cInicio.getY()-cDestino.getY());
+    return (short)Math.sqrt(Math.pow(difX,2)+Math.pow(difY,2));
+  }
+  
+  private static short celdaMasCercanaACeldaObjetivo(final GameMap mapa, final short celdaInicio, final short celdaDestino, ArrayList<GameCase> celdasProhibidas, final boolean ocupada)
+  {
+    if(mapa.getCase(celdaInicio)==null||mapa.getCase(celdaDestino)==null)
+    {
+      return -1;
+    }
+    int dist=1000;
+    short celdaID=celdaInicio;
+    if(celdasProhibidas==null)
+    {
+      celdasProhibidas=new ArrayList<GameCase>();
+    }
+    final char[] dirs=listaDirEntreDosCeldas(mapa,celdaInicio,celdaDestino);
+    for(final char d : dirs)
+    {
+      final short sigCelda=getSigIDCeldaMismaDir(celdaInicio,d,mapa,true);
+      final GameCase celda=mapa.getCase(sigCelda);
+      if(celda==null)
+      {
+        continue;
+      }
+      final int distancia=getDistanceBetween(mapa,celdaInicio,celdaDestino);
+      if(distancia<dist&&celda.isWalkable(true)&&(!ocupada||celda.getFirstFighter()==null)&&!celdasProhibidas.contains(celda))
+      {
+        dist=distancia;
+        celdaID=sigCelda;
+      }
+    }
+    return celdaID==celdaInicio ? -1 : celdaID;
+  }
+  
+  public static char[] listaDirEntreDosCeldas(final GameMap mapa, final short celdaInicio, final short celdaDestino)
+  {
+    char[] abc;
+    if(celdaInicio==celdaDestino||mapa==null)
+    {
+      abc=new char[] {};
+      return abc;
+    }
+    GameCase cInicio=mapa.getCase(celdaInicio);
+    GameCase cDestino=mapa.getCase(celdaDestino);
+    final int difX=cInicio.getX()-cDestino.getX();
+    final int difY=cInicio.getY()-cDestino.getY();
+    final int difXabs=Math.abs(difX);
+    final int difYabs=Math.abs(difY);
+    if(difXabs>difYabs)
+    {
+      if(difX>0)
+      {
+        if(difY>0)
+        {
+          abc=new char[] { 'f', 'h', 'b', 'd' };
+        }
+        else
+        {
+          abc=new char[] { 'f', 'd', 'b', 'h' };
+        }
+      }
+      else
+      {
+        if(difY>0)
+        {
+          abc=new char[] { 'b', 'h', 'f', 'd' };
+        }
+        else
+        {
+          abc=new char[] { 'b', 'd', 'f', 'h' };
+        }
+      }
+    }
+    else
+    {
+      if(difY>0)
+      {
+        if(difX>0)
+        {
+          abc=new char[] { 'h', 'f', 'd', 'b' };
+        }
+        else
+        {
+          abc=new char[] { 'h', 'b', 'd', 'f' };
+        }
+      }
+      else
+      {
+        if(difX>0)
+        {
+          abc=new char[] { 'd', 'f', 'h', 'b' };
+        }
+        else
+        {
+          abc=new char[] { 'd', 'b', 'h', 'f' };
+        }
+      }
+    }
+    return abc;
+  }
+  
+  public static short getSigIDCeldaMismaDir(final short celdaID, final char direccion, final GameMap mapa, final boolean combate)
+  {
+    switch(direccion)
+    {
+      case 'a':
+        return (short)(combate ? -1 : celdaID+1);// derecha
+      case 'b':
+        return (short)(celdaID+mapa.getW()); // diagonal derecha abajo
+      case 'c':
+        return (short)(combate ? -1 : celdaID+(mapa.getW()*2-1));// abajo
+      case 'd':
+        return (short)(celdaID+(mapa.getW()-1)); // diagonal izquierda abajo
+      case 'e':
+        return (short)(combate ? -1 : celdaID-1);// izquierda
+      case 'f':
+        return (short)(celdaID-mapa.getW()); // diagonal izquierda arriba
+      case 'g':
+        return (short)(combate ? -1 : celdaID-(mapa.getW()*2-1));// arriba
+      case 'h':
+        return (short)(celdaID-mapa.getW()+1);// diagonal derecha arriba
+    }
+    return -1;
   }
 }
