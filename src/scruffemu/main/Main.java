@@ -52,7 +52,8 @@ public class Main
         }
         Main.logger.info("The server is now closed.");
       }
-    });
+    }
+    );
 
     try
     {
@@ -80,7 +81,7 @@ public class Main
     {
       Main.isRunning=true;
       World.world.createWorld();
-      gameServer = new GameServer();
+      gameServer=new GameServer();
       gameServer.start();
       new ExchangeClient().initialize();
       Main.refreshTitle();
@@ -134,7 +135,8 @@ public class Main
           e.printStackTrace();
         }
       }
-    } else
+    }
+    else
     {
       Main.logger.error("An error occurred when the server have try a connection on the Mysql server. Please check your identification.");
     }
@@ -160,5 +162,10 @@ public class Main
   public static void clear()
   {
     AnsiConsole.out.print("\033[H\033[2J");
+  }
+  
+  public static void exit(String reason)
+  {
+    Logging.getInstance().write("Error",reason);
   }
 }

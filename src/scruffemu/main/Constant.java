@@ -1855,378 +1855,398 @@ public class Constant
     Stats stats=new Stats();
     switch(color)
     {
-      //Amande sauvage
+      //Wild Almond
       case 1:
         break;
-      //Ebene
-      case 3:
-        stats.addOneStat(STATS_ADD_VITA,lvl/2);
-        stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/1.25));//100/1.25 = 80
+      //Wild Ginger
+      case 6:
         break;
-      //Rousse |
+      //Wild Golden
+      case 74:
+        break;
+      //Ginger
       case 10:
-        stats.addOneStat(STATS_ADD_VITA,lvl); //100/1 = 100
+        stats.addOneStat(STATS_ADD_VITA,lvl); // 100
         break;
-      //Amande
+      //Almond
       case 20:
-        stats.addOneStat(STATS_ADD_INIT,lvl*10); // 100*10 = 1000
+        stats.addOneStat(STATS_ADD_SUM,lvl/50); //2
+        stats.addOneStat(STATS_ADD_INIT,lvl*10); //1000
         break;
-      //Dor�e
+      //Golden
       case 18:
-        stats.addOneStat(STATS_ADD_VITA,lvl/2);
-        stats.addOneStat(STATS_ADD_SAGE,(int)(lvl/2.50)); // 100/2.50 = 40
+        stats.addOneStat(STATS_ADD_VITA,lvl/2); //50
+        stats.addOneStat(STATS_ADD_SAGE,(int)(lvl/2.50)); //40
         break;
-      //Rousse-Amande
+      //Ginger-Almond
       case 38:
-        stats.addOneStat(STATS_ADD_INIT,lvl*5); // 100*5 = 500
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_SUM,lvl/50); // 100/50 = 2
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_SUM,lvl/50); //2
+        stats.addOneStat(STATS_ADD_INIT,lvl*5); //500
         break;
-      //Rousse-Dor�e
+      //Ginger-Golden
       case 46:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_SAGE,lvl/4); //100/4 = 25
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_SAGE,lvl/4); //25
         break;
-      //Amande-Dor�e
+      //Almond-Golden
       case 33:
-        stats.addOneStat(STATS_ADD_INIT,lvl*5);
-        stats.addOneStat(STATS_ADD_SAGE,lvl/4);
-        stats.addOneStat(STATS_ADD_VITA,lvl/2);
-        stats.addOneStat(STATS_ADD_SUM,lvl/100); // 100/100 = 1
+        stats.addOneStat(STATS_ADD_VITA,lvl/2); //50
+        stats.addOneStat(STATS_ADD_SAGE,lvl/4); //25
+        stats.addOneStat(STATS_ADD_SUM,lvl/100); //1
+        stats.addOneStat(STATS_ADD_INIT,lvl*5); //500
         break;
-      //Indigo |
+      //Indigo
       case 17:
-        stats.addOneStat(STATS_ADD_CHAN,(int)(lvl/1.25));
-        stats.addOneStat(STATS_ADD_VITA,lvl/2);
+        stats.addOneStat(STATS_ADD_VITA,lvl/2); //50
+        stats.addOneStat(STATS_ADD_CHAN,(int)(lvl/1.25)); //80
         break;
-      //Rousse-Indigo
+      //Ebony
+      case 3:
+        stats.addOneStat(STATS_ADD_VITA,lvl/2); //50
+        stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/1.25)); //80
+        break;
+      //Ginger-Indigo
       case 62:
-        stats.addOneStat(STATS_ADD_VITA,(int)(lvl*1.50)); // 100*1.50 = 150
-        stats.addOneStat(STATS_ADD_CHAN,(int)(lvl/1.65));
+        stats.addOneStat(STATS_ADD_VITA,(int)(lvl*1.50)); //150
+        stats.addOneStat(STATS_ADD_CHAN,(int)(lvl/1.65)); //60
         break;
-      //Rousse-Eb�ne
+      //Ginger-Ebony
       case 12:
-        stats.addOneStat(STATS_ADD_VITA,(int)(lvl*1.50));
-        stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/1.65));
+        stats.addOneStat(STATS_ADD_VITA,(int)(lvl*1.50)); //150
+        stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/1.65)); //60
         break;
-      //Amande-Indigo
+      //Almond-Indigo
       case 36:
-        stats.addOneStat(STATS_ADD_INIT,lvl*5);
-        stats.addOneStat(STATS_ADD_VITA,lvl/2);
-        stats.addOneStat(STATS_ADD_CHAN,(int)(lvl/1.65));
-        stats.addOneStat(STATS_ADD_SUM,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl/2); //50
+        stats.addOneStat(STATS_ADD_CHAN,(int)(lvl/1.65)); //60
+        stats.addOneStat(STATS_ADD_SUM,lvl/100); //1
+        stats.addOneStat(STATS_ADD_INIT,lvl*5); //500
         break;
-      //Pourpre | Stade 4
-      case 19:
-        stats.addOneStat(STATS_ADD_FORC,(int)(lvl/1.25));
-        stats.addOneStat(STATS_ADD_VITA,lvl/2);
+      //Almond-Ebony
+      case 34:
+        stats.addOneStat(STATS_ADD_VITA,lvl/2); //50
+        stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/1.65)); //60
+        stats.addOneStat(STATS_ADD_SUM,lvl/100); //1
+        stats.addOneStat(STATS_ADD_INIT,lvl*5); //500
         break;
-      //Orchid�e
-      case 22:
-        stats.addOneStat(STATS_ADD_INTE,(int)(lvl/1.25));
-        stats.addOneStat(STATS_ADD_VITA,lvl/2);
-        break;
-      //Dor�e-Orchid�e |
-      case 48:
-        stats.addOneStat(STATS_ADD_VITA,(lvl));
-        stats.addOneStat(STATS_ADD_SAGE,lvl/4);
-        stats.addOneStat(STATS_ADD_INTE,(int)(lvl/1.65));
-        break;
-      //Indigo-Pourpre
-      case 65:
-        stats.addOneStat(STATS_ADD_VITA,(lvl));
-        stats.addOneStat(STATS_ADD_CHAN,lvl/2);
-        stats.addOneStat(STATS_ADD_FORC,lvl/2);
-        break;
-      //Ivoire-Orchid�e
-      case 67:
-        stats.addOneStat(STATS_ADD_VITA,(lvl));
-        stats.addOneStat(STATS_ADD_PERDOM,lvl/2);
-        stats.addOneStat(STATS_ADD_INTE,lvl/2);
-        break;
-      //Eb�ne-Pourpre
-      case 54:
-        stats.addOneStat(STATS_ADD_VITA,(lvl));
-        stats.addOneStat(STATS_ADD_FORC,lvl/2);
-        stats.addOneStat(STATS_ADD_AGIL,lvl/2);
-        break;
-      //Eb�ne-Orchid�e
-      case 53:
-        stats.addOneStat(STATS_ADD_VITA,(lvl));
-        stats.addOneStat(STATS_ADD_AGIL,lvl/2);
-        stats.addOneStat(STATS_ADD_INTE,lvl/2);
-        break;
-      //Pourpre-Orchid�e
-      case 76:
-        stats.addOneStat(STATS_ADD_VITA,(lvl));
-        stats.addOneStat(STATS_ADD_INTE,lvl/2);
-        stats.addOneStat(STATS_ADD_FORC,lvl/2);
-        break;
-      // Amande-Ebene	| Nami-start
-      case 37:
-        stats.addOneStat(STATS_ADD_INIT,lvl*5);
-        stats.addOneStat(STATS_ADD_VITA,lvl/2);
-        stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/1.65));
-        stats.addOneStat(STATS_ADD_SUM,lvl/100);
-        break;
-      // Amande-Rousse
+      //Golden-Indigo
       case 44:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_SAGE,lvl/4);
-        stats.addOneStat(STATS_ADD_CHAN,(int)(lvl/1.65));
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_SAGE,lvl/4); //25
+        stats.addOneStat(STATS_ADD_CHAN,(int)(lvl/1.65)); //60
         break;
-      // Dor�e-Eb�ne
+      //Golden-Ebony
       case 42:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_SAGE,lvl/4);
-        stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/1.65));
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_SAGE,lvl/4); //25
+        stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/1.65)); //60
         break;
-      // Indigo-Eb�ne
+      //Indigo-Ebony
       case 51:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_CHAN,lvl/2);
-        stats.addOneStat(STATS_ADD_AGIL,lvl/2);
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_CHAN,lvl/2); //50
+        stats.addOneStat(STATS_ADD_AGIL,lvl/2); //50
         break;
-      // Rousse-Pourpre
+      //Crimson
+      case 19:
+        stats.addOneStat(STATS_ADD_VITA,lvl/2); //50
+        stats.addOneStat(STATS_ADD_FORC,(int)(lvl/1.25)); //80
+        break;
+      //Orchid
+      case 22:
+        stats.addOneStat(STATS_ADD_VITA,lvl/2); //50
+        stats.addOneStat(STATS_ADD_INTE,(int)(lvl/1.25)); //80
+        break;
+      //Ginger-Crimson
       case 71:
-        stats.addOneStat(STATS_ADD_VITA,(int)(lvl*1.5));
-        stats.addOneStat(STATS_ADD_FORC,(int)(lvl/1.65));
+        stats.addOneStat(STATS_ADD_VITA,(int)(lvl*1.5)); //150
+        stats.addOneStat(STATS_ADD_FORC,(int)(lvl/1.65)); //60
         break;
-      // Rousse-Orchid�e
+      //Ginger-Orchid
       case 70:
-        stats.addOneStat(STATS_ADD_VITA,(int)(lvl*1.5));
-        stats.addOneStat(STATS_ADD_INTE,(int)(lvl/1.65));
+        stats.addOneStat(STATS_ADD_VITA,(int)(lvl*1.5)); //150
+        stats.addOneStat(STATS_ADD_INTE,(int)(lvl/1.65)); //60
         break;
-      // Amande-Pourpre
+      //Almond-Crimson
       case 41:
-        stats.addOneStat(STATS_ADD_INIT,lvl*5);
-        stats.addOneStat(STATS_ADD_VITA,lvl/2);
-        stats.addOneStat(STATS_ADD_FORC,(int)(lvl/1.65));
-        stats.addOneStat(STATS_ADD_SUM,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl/2); //50
+        stats.addOneStat(STATS_ADD_FORC,(int)(lvl/1.65)); //60
+        stats.addOneStat(STATS_ADD_SUM,lvl/100); //1
+        stats.addOneStat(STATS_ADD_INIT,lvl*5); //500
         break;
-      // Amande-Orchid�e
+      //Almond-Orchid
       case 40:
-        stats.addOneStat(STATS_ADD_INIT,lvl*5);
-        stats.addOneStat(STATS_ADD_VITA,lvl/2);
-        stats.addOneStat(STATS_ADD_INTE,(int)(lvl/1.65));
-        stats.addOneStat(STATS_ADD_SUM,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl/2); //50
+        stats.addOneStat(STATS_ADD_INTE,(int)(lvl/1.65)); //60
+        stats.addOneStat(STATS_ADD_SUM,lvl/100); //1
+        stats.addOneStat(STATS_ADD_INIT,lvl*5); //500
         break;
-      // Dor�e-Pourpre
+      //Golden-Crimson
       case 49:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_SAGE,lvl/4);
-        stats.addOneStat(STATS_ADD_FORC,(int)(lvl/1.65));
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_SAGE,lvl/4); //25
+        stats.addOneStat(STATS_ADD_FORC,(int)(lvl/1.65)); //60
         break;
-      // Ivoire
+      //Golden-Orchid
+      case 48:
+        stats.addOneStat(STATS_ADD_VITA,(lvl)); //100
+        stats.addOneStat(STATS_ADD_SAGE,lvl/4); //25
+        stats.addOneStat(STATS_ADD_INTE,(int)(lvl/1.65)); //60
+        break;
+      //Indigo-Crimson
+      case 65:
+        stats.addOneStat(STATS_ADD_VITA,(lvl)); //100
+        stats.addOneStat(STATS_ADD_FORC,lvl/2); //50
+        stats.addOneStat(STATS_ADD_CHAN,lvl/2); //50
+        break;
+      //Indigo-Orchid  
+      case 64:
+        stats.addOneStat(STATS_ADD_VITA,(lvl)); //100
+        stats.addOneStat(STATS_ADD_INTE,lvl/2); //50
+        stats.addOneStat(STATS_ADD_CHAN,lvl/2); //50
+        break;
+      //Ebony-Crimson
+      case 54:
+        stats.addOneStat(STATS_ADD_VITA,(lvl)); //100
+        stats.addOneStat(STATS_ADD_FORC,lvl/2); //50
+        stats.addOneStat(STATS_ADD_AGIL,lvl/2); //50
+        break;
+      //Ebony-Orchid
+      case 53:
+        stats.addOneStat(STATS_ADD_VITA,(lvl)); //100
+        stats.addOneStat(STATS_ADD_INTE,lvl/2); //50
+        stats.addOneStat(STATS_ADD_AGIL,lvl/2); //50
+        break;
+      //Crimson-Orchid
+      case 76:
+        stats.addOneStat(STATS_ADD_VITA,(lvl)); //100
+        stats.addOneStat(STATS_ADD_FORC,lvl/2); //50
+        stats.addOneStat(STATS_ADD_INTE,lvl/2); //50
+        break;
+      //Ivory
       case 16:
-        stats.addOneStat(STATS_ADD_VITA,lvl/2);
-        stats.addOneStat(STATS_ADD_PERDOM,lvl/2);
+        stats.addOneStat(STATS_ADD_VITA,lvl/2); //50
+        stats.addOneStat(STATS_ADD_PERDOM,lvl/2); //50
         break;
-      // Turquoise
+      //Turquoise
       case 15:
-        stats.addOneStat(STATS_ADD_VITA,lvl/2);
-        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/1.25));
+        stats.addOneStat(STATS_ADD_VITA,lvl/2); //50
+        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/1.25)); //80
         break;
-      //Rousse-Ivoire
+      //Ginger-Ivory
       case 11:
-        stats.addOneStat(STATS_ADD_VITA,lvl*2); // 100*2 = 200
-        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/2.5)); // = 40
+        stats.addOneStat(STATS_ADD_VITA,lvl*2); //200
+        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/2.5)); //40
         break;
-      //Rousse-Turquoise
+      //Ginger-Turqoise
       case 69:
-        stats.addOneStat(STATS_ADD_VITA,lvl*2);
-        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.50));
+        stats.addOneStat(STATS_ADD_VITA,lvl*2); //200
+        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.5)); //40
         break;
-      //Amande-Turquoise
+      //Almond-Ivory
+      case 37:
+        stats.addOneStat(STATS_ADD_VITA,lvl/2); //50
+        stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/1.65)); //60
+        stats.addOneStat(STATS_ADD_SUM,lvl/100); //1
+        stats.addOneStat(STATS_ADD_INIT,lvl*5); //500
+        break;
+      //Almond-Turqoise
       case 39:
-        stats.addOneStat(STATS_ADD_INIT,lvl*5);
-        stats.addOneStat(STATS_ADD_VITA,lvl/2);
-        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.50));
-        stats.addOneStat(STATS_ADD_SUM,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl/2); //50
+        stats.addOneStat(STATS_ADD_SUM,lvl/100); //1
+        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.50)); //40
+        stats.addOneStat(STATS_ADD_INIT,lvl*5); //500
         break;
-      //Dor�e-Ivoire
+      //Golden-Ivory
       case 45:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/2.5));
-        stats.addOneStat(STATS_ADD_SAGE,lvl/4);
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_SAGE,lvl/4); //25
+        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/2.5)); //40
         break;
-      //Dor�e-Turquoise
+      //Golden-Turqoise
       case 47:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.50));
-        stats.addOneStat(STATS_ADD_SAGE,lvl/4);
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_SAGE,lvl/4); //25
+        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.5)); //40
         break;
-      //Indigo-Ivoire
+      //Indigo-Ivory
       case 61:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_CHAN,(int)(lvl/2.50));
-        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/2.5));
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_CHAN,(int)(lvl/2.5)); //40
+        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/2.5)); //40
         break;
       //Indigo-Turquoise
       case 63:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_CHAN,(int)(lvl/1.65));
-        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.5));
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_CHAN,(int)(lvl/1.65)); //60
+        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.5)); //40
         break;
-      //Eb�ne-Ivoire
+      //Ebony-Ivory
       case 9:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/2.50));
-        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/2.5));
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/2.5)); //40
+        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/2.5)); //40
         break;
-      //Eb�ne-Turquoise
+      //Ebony-Turquoise
       case 52:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/1.65));
-        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.50));
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/1.65)); //60
+        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.50)); //40
         break;
-      //Pourpre-Ivoire
+      //Crimson-Ivory
       case 68:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_FORC,(int)(lvl/1.65));
-        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/2.5));
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_FORC,(int)(lvl/2.5)); //40
+        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/2.5)); //40
         break;
-      //Pourpre-Turquoise
+      //Crimson-Turquoise
       case 73:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_FORC,(int)(lvl/1.65));
-        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.50));
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_FORC,(int)(lvl/1.65)); //60
+        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.5)); //40
         break;
-      //Orchid�e-Turquoise
+      //Ivory-Orchid
+      case 67:
+        stats.addOneStat(STATS_ADD_VITA,(lvl)); //100
+        stats.addOneStat(STATS_ADD_INTE,(int)(lvl/2.5)); //40
+        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/2.5)); //40
+        break;
+      //Orchid-Turquoise
       case 72:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_INTE,(int)(lvl/1.65));
-        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/2.5));
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_INTE,(int)(lvl/1.65)); //60
+        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.5)); //40
         break;
-      //Ivoire-Turquoise
+      //Ivory-Turquoise
       case 66:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/2.5));
-        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.50));
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/2.5)); //40
+        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.5)); //40
         break;
-      // Emeraude
+      //Emerald
       case 21:
-        stats.addOneStat(STATS_ADD_VITA,lvl*2);
-        stats.addOneStat(STATS_ADD_PM,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl*2); //200
+        stats.addOneStat(STATS_ADD_PM,lvl/100); //1
         break;
-      // Prune
+      //Plum
       case 23:
-        stats.addOneStat(STATS_ADD_VITA,lvl*2); // 100*2 = 200
-        stats.addOneStat(STATS_ADD_PO,lvl/50);
+        stats.addOneStat(STATS_ADD_VITA,lvl*2); //200
+        stats.addOneStat(STATS_ADD_PO,lvl/50); //2
         break;
-      //Emeraude-Rousse
+      //Ginger-Emerald
       case 57:
-        stats.addOneStat(STATS_ADD_VITA,lvl*3); // 100*3 = 300
-        stats.addOneStat(STATS_ADD_PM,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl*3); //300
+        stats.addOneStat(STATS_ADD_PM,lvl/100); //1
         break;
-      //Rousse-Prune
+      //Ginger-Plum
       case 84:
-        stats.addOneStat(STATS_ADD_VITA,lvl*3);
-        stats.addOneStat(STATS_ADD_PO,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl*3); //300
+        stats.addOneStat(STATS_ADD_PO,lvl/100); //1
         break;
-      //Amande-Emeraude
+      //Almond-Emerald
       case 35:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_PM,lvl/100);
-        stats.addOneStat(STATS_ADD_SUM,lvl/100);
-        stats.addOneStat(STATS_ADD_INIT,lvl*5);
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_PM,lvl/100); //1
+        stats.addOneStat(STATS_ADD_SUM,lvl/100); //1
+        stats.addOneStat(STATS_ADD_INIT,lvl*5); //500
         break;
-      //Amande-Prune
+      //Almond-Plum
       case 77:
-        stats.addOneStat(STATS_ADD_VITA,lvl*2);
-        stats.addOneStat(STATS_ADD_INIT,lvl*5);
-        stats.addOneStat(STATS_ADD_PO,lvl/100);
-        stats.addOneStat(STATS_ADD_SUM,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl*2); //200
+        stats.addOneStat(STATS_ADD_PO,lvl/100); //1
+        stats.addOneStat(STATS_ADD_SUM,lvl/100); //1
+        stats.addOneStat(STATS_ADD_INIT,lvl*5); //500
         break;
-      //Dor�e-Emeraude
+      //Golden-Emerald
       case 43:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_SAGE,lvl/4);
-        stats.addOneStat(STATS_ADD_PM,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_SAGE,lvl/4); //25
+        stats.addOneStat(STATS_ADD_PM,lvl/100); //1
         break;
-      //Dor�e-Prune
+      //Golden-Plum
       case 78:
-        stats.addOneStat(STATS_ADD_VITA,lvl*2);
-        stats.addOneStat(STATS_ADD_SAGE,lvl/4);
-        stats.addOneStat(STATS_ADD_PO,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl*2); //200
+        stats.addOneStat(STATS_ADD_SAGE,lvl/4); //25
+        stats.addOneStat(STATS_ADD_PO,lvl/100); //1
         break;
-      //Indigo-Emeraude
+      //Indigo-Emerald
       case 55:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_CHAN,(int)(lvl/3.33));
-        stats.addOneStat(STATS_ADD_PM,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_CHAN,(int)(lvl/3.33)); //30
+        stats.addOneStat(STATS_ADD_PM,lvl/100); //1
         break;
-      //Indigo-Prune
+      //Indigo-Plum
       case 82:
-        stats.addOneStat(STATS_ADD_VITA,lvl*2);
-        stats.addOneStat(STATS_ADD_CHAN,(int)(lvl/1.65));
-        stats.addOneStat(STATS_ADD_PO,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl*2); //200
+        stats.addOneStat(STATS_ADD_CHAN,(int)(lvl/1.65)); //60
+        stats.addOneStat(STATS_ADD_PO,lvl/100); //1
         break;
-      //Eb�ne-Emeraude
+      //Ebony-Emerald
       case 50:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/3.33));
-        stats.addOneStat(STATS_ADD_PM,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/3.33)); //30
+        stats.addOneStat(STATS_ADD_PM,lvl/100); //1
         break;
-      //Eb�ne-Prune
+      //Ebony-Plum
       case 79:
-        stats.addOneStat(STATS_ADD_VITA,lvl*2);
-        stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/1.65));
-        stats.addOneStat(STATS_ADD_PO,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl*2); //200
+        stats.addOneStat(STATS_ADD_AGIL,(int)(lvl/1.65)); //60
+        stats.addOneStat(STATS_ADD_PO,lvl/100); //1
         break;
-      //Pourpre-Emeraude
+      //Crimson-Emerald
       case 60:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_FORC,(int)(lvl/3.33));
-        stats.addOneStat(STATS_ADD_PM,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_FORC,(int)(lvl/3.33)); //30
+        stats.addOneStat(STATS_ADD_PM,lvl/100); //1
         break;
-      //Pourpre-Prune
+      //Crimson-Plum
       case 87:
-        stats.addOneStat(STATS_ADD_VITA,lvl*2);
-        stats.addOneStat(STATS_ADD_FORC,(int)(lvl/1.65));
-        stats.addOneStat(STATS_ADD_PO,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl*2); //200
+        stats.addOneStat(STATS_ADD_FORC,(int)(lvl/1.65)); //60
+        stats.addOneStat(STATS_ADD_PO,lvl/100); //1
         break;
-      //Orchid�e-Emeraude
+      //Orchid-Emerald
       case 59:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_INTE,(int)(lvl/3.33));
-        stats.addOneStat(STATS_ADD_PM,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_INTE,(int)(lvl/3.33)); //30
+        stats.addOneStat(STATS_ADD_PM,lvl/100); //1
         break;
-      //Orchid�e-Prune
+      //Orchid-Plum
       case 86:
-        stats.addOneStat(STATS_ADD_VITA,lvl*2);
-        stats.addOneStat(STATS_ADD_INTE,(int)(lvl/1.65));
-        stats.addOneStat(STATS_ADD_PO,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl*2); //200
+        stats.addOneStat(STATS_ADD_INTE,(int)(lvl/1.65)); //60
+        stats.addOneStat(STATS_ADD_PO,lvl/100); //1
         break;
-      //Ivoire-Emeraude
+      //Ivory-Emerald
       case 56:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/3.33));
-        stats.addOneStat(STATS_ADD_PM,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/5)); //20
+        stats.addOneStat(STATS_ADD_PM,lvl/100); //1
         break;
-      //Ivoire-Prune
+      //Ivory-Plum
       case 83:
-        stats.addOneStat(STATS_ADD_VITA,lvl*2);
-        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/1.65));
-        stats.addOneStat(STATS_ADD_PO,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl*2); //200
+        stats.addOneStat(STATS_ADD_PERDOM,(int)(lvl/2.5)); //40
+        stats.addOneStat(STATS_ADD_PO,lvl/100); //1
         break;
-      //Turquoise-Emeraude
+      //Turquoise-Emerald
       case 58:
-        stats.addOneStat(STATS_ADD_VITA,lvl);
-        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/3.33));
-        stats.addOneStat(STATS_ADD_PM,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl); //100
+        stats.addOneStat(STATS_ADD_PM,lvl/100); //1
+        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.5)); //40
         break;
-      //Turquoise-Prune
+      //Turquoise-Plum
       case 85:
-        stats.addOneStat(STATS_ADD_VITA,lvl*2);
-        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/1.65));
-        stats.addOneStat(STATS_ADD_PO,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl*2); //200
+        stats.addOneStat(STATS_ADD_PO,lvl/100); //1
+        stats.addOneStat(STATS_ADD_PROS,(int)(lvl/2.5)); //40
         break;
-      //Emeraude-Prune
+      //Emerald-Plum
       case 80:
-        stats.addOneStat(STATS_ADD_VITA,lvl*2);
-        stats.addOneStat(STATS_ADD_PM,lvl/100);
-        stats.addOneStat(STATS_ADD_PO,lvl/100);
+        stats.addOneStat(STATS_ADD_VITA,lvl*2); //200
+        stats.addOneStat(STATS_ADD_PM,lvl/100); //1
+        stats.addOneStat(STATS_ADD_PO,lvl/100); //1
         break;
       //Armure
       case 88:

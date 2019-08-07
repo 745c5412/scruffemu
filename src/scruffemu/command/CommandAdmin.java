@@ -28,6 +28,7 @@ import scruffemu.game.scheduler.entity.WorldSave;
 import scruffemu.job.JobStat;
 import scruffemu.main.Config;
 import scruffemu.main.Constant;
+import scruffemu.main.Logging;
 import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.object.ObjectSet;
@@ -36,6 +37,7 @@ import scruffemu.quest.Quest;
 import scruffemu.quest.QuestStep;
 import scruffemu.quest.QuestPlayer;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -4028,13 +4030,35 @@ public class CommandAdmin extends AdminUser
     }
     else if(command.equalsIgnoreCase("RESTART"))
     {
-      System.exit(0);
+      Main.gameServer.setState(0);
+      WorldSave.cast(0);
+      Main.gameServer.kickAll(true);
+      Main.gameServer.stop();
+      Main.isRunning=false;
+      Logging.getInstance().stop();
+      Database.getStatics().getServerData().loggedZero();
+      Set<Thread> threadSet=Thread.getAllStackTraces().keySet();
+      for(Thread t : threadSet)
+      {
+        if(t.getName().compareTo("main")==0)
+        {
+          try
+          {
+            Main.main(null);
+          }
+          catch(SQLException e)
+          {
+            e.printStackTrace();
+          }
+          t.interrupt();
+          break;
+        }
+      }
     }
     else
     {
       this.sendMessage("Commande invalide !");
     }
-
   }
 
   private static int getCellJail()

@@ -1804,3 +1804,31 @@ Added shield category to global market
 Fixed a bug where Recall Potions said they were worth 250 kamas when they were actually worth 10
 Added a new item - Forgetfulness Potion - that makes you forget all your spells and characteristics
 Fixed a bug where the Munster Crusher's animation did not stop once activated
+Fixed 4 broken map connections
+Added fighting positions to 4 maps
+
+07-08-2019
+Fixed a bug where Almond Dragoturkey did not give any summons
+Fixed a bug where the Almond-Ivory Dragoturkey instead gave the stats the Almond-Ebony mount was supposed to give
+Fixed a bug where the Almond-Ebony Dragoturkey did not give any stats
+Fixed a bug where the Indigo-Orchid Dragoturkey did not give any stats
+Fixed a bug where the Crimson-Ivory Dragoturkey gave 60 strength instead of 40 strength
+Fixed a bug where the Ivory-Orchid Dragoturkey gave 50 intelligence and 50 %damage
+Fixed a bug where the Orchid-Turquoise Dragoturkey gave 40 %damage instead of 40 prospecting
+Fixed a bug where the Ivory-Emerald Dragoturkey gave 30 %damage instead of 20 %damage
+Fixed a bug where the Ivory-Plum Dragoturkey gave 60 %damage instead of 40 %damage
+Fixed a bug where the Turquoise-Emerald Dragoturkey gave 30 prospecting instead of 40 prospecting
+Fixed a bug where the Turqoise-Plum Dragoturkey gave 60 prospecting instead of 40 prospecting
+Reordered mount stats in the order:
+	- vitality
+	- wisdom
+	- strength
+	- intelligence
+	- chanche
+	- agility
+	- %damage
+	- MP
+	- range
+	- summon
+	- prospecting
+	- initiative
