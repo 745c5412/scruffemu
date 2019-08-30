@@ -65,6 +65,7 @@ public class IA25 extends AbstractNeedSpell
         if(num!=-1)
         {
           time=num;
+          System.out.println("time: "+time);
           action=true;
         }
       }

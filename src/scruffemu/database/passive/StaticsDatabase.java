@@ -19,6 +19,7 @@ import scruffemu.database.passive.data.PlayerData;
 import scruffemu.database.passive.data.PubData;
 import scruffemu.database.passive.data.QuestPlayerData;
 import scruffemu.database.passive.data.ServerData;
+import scruffemu.database.passive.data.StakeData;
 import scruffemu.database.passive.data.SubAreaData;
 import scruffemu.database.passive.data.TrunkData;
 import scruffemu.main.Config;
@@ -53,6 +54,7 @@ public class StaticsDatabase
   private PubData pubData;
   private PetData petData;
   private QuestPlayerData questPlayerData;
+  private StakeData stakeData;
 
   public void initializeData()
   {
@@ -74,6 +76,7 @@ public class StaticsDatabase
     this.pubData=new PubData(this.dataSource);
     this.petData=new PetData(this.dataSource);
     this.questPlayerData=new QuestPlayerData(this.dataSource);
+    this.stakeData=new StakeData(this.dataSource);
   }
 
   public boolean initializeConnection()
@@ -206,5 +209,10 @@ public class StaticsDatabase
   public QuestPlayerData getQuestPlayerData()
   {
     return questPlayerData;
+  }
+
+  public StakeData getStakeData()
+  {
+    return stakeData;
   }
 }

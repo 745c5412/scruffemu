@@ -2,7 +2,7 @@ package scruffemu.quest;
 
 import scruffemu.client.Player;
 import scruffemu.database.Database;
-import scruffemu.game.World;
+import scruffemu.main.Main;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +22,7 @@ public class QuestPlayer
     this.id=id;
     this.quest=Quest.getQuestById(quest);
     this.finish=finish;
-    this.player=World.world.getPlayer(player);
+    this.player=Main.world.getPlayer(player);
 
     try
     {

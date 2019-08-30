@@ -5,7 +5,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import scruffemu.comhandler.transfer.DataQueue;
 import scruffemu.database.passive.AbstractDAO;
 import scruffemu.entity.pet.PetEntry;
-import scruffemu.game.World;
 import scruffemu.main.Main;
 
 import java.sql.PreparedStatement;
@@ -62,7 +61,7 @@ public class PetData extends AbstractDAO<PetEntry>
       while(RS.next())
       {
         i++;
-        World.world.addPetsEntry(new PetEntry(RS.getInt("id"),RS.getInt("template"),RS.getLong("lastEatDate"),RS.getInt("quantityEat"),RS.getInt("pdv"),RS.getInt("corpulence"),(RS.getInt("isEPO")==1)));
+        Main.world.addPetsEntry(new PetEntry(RS.getInt("id"),RS.getInt("template"),RS.getLong("lastEatDate"),RS.getInt("quantityEat"),RS.getInt("pdv"),RS.getInt("corpulence"),(RS.getInt("isEPO")==1)));
       }
     }
     catch(SQLException e)
@@ -121,11 +120,11 @@ public class PetData extends AbstractDAO<PetEntry>
   {
     try
     {
-      final DataQueue.Queue<Integer> queue=World.world.getDataQueue().new Queue<>((byte)5);
+      final DataQueue.Queue<Integer> queue=Main.world.getDataQueue().new Queue<>((byte)5);
       synchronized(queue)
       {
-        long count=World.world.getDataQueue().count();
-        World.world.getDataQueue().queues.put(count,queue);
+        long count=Main.world.getDataQueue().count();
+        Main.world.getDataQueue().queues.put(count,queue);
         Main.exchangeClient.send("DI"+queue.getType()+count);
         queue.wait();
       }

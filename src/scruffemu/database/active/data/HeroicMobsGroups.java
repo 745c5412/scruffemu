@@ -5,9 +5,9 @@ import com.zaxxer.hikari.HikariDataSource;
 import scruffemu.area.map.GameMap;
 import scruffemu.database.active.AbstractDAO;
 import scruffemu.entity.monster.MobGroup;
-import scruffemu.game.World;
 import scruffemu.game.scheduler.entity.RespawnGroup;
 import scruffemu.main.Config;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.utility.Pair;
 
@@ -47,7 +47,7 @@ public class HeroicMobsGroups extends AbstractDAO<Object>
       while(RS.next())
       {
         final MobGroup group=new MobGroup(RS.getInt("id"),RS.getInt("cell"),RS.getString("group"),RS.getString("objects"),RS.getInt("stars"));
-        final GameMap map=World.world.getMap(RS.getShort("map"));
+        final GameMap map=Main.world.getMap(RS.getShort("map"));
         if(map!=null)
           map.respawnGroup(group);
       }
@@ -71,7 +71,7 @@ public class HeroicMobsGroups extends AbstractDAO<Object>
       while(RS.next())
       {
         /*final Monster.MobGroup group=new Monster.MobGroup(RS.getInt("id"),RS.getInt("cell"),RS.getString("group"));
-        final GameMap map=World.world.getMap(RS.getShort("map"));
+        final GameMap map=Main.world.getMap(RS.getShort("map"));
         if(map!=null)
           map.respawnGroup(group);
         
@@ -194,7 +194,7 @@ public class HeroicMobsGroups extends AbstractDAO<Object>
         prepare.setString(1,objects.toString());
         prepare.setLong(2,Integer.parseInt(split[0]));
         prepare.setInt(3,Integer.parseInt(split[1]));
-        prepare.setString(4,World.world.getGroupFix(Integer.parseInt(split[0]),Integer.parseInt(split[1])).get("groupData"));
+        prepare.setString(4,Main.world.getGroupFix(Integer.parseInt(split[0]),Integer.parseInt(split[1])).get("groupData"));
         execute(prepare);
       }
     }

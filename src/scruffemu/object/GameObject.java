@@ -8,10 +8,10 @@ import scruffemu.database.Database;
 import scruffemu.entity.mount.Mount;
 import scruffemu.entity.pet.PetEntry;
 import scruffemu.fight.spells.SpellEffect;
-import scruffemu.game.World;
 import scruffemu.utility.Pair;
 import scruffemu.main.Constant;
 import scruffemu.main.Logging;
+import scruffemu.main.Main;
 import scruffemu.object.entity.Fragment;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class GameObject
   public GameObject(int Guid, int template, int qua, int pos, String strStats, float puit)
   {
     this.guid=Guid;
-    this.template=World.world.getObjTemplate(template);
+    this.template=Main.world.getObjTemplate(template);
     this.quantity=qua;
     this.position=pos;
     this.puit=puit;
@@ -56,7 +56,7 @@ public class GameObject
   public GameObject(int Guid)
   {
     this.guid=Guid;
-    this.template=World.world.getObjTemplate(8378);
+    this.template=Main.world.getObjTemplate(8378);
     this.quantity=1;
     this.position=-1;
     this.puit=0;
@@ -65,7 +65,7 @@ public class GameObject
   public GameObject(int Guid, int template, int qua, int pos, Stats stats, ArrayList<SpellEffect> effects, Map<Integer, Integer> _SoulStat, Map<Integer, String> _txtStats, float puit)
   {
     this.guid=Guid;
-    this.template=World.world.getObjTemplate(template);
+    this.template=Main.world.getObjTemplate(template);
     this.quantity=qua;
     this.position=pos;
     this.Stats=stats;
@@ -339,7 +339,7 @@ public class GameObject
   public void setTemplate(int Tid)
   {
     this.setModification();
-    this.template=World.world.getObjTemplate(Tid);
+    this.template=Main.world.getObjTemplate(Tid);
   }
 
   public int getGuid()
@@ -387,7 +387,7 @@ public class GameObject
 
     if(ok)
     {
-      Player player=World.world.getPlayerByName(this.getTxtStat().get(Constant.STATS_OWNER_1));
+      Player player=Main.world.getPlayerByName(this.getTxtStat().get(Constant.STATS_OWNER_1));
       if(player!=null)
         player.send("BN");
     }
@@ -418,7 +418,7 @@ public class GameObject
         }
         String[] sort=spell.split("#");
         int spellid=Integer.parseInt(sort[1],16);
-        stats.append(sort[0]).append("#").append(sort[1]).append("#0#").append(sort[3]).append("#").append(World.world.getSort(spellid));
+        stats.append(sort[0]).append("#").append(sort[1]).append("#0#").append(sort[3]).append("#").append(Main.world.getSort(spellid));
         isFirst=false;
       }
     }
@@ -526,7 +526,7 @@ public class GameObject
       }
       else if(entry.getKey()==Constant.STATS_PETS_PDV||entry.getKey()==Constant.STATS_PETS_POIDS||entry.getKey()==Constant.STATS_PETS_DATE||entry.getKey()==Constant.STATS_PETS_REPAS)
       {
-        PetEntry p=World.world.getPetsEntry(this.getGuid());
+        PetEntry p=Main.world.getPetsEntry(this.getGuid());
         if(p==null)
         {
           if(entry.getKey()==Constant.STATS_PETS_PDV)
@@ -699,7 +699,7 @@ public class GameObject
       }
       else if(entry.getKey()==Constant.STATS_PETS_PDV||entry.getKey()==Constant.STATS_PETS_POIDS||entry.getKey()==Constant.STATS_PETS_DATE)
       {
-        PetEntry p=World.world.getPetsEntry(this.getGuid());
+        PetEntry p=Main.world.getPetsEntry(this.getGuid());
         if(p==null)
         {
           if(entry.getKey()==Constant.STATS_PETS_PDV)
@@ -1187,7 +1187,7 @@ public class GameObject
         int newstats=0;
         int statID=i;
         int statAmount=statsObj.get(i);
-        if((statID==stat&&filteredKeys.size()!=1)||lost>=power) //stop removing if stat being targeted is runestat or if more power than runepower has been lost
+        if((statID==stat&&filteredKeys.size()!=1)||lost>=power) //stop removing if stat being targeted is runestat while more options are available or if more power than runepower has been lost
           newstats=statAmount;
         else if(statID==stat&&filteredKeys.size()==1&&statAmount*Constant.getPowerByStatId(statID,false)<=power-lost) //only stat available is runeStat and less than power limit
         {
@@ -1324,6 +1324,35 @@ public class GameObject
         final int value=statsObj.get(i);
         if(obj.getTemplate().getType()!=83)
           if(this.isOverFm(i,value)&&i!=currentStat)
+            key.add(i);
+      }
+    }
+    for(Integer i : key)
+    {
+      final int statID=i;
+      final int value=statsObj.get(i);
+      stats=String.valueOf(stats)+statID+","+String.valueOf(value)+";";
+    }
+    return stats;
+  }
+  
+  //v2.6 - Soulstone fix
+  public String findAllExo(final GameObject obj)
+  {
+    String stats="";
+    final Map<Integer, Integer> statsObj=new HashMap<Integer, Integer>(obj.Stats.getMap());
+    final ArrayList<Integer> keys=new ArrayList<Integer>(obj.Stats.getMap().keySet());
+    Collections.shuffle(keys);
+    final ArrayList<Integer> key=new ArrayList<Integer>();
+    if(keys.size()>0)
+    {
+      Iterator<Integer> iter=keys.iterator();
+      while(iter.hasNext())
+      {
+        int i=iter.next();
+        final int value=statsObj.get(i);
+        if(obj.getTemplate().getType()!=83)
+          if(this.isOverFm(i,value))
             key.add(i);
       }
     }

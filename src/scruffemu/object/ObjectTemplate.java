@@ -10,6 +10,7 @@ import scruffemu.entity.pet.PetEntry;
 import scruffemu.fight.spells.SpellEffect;
 import scruffemu.game.World;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.object.entity.SoulStone;
 import scruffemu.other.Dopeul;
 
@@ -117,7 +118,7 @@ public class ObjectTemplate
     }
     catch(Exception e)
     {
-      e.printStackTrace();
+      //nothing
     }
   }
 
@@ -320,7 +321,7 @@ public class ObjectTemplate
     GameObject item=null;
     if(getType()==Constant.ITEM_TYPE_CERTIFICAT_CHANIL)
     {
-      PetEntry myPets=World.world.getPetsEntry(obj.getGuid());
+      PetEntry myPets=Main.world.getPetsEntry(obj.getGuid());
       Map<Integer, String> txtStat=new HashMap<Integer, String>();
       Map<Integer, String> actualStat=new HashMap<Integer, String>();
       actualStat=obj.getTxtStat();
@@ -335,7 +336,7 @@ public class ObjectTemplate
       if(actualStat.containsKey(Constant.STATS_PETS_REPAS))
         txtStat.put(Constant.STATS_PETS_REPAS,actualStat.get(Constant.STATS_PETS_REPAS));
       item=new GameObject(id,getId(),1,Constant.ITEM_POS_NO_EQUIPED,obj.getStats(),new ArrayList<SpellEffect>(),new HashMap<Integer, Integer>(),txtStat,0);
-      World.world.removePetsEntry(obj.getGuid());
+      Main.world.removePetsEntry(obj.getGuid());
       Database.getStatics().getPetData().delete(obj.getGuid());
     }
     return item;
@@ -350,7 +351,7 @@ public class ObjectTemplate
     GameObject object=new GameObject(id,getId(),1,Constant.ITEM_POS_NO_EQUIPED,obj.getStats(),new ArrayList<>(),new HashMap<>(),stats,0);
 
     long time=System.currentTimeMillis();
-    World.world.addPetsEntry(new PetEntry(id,getId(),time,0,Integer.parseInt(stats.get(Constant.STATS_PETS_PDV),16),Integer.parseInt(stats.get(Constant.STATS_PETS_POIDS),16),!stats.containsKey(Constant.STATS_PETS_EPO)));
+    Main.world.addPetsEntry(new PetEntry(id,getId(),time,0,Integer.parseInt(stats.get(Constant.STATS_PETS_PDV),16),Integer.parseInt(stats.get(Constant.STATS_PETS_POIDS),16),!stats.containsKey(Constant.STATS_PETS_EPO)));
     Database.getStatics().getPetData().add(id,time,getId());
     return object;
   }
@@ -418,10 +419,10 @@ public class ObjectTemplate
     }
     else if(getType()==Constant.ITEM_TYPE_FAMILIER)
     {
-      item=new GameObject(id,getId(),1,Constant.ITEM_POS_NO_EQUIPED,(useMax ? generateNewStatsFromTemplate(World.world.getPets(this.getId()).getJet(),false) : new Stats(false,null)),new ArrayList<>(),new HashMap<>(),World.world.getPets(getId()).generateNewtxtStatsForPets(),0);
+      item=new GameObject(id,getId(),1,Constant.ITEM_POS_NO_EQUIPED,(useMax ? generateNewStatsFromTemplate(Main.world.getPets(this.getId()).getJet(),false) : new Stats(false,null)),new ArrayList<>(),new HashMap<>(),Main.world.getPets(getId()).generateNewtxtStatsForPets(),0);
       //Ajouter du Pets_data SQL et World
       long time=System.currentTimeMillis();
-      World.world.addPetsEntry(new PetEntry(id,getId(),time,0,10,0,false));
+      Main.world.addPetsEntry(new PetEntry(id,getId(),time,0,10,0,false));
       Database.getStatics().getPetData().add(id,time,getId());
     }
     else if(getType()==Constant.ITEM_TYPE_CERTIF_MONTURE)
@@ -491,10 +492,10 @@ public class ObjectTemplate
     else if(getType()==Constant.ITEM_TYPE_FAMILIER)
     {
       id=Database.getStatics().getObjectData().getNextId();
-      item=new GameObject(id,getId(),1,Constant.ITEM_POS_NO_EQUIPED,(useMax ? generateNewStatsFromTemplate(World.world.getPets(this.getId()).getJet(),false) : new Stats(false,null)),new ArrayList<>(),new HashMap<>(),World.world.getPets(getId()).generateNewtxtStatsForPets(),0);
+      item=new GameObject(id,getId(),1,Constant.ITEM_POS_NO_EQUIPED,(useMax ? generateNewStatsFromTemplate(Main.world.getPets(this.getId()).getJet(),false) : new Stats(false,null)),new ArrayList<>(),new HashMap<>(),Main.world.getPets(getId()).generateNewtxtStatsForPets(),0);
       //Ajouter du Pets_data SQL et World
       long time=System.currentTimeMillis();
-      World.world.addPetsEntry(new PetEntry(id,getId(),time,0,10,0,false));
+      Main.world.addPetsEntry(new PetEntry(id,getId(),time,0,10,0,false));
       Database.getStatics().getPetData().add(id,time,getId());
     }
     else if(getType()==Constant.ITEM_TYPE_CERTIF_MONTURE)

@@ -4,8 +4,8 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import scruffemu.area.map.GameMap;
 import scruffemu.database.active.AbstractDAO;
-import scruffemu.game.World;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -101,7 +101,7 @@ public class MapData extends AbstractDAO<GameMap>
       ResultSet RS=result.resultSet;
       while(RS.next())
       {
-        World.world.addMap(new GameMap(RS.getShort("id"),RS.getString("date"),RS.getByte("width"),RS.getByte("heigth"),RS.getString("key"),RS.getString("places"),RS.getString("mapData"),RS.getString("monsters"),RS.getString("mappos"),RS.getByte("numgroup"),RS.getByte("fixSize"),RS.getByte("minSize"),RS.getByte("maxSize"),RS.getString("forbidden"),RS.getByte("sniffed"),RS.getInt("minRespawnTime"),RS.getInt("maxRespawnTime")));
+        Main.world.addMap(new GameMap(RS.getShort("id"),RS.getString("date"),RS.getByte("width"),RS.getByte("heigth"),RS.getString("key"),RS.getString("places"),RS.getString("mapData"),RS.getString("monsters"),RS.getString("mappos"),RS.getByte("numgroup"),RS.getByte("fixSize"),RS.getByte("minSize"),RS.getByte("maxSize"),RS.getString("forbidden"),RS.getByte("sniffed"),RS.getInt("minRespawnTime"),RS.getInt("maxRespawnTime")));
       }
       close(result);
 
@@ -116,20 +116,20 @@ public class MapData extends AbstractDAO<GameMap>
       RS=result.resultSet;
       while(RS.next())
       {
-        GameMap c=World.world.getMap(RS.getShort("map"));
+        GameMap c=Main.world.getMap(RS.getShort("map"));
         if(c==null)
           continue;
         if(c.getCase(RS.getInt("cell"))==null)
           continue;
         c.addStaticGroup(RS.getInt("cell"),RS.getString("group"),false,RS.getInt("stars"));
-        World.world.addGroupFix(RS.getInt("map")+";"+RS.getInt("cell"),RS.getString("group"),timer,RS.getInt("stars"));
+        Main.world.addGroupFix(RS.getInt("map")+";"+RS.getInt("cell"),RS.getString("group"),timer,RS.getInt("stars"));
       }
-      
+
       result=getData("SELECT * from mobgroups_fix_random");
       RS=result.resultSet;
       while(RS.next())
       {
-        GameMap c=World.world.getMap(RS.getShort("mapid"));
+        GameMap c=Main.world.getMap(RS.getShort("mapid"));
         if(c==null)
           continue;
         if(c.getCase(RS.getInt("cellid"))==null)
@@ -137,25 +137,26 @@ public class MapData extends AbstractDAO<GameMap>
         if(RS.getString("bossData")!=null)
         {
           c.addRandomStaticGroup(RS.getInt("cellid"),RS.getString("groupSize")+":"+RS.getString("groupData")+":"+RS.getString("bossData"),false);
-          World.world.addRandomGroupFix(RS.getInt("mapid")+";"+RS.getInt("cellid"),RS.getString("groupSize")+":"+RS.getString("groupData")+":"+RS.getString("bossData"),RS.getInt("Timer"));
-        } else
+          Main.world.addRandomGroupFix(RS.getInt("mapid")+";"+RS.getInt("cellid"),RS.getString("groupSize")+":"+RS.getString("groupData")+":"+RS.getString("bossData"),RS.getInt("Timer"));
+        }
+        else
         {
           c.addRandomStaticGroup(RS.getInt("cellid"),RS.getString("groupSize")+":"+RS.getString("groupData"),false);
-          World.world.addRandomGroupFix(RS.getInt("mapid")+";"+RS.getInt("cellid"),RS.getString("groupSize")+":"+RS.getString("groupData"),RS.getInt("Timer"));
+          Main.world.addRandomGroupFix(RS.getInt("mapid")+";"+RS.getInt("cellid"),RS.getString("groupSize")+":"+RS.getString("groupData"),RS.getInt("Timer"));
         }
       }
-      
+
       result=getData("SELECT  * from mobgroups_fix_exception");
       RS=result.resultSet;
       while(RS.next())
       {
-        GameMap c=World.world.getMap(RS.getShort("mapid"));
+        GameMap c=Main.world.getMap(RS.getShort("mapid"));
         if(c==null)
           continue;
         if(c.getCase(RS.getInt("cellid"))==null)
           continue;
         c.addStaticGroup(RS.getInt("cellid"),RS.getString("groupData"),false);
-        World.world.addGroupFix(RS.getInt("mapid")+";"+RS.getInt("cellid"),RS.getString("groupData"),RS.getInt("Timer"),0);
+        Main.world.addGroupFix(RS.getInt("mapid")+";"+RS.getInt("cellid"),RS.getString("groupData"),RS.getInt("Timer"),0);
       }
 
     }
@@ -177,10 +178,10 @@ public class MapData extends AbstractDAO<GameMap>
       ResultSet RS=result.resultSet;
       while(RS.next())
       {
-        GameMap map=World.world.getMap(RS.getShort("id"));
+        GameMap map=Main.world.getMap(RS.getShort("id"));
         if(map==null)
         {
-          World.world.addMap(new GameMap(RS.getShort("id"),RS.getString("date"),RS.getByte("width"),RS.getByte("heigth"),RS.getString("key"),RS.getString("places"),RS.getString("mapData"),RS.getString("monsters"),RS.getString("mappos"),RS.getByte("numgroup"),RS.getByte("fixSize"),RS.getByte("minSize"),RS.getByte("maxSize"),RS.getString("forbidden"),RS.getByte("sniffed"),RS.getInt("minRespawnTime"),RS.getInt("maxRespawnTime")));
+          Main.world.addMap(new GameMap(RS.getShort("id"),RS.getString("date"),RS.getByte("width"),RS.getByte("heigth"),RS.getString("key"),RS.getString("places"),RS.getString("mapData"),RS.getString("monsters"),RS.getString("mappos"),RS.getByte("numgroup"),RS.getByte("fixSize"),RS.getByte("minSize"),RS.getByte("maxSize"),RS.getString("forbidden"),RS.getByte("sniffed"),RS.getInt("minRespawnTime"),RS.getInt("maxRespawnTime")));
           continue;
         }
         map.setInfos(RS.getString("date"),RS.getString("monsters"),RS.getString("mappos"),RS.getByte("numgroup"),RS.getByte("fixSize"),RS.getByte("minSize"),RS.getByte("maxSize"),RS.getString("forbidden"));

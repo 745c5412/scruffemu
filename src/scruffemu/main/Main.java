@@ -30,12 +30,13 @@ public class Main
   public static Logger logger=(Logger)LoggerFactory.getLogger(Main.class);
   public static final List<Runnable> runnables=Collections.synchronizedList(new LinkedList<Runnable>());
   public static ExchangeClient exchangeClient;
-  public static GameServer gameServer=null;
+  public static GameServer gameServer;
   public static boolean isRunning=false, isSaving=false;
+  public static World world;
 
   public static void main(String[] args) throws SQLException
   {
-    Runtime.getRuntime().addShutdownHook(new Thread() 
+    Runtime.getRuntime().addShutdownHook(new Thread()
     {
       public void run()
       {
@@ -52,8 +53,7 @@ public class Main
         }
         Main.logger.info("The server is now closed.");
       }
-    }
-    );
+    });
 
     try
     {
@@ -80,10 +80,13 @@ public class Main
     if(Database.launchDatabase())
     {
       Main.isRunning=true;
-      World.world.createWorld();
+      world=new World();
+      Main.world.createWorld();
+
       gameServer=new GameServer();
       gameServer.start();
-      new ExchangeClient().initialize();
+      exchangeClient=new ExchangeClient();
+      exchangeClient.initialize();
       Main.refreshTitle();
       gameServer.setState(1);
       Main.logger.info("The server is ready ! Waiting for connection..\n");
@@ -156,16 +159,27 @@ public class Main
   public static void refreshTitle()
   {
     if(Main.isRunning)
-      Main.setTitle(Config.getInstance().name+" - Port : "+Config.getInstance().gamePort+" | "+Config.getInstance().key+" | "+gameServer.getSessions()+" Session(s) | "+gameServer.getClients().size()+" Client(s) | "+World.world.getOnlinePlayers().size()+" Player(s)");
+      Main.setTitle(Config.getInstance().name+" - Port : "+Config.getInstance().gamePort+" | "+Config.getInstance().key+" | "+gameServer.getSessions()+" Session(s) | "+gameServer.getClients().size()+" Client(s) | "+Main.world.getOnlinePlayers().size()+" Player(s)");
   }
 
   public static void clear()
   {
     AnsiConsole.out.print("\033[H\033[2J");
   }
-  
-  public static void exit(String reason)
+
+  public static void restart()
   {
-    Logging.getInstance().write("Error",reason);
+    gameServer.setState(0);
+    gameServer.kickAll();
+    WorldSave.cast(0);
+    runnables.clear();
+    if(Database.launchDatabase())
+    {
+    world=new World();
+    world.createWorld();
+    refreshTitle();
+    }
+    gameServer.setState(1);
+    logger.info("The server is ready ! Waiting for connection..\n");
   }
 }

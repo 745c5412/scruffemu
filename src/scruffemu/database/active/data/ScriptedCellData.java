@@ -5,7 +5,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import scruffemu.area.map.GameCase;
 import scruffemu.area.map.GameMap;
 import scruffemu.database.active.AbstractDAO;
-import scruffemu.game.World;
 import scruffemu.main.Main;
 
 import java.sql.PreparedStatement;
@@ -42,7 +41,7 @@ public class ScriptedCellData extends AbstractDAO<Object>
       {
         short mapId=RS.getShort("MapID");
         int cellId=RS.getInt("CellID");
-        GameMap map=World.world.getMap(mapId);
+        GameMap map=Main.world.getMap(mapId);
         if(map==null)
           continue;
 

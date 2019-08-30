@@ -1,7 +1,7 @@
 package scruffemu.object;
 
 import scruffemu.client.other.Stats;
-import scruffemu.game.World;
+import scruffemu.main.Main;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ public class ObjectSet
     {
       try
       {
-        ObjectTemplate obj=World.world.getObjTemplate(Integer.parseInt(str.trim()));
+        ObjectTemplate obj=Main.world.getObjTemplate(Integer.parseInt(str.trim()));
         if(obj==null)
           continue;
         this.itemTemplates.add(obj);

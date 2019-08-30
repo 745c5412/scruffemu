@@ -4,10 +4,10 @@ import scruffemu.client.Account;
 import scruffemu.client.Player;
 import scruffemu.common.SocketManager;
 import scruffemu.database.Database;
-import scruffemu.game.World;
 import scruffemu.utility.Pair;
 import scruffemu.main.Constant;
 import scruffemu.main.Logging;
+import scruffemu.main.Main;
 import scruffemu.object.ObjectTemplate;
 
 import java.text.DecimalFormat;
@@ -119,7 +119,7 @@ public class Hdv
     {
      Database.getDynamics().getHdvObjectData().add(toAdd);
     }
-    World.world.addHdvItem(toAdd.getOwner(),this.getHdvId(),toAdd);
+    Main.world.addHdvItem(toAdd.getOwner(),this.getHdvId(),toAdd);
   }
 
   public boolean delEntry(HdvEntry toDel)
@@ -128,7 +128,7 @@ public class Hdv
     if(toReturn)
     {
       this.path.remove(toDel.getLineId());
-      World.world.removeHdvItem(toDel.getOwner(),toDel.getHdvId(),toDel);
+      Main.world.removeHdvItem(toDel.getOwner(),toDel.getHdvId(),toDel);
     }
     return toReturn;
   }
@@ -160,7 +160,7 @@ public class Hdv
 
       if(toBuy.getOwner()!=-1)
       {
-        Account C=World.world.getAccount(toBuy.getOwner());
+        Account C=Main.world.getAccount(toBuy.getOwner());
         if(C!=null)
           C.setBankKamas(C.getBankKamas()+toBuy.getPrice());//Ajoute l'argent au vendeur
       }
@@ -173,8 +173,8 @@ public class Hdv
       {
         String name="undefined";
 
-        if(World.world.getAccount(toBuy.getOwner())!=null)
-          name=World.world.getAccount(toBuy.getOwner()).getName();
+        if(Main.world.getAccount(toBuy.getOwner())!=null)
+          name=Main.world.getAccount(toBuy.getOwner()).getName();
 
         Logging.getInstance().write("Object","BuyHdv : "+newOwner.getName()+" : achat de "+toBuy.getGameObject().getTemplate().getName()+" x"+toBuy.getGameObject().getQuantity()+" venant du compte "+name);
       }
@@ -184,8 +184,8 @@ public class Hdv
       }
       delEntry(toBuy);//Retire l'item de l'HDV ainsi que de la liste du vendeur
      Database.getDynamics().getHdvObjectData().delete(toBuy.getGameObject().getGuid());
-      if(World.world.getAccount(toBuy.getOwner())!=null&&World.world.getAccount(toBuy.getOwner()).getCurrentPlayer()!=null)
-        SocketManager.GAME_SEND_Im_PACKET(World.world.getAccount(toBuy.getOwner()).getCurrentPlayer(),"065;"+price+"~"+toBuy.getGameObject().getTemplate().getId()+"~"+toBuy.getGameObject().getTemplate().getId()+"~1");
+      if(Main.world.getAccount(toBuy.getOwner())!=null&&Main.world.getAccount(toBuy.getOwner()).getCurrentPlayer()!=null)
+        SocketManager.GAME_SEND_Im_PACKET(Main.world.getAccount(toBuy.getOwner()).getCurrentPlayer(),"065;"+price+"~"+toBuy.getGameObject().getTemplate().getId()+"~"+toBuy.getGameObject().getTemplate().getId()+"~1");
       //Si le vendeur est connecter, envoie du packet qui lui annonce la vente de son objet
       Database.getStatics().getPlayerData().update(newOwner);
     }
@@ -202,7 +202,7 @@ public class Hdv
   {
     try
     {
-      ObjectTemplate OT=World.world.getObjTemplate(templateID);
+      ObjectTemplate OT=Main.world.getObjTemplate(templateID);
       HdvCategory Hdv=this.getCategorys().get(OT.getType());
       HdvTemplate HdvT=Hdv.getTemplate(templateID);
       if(HdvT==null) // Il a pu �tre achet� avant et supprim� de l'HDV. getTemplate devient null.
@@ -214,7 +214,7 @@ public class Hdv
       e.printStackTrace();
     }
     return "";
-    //return this.getCategorys().getWaitingAccount(World.world.getObjTemplate(templateID).getType()).getTemplate(templateID).parseToEHl();
+    //return this.getCategorys().getWaitingAccount(Main.world.getObjTemplate(templateID).getType()).getTemplate(templateID).parseToEHl();
   }
 
   public String parseTemplate(int categID)

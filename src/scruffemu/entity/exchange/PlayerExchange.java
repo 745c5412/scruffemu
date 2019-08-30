@@ -7,6 +7,7 @@ import scruffemu.game.World;
 import scruffemu.utility.Pair;
 import scruffemu.main.Constant;
 import scruffemu.main.Logging;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.object.ObjectTemplate;
 
@@ -218,7 +219,7 @@ public class PlayerExchange extends Exchange
         couple.right=obj.getQuantity();
         SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(this.player1,couple.getLeft());
         if(!this.player2.addObjet(obj,true))//Si le joueur avait un item similaire
-          World.world.removeGameObject(couple.getLeft());//On supprime l'item inutile
+          Main.world.removeGameObject(couple.getLeft());//On supprime l'item inutile
       }
       else
       {
@@ -267,7 +268,7 @@ public class PlayerExchange extends Exchange
       couple.right=object.getQuantity();
       SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(this.player2,couple.getLeft());
       if(!this.player1.addObjet(object,true))
-        World.world.removeGameObject(couple.getLeft());
+        Main.world.removeGameObject(couple.getLeft());
     }
     else
     {

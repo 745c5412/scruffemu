@@ -7,13 +7,14 @@ import scruffemu.fight.Fight;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.HashMap;
 
 public class AstarPathfinding
 {
-  private java.util.Map<Integer, Node> openList=new HashMap<Integer, Node>();
-  private java.util.Map<Integer, Node> closeList=new LinkedHashMap<Integer, Node>();
+  private Map<Integer, Node> openList=new HashMap<Integer, Node>();
+  private Map<Integer, Node> closeList=new LinkedHashMap<Integer, Node>();
   private GameMap map;
   private Fight fight;
   private int cellStart;

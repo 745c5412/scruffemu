@@ -15,7 +15,6 @@ import scruffemu.entity.mount.Mount;
 import scruffemu.fight.Fight;
 import scruffemu.fight.Fighter;
 import scruffemu.game.GameClient;
-import scruffemu.game.World;
 import scruffemu.guild.Guild;
 import scruffemu.guild.GuildMember;
 import scruffemu.job.JobStat;
@@ -38,7 +37,7 @@ public class SocketManager
 
   public static void send(Player player, String packet)
   {
-    if(player!=null&&player.getAccount()!=null)
+    if(player!=null&&player.getAccount()!=null&&player.getGameClient()!=null)
     {
       SocketManager.send(player.getGameClient(),packet);
     }
@@ -205,7 +204,7 @@ public class SocketManager
 
   public static void GAME_SEND_ZONE_ALLIGN_STATUT(GameClient out)
   {
-    String packet="al|"+World.world.getSousZoneStateString();
+    String packet="al|"+Main.world.getSousZoneStateString();
     send(out,packet);
   }
 
@@ -675,7 +674,7 @@ public class SocketManager
   public static void GAME_SEND_Im_PACKET_TO_ALL(String str)
   {
     String packet="Im"+str;
-    for(Player perso : World.world.getOnlinePlayers())
+    for(Player perso : Main.world.getOnlinePlayers())
       send(perso,packet);
 
   }
@@ -1232,14 +1231,14 @@ public class SocketManager
       GAME_SEND_BN(perso);
       return;
     }
-    for(Player perso1 : World.world.getOnlinePlayers())
+    for(Player perso1 : Main.world.getOnlinePlayers())
       send(perso1,packet);
   }
 
   public static void GAME_SEND_cMK_PACKET_TO_ALIGN(String suffix, int guid, String name, String msg, Player _perso)
   {
     String packet="cMK"+suffix+"|"+guid+"|"+name+"|"+msg;
-    for(Player perso : World.world.getOnlinePlayers())
+    for(Player perso : Main.world.getOnlinePlayers())
     {
       if(perso.get_align()==_perso.get_align())
       {
@@ -1251,7 +1250,7 @@ public class SocketManager
   public static void GAME_SEND_cMK_PACKET_TO_ADMIN(String suffix, int guid, String name, String msg)
   {
     String packet="cMK"+suffix+"|"+guid+"|"+name+"|"+msg;
-    for(Player perso : World.world.getOnlinePlayers())
+    for(Player perso : Main.world.getOnlinePlayers())
       if(perso.isOnline())
         if(perso.getAccount()!=null)
           if(perso.getGroupe()!=null)
@@ -1366,7 +1365,6 @@ public class SocketManager
   {
     String packet="EV";
     send(out,packet);
-
   }
 
   public static void GAME_SEND_DCK_PACKET(GameClient out, int id)
@@ -1506,7 +1504,7 @@ public class SocketManager
   public static void GAME_SEND_MESSAGE_TO_ALL(String msg, String color)
   {
     String packet="cs<font color='#"+color+"'>"+msg+"</font>";
-    for(Player P : World.world.getOnlinePlayers())
+    for(Player P : Main.world.getOnlinePlayers())
       send(P,packet);
   }
 
@@ -1571,7 +1569,6 @@ public class SocketManager
   {
     String packet="EK"+(ok ? "1" : "0")+guid;
     send(out,packet);
-
   }
 
   public static void GAME_SEND_EXCHANGE_OK(GameClient out, boolean ok)
@@ -1584,7 +1581,12 @@ public class SocketManager
   {
     String packet="EV"+c;
     send(out,packet);
-
+  }
+  
+  public static void GAME_SEND_STAKE_VALID(GameClient out, char c)
+  {
+    String packet="EV"+c;
+    send(out,packet);
   }
 
   public static void GAME_SEND_GROUP_INVITATION_ERROR(GameClient out, String s)
@@ -1939,7 +1941,7 @@ public class SocketManager
     else
     {
       packet.append("+").append(pano).append("|");
-      ObjectSet IS=World.world.getItemSet(pano);
+      ObjectSet IS=Main.world.getItemSet(pano);
       if(IS!=null)
       {
         StringBuilder items=new StringBuilder();
@@ -2125,15 +2127,15 @@ public class SocketManager
 
   public static void GAME_SEND_gIG_PACKET(Player p, Guild g)
   {
-    long xpMin=World.world.getExpLevel(g.getLvl()).guilde;
+    long xpMin=Main.world.getExpLevel(g.getLvl()).guilde;
     long xpMax;
-    if(World.world.getExpLevel(g.getLvl()+1)==null)
+    if(Main.world.getExpLevel(g.getLvl()+1)==null)
     {
       xpMax=-1;
     }
     else
     {
-      xpMax=World.world.getExpLevel(g.getLvl()+1).guilde;
+      xpMax=Main.world.getExpLevel(g.getLvl()+1).guilde;
     }
     send(p,"gIG"+(g.haveTenMembers() ? 1 : 0)+"|"+g.getLvl()+"|"+xpMin+"|"+g.getXp()+"|"+xpMax);
 
@@ -2387,7 +2389,7 @@ public class SocketManager
   public static void GAME_SEND_EHP_PACKET(Player out, int templateID) //Packet d'envoie du prix moyen du template (En r�ponse a un packet EHP)
   {
 
-    String packet="EHP"+templateID+"|"+World.world.getObjTemplate(templateID).getAvgPrice();
+    String packet="EHP"+templateID+"|"+Main.world.getObjTemplate(templateID).getAvgPrice();
 
     send(out,packet);
 
@@ -2447,7 +2449,7 @@ public class SocketManager
   public static void GAME_SEND_WEDDING(GameMap c, int action, int homme, int femme, int parlant)
   {
     String packet="GA;"+action+";"+homme+";"+homme+","+femme+","+parlant;
-    Player Homme=World.world.getPlayer(homme);
+    Player Homme=Main.world.getPlayer(homme);
     send(Homme,packet);
 
   }
@@ -2463,13 +2465,13 @@ public class SocketManager
   {
     StringBuilder packet=new StringBuilder();
     packet.append("GM|");
-    if(World.world.getSeller(P.getCurMap().getId())==null)
+    if(Main.world.getSeller(P.getCurMap().getId())==null)
       return;
-    for(Integer pID : World.world.getSeller(P.getCurMap().getId()))
+    for(Integer pID : Main.world.getSeller(P.getCurMap().getId()))
     {
-      if(!World.world.getPlayer(pID).isOnline()&&World.world.getPlayer(pID).isShowSeller())
+      if(!Main.world.getPlayer(pID).isOnline()&&Main.world.getPlayer(pID).isShowSeller())
       {
-        packet.append("~").append(World.world.getPlayer(pID).parseToMerchant()).append("|");
+        packet.append("~").append(Main.world.getPlayer(pID).parseToMerchant()).append("|");
       }
     }
     if(packet.length()<5)
@@ -2520,7 +2522,7 @@ public class SocketManager
       GAME_SEND_BN(perso);
       return;
     }*/
-    for(Player player : World.world.getOnlinePlayers())
+    for(Player player : Main.world.getOnlinePlayers())
       
       //if(player.getCurMap()!=null&&player.getCurMap().getSubArea()!=null&&player.getCurMap().getSubArea().getArea()!=null&&player.getCurMap().getSubArea().getArea().getId()==45)
     send(player,packet);
@@ -2666,7 +2668,7 @@ public class SocketManager
   public static void SEND_MESSAGE_DECO_ALL(int MSG_ID, String args)
   {
     String packet="M0"+MSG_ID+"|"+args;
-    for(Player perso : World.world.getOnlinePlayers())
+    for(Player perso : Main.world.getOnlinePlayers())
       send(perso,packet);
   }
 
@@ -2679,13 +2681,13 @@ public class SocketManager
   public static void SEND_Im1223_ALL(String str)
   {
     String packet="Im1223;"+str;
-    for(Player perso : World.world.getOnlinePlayers())
+    for(Player perso : Main.world.getOnlinePlayers())
       send(perso,packet);
   }
 
   public static void GAME_SEND_PERCO_INFOS_PACKET(Player perso, Collector perco, String car)
   {
-    send(perso,"gA"+car+perco.getN1()+","+perco.getN2()+"|"+"-1"+"|"+World.world.getMap(perco.getMap()).getX()+"|"+World.world.getMap(perco.getMap()).getY());
+    send(perso,"gA"+car+perco.getN1()+","+perco.getN2()+"|"+"-1"+"|"+Main.world.getMap(perco.getMap()).getX()+"|"+Main.world.getMap(perco.getMap()).getY());
   }
 
   public static void SEND_Wp_MENU_Prisme(Player perso)
@@ -2898,5 +2900,14 @@ public class SocketManager
   {
     String packet="Bp";
     send(out,packet);
+  }
+  
+  public static void ENVIAR_GA_MOVER_SPRITE_MAPA(final GameMap mapa, final int idUnica, final int idAccionModelo, final String s1, final String s2)
+  {
+    String packet="GA"+(idUnica<=-1 ? "" : idUnica)+";"+idAccionModelo+";"+s1;
+    if(!s2.isEmpty())
+      packet+=";"+s2;
+    for(final Player p : mapa.getPlayers())
+      send(p,packet);
   }
 }

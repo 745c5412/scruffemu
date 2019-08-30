@@ -7,7 +7,6 @@ import scruffemu.database.Database;
 import scruffemu.entity.Prism;
 import scruffemu.entity.monster.MobGroup;
 import scruffemu.game.Updatable;
-import scruffemu.game.World;
 import scruffemu.main.Config;
 import scruffemu.main.Main;
 import scruffemu.object.GameObject;
@@ -47,55 +46,55 @@ public class WorldSave extends Updatable
 
     try
     {
-      World.world.logger.debug("Starting the save of the world..");
+      Main.world.logger.debug("Starting the save of the world..");
       SocketManager.GAME_SEND_Im_PACKET_TO_ALL("1164;");
       Main.isSaving=true;
 
       /** Save of data **/
-      World.world.logger.info("-> of accounts.");
-      World.world.getAccounts().stream().filter(account -> account!=null).forEach(account -> Database.getStatics().getAccountData().update(account));
+      Main.world.logger.info("-> of accounts.");
+      Main.world.getAccounts().stream().filter(account -> account!=null).forEach(account -> Database.getStatics().getAccountData().update(account));
 
-      World.world.logger.info("-> of players.");
-      World.world.logger.info("-> of members of guilds.");
-      World.world.getPlayers().stream().filter(player -> player!=null).filter(Player::isOnline).forEach(player -> {
+      Main.world.logger.info("-> of players.");
+      Main.world.logger.info("-> of members of guilds.");
+      Main.world.getPlayers().stream().filter(player -> player!=null).filter(Player::isOnline).forEach(player -> {
         Database.getStatics().getPlayerData().update(player);
         if(player.getGuildMember()!=null)
           Database.getDynamics().getGuildMemberData().update(player);
       });
 
-      World.world.logger.info("-> of prisms.");
-      for(Prism prism : World.world.getPrisms().values())
-        if(World.world.getMap(prism.getMap()).getSubArea().getPrismId()!=prism.getId())
+      Main.world.logger.info("-> of prisms.");
+      for(Prism prism : Main.world.getPrisms().values())
+        if(Main.world.getMap(prism.getMap()).getSubArea().getPrismId()!=prism.getId())
           Database.getDynamics().getPrismData().delete(prism.getId());
         else
           Database.getDynamics().getPrismData().update(prism);
 
-      World.world.logger.info("-> of guilds.");
-      World.world.getGuilds().values().stream().forEach(guild -> Database.getStatics().getGuildData().update(guild));
+      Main.world.logger.info("-> of guilds.");
+      Main.world.getGuilds().values().stream().forEach(guild -> Database.getStatics().getGuildData().update(guild));
 
-      World.world.logger.info("-> of collectors.");
-      World.world.getCollectors().values().stream().filter(collector -> collector.getInFight()<=0).forEach(collector -> Database.getDynamics().getCollectorData().update(collector));
+      Main.world.logger.info("-> of collectors.");
+      Main.world.getCollectors().values().stream().filter(collector -> collector.getInFight()<=0).forEach(collector -> Database.getDynamics().getCollectorData().update(collector));
 
-      World.world.logger.info("-> of houses.");
-      World.world.getHouses().values().stream().filter(house -> house.getOwnerId()>0).forEach(house -> Database.getDynamics().getHouseData().update(house));
+      Main.world.logger.info("-> of houses.");
+      Main.world.getHouses().values().stream().filter(house -> house.getOwnerId()>0).forEach(house -> Database.getDynamics().getHouseData().update(house));
 
-      World.world.logger.info("-> of trunks.");
-      World.world.getTrunks().values().stream().forEach(trunk -> Database.getDynamics().getTrunkData().update(trunk));
+      Main.world.logger.info("-> of trunks.");
+      Main.world.getTrunks().values().stream().forEach(trunk -> Database.getDynamics().getTrunkData().update(trunk));
 
-      World.world.logger.info("-> of parks.");
-      World.world.getMountparks().values().stream().filter(mp -> mp.getOwner()>0||mp.getOwner()==-1).forEach(mp -> Database.getDynamics().getMountParkData().update(mp));
+      Main.world.logger.info("-> of parks.");
+      Main.world.getMountparks().values().stream().filter(mp -> mp.getOwner()>0||mp.getOwner()==-1).forEach(mp -> Database.getDynamics().getMountParkData().update(mp));
 
-      World.world.logger.info("-> of mounts.");
-      World.world.getMounts().values().stream().forEach(mount -> Database.getStatics().getMountData().update(mount));
+      Main.world.logger.info("-> of mounts.");
+      Main.world.getMounts().values().stream().forEach(mount -> Database.getStatics().getMountData().update(mount));
 
-      World.world.logger.info("-> of areas.");
-      World.world.getAreas().values().stream().forEach(area -> Database.getDynamics().getAreaData().update(area));
-      World.world.getSubAreas().values().stream().forEach(subArea -> Database.getDynamics().getSubAreaData().update(subArea));
+      Main.world.logger.info("-> of areas.");
+      Main.world.getAreas().values().stream().forEach(area -> Database.getDynamics().getAreaData().update(area));
+      Main.world.getSubAreas().values().stream().forEach(subArea -> Database.getDynamics().getSubAreaData().update(subArea));
 
-      World.world.logger.info("-> of objects.");
+      Main.world.logger.info("-> of objects.");
       try
       {
-        for(GameObject object : new ArrayList<>(World.world.getGameObjects()))
+        for(GameObject object : new ArrayList<>(Main.world.getGameObjects()))
         {
           if(object==null)
             continue;
@@ -111,12 +110,12 @@ public class WorldSave extends Updatable
         e.printStackTrace();
       }
 
-      World.world.logger.info("-> of group-monsters.");
+      Main.world.logger.info("-> of group-monsters.");
 
       List<Pair<Short, MobGroup>> groups=new ArrayList<Pair<Short, MobGroup>>();
       List<Pair<Short, MobGroup>> groupsFix=new ArrayList<Pair<Short, MobGroup>>();
 
-      for(GameMap map : World.world.getMaps())
+      for(GameMap map : Main.world.getMaps())
       {
         for(MobGroup group : map.getMobGroups().values())
         {
@@ -136,16 +135,16 @@ public class WorldSave extends Updatable
         e.printStackTrace();
       }
 
-      World.world.logger.debug("The save has been done successfully !");
+      Main.world.logger.debug("The save has been done successfully !");
       SocketManager.GAME_SEND_Im_PACKET_TO_ALL("1165;");
     }
     catch(Exception exception)
     {
       exception.printStackTrace();
-      World.world.logger.error("Error when trying save of the world : "+exception.getMessage());
+      Main.world.logger.error("Error when trying save of the world : "+exception.getMessage());
       if(trys<10)
       {
-        World.world.logger.error("Fail of the save, num of try : "+(trys+1)+".");
+        Main.world.logger.error("Fail of the save, num of try : "+(trys+1)+".");
         WorldSave.cast(trys+1);
         return;
       }

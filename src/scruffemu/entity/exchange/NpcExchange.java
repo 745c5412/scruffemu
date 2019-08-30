@@ -8,6 +8,7 @@ import scruffemu.database.Database;
 import scruffemu.entity.npc.NpcTemplate;
 import scruffemu.game.World;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.utility.Pair;
 
@@ -96,7 +97,7 @@ public class NpcExchange
       if((obj.getQuantity()-Pair.getRight())<1)
       {
         this.player.removeItem(Pair.getLeft());
-        World.world.removeGameObject(World.getGameObject(Pair.getLeft()).getGuid());
+        Main.world.removeGameObject(World.getGameObject(Pair.getLeft()).getGuid());
         Pair.right=obj.getQuantity();
         SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(this.player,Pair.getLeft());
       }
@@ -111,9 +112,9 @@ public class NpcExchange
     {
       if(Pair1.getRight()==0)
         continue;
-      if(World.world.getObjTemplate(Pair1.getLeft())==null)
+      if(Main.world.getObjTemplate(Pair1.getLeft())==null)
         continue;
-      GameObject obj1=World.world.getObjTemplate(Pair1.getLeft()).createNewItem(Pair1.getRight(),false);
+      GameObject obj1=Main.world.getObjTemplate(Pair1.getLeft()).createNewItem(Pair1.getRight(),false);
       if(this.player.addObjet(obj1,true))
         World.addGameObject(obj1,true);
       SocketManager.GAME_SEND_Im_PACKET(this.player,"021;"+Pair1.getRight()+"~"+Pair1.getLeft());
@@ -234,7 +235,7 @@ public class NpcExchange
           SocketManager.GAME_SEND_EXCHANGE_OTHER_MOVE_OK(this.player.getGameClient(),'G',"",String.valueOf(this.kamas2));
           continue;
         }
-        String str=object.getLeft()+"|"+object.getRight()+"|"+object.getLeft()+"|"+World.world.getObjTemplate(object.getLeft()).getStrTemplate();
+        String str=object.getLeft()+"|"+object.getRight()+"|"+object.getLeft()+"|"+Main.world.getObjTemplate(object.getLeft()).getStrTemplate();
         this.items2.add(new Pair<Integer, Integer>(object.getLeft(),object.getRight()));
         SocketManager.GAME_SEND_EXCHANGE_OTHER_MOVE_OK(this.player.getGameClient(),'O',"+",str);
       }

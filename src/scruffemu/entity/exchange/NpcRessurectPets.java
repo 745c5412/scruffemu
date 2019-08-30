@@ -8,6 +8,7 @@ import scruffemu.database.Database;
 import scruffemu.entity.npc.NpcTemplate;
 import scruffemu.entity.pet.PetEntry;
 import scruffemu.game.World;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.utility.Pair;
 
@@ -98,7 +99,7 @@ public class NpcRessurectPets
       }
       else
       {
-        PetEntry pet=World.world.getPetsEntry(item.getLeft());
+        PetEntry pet=Main.world.getPetsEntry(item.getLeft());
         if(pet!=null)
         {
           pet.resurrection();
@@ -146,7 +147,7 @@ public class NpcRessurectPets
             continue;
           if(objet.getTemplate().getType()==90)
           {
-            id=World.world.getPetsEntry(i.getLeft()).getTemplate();
+            id=Main.world.getPetsEntry(i.getLeft()).getTemplate();
             break;
           }
         }
@@ -210,7 +211,7 @@ public class NpcRessurectPets
             continue;
           if(objet.getTemplate().getType()==90)
           {
-            id=World.world.getPetsEntry(i.getLeft()).getTemplate();
+            id=Main.world.getPetsEntry(i.getLeft()).getTemplate();
             break;
           }
         }

@@ -36,6 +36,7 @@ import scruffemu.game.scheduler.entity.RespawnGroup;
 import scruffemu.guild.Guild;
 import scruffemu.main.Config;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.object.ObjectTemplate;
 import scruffemu.object.entity.SoulStone;
@@ -60,7 +61,7 @@ public class Fight
   private int curFighterUsedPa, curFighterUsedPm;
   private final Map<Integer, Fighter> team0=new HashMap<>();
   private final Map<Integer, Fighter> team1=new HashMap<>();
-  private final Map<Integer, Fighter> deadList=new HashMap<>();
+  private final ArrayList<Pair<Integer, Fighter>> deadList=new ArrayList<Pair<Integer, Fighter>>();
   private final Map<Integer, Player> viewer=new HashMap<>();
   private ArrayList<GameCase> start0=new ArrayList<>();
   private ArrayList<GameCase> start1=new ArrayList<>();
@@ -125,8 +126,8 @@ public class Fight
       SocketManager.GAME_SEND_ALTER_GM_PACKET(perso.getCurMap(),perso);
     }
 
-    this.start0=World.world.getCryptManager().parseStartCell(getMap(),0);
-    this.start1=World.world.getCryptManager().parseStartCell(getMap(),1);
+    this.start0=Main.world.getCryptManager().parseStartCell(getMap(),0);
+    this.start1=Main.world.getCryptManager().parseStartCell(getMap(),1);
     SocketManager.GAME_SEND_FIGHT_PLACES_PACKET_TO_FIGHT(this,1,getMap().getPlaces(),0);
     SocketManager.GAME_SEND_FIGHT_PLACES_PACKET_TO_FIGHT(this,2,getMap().getPlaces(),1);
     setSt1(0);
@@ -189,6 +190,8 @@ public class Fight
         Minotoror.demi();
       else if(entry.getValue().getTemplate().getId()==831) // Mominotoror
         Minotoror.momi();
+      else if(entry.getValue().getTemplate().getId()==599) //Zilla
+        map.zillaTimer();
     }
 
     SocketManager.GAME_SEND_FIGHT_GJK_PACKET_TO_FIGHT(this,1,2,0,1,0,45000,getType());
@@ -197,8 +200,8 @@ public class Fight
 
     scheduleTimer(45);
 
-    this.start0=World.world.getCryptManager().parseStartCell(getMap(),0);
-    this.start1=World.world.getCryptManager().parseStartCell(getMap(),1);
+    this.start0=Main.world.getCryptManager().parseStartCell(getMap(),0);
+    this.start1=Main.world.getCryptManager().parseStartCell(getMap(),1);
     SocketManager.GAME_SEND_FIGHT_PLACES_PACKET_TO_FIGHT(this,1,getMap().getPlaces(),0);
     setSt1(0);
     setSt2(1);
@@ -266,6 +269,8 @@ public class Fight
         Minotoror.demi();
       else if(entry.getValue().getTemplate().getId()==831) // Mominotoror
         Minotoror.momi();
+      else if(entry.getValue().getTemplate().getId()==599) //Zilla
+        map.zillaTimer();
     }
 
     if(perso.getCurPdv()>=perso.getMaxPdv())
@@ -280,8 +285,8 @@ public class Fight
 
     scheduleTimer(45);
 
-    this.start0=World.world.getCryptManager().parseStartCell(getMap(),0);
-    this.start1=World.world.getCryptManager().parseStartCell(getMap(),1);
+    this.start0=Main.world.getCryptManager().parseStartCell(getMap(),0);
+    this.start1=Main.world.getCryptManager().parseStartCell(getMap(),1);
     SocketManager.GAME_SEND_FIGHT_PLACES_PACKET_TO_FIGHT(this,1,getMap().getPlaces(),0);
     setSt1(0);
     setSt2(1);
@@ -355,16 +360,16 @@ public class Fight
     Random teams=new Random();
     if(teams.nextBoolean())
     {
-      this.start0=World.world.getCryptManager().parseStartCell(getMap(),0);
-      this.start1=World.world.getCryptManager().parseStartCell(getMap(),1);
+      this.start0=Main.world.getCryptManager().parseStartCell(getMap(),0);
+      this.start1=Main.world.getCryptManager().parseStartCell(getMap(),1);
       SocketManager.GAME_SEND_FIGHT_PLACES_PACKET_TO_FIGHT(this,1,getMap().getPlaces(),0);
       setSt1(0);
       setSt2(1);
     }
     else
     {
-      this.start0=World.world.getCryptManager().parseStartCell(getMap(),1);
-      this.start1=World.world.getCryptManager().parseStartCell(getMap(),0);
+      this.start0=Main.world.getCryptManager().parseStartCell(getMap(),1);
+      this.start1=Main.world.getCryptManager().parseStartCell(getMap(),0);
       setSt1(1);
       setSt2(0);
       SocketManager.GAME_SEND_FIGHT_PLACES_PACKET_TO_FIGHT(this,1,getMap().getPlaces(),1);
@@ -419,9 +424,9 @@ public class Fight
 
     String str="";
     if(getCollector()!=null)
-      str="A"+getCollector().getN1()+","+getCollector().getN2()+"|.|"+World.world.getMap(getCollector().getMap()).getX()+"|"+World.world.getMap(getCollector().getMap()).getY();
+      str="A"+getCollector().getN1()+","+getCollector().getN2()+"|.|"+Main.world.getMap(getCollector().getMap()).getX()+"|"+Main.world.getMap(getCollector().getMap()).getY();
 
-    for(Player z : World.world.getGuild(getGuildId()).getMembers())
+    for(Player z : Main.world.getGuild(getGuildId()).getMembers())
     {
       if(z==null)
         continue;
@@ -461,16 +466,16 @@ public class Fight
     Random teams=new Random();
     if(teams.nextBoolean())
     {
-      this.start0=World.world.getCryptManager().parseStartCell(getMap(),0);
-      this.start1=World.world.getCryptManager().parseStartCell(getMap(),1);
+      this.start0=Main.world.getCryptManager().parseStartCell(getMap(),0);
+      this.start1=Main.world.getCryptManager().parseStartCell(getMap(),1);
       SocketManager.GAME_SEND_FIGHT_PLACES_PACKET_TO_FIGHT(this,1,getMap().getPlaces(),0);
       setSt1(0);
       setSt2(1);
     }
     else
     {
-      this.start0=World.world.getCryptManager().parseStartCell(getMap(),1);
-      this.start1=World.world.getCryptManager().parseStartCell(getMap(),0);
+      this.start0=Main.world.getCryptManager().parseStartCell(getMap(),1);
+      this.start1=Main.world.getCryptManager().parseStartCell(getMap(),0);
       setSt1(1);
       setSt2(0);
       SocketManager.GAME_SEND_FIGHT_PLACES_PACKET_TO_FIGHT(this,1,getMap().getPlaces(),1);
@@ -517,7 +522,7 @@ public class Fight
     String str="";
     if(getPrism()!=null)
       str=Prisme.getMap()+"|"+Prisme.getX()+"|"+Prisme.getY();
-    for(Player z : World.world.getOnlinePlayers())
+    for(Player z : Main.world.getOnlinePlayers())
     {
       if(z==null)
         continue;
@@ -562,6 +567,12 @@ public class Fight
         SocketManager.GAME_SEND_ADD_IN_TEAM_PACKET_TO_PLAYER(player,fight.init0.getPersonnage().getCurMap(),fight.init0.getId(),fight.init0);
         for(Entry<Integer, Fighter> F : fight.team1.entrySet())
           SocketManager.GAME_SEND_ADD_IN_TEAM_PACKET_TO_PLAYER(player,fight.map,fight.getPrism().getId(),F.getValue());
+      }
+      else if(fight.type==Constant.FIGHT_TYPE_STAKE)
+      {
+        SocketManager.GAME_SEND_GAME_ADDFLAG_PACKET_TO_PLAYER(player,fight.init0.getPersonnage().getCurMap(),0,fight.init0.getId(),fight.init1.getId(),fight.init0.getPersonnage().getCurCell().getId(),"0;-1",fight.init1.getPersonnage().getCurCell().getId(),"0;-1");
+        SocketManager.GAME_SEND_ADD_IN_TEAM_PACKET_TO_PLAYER(player,fight.init0.getPersonnage().getCurMap(),fight.init0.getId(),fight.init0);
+        SocketManager.GAME_SEND_ADD_IN_TEAM_PACKET_TO_PLAYER(player,fight.init1.getPersonnage().getCurMap(),fight.init1.getId(),fight.init1);
       }
     });
   }
@@ -721,14 +732,14 @@ public class Fight
     return team1;
   }
 
-  public Map<Integer, Fighter> getDeadList()
+  public ArrayList<Pair<Integer, Fighter>> getDeadList()
   {
     return deadList;
   }
 
   public boolean removeDead(Fighter target)
   {
-    return deadList.remove(target.getId(),target);
+    return deadList.remove(new Pair<Integer, Fighter>(target.getId(),target));
   }
 
   Map<Integer, Player> getViewer()
@@ -908,6 +919,7 @@ public class Fight
 
   void setMobGroup(MobGroup mobGroup)
   {
+    mobGroup.setFight(this);
     this.mobGroup=mobGroup;
   }
 
@@ -1086,7 +1098,7 @@ public class Fight
     if(getType()==Constant.FIGHT_TYPE_CONQUETE)
     {
       getPrism().setInFight(-2);
-      for(Player z : World.world.getOnlinePlayers())
+      for(Player z : Main.world.getOnlinePlayers())
       {
         if(z==null)
           continue;
@@ -1233,13 +1245,13 @@ public class Fight
       EvenEnnemies=(getTeam1().size()%2==0);
       MoreEnnemies=(getTeam1().size()>=getTeam0().size());
 
-      String challenges=World.world.getChallengeFromConditions(severalEnnemies,severalAllies,bothSexes,EvenEnnemies,MoreEnnemies,hasCawotte,hasChafer,hasRoulette,hasArakne,hasBoss,ecartLvlPlayer,hasArround,hasDisciple,(this.getTeam0().size()!=1));
+      String challenges=Main.world.getChallengeFromConditions(severalEnnemies,severalAllies,bothSexes,EvenEnnemies,MoreEnnemies,hasCawotte,hasChafer,hasRoulette,hasArakne,hasBoss,ecartLvlPlayer,hasArround,hasDisciple,(this.getTeam0().size()!=1));
       String[] chalInfo;
 
       int challengeID,challengeXP,challengeDP,bonusGroupe;
       int challengeNumber=((this.getMapOld().hasEndFightAction(this.getType())||SoulStone.isInArenaMap(this.getMapOld().getId())) ? 2 : 1);
 
-      for(String chalInfos : World.world.getRandomChallenge(challengeNumber,challenges))
+      for(String chalInfos : Main.world.getRandomChallenge(challengeNumber,challenges))
       {
         chalInfo=chalInfos.split(",");
         challengeID=Integer.parseInt(chalInfo[0]);
@@ -1290,6 +1302,7 @@ public class Fight
     {
       switch(getType())
       {
+        case Constant.FIGHT_TYPE_STAKE:
         case Constant.FIGHT_TYPE_CHALLENGE:
         case Constant.FIGHT_TYPE_AGRESSION:
         case Constant.FIGHT_TYPE_PVM:
@@ -1407,7 +1420,7 @@ public class Fight
                         GameObject obj=caster.getPersonnage().getObjetByPos(Constant.ITEM_POS_FAMILIER);
                         if(obj!=null)
                         {
-                          PetEntry pets=World.world.getPetsEntry(obj.getGuid());
+                          PetEntry pets=Main.world.getPetsEntry(obj.getGuid());
                           if(pets!=null)
                             pets.looseFight(caster.getPersonnage());
                         }
@@ -1503,14 +1516,14 @@ public class Fight
                 }
 
                 this.setState(4);// Nous assure de ne pas d�marrer le combat
-                World.world.getMap(this.getMap().getId()).removeFight(this.getId());
-                SocketManager.GAME_SEND_MAP_FIGHT_COUNT_TO_MAP(World.world.getMap(this.getMap().getId()));
+                Main.world.getMap(this.getMap().getId()).removeFight(this.getId());
+                SocketManager.GAME_SEND_MAP_FIGHT_COUNT_TO_MAP(Main.world.getMap(this.getMap().getId()));
                 SocketManager.GAME_SEND_GAME_REMFLAG_PACKET_TO_MAP(this.getMapOld(),this.getInit0().getId());
 
                 if(getType()==Constant.FIGHT_TYPE_PVT)
                 {
                   // FIXME
-                  World.world.getGuild(getGuildId()).getMembers().stream().filter(player -> player!=null&&player.isOnline()).forEach(player -> {
+                  Main.world.getGuild(getGuildId()).getMembers().stream().filter(player -> player!=null&&player.isOnline()).forEach(player -> {
                     SocketManager.GAME_SEND_gITM_PACKET(player,Collector.parseToGuild(player.get_guild().getId()));
                     SocketManager.GAME_SEND_MESSAGE(player,"Your perceptor has won the fight.");
                   });
@@ -1518,7 +1531,7 @@ public class Fight
                   this.getCollector().setInFight((byte)0);
                   this.getCollector().set_inFightID((byte)-1);
 
-                  World.world.getMap(this.getCollector().getMap()).getPlayers().stream().filter(player -> player!=null).forEach(player -> SocketManager.GAME_SEND_MAP_PERCO_GMS_PACKETS(player.getGameClient(),player.getCurMap()));
+                  Main.world.getMap(this.getCollector().getMap()).getPlayers().stream().filter(player -> player!=null).forEach(player -> SocketManager.GAME_SEND_MAP_PERCO_GMS_PACKETS(player.getGameClient(),player.getCurMap()));
                 }
                 setMap(null);
                 this.orderPlaying=null;
@@ -1554,7 +1567,7 @@ public class Fight
                     GameObject obj=caster.getPersonnage().getObjetByPos(Constant.ITEM_POS_FAMILIER);
                     if(obj!=null)
                     {
-                      PetEntry pets=World.world.getPetsEntry(obj.getGuid());
+                      PetEntry pets=Main.world.getPetsEntry(obj.getGuid());
                       if(pets!=null)
                         pets.looseFight(caster.getPersonnage());
                     }
@@ -2026,6 +2039,12 @@ public class Fight
     if(perso.getFight()!=null)
       return;
 
+    if(getType()==Constant.FIGHT_TYPE_STAKE)
+    {
+      SocketManager.GAME_SEND_MESSAGE(perso,"You can not join this fight as it is forbidden to join a staking fight.");
+      return;
+    }
+
     if(getTeam0().containsKey(guid))
     {
       GameCase cell=getRandomCell(getStart0());
@@ -2219,13 +2238,13 @@ public class Fight
 
     if(getCollector()!=null)
     {
-      World.world.getGuild(getGuildId()).getMembers().stream().filter(Player::isOnline).forEach(z -> {
+      Main.world.getGuild(getGuildId()).getMembers().stream().filter(Player::isOnline).forEach(z -> {
         Collector.parseAttaque(z,getGuildId());
         Collector.parseDefense(z,getGuildId());
       });
     }
     if(getPrism()!=null)
-      World.world.getOnlinePlayers().stream().filter(z -> z!=null).filter(z -> z.get_align()==getPrism().getAlignement()).forEach(z -> Prism.parseAttack(perso));
+      Main.world.getOnlinePlayers().stream().filter(z -> z!=null).filter(z -> z.get_align()==getPrism().getAlignement()).forEach(z -> Prism.parseAttack(perso));
   }
 
   void joinCollectorFight(final Player player, final int collector)
@@ -2581,7 +2600,7 @@ public class Fight
     }
     if(perso.getObjetByPos(Constant.ITEM_POS_ARME)==null)
     {
-      tryCastSpell(caster,World.world.getSort(0).getStatsByLevel(1),cellID);
+      tryCastSpell(caster,Main.world.getSort(0).getStatsByLevel(1),cellID);
     }
     else
     {
@@ -3012,6 +3031,165 @@ public class Fight
     return !(numLunchT-LaunchedSpell.getNbLaunchTarget(caster,t,SS.getSpellID())<=0&&numLunchT>0);
   }
 
+  public boolean canCastSpell2(Fighter caster, SortStats SS, GameCase casterCell, GameCase targetCell)
+  {
+    final Fighter current=this.getFighterByOrdreJeu();
+    if(current==null)
+      return false;
+
+    Player perso=caster.getPersonnage();
+
+    if(SS==null)
+    {
+      if(perso!=null)
+      {
+        /*
+        SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(this,7);
+        SocketManager.GAME_SEND_Im_PACKET(perso,"1169");
+        SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(this,7,0,perso.getId());*/
+      }
+      return false;
+    }
+
+    if(current.getId()!=caster.getId())
+    {
+      if(perso!=null)
+        SocketManager.GAME_SEND_Im_PACKET(perso,"1175");
+      return false;
+    }
+
+    int usedPA;
+
+    if(caster.getType()==1&&perso.getItemClasseSpell().containsKey(SS.getSpellID()))
+    {
+      int modi=perso.getItemClasseModif(SS.getSpellID(),285);
+      usedPA=SS.getPACost()-modi;
+    }
+    else
+    {
+      usedPA=SS.getPACost();
+    }
+
+    if(getCurFighterPa()<usedPA)
+    {
+      if(perso!=null)
+        SocketManager.GAME_SEND_Im_PACKET(perso,"1170;"+getCurFighterPa()+"~"+SS.getPACost());
+      return false;
+    }
+
+    if(targetCell==null)
+    {
+      if(perso!=null)
+        SocketManager.GAME_SEND_Im_PACKET(perso,"1172");
+      return false;
+    }
+
+    if(caster.getType()==1&&perso.getItemClasseSpell().containsKey(SS.getSpellID()))
+    {
+      int modi=perso.getItemClasseModif(SS.getSpellID(),288);
+      boolean modif=modi==1;
+      if(SS.isLineLaunch()&&!modif&&!PathFinding.casesAreInSameLine(getMap(),casterCell.getId(),targetCell.getId(),'z',70))
+      {
+        SocketManager.GAME_SEND_Im_PACKET(perso,"1173");
+        return false;
+      }
+    }
+    else if(SS.isLineLaunch()&&!PathFinding.casesAreInSameLine(getMap(),casterCell.getId(),targetCell.getId(),'z',70))
+    {
+      if(perso!=null)
+        SocketManager.GAME_SEND_Im_PACKET(perso,"1173");
+      return false;
+    }
+
+    char dir=PathFinding.getDirBetweenTwoCase(casterCell.getId(),targetCell.getId(),getMap(),true);
+
+    if(SS.getSpellID()==67)
+    {
+      if(!PathFinding.checkLoS(getMap(),PathFinding.GetCaseIDFromDirrection(casterCell.getId(),dir,getMap(),true),targetCell.getId(),null,true))
+      {
+        if(perso!=null)
+          SocketManager.GAME_SEND_Im_PACKET(perso,"1174");
+        return false;
+      }
+    }
+    if(caster.getType()==1&&perso.getItemClasseSpell().containsKey(SS.getSpellID()))
+    {
+      int modi=perso.getItemClasseModif(SS.getSpellID(),289);
+      boolean modif=modi==1;
+      if(SS.hasLDV()&&!PathFinding.checkLoS(getMap(),casterCell.getId(),targetCell.getId(),caster)&&!modif)
+      {
+        SocketManager.GAME_SEND_Im_PACKET(perso,"1174");
+        return false;
+      }
+    }
+    else if(SS.hasLDV()&&!PathFinding.checkLoS(getMap(),casterCell.getId(),targetCell.getId(),caster))
+    {
+      if(perso!=null)
+        SocketManager.GAME_SEND_Im_PACKET(perso,"1174");
+      return false;
+    }
+
+    int dist=PathFinding.getDistanceBetween(getMap(),casterCell.getId(),targetCell.getId());
+    int maxAlc=SS.getMaxPO();
+    int minAlc=SS.getMinPO();
+    // + alcance
+    if(caster.getType()==1&&perso.getItemClasseSpell().containsKey(SS.getSpellID()))
+    {
+      int modi=perso.getItemClasseModif(SS.getSpellID(),281);
+      maxAlc=maxAlc+modi;
+    } // alcance modificable
+
+    if(caster.getType()==1&&perso.getItemClasseSpell().containsKey(SS.getSpellID()))
+    {
+      int modi=perso.getItemClasseModif(SS.getSpellID(),282);
+      boolean modif=modi==1;
+      if(SS.isModifPO()||modif)
+      {
+        maxAlc+=caster.getTotalStats().getEffect(117);
+        if(maxAlc<=minAlc)
+          maxAlc=minAlc+1;
+      }
+    }
+    else if(SS.isModifPO())
+    {
+      maxAlc+=caster.getTotalStats().getEffect(117);
+      if(maxAlc<=minAlc)
+        maxAlc=minAlc+1;
+    }
+
+    if(maxAlc<minAlc)
+      maxAlc=minAlc;
+    if(dist<minAlc||dist>maxAlc)
+    {
+      if(perso!=null)
+        SocketManager.GAME_SEND_Im_PACKET(perso,"1171;"+minAlc+"~"+maxAlc+"~"+dist);
+      return false;
+    }
+
+    if(!LaunchedSpell.cooldownGood(caster,SS.getSpellID()))
+    {
+      return false;
+    }
+
+    int numLunch=SS.getMaxLaunchbyTurn();
+
+    if(caster.getType()==1&&perso.getItemClasseSpell().containsKey(SS.getSpellID()))
+      numLunch+=perso.getItemClasseModif(SS.getSpellID(),290);
+
+    if(numLunch-LaunchedSpell.getNbLaunch(caster,SS.getSpellID())<=0&&numLunch>0)
+    {
+      return false;
+    }
+
+    Fighter t=targetCell.getFirstFighter();
+    int numLunchT=SS.getMaxLaunchByTarget();
+
+    if(caster.getType()==1&&perso.getItemClasseSpell().containsKey(SS.getSpellID()))
+      numLunchT+=perso.getItemClasseModif(SS.getSpellID(),291);
+
+    return !(numLunchT-LaunchedSpell.getNbLaunchTarget(caster,t,SS.getSpellID())<=0&&numLunchT>0);
+  }
+
   public boolean onFighterDeplace(Fighter fighter, GameAction GA)
   {
     final Fighter current=this.getFighterByOrdreJeu();
@@ -3061,7 +3239,7 @@ public class Fight
     setCurFighterPm(getCurFighterPm()-nStep);
     this.curFighterUsedPm+=nStep;
 
-    int nextCellID=World.world.getCryptManager().cellCode_To_ID(newPath.substring(newPath.length()-2));
+    int nextCellID=Main.world.getCryptManager().cellCode_To_ID(newPath.substring(newPath.length()-2));
     // les monstres n'ont pas de GAS//GAF
     if(current.getPersonnage()!=null)
       SocketManager.GAME_SEND_GAS_PACKET_TO_FIGHT(this,7,current.getId());
@@ -3069,7 +3247,7 @@ public class Fight
     // Si le joueur n'est pas invisible
     if(!current.isHide())
     {
-      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this,7,GA.id,"1",current.getId()+"","a"+World.world.getCryptManager().cellID_To_Code(fighter.getCell().getId())+newPath);
+      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this,7,GA.id,"1",current.getId()+"","a"+Main.world.getCryptManager().cellID_To_Code(fighter.getCell().getId())+newPath);
     }
     else
     {
@@ -3077,7 +3255,7 @@ public class Fight
       {
         // On envoie le path qu'au joueur qui se d�place
         GameClient out=current.getPersonnage().getGameClient();
-        SocketManager.GAME_SEND_GA_PACKET(out,GA.id+"","1",current.getId()+"","a"+World.world.getCryptManager().cellID_To_Code(fighter.getCell().getId())+newPath);
+        SocketManager.GAME_SEND_GA_PACKET(out,GA.id+"","1",current.getId()+"","a"+Main.world.getCryptManager().cellID_To_Code(fighter.getCell().getId())+newPath);
       }
     }
 
@@ -3166,7 +3344,7 @@ public class Fight
 
       target.setIsDead(true);
       if(!target.hasLeft())
-        this.getDeadList().put(target.getId(),target);
+        this.getDeadList().add(new Pair<Integer, Fighter>(target.getId(),target));
 
       SocketManager.GAME_SEND_FIGHT_PLAYER_DIE_TO_FIGHT(this,7,target.getId());
       target.getCell().getFighters().clear();// Supprime tout causait bug si port�/porteur
@@ -3867,6 +4045,7 @@ public class Fight
           case Constant.FIGHT_TYPE_CHALLENGE:
           case Constant.FIGHT_TYPE_AGRESSION:
           case Constant.FIGHT_TYPE_CONQUETE:
+          case Constant.FIGHT_TYPE_STAKE:
             for(Fighter fighter : copyTeam1.values())
             {
               Player player=fighter.getPersonnage();
@@ -3895,7 +4074,7 @@ public class Fight
           fighter.getFightBuff().clear();
 
         this.getMapOld().removeFight(this.getId());
-        SocketManager.GAME_SEND_MAP_FIGHT_COUNT_TO_MAP(World.world.getMap(this.getMap().getId()));
+        SocketManager.GAME_SEND_MAP_FIGHT_COUNT_TO_MAP(Main.world.getMap(this.getMap().getId()));
 
         final String str=(this.getPrism()!=null ? this.getPrism().getMap()+"|"+this.getPrism().getX()+"|"+this.getPrism().getY() : "");
 
@@ -3908,7 +4087,7 @@ public class Fight
           /** Collector **/
           if(fighter.getCollector()!=null)
           {
-            World.world.getGuild(getGuildId()).getMembers().stream().filter(player -> player!=null).filter(Player::isOnline).forEach(player -> {
+            Main.world.getGuild(getGuildId()).getMembers().stream().filter(player -> player!=null).filter(Player::isOnline).forEach(player -> {
               SocketManager.GAME_SEND_gITM_PACKET(player,Collector.parseToGuild(player.get_guild().getId()));
               SocketManager.GAME_SEND_PERCO_INFOS_PACKET(player,fighter.getCollector(),"S");
             });
@@ -3922,7 +4101,7 @@ public class Fight
           /** Prism **/
           if(fighter.getPrism()!=null)
           {
-            World.world.getOnlinePlayers().stream().filter(player -> player!=null).filter(player -> player.get_align()==getPrism().getAlignement()).forEach(player -> SocketManager.SEND_CS_SURVIVRE_MESSAGE_PRISME(player,str));
+            Main.world.getOnlinePlayers().stream().filter(player -> player!=null).filter(player -> player.get_align()==getPrism().getAlignement()).forEach(player -> SocketManager.SEND_CS_SURVIVRE_MESSAGE_PRISME(player,str));
 
             fighter.getPrism().setInFight(-1);
             fighter.getPrism().setFightId(-1);
@@ -3944,7 +4123,7 @@ public class Fight
         {
           if(fighter.getCollector()!=null)
           {
-            World.world.getGuild(getGuildId()).getMembers().stream().filter(player -> player!=null).filter(Player::isOnline).forEach(player -> {
+            Main.world.getGuild(getGuildId()).getMembers().stream().filter(player -> player!=null).filter(Player::isOnline).forEach(player -> {
               SocketManager.GAME_SEND_gITM_PACKET(player,Collector.parseToGuild(player.get_guild().getId()));
               SocketManager.GAME_SEND_PERCO_INFOS_PACKET(player,fighter.getCollector(),"D");
             });
@@ -3960,7 +4139,7 @@ public class Fight
           {
             SubArea subarea=this.getMapOld().getSubArea();
 
-            for(Player player : World.world.getOnlinePlayers())
+            for(Player player : Main.world.getOnlinePlayers())
             {
               if(player==null)
                 continue;
@@ -3989,7 +4168,7 @@ public class Fight
             subarea.setAlignement(0);
             this.getMapOld().RemoveNpc(id);
             SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(getMapOld(),id);
-            World.world.removePrisme(id);
+            Main.world.removePrisme(id);
             Database.getDynamics().getPrismData().delete(id);
           }
 
@@ -4141,7 +4320,7 @@ public class Fight
         }
         if(!souls.isEmpty())
         {
-          PetEntry pet=World.world.getPetsEntry(obj.getGuid());
+          PetEntry pet=Main.world.getPetsEntry(obj.getGuid());
           if(pet!=null)
             pet.eatSouls(player,souls);
         }
@@ -4185,7 +4364,7 @@ public class Fight
       GameObject obj=player.getObjetByPos(Constant.ITEM_POS_FAMILIER);
       if(obj!=null)
       {
-        PetEntry pets=World.world.getPetsEntry(obj.getGuid());
+        PetEntry pets=Main.world.getPetsEntry(obj.getGuid());
         if(pets!=null)
           pets.looseFight(player);
       }
@@ -4198,6 +4377,11 @@ public class Fight
       if(this.getPrism()!=null)
         SocketManager.SEND_CP_INFO_DEFENSEURS_PRISME(player,this.getDefenders());
 
+    if(this.getType()==Constant.FIGHT_TYPE_STAKE)
+    {
+      player.setStake(null);
+    }
+
     if(this.getType()==Constant.FIGHT_TYPE_AGRESSION||this.getType()==Constant.FIGHT_TYPE_CONQUETE)
     {
       int honor=player.get_honor()-500;
@@ -4206,7 +4390,7 @@ public class Fight
       player.set_honor(honor);
     }
 
-    if(this.getType()!=Constant.FIGHT_TYPE_CHALLENGE)
+    if(this.getType()!=Constant.FIGHT_TYPE_CHALLENGE&&this.getType()!=Constant.FIGHT_TYPE_STAKE)
     {
       int loose=Formulas.getLoosEnergy(player.getLevel(),getType()==1,getType()==5);
       int energy=player.getEnergy()-loose;
@@ -4310,8 +4494,12 @@ public class Fight
     int type=Constant.FIGHT_TYPE_CHALLENGE;
     if(this.getType()==Constant.FIGHT_TYPE_AGRESSION||getType()==Constant.FIGHT_TYPE_CONQUETE)
       type=1;
+    if(this.getType()==Constant.FIGHT_TYPE_STAKE)
+      type=Constant.FIGHT_TYPE_CHALLENGE;
     if(this.getType()==Constant.FIGHT_TYPE_PVT)
       type=Constant.FIGHT_TYPE_CHALLENGE;
+    ArrayList<Pair<Integer, Integer>> stakeItems=null;
+    long stakeKamas=0;
 
     final StringBuilder packet=new StringBuilder();
 
@@ -4722,7 +4910,7 @@ public class Fight
                 if(stalkTarget.getTraque()==curPlayer)
                   quantity=4;
 
-              GameObject object=World.world.getObjTemplate(10275).createNewItem(quantity,false);
+              GameObject object=Main.world.getObjTemplate(10275).createNewItem(quantity,false);
               if(curPlayer.addObjet(object,true))
                 World.addGameObject(object,true);
               kamas=new Pair<>(1000*quantity,1000*quantity);
@@ -4750,7 +4938,7 @@ public class Fight
           {
             kamas=new Pair<>(1000*quantity,1000*quantity);
             curPlayer.addKamas(1000*quantity);
-            GameObject object=World.world.getObjTemplate(10275).createNewItem(quantity,false);
+            GameObject object=Main.world.getObjTemplate(10275).createNewItem(quantity,false);
             if(curPlayer.addObjet(object,true))
               World.addGameObject(object,true);
             stalk=true;
@@ -4762,6 +4950,29 @@ public class Fight
       /** Heroic **/
       Map<Player, String> list=null;
       ArrayList<GameObject> objects=null;
+
+      if(this.getType()==Constant.FIGHT_TYPE_STAKE)
+      {
+        //final ArrayList<GameObject> objects1=new ArrayList<>();
+
+        for(final Fighter fighter : loosers)
+        {
+          final Player player=fighter.getPersonnage();
+          if(player!=null&&player.getStake()!=null)
+            player.setStake(null);
+        }
+
+        for(final Fighter fighter : winners)
+        {
+          final Player player=fighter.getPersonnage();
+          if(player!=null&&player.getStake()!=null)
+          {
+            stakeItems=player.getStake().winItems(player);
+            stakeKamas=player.getStake().winKamas(player);
+            player.setStake(null);
+          }
+        }
+      }
 
       if(Config.getInstance().HEROIC)
       {
@@ -4819,8 +5030,10 @@ public class Fight
               else
               { // mob loose..
                 list=Fight.give(group.isFix() ? RespawnGroup.fixMobGroupObjects.get(this.getMapOld().getId()+","+group.getCellId()).getLeft() : group.getObjects(),winners);
-                if(!group.isFix())
-                  this.getMapOld().spawnAfterTimeGroup();
+                GameMap map=this.getMapOld();
+                if(map.getId()!=8338&&map.getId()!=8340&&map.getId()!=8342&&map.getId()!=8344&&map.getId()!=8345&&map.getId()!=8347) //firefoux
+                  if(!group.isFix())
+                    this.getMapOld().spawnAfterTimeGroup();
               }
             }
             catch(Exception e)
@@ -4843,9 +5056,10 @@ public class Fight
             }
             else //players won, spawn new group
             {
+              GameMap map=this.getMapOld();
               if(group.isFix()) //players won against fixed mobgroup
                 this.getMapOld().spawnAfterTimeGroupFix(mobGroup.getSpawnCellId());
-              else //players won against normal mobgroup
+              else if(map.getId()!=8338&&map.getId()!=8340&&map.getId()!=8342&&map.getId()!=8344&&map.getId()!=8345&&map.getId()!=8347) //firefoux
                 this.getMapOld().spawnAfterTimeGroup();
             }
           }
@@ -4904,7 +5118,7 @@ public class Fight
           /** Xp,kamas **/
           if(player!=null)
           {
-            xpPlayer=Formulas.getXp(i,winners,totalXP,nbbonus,this.getMobGroup()!=null ? getMobGroup().getStarBonus(getMobGroup().getInternalStarBonus()) : 0,challXp,lvlMax,lvlMin,lvlLoosers,lvlWinners,World.world.getConquestBonus(player));
+            xpPlayer=Formulas.getXp(i,winners,totalXP,nbbonus,this.getMobGroup()!=null ? getMobGroup().getStarBonus(getMobGroup().getInternalStarBonus()) : 0,challXp,lvlMax,lvlMin,lvlLoosers,lvlWinners,Main.world.getConquestBonus(player));
             XP.set(xpPlayer);
 
             if(this.getType()==Constant.FIGHT_TYPE_PVT&&win==1)
@@ -4942,7 +5156,7 @@ public class Fight
               {
                 objectsWon.put(object.getTemplate().getId(),object.getQuantity());
                 dropsCollector.remove(object);
-                World.world.removeGameObject(object.getGuid());
+                Main.world.removeGameObject(object.getGuid());
                 counter++;
               }
             }
@@ -4950,7 +5164,7 @@ public class Fight
           else
           {
             ArrayList<Drop> temporary3=new ArrayList<>(dropsPlayers);
-            temporary3.addAll(World.world.getEtherealWeapons(i.isInvocation() ? i.getInvocator().getLvl() : i.getLvl()).stream().map(objectTemplate -> new Drop(objectTemplate.getId(),0.001,0)).collect(Collectors.toList()));
+            temporary3.addAll(Main.world.getEtherealWeapons(i.isInvocation() ? i.getInvocator().getLvl() : i.getLvl()).stream().map(objectTemplate -> new Drop(objectTemplate.getId(),0.001,0)).collect(Collectors.toList()));
             Collections.shuffle(temporary3);
 
             for(Drop drop : temporary3)
@@ -4961,7 +5175,7 @@ public class Fight
               float soloBonus=Formulas.getSoloBonus(winners);
 
               final double jet=Double.parseDouble(formatter.format(Math.random()*100).replace(',','.')),
-                  chance=Formulas.dropChance((float)drop.getLocalPercent(),starFactor,challengeFactor,(float)World.world.getConquestBonus(player),(float)charPros,soloBonus);
+                  chance=Formulas.dropChance((float)drop.getLocalPercent(),starFactor,challengeFactor,(float)Main.world.getConquestBonus(player),(float)charPros,soloBonus);
               boolean ok=false;
 
               switch(drop.getAction())
@@ -4973,7 +5187,7 @@ public class Fight
               }
               if(jet<chance||ok) //item gained
               {
-                ObjectTemplate objectTemplate=World.world.getObjTemplate(drop.getObjectId());
+                ObjectTemplate objectTemplate=Main.world.getObjTemplate(drop.getObjectId());
 
                 if(objectTemplate==null)
                   continue;
@@ -5121,7 +5335,7 @@ public class Fight
 
                   if(jet<chance)
                   {
-                    ObjectTemplate objectTemplate=World.world.getObjTemplate(drop.getObjectId());
+                    ObjectTemplate objectTemplate=Main.world.getObjTemplate(drop.getObjectId());
 
                     if(drop.getAction()==1&&objectTemplate!=null&&player.getMetierByID(41)!=null&&player.getMetierByID(41).get_lvl()>=drop.getLevel())
                       itemWon2.put(objectTemplate.getId(),(itemWon2.get(objectTemplate.getId())==null ? 0 : itemWon2.get(objectTemplate.getId()))+1);
@@ -5176,7 +5390,7 @@ public class Fight
 
             for(Entry<Integer, Integer> entry : objectsWon.entrySet())
             {
-              ObjectTemplate objectTemplate=World.world.getObjTemplate(entry.getKey());
+              ObjectTemplate objectTemplate=Main.world.getObjTemplate(entry.getKey());
 
               if(player==null&&i.getInvocator()==null)
                 break;
@@ -5256,7 +5470,7 @@ public class Fight
 
             for(Entry<Integer, Integer> entry : itemWon2.entrySet())
             {
-              ObjectTemplate objectTemplate=World.world.getObjTemplate(entry.getKey());
+              ObjectTemplate objectTemplate=Main.world.getObjTemplate(entry.getKey());
 
               if(player==null&&i.getInvocator().getPersonnage()==null)
                 break;
@@ -5294,7 +5508,7 @@ public class Fight
                 drops+=entry.getKey()+"~"+entry.getValue();
               }
 
-              GameObject newObj=World.world.getObjTemplate(objectTemplate.getId()).createNewItemWithoutDuplication(target.getItems().values(),entry.getValue(),false);
+              GameObject newObj=Main.world.getObjTemplate(objectTemplate.getId()).createNewItemWithoutDuplication(target.getItems().values(),entry.getValue(),false);
               int guid=newObj.getGuid(); //FIXME: Ne pas recrée un item pour l'empiler après
 
               if(guid==-1)
@@ -5327,7 +5541,7 @@ public class Fight
                   drops+=",";
                 drops+=Constant.getCertificatByDopeuls(IDmob)+"~1";
                 // Certificat :
-                ObjectTemplate OT2=World.world.getObjTemplate(Constant.getCertificatByDopeuls(IDmob));
+                ObjectTemplate OT2=Main.world.getObjTemplate(Constant.getCertificatByDopeuls(IDmob));
                 if(OT2!=null)
                 {
                   GameObject obj2=OT2.createNewItem(1,false);
@@ -5398,7 +5612,7 @@ public class Fight
               switch(player.getCurMap().getId())
               {
                 case 8984:
-                  GameObject obj=World.world.getObjTemplate(8012).createNewItem(1,false);
+                  GameObject obj=Main.world.getObjTemplate(8012).createNewItem(1,false);
                   if(player.addObjet(obj,true))
                     World.addGameObject(obj,true);
                   drops+=(drops.length()>0 ? "," : "")+"8012~1";
@@ -5524,6 +5738,38 @@ public class Fight
         }
         else
         {
+          if(this.getType()==Constant.FIGHT_TYPE_STAKE)
+          {
+            if(player==null)
+              continue;
+
+            String drops="";
+            if(stakeItems!=null&&!stakeItems.isEmpty())
+            {
+              for(Pair<Integer, Integer> drop : stakeItems)
+              {
+                if(!drops.isEmpty())
+                  drops+=",";
+                drops+=World.getGameObject(drop.getLeft()).getTemplate().getId()+"~"+drop.getRight();
+              }
+            }
+
+            StringBuilder p=new StringBuilder();
+            p.append("2;");
+            p.append(i.getId()).append(";");
+            p.append(i.getPacketsName()).append(";");
+            p.append(i.getLvl()).append(";");
+            p.append((i.isDead() ? "1" : "0")).append(";");
+            p.append(i.xpString(";")).append(";");
+            p.append(";"); //XP
+            p.append(";"); //guild XP
+            p.append(";"); //mount XP
+            p.append(drops).append(";");
+            p.append((stakeKamas==0 ? "" : stakeKamas)).append("|");
+
+            gains.put(i.getId(),p);
+          }
+
           // Si c'est un neutre, on ne gagne pas de points
           int winH=0,winD=0;
 
@@ -5553,13 +5799,13 @@ public class Fight
               player.setDeshonor(player.getDeshonor()+winD);
             }
 
-            int maxHonor=World.world.getExpLevel(player.getGrade()+1).pvp;
+            int maxHonor=Main.world.getExpLevel(player.getGrade()+1).pvp;
             if(maxHonor==-1)
-              maxHonor=World.world.getExpLevel(player.getGrade()).pvp;
+              maxHonor=Main.world.getExpLevel(player.getGrade()).pvp;
 
             StringBuilder temporary=new StringBuilder();
             temporary.append("2;").append(i.getId()).append(";").append(i.getPacketsName()).append(";").append(i.getLvl()).append(";").append((i.isDead() ? "1" : "0")).append(";");
-            temporary.append(player.get_align()!=Constant.ALIGNEMENT_NEUTRE ? World.world.getExpLevel(player.getGrade()).pvp : 0).append(";");
+            temporary.append(player.get_align()!=Constant.ALIGNEMENT_NEUTRE ? Main.world.getExpLevel(player.getGrade()).pvp : 0).append(";");
             temporary.append(player.get_honor()).append(";");
             temporary.append(player.get_align()!=Constant.ALIGNEMENT_NEUTRE ? maxHonor : 0).append(";");
             temporary.append(winH).append(";");
@@ -5589,13 +5835,13 @@ public class Fight
               if(player.getDeshonor()-winD<0)
                 winD=0;
               player.setDeshonor(player.getDeshonor()-winD);
-              int maxHonor=World.world.getExpLevel(player.getGrade()+1).pvp;
+              int maxHonor=Main.world.getExpLevel(player.getGrade()+1).pvp;
               if(maxHonor==-1)
-                maxHonor=World.world.getExpLevel(player.getGrade()).pvp;
+                maxHonor=Main.world.getExpLevel(player.getGrade()).pvp;
 
               StringBuilder temporary=new StringBuilder();
               temporary.append("2;").append(i.getId()).append(";").append(i.getPacketsName()).append(";").append(i.getLvl()).append(";").append((i.isDead() ? "1" : "0")).append(";");
-              temporary.append(player.get_align()!=Constant.ALIGNEMENT_NEUTRE ? World.world.getExpLevel(player.getGrade()).pvp : 0).append(";");
+              temporary.append(player.get_align()!=Constant.ALIGNEMENT_NEUTRE ? Main.world.getExpLevel(player.getGrade()).pvp : 0).append(";");
               temporary.append(player.get_honor()).append(";");
               temporary.append(player.get_align()!=Constant.ALIGNEMENT_NEUTRE ? maxHonor : 0).append(";");
               temporary.append(winH).append(";");
@@ -5614,13 +5860,13 @@ public class Fight
               winH*=3;
               prism.addHonor(winH);
 
-              int maxHonor=World.world.getExpLevel(prism.getLevel()+1).pvp;
+              int maxHonor=Main.world.getExpLevel(prism.getLevel()+1).pvp;
               if(maxHonor==-1)
-                maxHonor=World.world.getExpLevel(prism.getLevel()).pvp;
+                maxHonor=Main.world.getExpLevel(prism.getLevel()).pvp;
 
               StringBuilder temporary=new StringBuilder();
               temporary.append("2;").append(i.getId()).append(";").append(i.getPacketsName()).append(";").append(i.getLvl()).append(";").append((i.isDead() ? "1" : "0")).append(";");
-              temporary.append(World.world.getExpLevel(prism.getLevel()).pvp).append(";");
+              temporary.append(Main.world.getExpLevel(prism.getLevel()).pvp).append(";");
               temporary.append(prism.getHonor()).append(";");
               temporary.append(maxHonor).append(";");
               temporary.append(winH).append(";");
@@ -5649,6 +5895,7 @@ public class Fight
       /** Looser **/
       for(Fighter i : loosers)
       {
+
         if(i.isInvocation()&&i.getMob()!=null&&i.getMob().getTemplate().getId()!=285)
           continue;
         if(i.isDouble())
@@ -5688,12 +5935,12 @@ public class Fight
               player.setDeshonor(player.getDeshonor()-winD);
             }
 
-            int maxHonor=World.world.getExpLevel(player.getGrade()+1).pvp;
+            int maxHonor=Main.world.getExpLevel(player.getGrade()+1).pvp;
             if(maxHonor==-1)
-              maxHonor=World.world.getExpLevel(player.getGrade()).pvp;
+              maxHonor=Main.world.getExpLevel(player.getGrade()).pvp;
 
             packet.append("0;").append(i.getId()).append(";").append(i.getPacketsName()).append(";").append(i.getLvl()).append(";").append((i.isDead() ? "1" : "0")).append(";");
-            packet.append(player.get_align()!=Constant.ALIGNEMENT_NEUTRE ? World.world.getExpLevel(player.getGrade()).pvp : 0).append(";");
+            packet.append(player.get_align()!=Constant.ALIGNEMENT_NEUTRE ? Main.world.getExpLevel(player.getGrade()).pvp : 0).append(";");
             packet.append(player.get_honor()).append(";");
             packet.append(player.get_align()!=Constant.ALIGNEMENT_NEUTRE ? maxHonor : 0).append(";");
             packet.append(winH).append(";");
@@ -5701,6 +5948,18 @@ public class Fight
             packet.append(player.getDeshonor()).append(";");
             packet.append(winD);
             packet.append(";;0;0;0;0;0|");
+          }
+          if(this.getType()==Constant.FIGHT_TYPE_STAKE)
+          {
+            packet.append("0;").append(i.getId()).append(";").append(i.getPacketsName()).append(";").append(i.getLvl()).append(";").append((i.isDead() ? "1" : "0")).append(";");
+            packet.append(";");
+            packet.append(";");
+            packet.append(";");
+            packet.append(";");
+            packet.append(";");
+            packet.append(";");
+            packet.append(";");
+            packet.append(";0;0;0;0;0|");
           }
           else if(this.getType()==Constant.FIGHT_TYPE_CONQUETE)
           {
@@ -5711,13 +5970,13 @@ public class Fight
               winH=0;
               if(player.getDeshonor()-winD<0)
                 winD=0;
-              int maxHonor=World.world.getExpLevel(player.getGrade()+1).pvp;
+              int maxHonor=Main.world.getExpLevel(player.getGrade()+1).pvp;
               if(maxHonor==-1)
-                maxHonor=World.world.getExpLevel(player.getGrade()).pvp;
+                maxHonor=Main.world.getExpLevel(player.getGrade()).pvp;
 
               player.setDeshonor(player.getDeshonor()-winD);
               packet.append("0;").append(i.getId()).append(";").append(i.getPacketsName()).append(";").append(i.getLvl()).append(";").append((i.isDead() ? "1" : "0")).append(";");
-              packet.append(player.get_align()!=Constant.ALIGNEMENT_NEUTRE ? World.world.getExpLevel(player.getGrade()).pvp : 0).append(";");
+              packet.append(player.get_align()!=Constant.ALIGNEMENT_NEUTRE ? Main.world.getExpLevel(player.getGrade()).pvp : 0).append(";");
               packet.append(player.get_honor()).append(";");
               packet.append(player.get_align()!=Constant.ALIGNEMENT_NEUTRE ? maxHonor : 0).append(";");
               packet.append(winH).append(";");
@@ -5732,13 +5991,13 @@ public class Fight
 
               if(prism.getHonor()+winH<0)
                 winH=-prism.getHonor();
-              int maxHonor=World.world.getExpLevel(prism.getLevel()+1).pvp;
+              int maxHonor=Main.world.getExpLevel(prism.getLevel()+1).pvp;
               if(maxHonor==-1)
-                maxHonor=World.world.getExpLevel(prism.getLevel()).pvp;
+                maxHonor=Main.world.getExpLevel(prism.getLevel()).pvp;
 
               prism.addHonor(winH);
               packet.append("0;").append(i.getId()).append(";").append(i.getPacketsName()).append(";").append(i.getLvl()).append(";").append((i.isDead() ? "1" : "0")).append(";");
-              packet.append(World.world.getExpLevel(prism.getLevel()).pvp).append(";");
+              packet.append(Main.world.getExpLevel(prism.getLevel()).pvp).append(";");
               packet.append(prism.getHonor()).append(";");
               packet.append(maxHonor).append(";");
               packet.append(winH).append(";");
@@ -5758,12 +6017,12 @@ public class Fight
 
         collector.setXp(collector.getXp()+winxp);
         collector.setKamas(collector.getKamas()+winkamas);
-        Guild guild=World.world.getGuild(collector.getGuildId());
+        Guild guild=Main.world.getGuild(collector.getGuildId());
 
-        packet.append("5;").append(collector.getId()).append(";").append(collector.getFullName()).append(";").append(World.world.getGuild(collector.getGuildId()).getLvl()).append(";0;");
+        packet.append("5;").append(collector.getId()).append(";").append(collector.getFullName()).append(";").append(Main.world.getGuild(collector.getGuildId()).getLvl()).append(";0;");
         packet.append(guild.getLvl()).append(";");
         packet.append(guild.getXp()).append(";");
-        packet.append(World.world.getGuildXpMax(guild.getLvl())).append(";");
+        packet.append(Main.world.getGuildXpMax(guild.getLvl())).append(";");
         packet.append(";");// XpGagner
         packet.append(winxp).append(";");// XpGuilde
         packet.append(";");// Monture
@@ -5778,11 +6037,11 @@ public class Fight
           for(Drop drop : temporary)
           {
             final double jet=Double.parseDouble(formatter.format(Math.random()*100).replace(',','.')),
-                chance=(int)(drop.getLocalPercent()*(World.world.getGuild(collector.getGuildId()).getStats(Constant.STATS_ADD_PROS)/100.0));
+                chance=(int)(drop.getLocalPercent()*(Main.world.getGuild(collector.getGuildId()).getStats(Constant.STATS_ADD_PROS)/100.0));
 
             if(jet<chance)
             {
-              ObjectTemplate objectTemplate=World.world.getObjTemplate(drop.getObjectId());
+              ObjectTemplate objectTemplate=Main.world.getObjTemplate(drop.getObjectId());
 
               if(objectTemplate==null)
                 continue;
@@ -5865,7 +6124,7 @@ public class Fight
 
           for(Entry<Integer, Integer> entry : objectsWon.entrySet())
           {
-            ObjectTemplate objectTemplate=World.world.getObjTemplate(entry.getKey());
+            ObjectTemplate objectTemplate=Main.world.getObjTemplate(entry.getKey());
 
             if(objectTemplate==null||collector.getPodsTotal()+objectTemplate.getPod()*entry.getValue()>=collector.getMaxPod())
               continue;
@@ -5874,7 +6133,7 @@ public class Fight
 
             drops+=entry.getKey()+"~"+entry.getValue();
 
-            GameObject newObj=World.world.getObjTemplate(objectTemplate.getId()).createNewItemWithoutDuplication(collector.getOjects().values(),entry.getValue(),false);
+            GameObject newObj=Main.world.getObjTemplate(objectTemplate.getId()).createNewItemWithoutDuplication(collector.getOjects().values(),entry.getValue(),false);
             int guid=newObj.getGuid();//FIXME: Ne pas recrée un item pour l'empiler après
 
             if(guid==-1)
@@ -5894,7 +6153,6 @@ public class Fight
 
         Database.getDynamics().getCollectorData().update(collector);
       }
-
       return packet.toString();
     }
     catch(Exception e)

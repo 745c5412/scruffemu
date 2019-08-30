@@ -11,9 +11,9 @@ import scruffemu.fight.spells.LaunchedSpell;
 import scruffemu.fight.spells.SpellEffect;
 import scruffemu.fight.spells.Spell.SortStats;
 import scruffemu.fight.traps.Glyph;
-import scruffemu.game.World;
 import scruffemu.game.action.GameAction;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -281,9 +281,9 @@ public class Function
       return -1;
     if(CellDest==fighter.getCell().getId())
       return targetCell+bestSS.getSpellID()*1000;
-    
+
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,fighter.getCell().getId(),CellDest).getShortestPath(-1);
-    
+
     if(path==null)
       return -1;
     String pathstr="";
@@ -302,13 +302,13 @@ public class Function
         if(curDir!=d)
         {
           if(path.indexOf(c)!=0)
-            pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+            pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
           pathstr+=d;
         }
         curCaseID=c.getId();
       }
       if(curCaseID!=fighter.getCell().getId())
-        pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+        pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
     }
     catch(Exception e)
     {
@@ -381,22 +381,22 @@ public class Function
     SortStats spell=null;
     if(fighter.haveState(36))
     {
-      spell=World.world.getSort(1110).getStatsByLevel(5);
+      spell=Main.world.getSort(1110).getStatsByLevel(5);
       fighter.setState(36,0);
     }
     if(fighter.haveState(37))
     {
-      spell=World.world.getSort(1109).getStatsByLevel(5);
+      spell=Main.world.getSort(1109).getStatsByLevel(5);
       fighter.setState(37,0);
     }
     if(fighter.haveState(38))
     {
-      spell=World.world.getSort(1108).getStatsByLevel(5);
+      spell=Main.world.getSort(1108).getStatsByLevel(5);
       fighter.setState(38,0);
     }
     if(fighter.haveState(35))
     {
-      spell=World.world.getSort(1107).getStatsByLevel(5);
+      spell=Main.world.getSort(1107).getStatsByLevel(5);
       fighter.setState(35,0);
     }
     while(_loc0_++<limit)
@@ -422,7 +422,7 @@ public class Function
     SortStats SS=null;
     if(fighter.haveState(31)&&fighter.haveState(32)&&fighter.haveState(33)&&fighter.haveState(34))
     {
-      SS=World.world.getSort(1106).getStatsByLevel(5);
+      SS=Main.world.getSort(1106).getStatsByLevel(5);
     }
     if(SS==null)
       return false;
@@ -439,7 +439,7 @@ public class Function
     if(target==null)
       return false;
     SortStats SS=null;
-    SS=World.world.getSort(521).getStatsByLevel(5);
+    SS=Main.world.getSort(521).getStatsByLevel(5);
     if(SS==null)
       return false;
     int buff=fight.tryCastSpell(fighter,SS,target.getCell().getId());
@@ -552,7 +552,7 @@ public class Function
           int infl=0;
           if(f.isCollector())
           {
-            for(Map.Entry<Integer, SortStats> ss : World.world.getGuild(f.getCollector().getGuildId()).getSpells().entrySet())
+            for(Map.Entry<Integer, SortStats> ss : Main.world.getGuild(f.getCollector().getGuildId()).getSpells().entrySet())
             {
               if(ss.getValue()==null)
                 continue;
@@ -846,7 +846,7 @@ public class Function
         }
       }
     }
-    
+
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,cell.getId(),cell2.getId()).getShortestPath(-1);
 
     if(path==null||path.isEmpty())
@@ -871,13 +871,13 @@ public class Function
         if(curDir!=d)
         {
           if(finalPath.indexOf(c)!=0)
-            pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+            pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
           pathstr+=d;
         }
         curCaseID=c.getId();
       }
       if(curCaseID!=cell.getId())
-        pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+        pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
     }
     catch(Exception e)
     {
@@ -901,7 +901,6 @@ public class Function
 
     if(map==null||cell==null||cell2==null||PathFinding.isNextTo(map,cell.getId(),cell2.getId()))
       return -1;
-
 
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,cell.getId(),cell2.getId()).getShortestPath(-1);
 
@@ -1136,9 +1135,9 @@ public class Function
 
     if(F.getPm()<=0)
       return 0;
-    
+
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMap(),fight,F.getCell().getId(),destCase).getShortestPath(-1);
-    
+
     if(path==null)
       return 0;
     ArrayList<GameCase> finalPath=new ArrayList<GameCase>();
@@ -1161,7 +1160,7 @@ public class Function
         if(curDir!=d)
         {
           if(finalPath.indexOf(c)!=0)
-            pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+            pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
           pathstr+=d;
         }
         curCaseID=c.getId();
@@ -1169,7 +1168,7 @@ public class Function
         nbrcase=nbrcase+1;
       }
       if(curCaseID!=F.getCell().getId())
-        pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+        pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
     }
     catch(Exception e)
     {
@@ -1377,7 +1376,7 @@ public class Function
             int infl=0;
             if(f.isCollector())
             {
-              for(Map.Entry<Integer, SortStats> ss : World.world.getGuild(f.getCollector().getGuildId()).getSpells().entrySet())
+              for(Map.Entry<Integer, SortStats> ss : Main.world.getGuild(f.getCollector().getGuildId()).getSpells().entrySet())
               {
                 if(ss.getValue()==null)
                   continue;
@@ -1432,7 +1431,7 @@ public class Function
     Fighter target=null;
     SortStats SS=null;
     target=f;
-    SS=World.world.getSort(587).getStatsByLevel(f.getLvl());
+    SS=Main.world.getSort(587).getStatsByLevel(f.getLvl());
     if(SS==null)
       return 0;
     int heal=fight.tryCastSpell(f,SS,target.getCell().getId());
@@ -1448,7 +1447,7 @@ public class Function
     if(f.isDead())
       return 0;
     SortStats SS=null;
-    SS=World.world.getSort(210).getStatsByLevel(f.getLvl());
+    SS=Main.world.getSort(210).getStatsByLevel(f.getLvl());
     if(SS==null)
       return 0;
     int heal=fight.tryCastSpell(f,SS,A.getCell().getId());
@@ -1494,7 +1493,7 @@ public class Function
             int infl=0;
             if(f.isCollector())
             {
-              for(Map.Entry<Integer, SortStats> ss : World.world.getGuild(f.getCollector().getGuildId()).getSpells().entrySet())
+              for(Map.Entry<Integer, SortStats> ss : Main.world.getGuild(f.getCollector().getGuildId()).getSpells().entrySet())
               {
                 if(ss.getValue()==null)
                   continue;
@@ -1563,7 +1562,7 @@ public class Function
     SortStats ss=null;
     if(F.isCollector())
     {
-      for(Map.Entry<Integer, SortStats> SS : World.world.getGuild(F.getCollector().getGuildId()).getSpells().entrySet())
+      for(Map.Entry<Integer, SortStats> SS : Main.world.getGuild(F.getCollector().getGuildId()).getSpells().entrySet())
       {
         if(SS.getValue()==null)
           continue;
@@ -1631,7 +1630,7 @@ public class Function
     SortStats ss=null;
     if(F.isCollector())
     {
-      for(Map.Entry<Integer, SortStats> SS : World.world.getGuild(F.getCollector().getGuildId()).getSpells().entrySet())
+      for(Map.Entry<Integer, SortStats> SS : Main.world.getGuild(F.getCollector().getGuildId()).getSpells().entrySet())
       {
         if(SS.getValue()==null)
           continue;
@@ -1691,7 +1690,7 @@ public class Function
         }
       }
     }
-   
+
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,cell.getId(),cellID).getShortestPath(-1);
 
     if(path==null||path.isEmpty())
@@ -1718,7 +1717,7 @@ public class Function
         if(curDir!=d)
         {
           if(finalPath.indexOf(c)!=0)
-            pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+            pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
           pathstr+=d;
         }
         curCaseID=c.getId();
@@ -1726,7 +1725,7 @@ public class Function
         nbrcase=nbrcase+1;
       }
       if(curCaseID!=cell.getId())
-        pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+        pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
     }
     catch(Exception e)
     {
@@ -1738,7 +1737,7 @@ public class Function
     if(!fight.onFighterDeplace(F,GA))
       return 0;
 
-    return nbrcase*360;
+    return nbrcase*360+200;
   }
 
   public int moveIfPossiblecontremur(Fight fight, Fighter F, Fighter T)
@@ -1780,9 +1779,9 @@ public class Function
         }
       }
     }
-    
+
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,cell.getId(),cellID).getShortestPath(-1);
-    
+
     if(path==null||path.isEmpty())
       return 0;
 
@@ -1806,7 +1805,7 @@ public class Function
         if(curDir!=d)
         {
           if(finalPath.indexOf(c)!=0)
-            pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+            pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
           pathstr+=d;
         }
         curCaseID=c.getId();
@@ -1814,7 +1813,7 @@ public class Function
         nbrcase=nbrcase+1;
       }
       if(curCaseID!=cell.getId())
-        pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+        pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
     }
     catch(Exception e)
     {
@@ -1868,7 +1867,6 @@ public class Function
         }
       }
     }
-    
 
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,cell.getId(),cellID).getShortestPath(-1);
     if(path==null||path.isEmpty())
@@ -1894,7 +1892,7 @@ public class Function
         if(curDir!=d)
         {
           if(finalPath.indexOf(c)!=0)
-            pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+            pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
           pathstr+=d;
         }
         curCaseID=c.getId();
@@ -1902,7 +1900,7 @@ public class Function
         nbrcase=nbrcase+1;
       }
       if(curCaseID!=cell.getId())
-        pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+        pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
     }
     catch(Exception e)
     {
@@ -1955,7 +1953,7 @@ public class Function
         }
       }
     }
-    
+
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,cell.getId(),cellID).getShortestPath(0); //0pour en ligne
     if(path==null||path.isEmpty())
       return 0;
@@ -1983,7 +1981,7 @@ public class Function
         if(curDir!=d)
         {
           if(finalPath.indexOf(c)!=0)
-            pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+            pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
           pathstr+=d;
         }
         curCaseID=c.getId();
@@ -1991,7 +1989,7 @@ public class Function
         nbrcase=nbrcase+1;
       }
       if(curCaseID!=cell.getId())
-        pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+        pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
     }
     catch(Exception e)
     {
@@ -2002,7 +2000,7 @@ public class Function
     if(!fight.onFighterDeplace(F,GA))
       return 0;
 
-    return nbrcase*360;
+    return nbrcase*450;
   }
 
   public int movecacIfPossible(Fight fight, Fighter F, Fighter T)
@@ -2042,7 +2040,7 @@ public class Function
         }
       }
     }
-    
+
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,cell.getId(),cellID).getShortestPath(-1);
 
     if(path==null||path.isEmpty())
@@ -2068,7 +2066,7 @@ public class Function
         if(curDir!=d)
         {
           if(finalPath.indexOf(c)!=0)
-            pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+            pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
           pathstr+=d;
         }
         curCaseID=c.getId();
@@ -2076,7 +2074,7 @@ public class Function
         nbrcase=nbrcase+1;
       }
       if(curCaseID!=cell.getId())
-        pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+        pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
     }
     catch(Exception e)
     {
@@ -2178,6 +2176,56 @@ public class Function
         continue;
       if(f.getTeam2()!=fighter.getTeam2())//Si c'est un ennemis
       {
+        int d=PathFinding.getDistanceBetween(fight.getMap(),fighter.getCell().getId(),f.getCell().getId());
+        if(d<dist)
+        {
+          dist=d;
+          curF=f;
+        }
+      }
+    }
+    return curF;
+  }
+
+  public Fighter getNearestEnnemyNotListed(Fight fight, Fighter fighter, ArrayList<Fighter> fightList)
+  {
+    if(fight==null||fighter==null)
+      return null;
+    int dist=1000;
+    Fighter curF=null;
+    for(Fighter f : fight.getFighters(3))
+    {
+      if(f.isDead()||fightList.contains(f))
+        continue;
+      if(f.getTeam2()!=fighter.getTeam2())//Si c'est un ennemis
+      {
+        int d=PathFinding.getDistanceBetween(fight.getMap(),fighter.getCell().getId(),f.getCell().getId());
+        if(d<dist)
+        {
+          dist=d;
+          curF=f;
+        }
+      }
+    }
+    return curF;
+  }
+
+  public Fighter getNearestEnnemyNotListedLos(Fight fight, Fighter fighter, ArrayList<Fighter> fightList)
+  {
+    if(fight==null||fighter==null)
+      return null;
+    int dist=1000;
+    Fighter curF=null;
+    for(Fighter f : fight.getFighters(3))
+    {
+      if(f.isDead()||fightList.contains(f))
+        continue;
+      if(f.getTeam2()!=fighter.getTeam2())//Si c'est un ennemis
+      {
+        if(PathFinding.casesAreInSameLine(fight.getMap(),fighter.getCell().getId(),f.getCell().getId(),'z',70))
+          if(!PathFinding.checkLoS(fight.getMap(),fighter.getCell().getId(),f.getCell().getId(),null,true))
+            continue;
+
         int d=PathFinding.getDistanceBetween(fight.getMap(),fighter.getCell().getId(),f.getCell().getId());
         if(d<dist)
         {
@@ -2705,7 +2753,7 @@ public class Function
       return 2;
 
     boolean canAttack=false;
-    
+
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,current.getCell().getId(),getNearestEnnemy(fight,current).getCell().getId()).getShortestPath(-1);
 
     int caseLaunch=-1;
@@ -2784,7 +2832,7 @@ public class Function
           if(curDir!=d)
           {
             if(path.indexOf(c)!=0)
-              pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+              pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
             pathstr+=d;
           }
           curCaseID=c.getId();
@@ -2792,7 +2840,7 @@ public class Function
             break;
         }
         if(curCaseID!=current.getCell().getId())
-          pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+          pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
       }
       catch(Exception e)
       {
@@ -2945,9 +2993,9 @@ public class Function
       return -1;
     if(CellDest==fighter.getCell().getId())
       return targetCell+bestSS.getSpellID()*1000;
-    
+
     ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,fighter.getCell().getId(),CellDest).getShortestPath(-1);
-    
+
     if(path==null)
       return -1;
     String pathstr="";
@@ -2966,13 +3014,13 @@ public class Function
         if(curDir!=d)
         {
           if(path.indexOf(c)!=0)
-            pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+            pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
           pathstr+=d;
         }
         curCaseID=c.getId();
       }
       if(curCaseID!=fighter.getCell().getId())
-        pathstr+=World.world.getCryptManager().cellID_To_Code(curCaseID);
+        pathstr+=Main.world.getCryptManager().cellID_To_Code(curCaseID);
     }
     catch(Exception e)
     {
@@ -3111,7 +3159,7 @@ public class Function
     SortStats ss=null;
     if(F.isCollector())
     {
-      for(Map.Entry<Integer, SortStats> SS : World.world.getGuild(F.getCollector().getGuildId()).getSpells().entrySet())
+      for(Map.Entry<Integer, SortStats> SS : Main.world.getGuild(F.getCollector().getGuildId()).getSpells().entrySet())
       {
         if(SS.getValue()==null)
           continue;
@@ -3131,7 +3179,7 @@ public class Function
           inflMax=Infl1;
         }
 
-        for(Map.Entry<Integer, SortStats> SS2 : World.world.getGuild(F.getCollector().getGuildId()).getSpells().entrySet())
+        for(Map.Entry<Integer, SortStats> SS2 : Main.world.getGuild(F.getCollector().getGuildId()).getSpells().entrySet())
         {
           if(SS2.getValue()==null)
             continue;
@@ -3149,7 +3197,7 @@ public class Function
             Infl2=curInfl;
             inflMax=Infl1+Infl2;
           }
-          for(Map.Entry<Integer, SortStats> SS3 : World.world.getGuild(F.getCollector().getGuildId()).getSpells().entrySet())
+          for(Map.Entry<Integer, SortStats> SS3 : Main.world.getGuild(F.getCollector().getGuildId()).getSpells().entrySet())
           {
             if(SS3.getValue()==null)
               continue;
@@ -3584,6 +3632,338 @@ public class Function
         infTot+=inf;
     }
     return infTot;
+  }
+
+  public int calculInfluence(SpellEffect SE, Fighter C, Fighter T)
+  {
+    int inf=0;
+    switch(SE.getEffectID())
+    {
+      case 9:
+        inf=-50*SE.getValue();
+        break;
+      case 77:
+        inf=180*SE.getValue();
+        break;
+      case 78:
+        inf=-90*SE.getValue();
+        break;
+      case 79:
+        inf=30*SE.getValue();
+        break;
+      case 82:
+        inf=3*SE.getValue();
+        break;
+      case 84:
+        inf=200*SE.getValue();
+        break;
+      case 85:
+        inf=40*SE.getValue();
+        break;
+      case 86:
+        inf=40*SE.getValue();
+        break;
+      case 87:
+        inf=40*SE.getValue();
+        break;
+      case 88:
+        inf=40*SE.getValue();
+        break;
+      case 89:
+        inf=40*SE.getValue();
+        break;
+      case 91:
+        inf=20*SE.getValue();
+        break;
+      case 92:
+        inf=20*SE.getValue();
+        break;
+      case 93:
+        inf=20*SE.getValue();
+        break;
+      case 94:
+        inf=20*SE.getValue();
+        break;
+      case 95:
+        inf=20*SE.getValue();
+        break;
+      case 96:
+        inf=10*SE.getValue();
+        break;
+      case 97:
+        inf=10*SE.getValue();
+        break;
+      case 98:
+        inf=810*SE.getValue();
+        break;
+      case 99:
+        inf=10*SE.getValue();
+        break;
+      case 100:
+        inf=10*SE.getValue();
+        break;
+      case 101:
+        inf=100*SE.getValue();
+        break;
+      case 105:
+        inf=-20*SE.getValue();
+        break;
+      case 106:
+        inf=-400*SE.getValue();
+        break;
+      case 107:
+        inf=-30*SE.getValue();
+        break;
+      case 108:
+        inf=10*SE.getValue();
+        break;
+      case 109:
+        inf=-10*SE.getValue();
+        break;
+      case 110:
+        inf=-1*SE.getValue();
+        break;
+      case 111:
+        inf=-100*SE.getValue();
+        break;
+      case 112:
+        inf=-20*SE.getValue();
+        break;
+      case 114:
+        inf=-200*SE.getValue();
+        break;
+      case 115:
+        inf=-20*SE.getValue();
+        break;
+      case 116:
+        inf=50*SE.getValue();
+        break;
+      case 117:
+        inf=-50*SE.getValue();
+        break;
+      case 118:
+        inf=-1*SE.getValue();
+        break;
+      case 119:
+        inf=-1*SE.getValue();
+        break;
+      case 120:
+        inf=-100*SE.getValue();
+        break;
+      case 121:
+        inf=-20*SE.getValue();
+        break;
+      case 122:
+        inf=-20*SE.getValue();
+        break;
+      case 123:
+        inf=-1*SE.getValue();
+        break;
+      case 124:
+        inf=-2*SE.getValue();
+        break;
+      case 125:
+        inf=-1*SE.getValue();
+        break;
+      case 126:
+        inf=-1*SE.getValue();
+        break;
+      case 127:
+        inf=90*SE.getValue();
+        break;
+      case 128:
+        inf=-90*SE.getValue();
+        break;
+      case 132:
+        inf=20*SE.getValue();
+        break;
+      case 138:
+        inf=-2*SE.getValue();
+        break;
+      case 140:
+        inf=500*SE.getValue();
+        break;
+      case 141:
+        inf=1000*SE.getValue();
+        break;
+      case 142:
+        inf=-15*SE.getValue();
+        break;
+      case 143:
+        inf=-10*SE.getValue();
+        break;
+      case 144:
+        inf=20*SE.getValue();
+        break;
+      case 145:
+        inf=20*SE.getValue();
+        break;
+      case 152:
+        inf=1*SE.getValue();
+        break;
+      case 153:
+        inf=1*SE.getValue();
+        break;
+      case 154:
+        inf=1*SE.getValue();
+        break;
+      case 155:
+        inf=1*SE.getValue();
+        break;
+      case 156:
+        inf=2*SE.getValue();
+        break;
+      case 157:
+        inf=1*SE.getValue();
+        break;
+      case 160:
+        inf=-5*SE.getValue();
+        break;
+      case 161:
+        inf=-5*SE.getValue();
+        break;
+      case 162:
+        inf=5*SE.getValue();
+        break;
+      case 163:
+        inf=5*SE.getValue();
+        break;
+      case 164:
+        inf=-10*SE.getValue();
+        break;
+      case 165:
+        inf=-2*SE.getValue();
+        break;
+      case 168:
+        inf=150*SE.getValue();
+        break;
+      case 169:
+        inf=135*SE.getValue();
+        break;
+      case 171:
+        inf=20*SE.getValue();
+        break;
+      case 178:
+        inf=-3*SE.getValue();
+        break;
+      case 179:
+        inf=3*SE.getValue();
+        break;
+      case 182:
+        inf=-20*SE.getValue();
+        break;
+      case 183:
+        inf=-5*SE.getValue();
+        break;
+      case 184:
+        inf=-5*SE.getValue();
+        break;
+      case 186:
+        inf=-10*SE.getValue();
+        break;
+      case 210:
+        inf=-8*SE.getValue();
+        break;
+      case 211:
+        inf=-8*SE.getValue();
+        break;
+      case 212:
+        inf=-8*SE.getValue();
+        break;
+      case 213:
+        inf=-8*SE.getValue();
+        break;
+      case 214:
+        inf=-8*SE.getValue();
+        break;
+      case 215:
+        inf=8*SE.getValue();
+        break;
+      case 216:
+        inf=8*SE.getValue();
+        break;
+      case 217:
+        inf=8*SE.getValue();
+        break;
+      case 218:
+        inf=8*SE.getValue();
+        break;
+      case 219:
+        inf=8*SE.getValue();
+        break;
+      case 220:
+        inf=-16*SE.getValue();
+        break;
+      case 240:
+        inf=-6*SE.getValue();
+        break;
+      case 241:
+        inf=-6*SE.getValue();
+        break;
+      case 242:
+        inf=-6*SE.getValue();
+        break;
+      case 243:
+        inf=-6*SE.getValue();
+        break;
+      case 244:
+        inf=-6*SE.getValue();
+        break;
+      case 265:
+        inf=-13*SE.getValue();
+        break;
+      case 293:
+        inf=-8*SE.getValue();
+        break;
+      case 765:
+        inf=100*SE.getValue();
+        break;
+      case 781:
+        inf=-80*SE.getValue();
+        break;
+      case 782:
+        inf=80*SE.getValue();
+        break;
+      case 1008:
+        inf=-5*SE.getValue();
+        break;
+      case 1018:
+        inf=20*SE.getValue();
+        break;
+      case 1019:
+        inf=20*SE.getValue();
+        break;
+      case 1020:
+        inf=20*SE.getValue();
+        break;
+      case 1021:
+        inf=20*SE.getValue();
+        break;
+      case 1022:
+        inf=4*SE.getValue();
+        break;
+      case 1023:
+        inf=4*SE.getValue();
+        break;
+      case 1024:
+        inf=4*SE.getValue();
+        break;
+      case 1025:
+        inf=4*SE.getValue();
+        break;
+      case 1026:
+        inf=20*SE.getValue();
+        break;
+      case 1028:
+        inf=300*SE.getValue();
+        break;
+      case 1029:
+        inf=20*SE.getValue();
+        break;
+    }
+    if(C.getTeam()==T.getTeam())
+      inf=-inf;
+    return inf;
   }
 
 }

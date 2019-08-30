@@ -11,10 +11,10 @@ import scruffemu.entity.monster.MobGrade;
 import scruffemu.fight.spells.LaunchedSpell;
 import scruffemu.fight.spells.Spell;
 import scruffemu.fight.spells.SpellEffect;
-import scruffemu.game.World;
 import scruffemu.guild.Guild;
 import scruffemu.main.Config;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.utility.Pair;
 
 import java.util.ArrayList;
@@ -101,8 +101,8 @@ public class Fighter implements Comparable<Fighter>
     this.type=5;
     setCollector(Perco);
     setId(-1);
-    this.pdvMax=(World.world.getGuild(Perco.getGuildId()).getLvl()*100);
-    this.pdv=(World.world.getGuild(Perco.getGuildId()).getLvl()*100);
+    this.pdvMax=(Main.world.getGuild(Perco.getGuildId()).getLvl()*100);
+    this.pdv=(Main.world.getGuild(Perco.getGuildId()).getLvl()*100);
     this.setGfxId(6000);
   }
 
@@ -528,7 +528,7 @@ public class Fighter implements Comparable<Fighter>
       if(this.stats==null)
         this.stats=this.mob.getStats();
     if(this.type==5)
-      stats=World.world.getGuild(getCollector().getGuildId()).getStatsFight();
+      stats=Main.world.getGuild(getCollector().getGuildId()).getStatsFight();
     if(this.type==7)
       stats=getPrism().getStats();
     if(this.type==10)
@@ -706,10 +706,7 @@ public class Fighter implements Comparable<Fighter>
             SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration-1,spellID);
         }
         else if(spellID==908)
-        {
-          System.out.println("reached");
           SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration-1,spellID);
-        }
         else if(duration==-1)
           SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration-1,spellID);
         else if(duration!=1||spellID==101||spellID==2083) //roulette and doplesque roulette two turns
@@ -961,7 +958,7 @@ public class Fighter implements Comparable<Fighter>
     if(this.type==2)
       stats=this.mob.getStats();
     if(this.type==5)
-      stats=World.world.getGuild(getCollector().getGuildId()).getStatsFight();
+      stats=Main.world.getGuild(getCollector().getGuildId()).getStatsFight();
     if(this.type==7)
       stats=this.getPrism().getStats();
     if(this.type==10)
@@ -1027,7 +1024,7 @@ public class Fighter implements Comparable<Fighter>
     if(this.type==2)
       return this.mob.getInit();
     if(this.type==5)
-      return World.world.getGuild(getCollector().getGuildId()).getLvl();
+      return Main.world.getGuild(getCollector().getGuildId()).getLvl();
     if(this.type==7)
       return 0;
     if(this.type==10)
@@ -1174,7 +1171,7 @@ public class Fighter implements Comparable<Fighter>
     if(this.type==2)
       return this.mob.getLevel();
     if(this.type==5)
-      return World.world.getGuild(getCollector().getGuildId()).getLvl();
+      return Main.world.getGuild(getCollector().getGuildId()).getLvl();
     if(this.type==7)
       return getPrism().getLevel();
     if(this.type==10)
@@ -1187,9 +1184,9 @@ public class Fighter implements Comparable<Fighter>
     if(this.perso!=null)
     {
       int max=this.perso.getLevel()+1;
-      if(max>World.world.getExpLevelSize())
-        max=World.world.getExpLevelSize();
-      return World.world.getExpLevel(this.perso.getLevel()).perso+str+this.perso.getExp()+str+World.world.getExpLevel(max).perso;
+      if(max>Main.world.getExpLevelSize())
+        max=Main.world.getExpLevelSize();
+      return Main.world.getExpLevel(this.perso.getLevel()).perso+str+this.perso.getExp()+str+Main.world.getExpLevel(max).perso;
     }
     return "0"+str+"0"+str+"0";
   }
@@ -1280,7 +1277,7 @@ public class Fighter implements Comparable<Fighter>
       case 5://Perco
         str.append("-6;");//Perco
         str.append("6000^100;");//GFXID^Size
-        Guild G=World.world.getGuild(this.collector.getGuildId());
+        Guild G=Main.world.getGuild(this.collector.getGuildId());
         str.append(G.getLvl()).append(";");
         str.append("1;");
         str.append("2;4;");

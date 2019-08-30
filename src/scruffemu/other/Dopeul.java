@@ -8,6 +8,7 @@ import scruffemu.game.World;
 import scruffemu.utility.Pair;
 import scruffemu.game.action.ExchangeAction;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.object.ObjectTemplate;
 
@@ -27,7 +28,7 @@ public class Dopeul
   public static void getReward(Player player, int type)
   {
     GameMap curMap=player.getCurMap();
-    int idMap=World.world.getTempleByClasse(player.getClasse());
+    int idMap=Main.world.getTempleByClasse(player.getClasse());
     switch(type)
     {
       case 1: //Sort sp�cial
@@ -61,7 +62,7 @@ public class Dopeul
           SocketManager.GAME_SEND_Im_PACKET(player,"14");
           return;
         }
-        GameObject obj=World.world.getObjTemplate(10207).createNewItem(1,true);
+        GameObject obj=Main.world.getObjTemplate(10207).createNewItem(1,true);
         if(player.addObjet(obj,false))
           World.addGameObject(obj,true);
         removeObject(player,doplon,1);
@@ -113,7 +114,7 @@ public class Dopeul
         player.getStats().addOneStat(126,-player.getStats().getEffect(126));
         player.addCapital((player.getLevel()-1)*5-player.get_capital());
 
-        ObjectTemplate OT=World.world.getObjTemplate(10601); // On lui donne un certificat de restat
+        ObjectTemplate OT=Main.world.getObjTemplate(10601); // On lui donne un certificat de restat
         GameObject obj2=OT.createNewItem(1,false);
         if(player.addObjet(obj2,true)) //Si le joueur n'avait pas d'item similaire
           World.addGameObject(obj2,true);
@@ -129,7 +130,7 @@ public class Dopeul
           SocketManager.GAME_SEND_Im_PACKET(player,"14");
           return;
         }
-        obj=World.world.getObjTemplate(1575).createNewItem(1,true);
+        obj=Main.world.getObjTemplate(1575).createNewItem(1,true);
         if(player.addObjet(obj,false))
           World.addGameObject(obj,true);
         for(int id : doplons)

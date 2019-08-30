@@ -1,11 +1,13 @@
 package scruffemu.entity.npc;
 
+import scruffemu.area.map.GameCase;
 import scruffemu.area.map.GameMap;
 import scruffemu.client.Player;
 import scruffemu.common.PathFinding;
 import scruffemu.common.SocketManager;
 import scruffemu.entity.Npc;
-import scruffemu.game.World;
+import scruffemu.main.Main;
+import scruffemu.utility.Pair;
 
 import java.util.ArrayList;
 
@@ -21,7 +23,7 @@ public class NpcMovable extends Npc
   public NpcMovable(int id, int cellid, byte orientation, short mapid, NpcTemplate template)
   {
     super(id,cellid,orientation,template);
-    this.map=World.world.getMap(mapid);
+    this.map=Main.world.getMap(mapid);
     this.path=template.getPath().split(";");
     NpcMovable.movables.add(this);
   }
@@ -51,16 +53,13 @@ public class NpcMovable extends Npc
         oldCell=cell;
       }
 
-      String path;
-      try
+      final Pair<Integer, ArrayList<GameCase>> pathCells=PathFinding.getPath(this.map,(short)oldCell,(short)this.getCellid(),-1);
+      if(pathCells==null)
       {
-        path=PathFinding.getShortestStringPathBetween(this.map,this.getCellid(),oldCell,25);
-      }
-      catch(Exception e)
-      {
-        e.printStackTrace();
         return;
       }
+      final ArrayList<GameCase> cells=pathCells.getRight();
+      String path=PathFinding.getPathToString(this.map,cells,(short)oldCell,false);
 
       if(path==null)
         return;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import scruffemu.game.World;
+import scruffemu.main.Main;
 
 public class HdvTemplate
 {
@@ -38,7 +38,7 @@ public class HdvTemplate
       //Boucle dans toutes les lignes pour essayer de trouver des objets de m�mes stats
       if(line.addEntry(toAdd))//Si une ligne l'accepte, arr�te la m�thode.
         return;
-    int lineId=World.world.getNextLineHdvId();
+    int lineId=Main.world.getNextLineHdvId();
     this.getLines().put(lineId,new HdvLine(lineId,toAdd));
   }
 

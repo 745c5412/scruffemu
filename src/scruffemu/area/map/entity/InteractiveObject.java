@@ -2,14 +2,13 @@ package scruffemu.area.map.entity;
 
 import scruffemu.area.map.GameCase;
 import scruffemu.area.map.GameMap;
-import scruffemu.area.map.maze.Minotoror;
 import scruffemu.client.Player;
 import scruffemu.common.SocketManager;
 import scruffemu.entity.monster.MobGroup;
 import scruffemu.game.Updatable;
-import scruffemu.game.World;
 import scruffemu.job.JobConstant;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.other.Dopeul;
 import scruffemu.quest.Quest;
@@ -57,7 +56,7 @@ public class InteractiveObject
     this.map=iMap;
     this.cell=iCell;
     this.state=JobConstant.IOBJECT_STATE_FULL;
-    this.template=World.world.getIOTemplate(this.id);
+    this.template=Main.world.getIOTemplate(this.id);
     this.walkable=this.getTemplate()!=null&&this.getTemplate().isWalkable()&&this.state==JobConstant.IOBJECT_STATE_FULL;
   }
 
@@ -225,19 +224,19 @@ public class InteractiveObject
         break;
       case 7041: // Bas
         SocketManager.GAME_SEND_ACTION_TO_DOOR(player.getCurMap(),cell.getId(),true);
-        Minotoror.ouvrirBas(player.getCurMap());
+        Main.world.minotoror.ouvrirBas(player.getCurMap());
         break;
       case 7042: // Haut
         SocketManager.GAME_SEND_ACTION_TO_DOOR(player.getCurMap(),cell.getId(),true);
-        Minotoror.ouvrirHaut(player.getCurMap());
+        Main.world.minotoror.ouvrirHaut(player.getCurMap());
         break;
       case 7043: // Gauche
         SocketManager.GAME_SEND_ACTION_TO_DOOR(player.getCurMap(),cell.getId(),true);
-        Minotoror.ouvrirGauche(player.getCurMap());
+        Main.world.minotoror.ouvrirGauche(player.getCurMap());
         break;
       case 7044: // Droite
         SocketManager.GAME_SEND_ACTION_TO_DOOR(player.getCurMap(),cell.getId(),true);
-        Minotoror.ouvrirDroite(player.getCurMap());
+        Main.world.minotoror.ouvrirDroite(player.getCurMap());
         break;
       default:
         break;

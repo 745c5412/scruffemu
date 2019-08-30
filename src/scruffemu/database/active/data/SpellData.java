@@ -7,7 +7,6 @@ import scruffemu.entity.monster.Monster;
 import scruffemu.entity.monster.MobGrade;
 import scruffemu.fight.spells.Spell;
 import scruffemu.fight.spells.Spell.SortStats;
-import scruffemu.game.World;
 import scruffemu.main.Main;
 
 import java.sql.ResultSet;
@@ -43,9 +42,9 @@ public class SpellData extends AbstractDAO<Spell>
       {
         int id=RS.getInt("id");
 
-        if(World.world.getSort(id)!=null)
+        if(Main.world.getSort(id)!=null)
         {
-          Spell spell=World.world.getSort(id);
+          Spell spell=Main.world.getSort(id);
           spell.setInfos(RS.getInt("sprite"),RS.getString("spriteInfos"),RS.getString("effectTarget"),RS.getInt("type"),RS.getInt("duration"));
           SortStats l1=parseSortStats(id,1,RS.getString("lvl1"));
           SortStats l2=parseSortStats(id,2,RS.getString("lvl2"));
@@ -85,11 +84,11 @@ public class SpellData extends AbstractDAO<Spell>
           sort.addSortStats(4,l4);
           sort.addSortStats(5,l5);
           sort.addSortStats(6,l6);
-          World.world.addSort(sort);
+          Main.world.addSort(sort);
         }
       }
       if(modif)
-        for(Monster monster : World.world.getMonstres())
+        for(Monster monster : Main.world.getMonstres())
           monster.getGrades().values().forEach(MobGrade::refresh);
     }
     catch(SQLException e)

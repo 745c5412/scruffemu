@@ -8,6 +8,7 @@ import scruffemu.database.Database;
 import scruffemu.entity.npc.NpcTemplate;
 import scruffemu.game.World;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.utility.Pair;
 
@@ -103,15 +104,15 @@ public class NpcExchangePets
     {
       if(Pair1.getRight()==0)
         continue;
-      if(World.world.getObjTemplate(Pair1.getLeft())==null)
+      if(Main.world.getObjTemplate(Pair1.getLeft())==null)
         continue;
       if(World.getGameObject(objetToChange.getGuid())==null)
         continue;
       GameObject obj1=null;
-      if(World.world.getObjTemplate(Pair1.getLeft()).getType()==18)
-        obj1=World.world.getObjTemplate(Pair1.getLeft()).createNewFamilier(objetToChange);
-      if(World.world.getObjTemplate(Pair1.getLeft()).getType()==77)
-        obj1=World.world.getObjTemplate(Pair1.getLeft()).createNewCertificat(objetToChange);
+      if(Main.world.getObjTemplate(Pair1.getLeft()).getType()==18)
+        obj1=Main.world.getObjTemplate(Pair1.getLeft()).createNewFamilier(objetToChange);
+      if(Main.world.getObjTemplate(Pair1.getLeft()).getType()==77)
+        obj1=Main.world.getObjTemplate(Pair1.getLeft()).createNewCertificat(objetToChange);
 
       if(obj1==null)
         continue;
@@ -119,7 +120,7 @@ public class NpcExchangePets
         World.addGameObject(obj1,true);
       SocketManager.GAME_SEND_Im_PACKET(this.player,"021;"+Pair1.getRight()+"~"+Pair1.getLeft());
     }
-    World.world.removeGameObject(objetToChange.getGuid());
+    Main.world.removeGameObject(objetToChange.getGuid());
     this.player.setExchangeAction(null);
     SocketManager.GAME_SEND_EXCHANGE_VALID(this.player.getGameClient(),'a');
     SocketManager.GAME_SEND_Ow_PACKET(this.player);

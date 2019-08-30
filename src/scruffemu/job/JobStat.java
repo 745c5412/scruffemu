@@ -4,8 +4,8 @@ import scruffemu.area.map.GameCase;
 import scruffemu.area.map.entity.InteractiveObject;
 import scruffemu.client.Player;
 import scruffemu.common.SocketManager;
-import scruffemu.game.World;
 import scruffemu.game.action.GameAction;
+import scruffemu.main.Main;
 
 import java.util.ArrayList;
 
@@ -106,7 +106,7 @@ public class JobStat
     int exLvl=this.lvl;
     this.xp+=xp;
 
-    while(this.xp>=World.world.getExpLevel(this.lvl+1).metier&&this.lvl<100)
+    while(this.xp>=Main.world.getExpLevel(this.lvl+1).metier&&this.lvl<100)
       levelUp(P,false);
 
     if(this.lvl>exLvl&&P.isOnline())
@@ -124,7 +124,7 @@ public class JobStat
 
   public String getXpString(String s)
   {
-    return String.valueOf(World.world.getExpLevel(this.lvl).metier)+s+this.xp+s+World.world.getExpLevel((this.lvl<100 ? this.lvl+1 : this.lvl)).metier;
+    return String.valueOf(Main.world.getExpLevel(this.lvl).metier)+s+this.xp+s+Main.world.getExpLevel((this.lvl<100 ? this.lvl+1 : this.lvl)).metier;
   }
 
   public void levelUp(Player P, boolean send)

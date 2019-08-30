@@ -17,12 +17,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
-
-import scruffemu.game.World;
+import java.util.regex.Pattern;
 
 public class PathFinding
 {
-
+  public static char[] DIRECTIONS= { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
+  private static Short _nroMovimientos=0;
+  
   @SuppressWarnings("deprecation")
   private static Integer nSteps=new Integer(0);
   private static class CeldaCamino
@@ -49,7 +50,7 @@ public class PathFinding
       {
         String SmallPath=path.substring(i,i+3);
         char dir=SmallPath.charAt(0);
-        int dirCaseID=World.world.getCryptManager().cellCode_To_ID(SmallPath.substring(1));
+        int dirCaseID=Main.world.getCryptManager().cellCode_To_ID(SmallPath.substring(1));
         nSteps=0;
         //Si en combat et Si Pas d�but du path, on v�rifie tacle
         if(fight!=null&&i!=0&&getEnemyFighterArround(newPos,map,fight)!=null)
@@ -77,7 +78,7 @@ public class PathFinding
         {
           newPos=Integer.parseInt(aPathInfos[1]);
           Steps+=nSteps;
-          newPath.append(dir+World.world.getCryptManager().cellID_To_Code(newPos));
+          newPath.append(dir+Main.world.getCryptManager().cellID_To_Code(newPos));
           pathRef.set(newPath.toString());
           return -Steps;
         }
@@ -90,7 +91,7 @@ public class PathFinding
         {
           newPos=Integer.parseInt(aPathInfos[1]);
           Steps+=nSteps;
-          newPath.append(dir+World.world.getCryptManager().cellID_To_Code(newPos));
+          newPath.append(dir+Main.world.getCryptManager().cellID_To_Code(newPos));
           pathRef.set(newPath.toString());
           return -Steps-10000;
         }
@@ -99,7 +100,7 @@ public class PathFinding
           pathRef.set(newPath.toString());
           return -1000;
         }
-        newPath.append(dir+World.world.getCryptManager().cellID_To_Code(newPos));
+        newPath.append(dir+Main.world.getCryptManager().cellID_To_Code(newPos));
       }
       pathRef.set(newPath.toString());
       return Steps;
@@ -173,7 +174,7 @@ public class PathFinding
   {
     nSteps=0;
     char dir=Path.charAt(0);
-    int dirCaseID=World.world.getCryptManager().cellCode_To_ID(Path.substring(1)),
+    int dirCaseID=Main.world.getCryptManager().cellCode_To_ID(Path.substring(1)),
         check=("353;339;325;311;297;283;269;255;241;227;213;228;368;354;340;326;312;298;284;270;256;242;243;257;271;285;299;313;327;341;355;369;383".contains(String.valueOf(targetCell)) ? 1 : 0);
 
     if(fight!=null&&fight.isOccuped(dirCaseID))
@@ -1531,7 +1532,7 @@ public class PathFinding
       }
 
       for(int i=0;i<zoneStr.length()/2;i++)
-        aoeSizes.add(World.world.getCryptManager().getIntByHashedValue(zoneStr.charAt(2*i+1)));
+        aoeSizes.add(Main.world.getCryptManager().getIntByHashedValue(zoneStr.charAt(2*i+1)));
       ArrayList<GameCase> cases=new ArrayList<GameCase>();
       if(map.getCase(cellID)==null)
         return cases;
@@ -1652,7 +1653,7 @@ public class PathFinding
       if(map.getCase(cellID)==null)
         return cases;
       cases.add(map.getCase(cellID));
-      int taille=World.world.getCryptManager().getIntByHashedValue(zoneStr.charAt(c+1));
+      int taille=Main.world.getCryptManager().getIntByHashedValue(zoneStr.charAt(c+1));
       switch(zoneStr.charAt(c))
       {
         case 'C':// Cercle
@@ -1983,7 +1984,7 @@ public class PathFinding
   {
     if(start==dest)
       return null;
-    Pair<Integer, ArrayList<GameCase>> prePath=PathFinding.getPath(map,(short)start,(short)dest,distMax);
+    Pair<Integer, ArrayList<GameCase>> prePath=PathFinding.getPath(map,(short)start,(short)dest,-1);
     ArrayList<GameCase> path=null;
     if(prePath!=null)
       path=prePath.getRight();
@@ -2001,7 +2002,7 @@ public class PathFinding
       if(curDir!=d)
       {
         if(path.indexOf(c)!=0)
-          pathstr=pathstr+World.world.getCryptManager().cellID_To_Code(curCaseID);
+          pathstr=pathstr+Main.world.getCryptManager().cellID_To_Code(curCaseID);
         pathstr=pathstr+d;
         curDir=d;
       }
@@ -2009,11 +2010,11 @@ public class PathFinding
     }
     if(curCaseID!=start)
     {
-      pathstr=pathstr+World.world.getCryptManager().cellID_To_Code(curCaseID);
+      pathstr=pathstr+Main.world.getCryptManager().cellID_To_Code(curCaseID);
     }
     if(pathstr=="")
       return null;
-    return "a"+World.world.getCryptManager().cellID_To_Code(start)+pathstr;
+    return "a"+Main.world.getCryptManager().cellID_To_Code(start)+pathstr;
   }
 
   public static boolean isBord1(int id)
@@ -2381,7 +2382,7 @@ public class PathFinding
       return cases;
     cases.add(map.getCase(cellID));
 
-    int taille=World.world.getCryptManager().getIntByHashedValue(zoneStr.charAt(c+1));
+    int taille=Main.world.getCryptManager().getIntByHashedValue(zoneStr.charAt(c+1));
     switch(zoneStr.charAt(c))
     {
       case 'C':// Cercle
@@ -2513,7 +2514,7 @@ public class PathFinding
           }
           CeldaCamino _celdaCamino=_celdasCamino1.get(_loc20);
           _celdasCamino1.remove(_loc20);
-          if(_celdaCamino.num==celdaDestino)
+          if(_celdaCamino.num==celdaDestino) //end
           {
             final ArrayList<GameCase> _tempCeldas=new ArrayList<GameCase>();
             while(_celdaCamino.num!=celdaInicio)
@@ -2733,5 +2734,231 @@ public class PathFinding
         return (short)(celdaID-mapa.getW()+1);// diagonal derecha arriba
     }
     return -1;
+  }
+  
+  public static byte getIndexDireccion(char c)
+  {
+    byte b=0;
+    for(char a : DIRECTIONS)
+    {
+      if(a==c)
+        return b;
+      b++;
+    }
+    return 0;
+  }
+  
+  public static short cellMoveSprite(final GameMap map, final int cell)
+  {
+    final ArrayList<Short> celdasPosibles=new ArrayList<Short>();
+    final short ancho=map.getW();
+    final short[] dir= { (short)-ancho, (short)-(ancho-1), (short)(ancho-1), ancho };
+    for(final short element : dir)
+    {
+      try
+      {
+        if(cell+element>14||cell+element<464)
+        {
+          if(map.getCase((short)(cell+element)).isWalkable(false))
+          {
+            celdasPosibles.add((short)(cell+element));
+          }
+        }
+      }
+      catch(Exception e)
+      {
+      }
+    }
+    if(celdasPosibles.size()<=0)
+    {
+      return -1;
+    }
+    return celdasPosibles.get(Formulas.getRandomValue(0,celdasPosibles.size()-1));
+  }
+  
+  public static char direccionEntreDosCeldas(final GameMap mapa, final short celdaInicio, final short celdaDestino, final boolean esPelea)
+  {
+    if(celdaInicio==celdaDestino||mapa==null)
+    {
+      return 0;
+    }
+    if(!esPelea)
+    {
+      final byte ancho=mapa.getW();
+      final byte[] _loc6= { 1, ancho, (byte)(ancho*2-1), (byte)(ancho-1), -1, (byte)-ancho, (byte)(-ancho*2+1), (byte)-(ancho-1) };
+      final int _loc7=celdaDestino-celdaInicio;
+      for(int _loc8=7;_loc8>=0;_loc8--)
+      {
+        if(_loc6[_loc8]==_loc7)
+        {
+          return DIRECTIONS[_loc8];
+        }
+      }
+    }
+    GameCase cInicio=mapa.getCase(celdaInicio);
+    GameCase cDestino=mapa.getCase(celdaDestino);
+    final int difX=cDestino.getX()-cInicio.getX();
+    final int difY=cDestino.getY()-cInicio.getY();
+    if(difX==0)
+    {
+      if(difY>0)
+      {
+        return DIRECTIONS[3];
+      }
+      else
+      {
+        return DIRECTIONS[7];
+      }
+    }
+    else if(difX>0)
+    {
+      return DIRECTIONS[1];
+    }
+    else
+    {
+      return DIRECTIONS[5];
+    }
+  }
+  
+  public static String getPathToString(GameMap mapa, ArrayList<GameCase> celdas, short celdaInicio, boolean esPelea)
+  {
+    StringBuilder pathStr=new StringBuilder();
+    short tempCeldaID=celdaInicio;
+    for(final GameCase celda : celdas)
+    {
+      final char dir=direccionEntreDosCeldas(mapa,tempCeldaID,(short)celda.getId(),esPelea);
+      if(dir==0)
+      {
+        return "";
+      }
+      pathStr.append(dir);
+      pathStr.append(Main.world.getCryptManager().cellID_To_Code(celda.getId()));
+      tempCeldaID=(short)celda.getId();
+    }
+    return pathStr.toString();
+  }
+  
+  public static short numeroMovimientos(final GameMap mapa, final Fight pelea, final AtomicReference<String> pathRef, final short celdaInicio, final short celdaFinal, Player perso)
+  {
+    synchronized(_nroMovimientos)
+    {
+      _nroMovimientos=0;
+      short nuevaCelda=celdaInicio;
+      short movimientos=0;
+      final String path=pathRef.get();
+      final StringBuilder nuevoPath=new StringBuilder();
+      for(int i=0;i<path.length();i+=3)
+      {
+        if(path.length()<i+3)
+        {
+          return movimientos;
+        }
+        final String miniPath=path.substring(i,i+3);
+        final char dir=miniPath.charAt(0);
+        final short celdaTemp=(short)Main.world.getCryptManager().cellCode_To_ID(miniPath.substring(1));
+        _nroMovimientos=0;
+        
+        final String[] aPathInfos=pathSimpleValido(nuevaCelda,celdaTemp,dir,mapa,pelea,celdaFinal,perso).split(Pattern.quote(";"));
+        if(aPathInfos[0].equalsIgnoreCase("invisible"))
+        {
+          nuevaCelda=Short.parseShort(aPathInfos[1]);
+          movimientos+=_nroMovimientos;
+          nuevoPath.append(dir+Main.world.getCryptManager().cellID_To_Code(nuevaCelda));
+          pathRef.set(nuevoPath.toString());
+          return (short)(movimientos+20000);
+        }
+        else if(aPathInfos[0].equalsIgnoreCase("stop")||aPathInfos[0].equalsIgnoreCase("trampa"))
+        {
+          nuevaCelda=Short.parseShort(aPathInfos[1]);
+          movimientos+=_nroMovimientos;
+          nuevoPath.append(dir+Main.world.getCryptManager().cellID_To_Code(nuevaCelda));
+          pathRef.set(nuevoPath.toString());
+          return (short)(movimientos+10000);
+        }
+        else if(aPathInfos[0].equalsIgnoreCase("ok"))
+        {
+          nuevaCelda=celdaTemp;
+          movimientos+=_nroMovimientos;
+        }
+        else if(aPathInfos[0].equalsIgnoreCase("no"))
+        {
+          pathRef.set(nuevoPath.toString());
+          return -1000;
+        }
+        nuevoPath.append(dir+Main.world.getCryptManager().cellID_To_Code(nuevaCelda));
+      }
+      pathRef.set(nuevoPath.toString());
+      return movimientos;
+    }
+  }
+  
+  private static String pathSimpleValido(final short celdaID, final short celdaSemiFinal, final char dir, final GameMap mapa, final Fight pelea, final short celdaFinalDest, Player perso)
+  {
+    _nroMovimientos=0;
+    // if (pelea != null && pelea.celdaOcupada(celdaFinal)) {
+    // return "stop:" + celdaFinal;
+    // }
+    short ultimaCelda=celdaID;
+    for(_nroMovimientos=1;_nroMovimientos<=64;_nroMovimientos++)
+    {
+      final short celdaTempID=getSigIDCeldaMismaDir(ultimaCelda,dir,mapa,pelea!=null);
+      GameCase celdaTemp=mapa.getCase(celdaTempID);
+      if(celdaTemp==null||!celdaTemp.isWalkable(true))
+      {
+        return "stop;"+ultimaCelda;
+      }
+      if(pelea!=null)
+      {
+        Fighter ocupado=mapa.getCase(celdaTempID).getFirstFighter();
+        Fighter luchTurno=pelea.getFighterByOrdreJeu();
+        if(ocupado!=null)
+        {
+          _nroMovimientos--;
+          if(ocupado.isHide()&&ocupado.getTeam()!=luchTurno.getTeam())
+          {
+            return ("invisible;"+ultimaCelda);
+          }
+          else
+          {
+            return ("stop;"+ultimaCelda);
+          }
+        }
+        if(celdaTempID!=celdaFinalDest)
+        {
+          // si algun luchador esta alrededor por donde va a pasar
+          //Fighter alrededor=this.ge //getEnemigoAlrededor(celdaTempID,mapa,null,-2);
+          Fighter alrededor=getEnemyAround(celdaTempID,mapa,pelea);
+          if(alrededor!=null&&alrededor.getId()!=luchTurno.getId())
+          {
+            if(alrededor.isHide()&&alrededor.getTeam()!=luchTurno.getTeam())
+            {
+              return "invisible;"+celdaTempID;
+            }
+            else
+            {
+              return "stop;"+celdaTempID;
+            }
+          }
+          // si se topa con una trampa
+          if(pelea.getAllTraps()!=null&&pelea.getAllTraps().size()!=0)
+          {
+            for(final Trap trampa : pelea.getAllTraps())
+            {
+              final int dist=getDistanceBetween(mapa,trampa.getCell().getId(),celdaTempID);
+              if(dist<=trampa.getSize())
+              {
+                return "trampa;"+celdaTempID;
+              }
+            }
+          }
+        }
+      }
+      if(celdaTempID==celdaSemiFinal)
+      {
+        return "ok";
+      }
+      ultimaCelda=celdaTempID;
+    }
+    return "no";
   }
 }

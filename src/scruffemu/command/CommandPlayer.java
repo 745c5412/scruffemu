@@ -2,7 +2,6 @@ package scruffemu.command;
 
 import scruffemu.client.Player;
 import scruffemu.common.SocketManager;
-import scruffemu.game.World;
 import scruffemu.main.Config;
 import scruffemu.main.Main;
 
@@ -174,7 +173,7 @@ public class CommandPlayer
   {
     String message="List of connected staff members:";
     boolean vide=true;
-    for(Player player : World.world.getOnlinePlayers())
+    for(Player player : Main.world.getOnlinePlayers())
     {
       if(player==null)
       {
@@ -507,7 +506,7 @@ public class CommandPlayer
     if(msg.length()>8)
     {
       String name=msg.substring(8,msg.length()-1);
-      target=World.world.getPlayerByName(name);
+      target=Main.world.getPlayerByName(name);
     }
 
     if(target==null)
@@ -543,7 +542,7 @@ public class CommandPlayer
     final int min=(int)(uptime/60000L);
     uptime%=60000L;
     int sec=(int)(uptime/1000L);
-    int nbPlayer=World.world.getOnlinePlayers().size();
+    int nbPlayer=Main.world.getOnlinePlayers().size();
     int nbPlayerIp=Main.gameServer.getPlayersNumberByIp();
     String mess="The server has been online for: "+jour+" days, "+hour+" hours, "+min+" minutes and "+sec+" seconds.";
     if(nbPlayer>0)

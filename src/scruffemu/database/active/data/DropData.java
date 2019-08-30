@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import scruffemu.database.active.AbstractDAO;
 import scruffemu.entity.monster.Monster;
 import scruffemu.game.World;
+import scruffemu.main.Main;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,8 +38,8 @@ public class DropData extends AbstractDAO<World.Drop>
       ResultSet RS=result.resultSet;
       while(RS.next())
       {
-        Monster MT=World.world.getMonstre(RS.getInt("monsterId"));
-        if(World.world.getObjTemplate(RS.getInt("objectId"))!=null&&MT!=null)
+        Monster MT=Main.world.getMonstre(RS.getInt("monsterId"));
+        if(Main.world.getObjTemplate(RS.getInt("objectId"))!=null&&MT!=null)
         {
           String action=RS.getString("action");
           String condition="";
@@ -56,7 +57,8 @@ public class DropData extends AbstractDAO<World.Drop>
           percents.add(RS.getDouble("percentGrade5"));
 
           MT.addDrop(new World.Drop(RS.getInt("objectId"),percents,RS.getInt("ceil"),Integer.parseInt(action),RS.getInt("level"),condition,RS.getInt("minDrop"),RS.getInt("maxDrop")));
-        } else
+        }
+        else
         {
           if(MT==null&&RS.getInt("monsterId")==0)
           {
@@ -75,7 +77,7 @@ public class DropData extends AbstractDAO<World.Drop>
             percents.add(RS.getDouble("percentGrade4"));
             percents.add(RS.getDouble("percentGrade5"));
             World.Drop drop=new World.Drop(RS.getInt("objectId"),percents,RS.getInt("ceil"),Integer.parseInt(action),RS.getInt("level"),condition,RS.getInt("minDrop"),RS.getInt("maxDrop"));
-            World.world.getMonstres().stream().filter(monster -> monster!=null).forEach(monster -> monster.addDrop(drop));
+            Main.world.getMonstres().stream().filter(monster -> monster!=null).forEach(monster -> monster.addDrop(drop));
           }
         }
       }
@@ -91,7 +93,7 @@ public class DropData extends AbstractDAO<World.Drop>
 
   public void reload()
   {
-    World.world.getMonstres().stream().filter(m -> m!=null).filter(m -> m.getDrops()!=null).forEach(m -> m.getDrops().clear());
+    Main.world.getMonstres().stream().filter(m -> m!=null).filter(m -> m.getDrops()!=null).forEach(m -> m.getDrops().clear());
     load();
   }
 }

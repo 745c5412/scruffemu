@@ -42,6 +42,7 @@ public class IA39 extends AbstractNeedSpell
       if(L!=null)
         if(L.isHide())
           L=null;
+      
       if(this.fighter.getCurPa(this.fight)>0&&L3!=null&&C==null&&!action)
       {
         int value=Function.getInstance().attackIfPossible(this.fight,this.fighter,this.highests);
@@ -52,6 +53,7 @@ public class IA39 extends AbstractNeedSpell
           action=true;
         }
       }
+      
       if(this.fighter.getCurPm(this.fight)>0&&C==null||this.attack==1&&this.fighter.getCurPm(this.fight)>0)
       {
         int value=Function.getInstance().moveenfaceIfPossible(this.fight,this.fighter,ennemy,maxPo+1);

@@ -4,6 +4,7 @@ import scruffemu.client.Player;
 import scruffemu.common.Formulas;
 import scruffemu.common.SocketManager;
 import scruffemu.game.World;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 
 public class Noel
@@ -28,7 +29,7 @@ public class Noel
     {//All objects
       template=Integer.parseInt(objectOne.split(",")[Formulas.getRandomValue(0,objectOne.split(",").length-1)]);
     }
-    GameObject obj=World.world.getObjTemplate(template).createNewItem(1,false);
+    GameObject obj=Main.world.getObjTemplate(template).createNewItem(1,false);
     if(player.addObjet(obj,true))
       World.addGameObject(obj,true);
     SocketManager.GAME_SEND_Ow_PACKET(player);
@@ -49,7 +50,7 @@ public class Noel
     {//All objects
       template=Integer.parseInt(objectTwo.split(",")[Formulas.getRandomValue(0,objectTwo.split(",").length-1)]);
     }
-    GameObject obj=World.world.getObjTemplate(template).createNewItem(1,false);
+    GameObject obj=Main.world.getObjTemplate(template).createNewItem(1,false);
     if(player.addObjet(obj,true))
       World.addGameObject(obj,true);
     SocketManager.GAME_SEND_Ow_PACKET(player);
@@ -70,7 +71,7 @@ public class Noel
     {//All objects
       template=Integer.parseInt(objectTree.split(",")[Formulas.getRandomValue(0,objectTree.split(",").length-1)]);
     }
-    GameObject obj=World.world.getObjTemplate(template).createNewItem(1,false);
+    GameObject obj=Main.world.getObjTemplate(template).createNewItem(1,false);
     if(player.addObjet(obj,true))
       World.addGameObject(obj,true);
     SocketManager.GAME_SEND_Ow_PACKET(player);
@@ -91,7 +92,7 @@ public class Noel
     {//All objects
       template=Integer.parseInt(objectFour.split(",")[Formulas.getRandomValue(0,objectFour.split(",").length-1)]);
     }
-    GameObject obj=World.world.getObjTemplate(template).createNewItem(1,false);
+    GameObject obj=Main.world.getObjTemplate(template).createNewItem(1,false);
     if(player.addObjet(obj,true))
       World.addGameObject(obj,true);
     SocketManager.GAME_SEND_Ow_PACKET(player);
@@ -112,7 +113,7 @@ public class Noel
     {//All objects
       template=Integer.parseInt(objectFive.split(",")[Formulas.getRandomValue(0,objectFive.split(",").length-1)]);
     }
-    GameObject obj=World.world.getObjTemplate(template).createNewItem(1,false);
+    GameObject obj=Main.world.getObjTemplate(template).createNewItem(1,false);
     if(player.addObjet(obj,true))
       World.addGameObject(obj,true);
     SocketManager.GAME_SEND_Ow_PACKET(player);

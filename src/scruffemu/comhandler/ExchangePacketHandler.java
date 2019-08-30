@@ -2,7 +2,6 @@ package scruffemu.comhandler;
 
 import scruffemu.client.Account;
 import scruffemu.database.Database;
-import scruffemu.game.World;
 import scruffemu.main.Config;
 import scruffemu.main.Main;
 
@@ -26,7 +25,7 @@ public class ExchangePacketHandler
             switch(packet.charAt(1))
             {
               case '?': //Required
-                int i=Main.gameServer.MAX_PLAYERS-World.world.getOnlinePlayers().size();
+                int i=Main.gameServer.MAX_PLAYERS-Main.world.getOnlinePlayers().size();
                 Main.exchangeClient.send("F"+i);
                 break;
             }
@@ -72,12 +71,12 @@ public class ExchangePacketHandler
             {
               case 'A': //Add
                 int id=Integer.parseInt(packet.substring(2));
-                Account account=World.world.getAccount(id);
+                Account account=Main.world.getAccount(id);
 
                 if(account==null)
                 {
                   Database.getStatics().getAccountData().load(id);
-                  account=World.world.getAccount(id);
+                  account=Main.world.getAccount(id);
                 }
 
                 if(account!=null)
@@ -91,7 +90,7 @@ public class ExchangePacketHandler
                 id=Integer.parseInt(packet.substring(2));
                 Database.getStatics().getPlayerData().updateAllLogged(id,0);
                 Database.getStatics().getAccountData().setLogged(id,0);
-                account=World.world.getAccount(id);
+                account=Main.world.getAccount(id);
 
                 if(account!=null)
                   if(account.getGameClient()!=null)
@@ -110,7 +109,7 @@ public class ExchangePacketHandler
                 {
                   String[] split=data.split(";");
                   long count=Long.parseLong(split[0].substring(1));
-                  Queue<?> queue=World.world.getDataQueue().queues.get(count);
+                  Queue<?> queue=Main.world.getDataQueue().queues.get(count);
 
                   switch(Byte.parseByte(String.valueOf(data.charAt(0))))
                   {
@@ -133,7 +132,7 @@ public class ExchangePacketHandler
                   //String prefix="<font color='#C35617'>["+(new SimpleDateFormat("HH:mm").format(new Date(System.currentTimeMillis())))+"] ("+CommandPlayer.getCanal()+") ("+split[1]+") <b>"+split[0]+"</b>";
                   //final String message="Im116;"+prefix+"~"+split[2]+"</font>";
 
-                  //World.world.getOnlinePlayers().stream().filter(p -> p!=null&&!p.noall).forEach(p -> p.send(message.replace("%20"," ")));
+                  //Main.world.getOnlinePlayers().stream().filter(p -> p!=null&&!p.noall).forEach(p -> p.send(message.replace("%20"," ")));
                 }
                 break;
             }

@@ -23,15 +23,19 @@ public class IA12 extends AbstractNeedSpell
     if(!this.stop&&this.fighter.canPlay()&&this.count>0)
     {
       Fighter ennemy=Function.getInstance().getNearestEnnemy(this.fight,this.fighter);
-      int PA=this.fighter.getCurPa(this.fight),PM=this.fighter.getCurPm(this.fight),time=100,maxPo=1;
+      int PA=this.fighter.getCurPa(this.fight),PM=this.fighter.getCurPm(this.fight),time=100,maxPo=1,apCost=5;
       boolean action=false;
 
       if(this.fighter.getMob().getPa()<PA)
         this.boost=true;
 
       for(SortStats spellStats : this.highests)
+      {
         if(spellStats!=null&&spellStats.getMaxPO()>maxPo)
           maxPo=spellStats.getMaxPO();
+        else if(spellStats!=null&&spellStats.getPACost()<apCost)
+          apCost=spellStats.getPACost();
+      }
 
       Fighter target=Function.getInstance().getNearestEnnemynbrcasemax(this.fight,this.fighter,0,3);
 
@@ -39,7 +43,7 @@ public class IA12 extends AbstractNeedSpell
         if(target.isHide())
           target=null;
 
-      if(PM>0&&target==null&&this.attack==0||PM>0&&target==null&&this.attack==1&&this.boost)
+      if(PM>0&&target==null&&this.attack==0||PM>0&&target==null&&this.boost&&PA>=apCost)
       {
         int num=Function.getInstance().movediagIfPossible(this.fight,this.fighter,ennemy);
         if(num!=0)
@@ -75,7 +79,8 @@ public class IA12 extends AbstractNeedSpell
         this.stop=true;
 
       addNext(this::decrementCount,time);
-    } else
+    }
+    else
     {
       this.stop=true;
     }

@@ -4,9 +4,9 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import scruffemu.client.Player;
 import scruffemu.database.active.AbstractDAO;
-import scruffemu.game.World;
 import scruffemu.guild.Guild;
 import scruffemu.guild.GuildMember;
+import scruffemu.main.Main;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -42,7 +42,7 @@ public class GuildMemberData extends AbstractDAO<Object>
       {
         try
         {
-          Guild g=World.world.getGuild(RS.getInt("guild"));
+          Guild g=Main.world.getGuild(RS.getInt("guild"));
           if(g!=null)
             g.addMember(RS.getInt("guid"),RS.getInt("rank"),RS.getByte("pxp"),RS.getLong("xpdone"),RS.getInt("rights"),RS.getString("lastConnection").replaceAll("-","~"));
         }

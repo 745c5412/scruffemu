@@ -4,7 +4,6 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import scruffemu.database.active.AbstractDAO;
 import scruffemu.entity.npc.NpcTemplate;
-import scruffemu.game.World;
 import scruffemu.main.Main;
 import scruffemu.object.ObjectTemplate;
 
@@ -81,7 +80,7 @@ public class NpcTemplateData extends AbstractDAO<NpcTemplate>
         String initQId=RS.getString("initQuestion");
         String ventes=RS.getString("ventes");
         String exchanges=RS.getString("exchanges");
-        World.world.addNpcTemplate(new NpcTemplate(id,bonusValue,gfxID,scaleX,scaleY,sex,color1,color2,color3,access,extraClip,customArtWork,initQId,ventes,exchanges,RS.getString("path"),RS.getByte("informations")));
+        Main.world.addNpcTemplate(new NpcTemplate(id,bonusValue,gfxID,scaleX,scaleY,sex,color1,color2,color3,access,extraClip,customArtWork,initQId,ventes,exchanges,RS.getString("path"),RS.getByte("informations")));
       }
     }
     catch(SQLException e)
@@ -103,7 +102,7 @@ public class NpcTemplateData extends AbstractDAO<NpcTemplate>
       ResultSet RS=result.resultSet;
       while(RS.next())
       {
-        if(World.world.getNPCTemplate(RS.getInt("id"))==null)
+        if(Main.world.getNPCTemplate(RS.getInt("id"))==null)
         {
           int id=RS.getInt("id");
           int bonusValue=RS.getInt("bonusValue");
@@ -120,8 +119,9 @@ public class NpcTemplateData extends AbstractDAO<NpcTemplate>
           String initQId=RS.getString("initQuestion");
           String ventes=RS.getString("ventes");
           String exchanges=RS.getString("exchanges");
-          World.world.addNpcTemplate(new NpcTemplate(id,bonusValue,gfxID,scaleX,scaleY,sex,color1,color2,color3,access,extraClip,customArtWork,initQId,ventes,exchanges,RS.getString("path"),RS.getByte("informations")));
-        } else
+          Main.world.addNpcTemplate(new NpcTemplate(id,bonusValue,gfxID,scaleX,scaleY,sex,color1,color2,color3,access,extraClip,customArtWork,initQId,ventes,exchanges,RS.getString("path"),RS.getByte("informations")));
+        }
+        else
         {
           int id=RS.getInt("id");
           int bonusValue=RS.getInt("bonusValue");
@@ -138,7 +138,7 @@ public class NpcTemplateData extends AbstractDAO<NpcTemplate>
           String initQId=RS.getString("initQuestion");
           String ventes=RS.getString("ventes");
           String exchanges=RS.getString("exchanges");
-          World.world.getNPCTemplate(RS.getInt("id")).setInfos(id,bonusValue,gfxID,scaleX,scaleY,sex,color1,color2,color3,access,extraClip,customArtWork,initQId,ventes,exchanges,RS.getString("path"),RS.getByte("informations"));
+          Main.world.getNPCTemplate(RS.getInt("id")).setInfos(id,bonusValue,gfxID,scaleX,scaleY,sex,color1,color2,color3,access,extraClip,customArtWork,initQId,ventes,exchanges,RS.getString("path"),RS.getByte("informations"));
         }
 
       }

@@ -4,7 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import scruffemu.area.map.entity.Animation;
 import scruffemu.database.active.AbstractDAO;
-import scruffemu.game.World;
+import scruffemu.main.Main;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,7 +24,7 @@ public class AnimationData extends AbstractDAO<Animation> {
             result = getData("SELECT * from animations");
             ResultSet RS = result.resultSet;
             while (RS.next()) {
-                World.world.addAnimation(new Animation(RS.getInt("guid"), RS.getInt("id"), RS.getString("nom"), RS.getInt("area"), RS.getInt("action"), RS.getInt("size")));
+                Main.world.addAnimation(new Animation(RS.getInt("guid"), RS.getInt("id"), RS.getString("nom"), RS.getInt("area"), RS.getInt("action"), RS.getInt("size")));
             }
         } catch (SQLException e) {
             super.sendError("AnimationData load", e);

@@ -4,7 +4,6 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import scruffemu.database.active.AbstractDAO;
 import scruffemu.entity.monster.Monster;
-import scruffemu.game.World;
 import scruffemu.main.Main;
 
 import java.sql.ResultSet;
@@ -55,7 +54,7 @@ public class MonsterData extends AbstractDAO<Monster>
         int aggroDistance=RS.getInt("aggroDistance");
         boolean capturable=RS.getInt("capturable")==1;
         Monster monster=new Monster(id,gfxID,align,colors,grades,spells,stats,statsInfos,pdvs,pts,inits,mK,MK,xp,IAType,capturable,aggroDistance);
-        World.world.addMobTemplate(id,monster);
+        Main.world.addMobTemplate(id,monster);
       }
     }
     catch(SQLException e)
@@ -94,12 +93,13 @@ public class MonsterData extends AbstractDAO<Monster>
         String xp=RS.getString("exps");
         int aggroDistance=RS.getInt("aggroDistance");
         boolean capturable=(RS.getInt("capturable")==1);
-        if(World.world.getMonstre(id)==null)
+        if(Main.world.getMonstre(id)==null)
         {
-          World.world.addMobTemplate(id,new Monster(id,gfxID,align,colors,grades,spells,stats,statsInfos,pdvs,pts,inits,mK,MK,xp,IAType,capturable,aggroDistance));
-        } else
+          Main.world.addMobTemplate(id,new Monster(id,gfxID,align,colors,grades,spells,stats,statsInfos,pdvs,pts,inits,mK,MK,xp,IAType,capturable,aggroDistance));
+        }
+        else
         {
-          World.world.getMonstre(id).setInfos(gfxID,align,colors,grades,spells,stats,statsInfos,pdvs,pts,inits,mK,MK,xp,IAType,capturable,aggroDistance);
+          Main.world.getMonstre(id).setInfos(gfxID,align,colors,grades,spells,stats,statsInfos,pdvs,pts,inits,mK,MK,xp,IAType,capturable,aggroDistance);
         }
       }
     }

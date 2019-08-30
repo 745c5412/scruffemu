@@ -8,6 +8,7 @@ import scruffemu.database.Database;
 import scruffemu.game.World;
 import scruffemu.game.action.ExchangeAction;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class Trunk
 
   public static Trunk getTrunkIdByCoord(int map_id, int cell_id)
   {
-    for(Entry<Integer, Trunk> trunk : World.world.getTrunks().entrySet())
+    for(Entry<Integer, Trunk> trunk : Main.world.getTrunks().entrySet())
       if(trunk.getValue().getMapId()==map_id&&trunk.getValue().getCellId()==cell_id)
         return trunk.getValue();
     return null;
@@ -88,7 +89,7 @@ public class Trunk
 
   public static ArrayList<Trunk> getTrunksByHouse(House h)
   {
-    ArrayList<Trunk> trunks=World.world.getTrunks().entrySet().stream().filter(trunk -> trunk.getValue().getHouseId()==h.getId()).map(Entry::getValue).collect(Collectors.toCollection(ArrayList::new));
+    ArrayList<Trunk> trunks=Main.world.getTrunks().entrySet().stream().filter(trunk -> trunk.getValue().getHouseId()==h.getId()).map(Entry::getValue).collect(Collectors.toCollection(ArrayList::new));
     return trunks;
   }
 
@@ -208,7 +209,7 @@ public class Trunk
     if(player.getFight()!=null||player.getExchangeAction()!=null)
       return;
 
-    House house=World.world.getHouse(getHouseId());
+    House house=Main.world.getHouse(getHouseId());
 
     if(house.getOwnerId()==player.getAccID()&&this.getOwnerId()!=player.getAccID())
       this.setOwnerId(player.getAccID());
@@ -300,7 +301,7 @@ public class Trunk
         //On enleve l'objet du sac du joueur
         P.removeItem(PersoObj.getGuid());
         //On enleve l'objet du monde
-        World.world.removeGameObject(PersoObj.getGuid());
+        Main.world.removeGameObject(PersoObj.getGuid());
         //On ajoute la quantit� a l'objet dans le coffre
         TrunkObj.setQuantity(TrunkObj.getQuantity()+PersoObj.getQuantity());
         //on envoie l'ajout au coffre de l'objet
@@ -384,7 +385,7 @@ public class Trunk
 
         this.object.remove(TrunkObj.getGuid());
 
-        World.world.removeGameObject(TrunkObj.getGuid());
+        Main.world.removeGameObject(TrunkObj.getGuid());
         //On Modifie la quantit� de l'item du sac du joueur
         PersoObj.setQuantity(PersoObj.getQuantity()+TrunkObj.getQuantity());
         //On envoie les packets

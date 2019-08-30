@@ -17,9 +17,7 @@ public class CryptManager
 
   public String cellID_To_Code(int cellID)
   {
-
-    int char1=cellID/64,char2=cellID%64;
-    return HASH[char1]+""+HASH[char2];
+    return HASH[cellID/64]+""+HASH[cellID%64];
   }
 
   public int cellCode_To_ID(String cellCode)
@@ -50,6 +48,22 @@ public class CryptManager
   public char getHashedValueByInt(int c)
   {
     return HASH[c];
+  }
+  
+  public char getValorHashPorNumero(int c)
+  {
+    try
+    {
+      if(c>=HASH.length||c<0)
+      {
+        c=0;
+      }
+      return HASH[c];
+    }
+    catch(Exception e)
+    {
+      return 'a';
+    }
   }
 
   public ArrayList<GameCase> parseStartCell(GameMap map, int num)

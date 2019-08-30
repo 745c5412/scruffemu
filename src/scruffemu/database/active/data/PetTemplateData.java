@@ -4,7 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import scruffemu.database.active.AbstractDAO;
 import scruffemu.entity.pet.Pet;
-import scruffemu.game.World;
+import scruffemu.main.Main;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,7 +39,7 @@ public class PetTemplateData extends AbstractDAO<Pet>
       {
         i++;
 
-        World.world.addPets(new Pet(RS.getInt("TemplateID"),RS.getInt("Type"),RS.getString("Gap"),RS.getString("StatsUp"),RS.getInt("Max"),RS.getInt("Gain"),RS.getInt("DeadTemplate"),RS.getInt("Epo"),RS.getInt("StatsMax"),RS.getString("jet")));
+        Main.world.addPets(new Pet(RS.getInt("TemplateID"),RS.getInt("Type"),RS.getString("Gap"),RS.getString("StatsUp"),RS.getInt("Max"),RS.getInt("Gain"),RS.getInt("DeadTemplate"),RS.getInt("Epo"),RS.getInt("StatsMax"),RS.getString("jet")));
       }
     }
     catch(SQLException e)

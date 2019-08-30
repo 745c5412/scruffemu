@@ -4,6 +4,7 @@ import scruffemu.client.Player;
 import scruffemu.common.Formulas;
 import scruffemu.common.SocketManager;
 import scruffemu.game.World;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 
 public class Loterie
@@ -16,13 +17,13 @@ public class Loterie
         if(perso.hasItemTemplate(15001,1))
         {
           int objIdWin=getCadeau1();
-          //ObjectTemplate objWin = World.world.getObjTemplate(objIdWin);
+          //ObjectTemplate objWin = Main.world.getObjTemplate(objIdWin);
           //String objName = objWin.getName();
           //SocketManager.GAME_SEND_cMK_PACKET_TO_MAP(perso.getCurMap(), "", -5, "Roulette", "F�licitation "+perso.getName()+" ! Tu viens de gagn� : '"+objName+"'.");
           perso.removeByTemplateID(15001,1);
           SocketManager.GAME_SEND_Im_PACKET(perso,"022;"+1+"~"+15001);
           SocketManager.GAME_SEND_Im_PACKET(perso,"021;"+1+"~"+objIdWin);
-          GameObject newObjAdded=World.world.getObjTemplate(objIdWin).createNewItem(1,false);
+          GameObject newObjAdded=Main.world.getObjTemplate(objIdWin).createNewItem(1,false);
           if(!perso.addObjetSimiler(newObjAdded,true,-1))
           {
             World.addGameObject(newObjAdded,true);
@@ -37,13 +38,13 @@ public class Loterie
         if(perso.hasItemTemplate(19072,1))
         {
           int objIdWin=getCadeau2();
-          //ObjectTemplate objWin = World.world.getObjTemplate(objIdWin);
+          //ObjectTemplate objWin = Main.world.getObjTemplate(objIdWin);
           //String objName = objWin.getName();
           //SocketManager.GAME_SEND_cMK_PACKET_TO_MAP(perso.getCurMap(), "", -5, "Roulette", "F�licitation "+perso.getName()+" ! Tu viens de gagn� : '"+objName+"'.");
           perso.removeByTemplateID(19072,1);
           SocketManager.GAME_SEND_Im_PACKET(perso,"022;"+1+"~"+19072);
           SocketManager.GAME_SEND_Im_PACKET(perso,"021;"+1+"~"+objIdWin);
-          GameObject newObjAdded=World.world.getObjTemplate(objIdWin).createNewItem(1,false);
+          GameObject newObjAdded=Main.world.getObjTemplate(objIdWin).createNewItem(1,false);
           if(!perso.addObjetSimiler(newObjAdded,true,-1))
           {
             World.addGameObject(newObjAdded,true);
@@ -61,7 +62,7 @@ public class Loterie
   {
     int objIdWin=getCadeauPioute();
     SocketManager.GAME_SEND_Im_PACKET(perso,"021;"+1+"~"+objIdWin);
-    GameObject newObjAdded=World.world.getObjTemplate(objIdWin).createNewItem(1,false);
+    GameObject newObjAdded=Main.world.getObjTemplate(objIdWin).createNewItem(1,false);
     if(!perso.addObjetSimiler(newObjAdded,true,-1))
     {
       World.addGameObject(newObjAdded,true);

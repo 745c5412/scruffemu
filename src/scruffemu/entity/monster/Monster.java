@@ -1,7 +1,8 @@
 package scruffemu.entity.monster;
 
-import scruffemu.game.World;
 import scruffemu.game.World.Drop;
+import scruffemu.main.Main;
+
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -64,7 +65,7 @@ public class Monster
         catch(Exception e)
         {
           e.printStackTrace();
-          World.world.logger.error("#1# Error loading monster with id "+id);
+          Main.world.logger.error("#1# Error loading monster with id "+id);
         }
         //PA / PM
         int PA=3;
@@ -82,13 +83,13 @@ public class Monster
           }
           catch(Exception e1)
           {
-            World.world.logger.error("#2# Erreur lors du chargement du monstre (template) : "+id);
+            Main.world.logger.error("#2# Erreur lors du chargement du monstre (template) : "+id);
             e1.printStackTrace();
           }
         }
         catch(Exception e)
         {
-          World.world.logger.error("#3# Erreur lors du chargement du monstre (template) : "+id);
+          Main.world.logger.error("#3# Erreur lors du chargement du monstre (template) : "+id);
           e.printStackTrace();
         }
         grades.put(G,new MobGrade(this,G,level,PA,PM,resists,stats,thisStatsInfos,spells,pdvmax,init,xp,n));
@@ -141,7 +142,7 @@ public class Monster
         catch(Exception e)
         {
           e.printStackTrace();
-          World.world.logger.error("#4# Erreur lors du chargement du monstre (template) : "+id);
+          Main.world.logger.error("#4# Erreur lors du chargement du monstre (template) : "+id);
         }
         //PA / PM
         int PA=3;
@@ -159,13 +160,13 @@ public class Monster
           }
           catch(Exception e1)
           {
-            World.world.logger.error("#5# Erreur lors du chargement du monstre (template) : "+id);
+            Main.world.logger.error("#5# Erreur lors du chargement du monstre (template) : "+id);
             e1.printStackTrace();
           }
         }
         catch(Exception e)
         {
-          World.world.logger.error("#6# Erreur lors du chargement du monstre (template) : "+id);
+          Main.world.logger.error("#6# Erreur lors du chargement du monstre (template) : "+id);
           e.printStackTrace();
         }
         grades.put(G,new MobGrade(this,G,level,PA,PM,resists,stats,thisStatsInfos,spells,pdvmax,init,xp,n));

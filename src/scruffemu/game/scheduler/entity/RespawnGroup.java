@@ -6,7 +6,7 @@ import java.util.Map;
 
 import scruffemu.area.map.GameMap;
 import scruffemu.common.Formulas;
-import scruffemu.game.World;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.utility.Pair;
 
@@ -52,9 +52,9 @@ public class RespawnGroup implements Runnable
         long time=System.currentTimeMillis();
         if(this.cell!=-1) //is fixed group
         {
-          if(World.world.getGroupFix(getMap().getId(),getCell())!=null)
+          if(Main.world.getGroupFix(getMap().getId(),getCell())!=null)
           {
-            Map<String, String> data=World.world.getGroupFix(getMap().getId(),getCell());
+            Map<String, String> data=Main.world.getGroupFix(getMap().getId(),getCell());
             if(time-this.lastTime>Long.parseLong(data.get("timer")))
             {
               getMap().addStaticGroup(getCell(),data.get("groupData"),true);
@@ -62,9 +62,9 @@ public class RespawnGroup implements Runnable
               break;
             }
           }
-          else if(World.world.getRandomGroupFix(getMap().getId(),getCell())!=null) //is random fixed group
+          else if(Main.world.getRandomGroupFix(getMap().getId(),getCell())!=null) //is random fixed group
           {
-            Map<String, String> data2=World.world.getRandomGroupFix(getMap().getId(),getCell());
+            Map<String, String> data2=Main.world.getRandomGroupFix(getMap().getId(),getCell());
             if(data2.size()!=0)
             {
               if(time-this.lastTime>Long.parseLong(data2.get("timer")))

@@ -47,7 +47,7 @@ public class Account
     this.banned=banned;
     this.lastIP=lastIp;
     this.lastConnectionDate=lastConnectionDate;
-    this.hdvsItems=World.world.getMyItems(guid);
+    this.hdvsItems=Main.world.getMyItems(guid);
     this.points=points;
     this.subscriber=subscriber;
     this.muteTime=muteTime;
@@ -289,7 +289,7 @@ public class Account
   public Map<Integer, Player> getPlayers()
   {
     Map<Integer, Player> players=new HashMap<>();
-    new CopyOnWriteArrayList<>(World.world.getPlayers()).stream().filter(player -> player!=null).filter(player -> player.getAccount()!=null).filter(player -> player.getAccount().getId()==this.getId()).forEach(player -> {
+    new CopyOnWriteArrayList<>(Main.world.getPlayers()).stream().filter(player -> player!=null).filter(player -> player.getAccount()!=null).filter(player -> player.getAccount().getId()==this.getId()).forEach(player -> {
       if(player.getGameClient()==null)
         player.setAccount(this);
       players.put(player.getId(),player);
@@ -364,14 +364,14 @@ public class Account
   public void deletePlayer(int guid)
   {
     if(this.getPlayers().containsKey(guid))
-      World.world.removePlayer(this.getPlayers().get(guid));
+      Main.world.removePlayer(this.getPlayers().get(guid));
   }
 
   public void sendOnline()
   {
     for(int id : this.friends)
     {
-      Player player=World.world.getPlayer(id);
+      Player player=Main.world.getPlayer(id);
       if(player!=null&&player.is_showFriendConnection()&&player.isOnline()&&player.getAccount().isFriendWith(this.id))
         SocketManager.GAME_SEND_FRIEND_ONLINE(this.currentPlayer,player);
     }
@@ -385,7 +385,7 @@ public class Account
       return;
     }
 
-    Account account=World.world.getAccount(id);
+    Account account=Main.world.getAccount(id);
 
     if(account==null)
     {
@@ -457,7 +457,7 @@ public class Account
       return "";
     for(int i : this.friends)
     {
-      Account C=World.world.getAccount(i);
+      Account C=Main.world.getAccount(i);
       if(C==null)
         continue;
       str.append("|").append(C.getPseudo());
@@ -482,7 +482,7 @@ public class Account
     if(!this.enemys.contains(guid))
     {
       this.enemys.add(guid);
-      Player Pr=World.world.getPlayerByName(packet);
+      Player Pr=Main.world.getPlayerByName(packet);
       SocketManager.GAME_SEND_ADD_ENEMY(this.currentPlayer,Pr);
       Database.getStatics().getAccountData().update(this);
     } else
@@ -527,7 +527,7 @@ public class Account
       return "";
     for(int i : this.enemys)
     {
-      Account C=World.world.getAccount(i);
+      Account C=Main.world.getAccount(i);
       if(C==null)
         continue;
       str.append("|").append(C.getPseudo());
@@ -587,13 +587,13 @@ public class Account
 
     if(this.currentPlayer.addObjetSimiler(obj,true,-1))
     {
-      World.world.removeGameObject(obj.getGuid());
+      Main.world.removeGameObject(obj.getGuid());
     } else
     {
       this.currentPlayer.addObjet(obj);
     }
     Database.getDynamics().getHdvObjectData().delete(entry.getGameObject().getGuid());
-    World.world.getHdv(hdvID).delEntry(entry);//Retire l'item de l'HDV
+    Main.world.getHdv(hdvID).delEntry(entry);//Retire l'item de l'HDV
 
     Database.getStatics().getPlayerData().update(this.currentPlayer);
     return true;
@@ -692,7 +692,7 @@ public class Account
     player.resetVars();
     this.resetAllChars();
     Database.getStatics().getAccountData().update(this);
-    World.world.logger.info("The player "+player.getName()+" come to disconnect.");
+    Main.world.logger.info("The player "+player.getName()+" come to disconnect.");
     Main.refreshTitle();
   }
 

@@ -3,7 +3,6 @@ package scruffemu.database.active.data;
 import com.zaxxer.hikari.HikariDataSource;
 
 import scruffemu.database.active.AbstractDAO;
-import scruffemu.game.World;
 import scruffemu.main.Boutique;
 import scruffemu.main.Main;
 import scruffemu.main.Tokenshop;
@@ -41,13 +40,13 @@ public class ObjectTemplateData extends AbstractDAO<ObjectTemplate>
       while(RS.next())
       {
         ObjectTemplate template=new ObjectTemplate(RS.getInt("id"),RS.getString("statsTemplate"),RS.getString("name"),RS.getInt("type"),RS.getInt("level"),RS.getInt("pod"),RS.getInt("prix"),RS.getInt("panoplie"),RS.getString("conditions"),RS.getString("armesInfos"),RS.getInt("sold"),RS.getInt("avgPrice"),RS.getInt("points"),RS.getInt("newPrice"),RS.getInt("boutique"),RS.getInt("tokenShop"),RS.getInt("tokens"));
-        if(World.world.getObjTemplate(RS.getInt("id"))!=null)
+        if(Main.world.getObjTemplate(RS.getInt("id"))!=null)
         {
-          World.world.getObjTemplate(RS.getInt("id")).setInfos(RS.getString("statsTemplate"),RS.getString("name"),RS.getInt("type"),RS.getInt("level"),RS.getInt("pod"),RS.getInt("prix"),RS.getInt("panoplie"),RS.getString("conditions"),RS.getString("armesInfos"),RS.getInt("sold"),RS.getInt("avgPrice"),RS.getInt("points"),RS.getInt("newPrice"));
+          Main.world.getObjTemplate(RS.getInt("id")).setInfos(RS.getString("statsTemplate"),RS.getString("name"),RS.getInt("type"),RS.getInt("level"),RS.getInt("pod"),RS.getInt("prix"),RS.getInt("panoplie"),RS.getString("conditions"),RS.getString("armesInfos"),RS.getInt("sold"),RS.getInt("avgPrice"),RS.getInt("points"),RS.getInt("newPrice"));
         }
         else
         {
-          World.world.addObjTemplate(template);
+          Main.world.addObjTemplate(template);
         }
         if(RS.getInt("boutique")!=0)
         {

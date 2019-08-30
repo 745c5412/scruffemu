@@ -4,9 +4,9 @@ import scruffemu.client.Account;
 import scruffemu.client.Player;
 import scruffemu.common.SocketManager;
 import scruffemu.database.Database;
-import scruffemu.game.World;
 import scruffemu.guild.Guild;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -39,7 +39,7 @@ public class House
 
   public static House getHouseIdByCoord(int map_id, int cell_id)
   {
-    for(Entry<Integer, House> house : World.world.getHouses().entrySet())
+    for(Entry<Integer, House> house : Main.world.getHouses().entrySet())
       if(house.getValue().getMapId()==map_id&&house.getValue().getCellId()==cell_id)
         return house.getValue();
     return null;
@@ -47,16 +47,16 @@ public class House
 
   public static void load(Player player, int newMapID)
   {
-    World.world.getHouses().entrySet().stream().filter(house -> house.getValue().getMapId()==newMapID).forEach(house -> {
+    Main.world.getHouses().entrySet().stream().filter(house -> house.getValue().getMapId()==newMapID).forEach(house -> {
       StringBuilder packet=new StringBuilder();
       packet.append("P").append(house.getValue().getId()).append("|");
       if(house.getValue().getOwnerId()>0)
       {
-        Account C=World.world.getAccount(house.getValue().getOwnerId());
+        Account C=Main.world.getAccount(house.getValue().getOwnerId());
         if(C==null)//Ne devrait pas arriver
           packet.append("undefined;");
         else
-          packet.append(World.world.getAccount(house.getValue().getOwnerId()).getPseudo()).append(";");
+          packet.append(Main.world.getAccount(house.getValue().getOwnerId()).getPseudo()).append(";");
       } else
       {
         packet.append(";");
@@ -69,7 +69,7 @@ public class House
 
       if(house.getValue().getGuildId()>0) //Maison de guilde
       {
-        Guild G=World.world.getGuild(house.getValue().getGuildId());
+        Guild G=Main.world.getGuild(house.getValue().getGuildId());
         if(G!=null)
         {
           String Gname=G.getName();
@@ -141,7 +141,7 @@ public class House
     for(Trunk trunk : Trunk.getTrunksByHouse(house))
     {
       if(house.getOwnerId()>0)
-        trunk.moveTrunkToBank(World.world.getAccount(house.getOwnerId()));//D�placement des items vers la banque
+        trunk.moveTrunkToBank(Main.world.getAccount(house.getOwnerId()));//D�placement des items vers la banque
 
       kamas+=trunk.getKamas();
       trunk.setKamas(0);//Retrait kamas
@@ -153,7 +153,7 @@ public class House
     //Ajoute des kamas dans la banque du vendeur
     if(house.getOwnerId()>0)
     {
-      Account seller=World.world.getAccount(house.getOwnerId());
+      Account seller=Main.world.getAccount(house.getOwnerId());
       seller.setBankKamas(seller.getBankKamas()+house.getSale()+kamas);
 
       if(seller.getCurrentPlayer()!=null)//FIXME: change the packet (Im)
@@ -216,7 +216,7 @@ public class House
   {
     boolean isFirst=true;
     StringBuilder packet=new StringBuilder("+");
-    for(Entry<Integer, House> house : World.world.getHouses().entrySet())
+    for(Entry<Integer, House> house : Main.world.getHouses().entrySet())
     {
       if(house.getValue().getGuildId()==P.get_guild().getId()&&house.getValue().getGuildRights()>0)
       {
@@ -224,7 +224,7 @@ public class House
         int id=house.getValue().getOwnerId();
         if(id!=-1)
         {
-          Account a=World.world.getAccount(id);
+          Account a=Main.world.getAccount(id);
           if(a!=null)
           {
             name=a.getPseudo();
@@ -233,20 +233,20 @@ public class House
         if(isFirst)
         {
           packet.append(house.getKey()+";");
-          if(World.world.getPlayer(house.getValue().getOwnerId())==null)
+          if(Main.world.getPlayer(house.getValue().getOwnerId())==null)
             packet.append(name+";");
           else
-            packet.append(World.world.getPlayer(house.getValue().getOwnerId()).getAccount().getPseudo()+";");
-          packet.append(World.world.getMap((short)house.getValue().getHouseMapId()).getX()+","+World.world.getMap((short)house.getValue().getHouseMapId()).getY()+";0;"+house.getValue().getGuildRights());
+            packet.append(Main.world.getPlayer(house.getValue().getOwnerId()).getAccount().getPseudo()+";");
+          packet.append(Main.world.getMap((short)house.getValue().getHouseMapId()).getX()+","+Main.world.getMap((short)house.getValue().getHouseMapId()).getY()+";0;"+house.getValue().getGuildRights());
           isFirst=false;
         } else
         {
           packet.append("|"+house.getKey()+";");
-          if(World.world.getPlayer(house.getValue().getOwnerId())==null)
+          if(Main.world.getPlayer(house.getValue().getOwnerId())==null)
             packet.append(name+";");
           else
-            packet.append(World.world.getPlayer(house.getValue().getOwnerId()).getAccount().getPseudo()+";");
-          packet.append(World.world.getMap((short)house.getValue().getHouseMapId()).getX()+","+World.world.getMap((short)house.getValue().getHouseMapId()).getY()+";0;"+house.getValue().getGuildRights());
+            packet.append(Main.world.getPlayer(house.getValue().getOwnerId()).getAccount().getPseudo()+";");
+          packet.append(Main.world.getMap((short)house.getValue().getHouseMapId()).getX()+","+Main.world.getMap((short)house.getValue().getHouseMapId()).getY()+";0;"+house.getValue().getGuildRights());
         }
       }
     }
@@ -255,7 +255,7 @@ public class House
 
   public static boolean alreadyHaveHouse(Player P)
   {
-    for(Entry<Integer, House> house : World.world.getHouses().entrySet())
+    for(Entry<Integer, House> house : Main.world.getHouses().entrySet())
       if(house.getValue().getOwnerId()==P.getAccID())
         return true;
     return false;
@@ -308,7 +308,7 @@ public class House
   public static byte houseOnGuild(int GuildID)
   {
     byte i=0;
-    for(Entry<Integer, House> house : World.world.getHouses().entrySet())
+    for(Entry<Integer, House> house : Main.world.getHouses().entrySet())
       if(house.getValue().getGuildId()==GuildID)
         i++;
     return i;
@@ -320,7 +320,7 @@ public class House
     if(!h.isHouse(P,h))
       return;
     int Pguid=Integer.parseInt(packet);
-    Player Target=World.world.getPlayer(Pguid);
+    Player Target=Main.world.getPlayer(Pguid);
     if(Target==null||!Target.isOnline()||Target.getFight()!=null||Target.getCurMap().getId()!=P.getCurMap().getId())
       return;
     Target.teleport(h.getMapId(),h.getCellId());
@@ -329,7 +329,7 @@ public class House
 
   public static House getHouseByPerso(Player P)//Connaitre la MAPID + CELLID de sa maison
   {
-    for(Entry<Integer, House> house : World.world.getHouses().entrySet())
+    for(Entry<Integer, House> house : Main.world.getHouses().entrySet())
       if(house.getValue().getOwnerId()==P.getAccID())
         return house.getValue();
     return null;
@@ -337,7 +337,7 @@ public class House
 
   public static void removeHouseGuild(int GuildID)
   {
-    for(Entry<Integer, House> h : World.world.getHouses().entrySet())
+    for(Entry<Integer, House> h : Main.world.getHouses().entrySet())
     {
       if(h.getValue().getGuildId()==GuildID)
       {

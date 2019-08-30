@@ -89,7 +89,7 @@ public class Quest
         e.printStackTrace();
       }
     }
-    this.npc=World.world.getNPCTemplate(aNpc);
+    this.npc=Main.world.getNPCTemplate(aNpc);
     try
     {
       if(!action.equalsIgnoreCase("")&&!args.equalsIgnoreCase(""))
@@ -108,7 +108,7 @@ public class Quest
     catch(Exception e)
     {
       e.printStackTrace();
-      World.world.logger.error("Erreur avec l action et les args de la quete "+this.id+".");
+      Main.world.logger.error("Erreur avec l action et les args de la quete "+this.id+".");
     }
   }
 
@@ -425,7 +425,7 @@ public class Quest
     { //Item a donner
       for(Entry<Integer, Integer> entry : ansObjectif.getItem().entrySet())
       {
-        ObjectTemplate objT=World.world.getObjTemplate(entry.getKey());
+        ObjectTemplate objT=Main.world.getObjTemplate(entry.getKey());
         int qua=entry.getValue();
         GameObject obj=objT.createNewItem(qua,false);
         if(perso.addObjet(obj,true))
@@ -487,7 +487,7 @@ public class Quest
       this.id=aId;
       this.quest=Quest.getQuestById(qId);
       this.finish=aFinish;
-      this.player=World.world.getPlayer(pId);
+      this.player=Main.world.getPlayer(pId);
       try
       {
         String[] split=qEtapeV.split(";");
@@ -746,6 +746,7 @@ import scruffemu.game.World;
 import scruffemu.utility.Pair;
 import scruffemu.main.Config;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.object.ObjectTemplate;
 import scruffemu.other.Action;
@@ -841,7 +842,7 @@ public class Quest
         e.printStackTrace();
       }
     }
-    this.npc=World.world.getNPCTemplate(npc);
+    this.npc=Main.world.getNPCTemplate(npc);
     try
     {
       if(!action.equalsIgnoreCase("")&&!args.equalsIgnoreCase(""))
@@ -860,7 +861,7 @@ public class Quest
     catch(Exception e)
     {
       e.printStackTrace();
-      World.world.logger.error("Erreur avec l action et les args de la quete "+this.id+".");
+      Main.world.logger.error("Erreur avec l action et les args de la quete "+this.id+".");
     }
   }
 
@@ -1157,7 +1158,7 @@ public class Quest
     { //Item a donner
       for(Entry<Integer, Integer> entry : questObjectif.getObjects().entrySet())
       {
-        ObjectTemplate template=World.world.getObjTemplate(entry.getKey());
+        ObjectTemplate template=Main.world.getObjTemplate(entry.getKey());
         int quantity=entry.getValue();
         GameObject object=template.createNewItem(quantity,false);
 

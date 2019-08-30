@@ -3,7 +3,6 @@ package scruffemu.database.passive.data;
 import com.zaxxer.hikari.HikariDataSource;
 
 import scruffemu.database.active.AbstractDAO;
-import scruffemu.game.World;
 import scruffemu.guild.Guild;
 import scruffemu.main.Main;
 
@@ -31,7 +30,7 @@ public class GuildData extends AbstractDAO<Guild>
       ResultSet RS=result.resultSet;
 
       while(RS.next())
-        World.world.addGuild(new Guild(RS.getInt("id"),RS.getString("name"),RS.getString("emblem"),RS.getInt("lvl"),RS.getLong("xp"),RS.getInt("capital"),RS.getInt("maxCollectors"),RS.getString("spells"),RS.getString("stats"),RS.getLong("date")),false);
+        Main.world.addGuild(new Guild(RS.getInt("id"),RS.getString("name"),RS.getString("emblem"),RS.getInt("lvl"),RS.getLong("xp"),RS.getInt("capital"),RS.getInt("maxCollectors"),RS.getString("spells"),RS.getString("stats"),RS.getLong("date")),false);
     }
     catch(SQLException e)
     {
@@ -114,11 +113,11 @@ public class GuildData extends AbstractDAO<Guild>
   {
     try
     {
-      final DataQueue.Queue<Integer> queue=World.world.getDataQueue().new Queue<>((byte)4);
+      final DataQueue.Queue<Integer> queue=Main.world.getDataQueue().new Queue<>((byte)4);
       synchronized(queue)
       {
-        long count=World.world.getDataQueue().count();
-        World.world.getDataQueue().queues.put(count,queue);
+        long count=Main.world.getDataQueue().count();
+        Main.world.getDataQueue().queues.put(count,queue);
         Main.exchangeClient.send("DI"+queue.getType()+count);
         queue.wait();
       }

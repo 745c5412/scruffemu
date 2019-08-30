@@ -5,6 +5,7 @@ import scruffemu.common.SocketManager;
 import scruffemu.database.Database;
 import scruffemu.game.World;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 
 import java.text.DateFormat;
@@ -112,7 +113,7 @@ public class PetEntry
 
   public int getMaxStat()
   {
-    return World.world.getPets(this.template).getMaxStat();
+    return Main.world.getPets(this.template).getMaxStat();
   }
 
   public void looseFight(Player player)
@@ -120,7 +121,7 @@ public class PetEntry
     GameObject obj=World.getGameObject(this.objectId);
     if(obj==null)
       return;
-    Pet pets=World.world.getPets(obj.getTemplate().getId());
+    Pet pets=Main.world.getPets(obj.getTemplate().getId());
     if(pets==null)
       return;
 
@@ -136,7 +137,7 @@ public class PetEntry
 
       if(pets.getDeadTemplate()==0)// Si Pets DeadTemplate = 0 remove de l'item et pet entry
       {
-        World.world.removeGameObject(obj.getGuid());
+        Main.world.removeGameObject(obj.getGuid());
         player.removeItem(obj.getGuid());
         SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(player,obj.getGuid());
         if(player.addObjet(obj,true))//Si le joueur n'avait pas d'item similaire
@@ -162,7 +163,7 @@ public class PetEntry
     GameObject obj=World.getGameObject(this.objectId);
     if(obj==null)
       return;
-    Pet pets=World.world.getPets(obj.getTemplate().getId());
+    Pet pets=Main.world.getPets(obj.getTemplate().getId());
     if(pets==null)
       return;
 
@@ -185,7 +186,7 @@ public class PetEntry
         {
           if(obj.getStats().getMap().containsKey(statsID))
           {
-            int value=obj.getStats().getMap().get(statsID)+World.world.getPets(World.getGameObject(this.objectId).getTemplate().getId()).getGain();
+            int value=obj.getStats().getMap().get(statsID)+Main.world.getPets(World.getGameObject(this.objectId).getTemplate().getId()).getGain();
             if(value>this.getMaxStat())
               value=this.getMaxStat();
             obj.getStats().getMap().remove(statsID);
@@ -227,7 +228,7 @@ public class PetEntry
         {
           if(obj.getStats().getMap().containsKey(statsID))
           {
-            int value=obj.getStats().getMap().get(statsID)+World.world.getPets(World.getGameObject(this.objectId).getTemplate().getId()).getGain();
+            int value=obj.getStats().getMap().get(statsID)+Main.world.getPets(World.getGameObject(this.objectId).getTemplate().getId()).getGain();
             if(value>this.getMaxStat())
               value=this.getMaxStat();
             obj.getStats().getMap().remove(statsID);
@@ -257,7 +258,7 @@ public class PetEntry
         {
           if(obj.getStats().getMap().containsKey(statsID))
           {
-            int value=obj.getStats().getMap().get(statsID)+World.world.getPets(World.getGameObject(this.objectId).getTemplate().getId()).getGain();
+            int value=obj.getStats().getMap().get(statsID)+Main.world.getPets(World.getGameObject(this.objectId).getTemplate().getId()).getGain();
             if(value>this.getMaxStat())
               value=this.getMaxStat();
             obj.getStats().getMap().remove(statsID);
@@ -278,7 +279,7 @@ public class PetEntry
       obj.getTxtStat().put(Constant.STATS_PETS_PDV,Integer.toHexString((this.pdv>0 ? (this.pdv) : 0)));//Mise a 0 des pdv
       if(pets.getDeadTemplate()==0)// Si Pets DeadTemplate = 0 remove de l'item et pet entry
       {
-        World.world.removeGameObject(obj.getGuid());
+        Main.world.removeGameObject(obj.getGuid());
         p.removeItem(obj.getGuid());
         SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(p,obj.getGuid());
       }
@@ -313,7 +314,7 @@ public class PetEntry
     GameObject obj=World.getGameObject(this.objectId);
     if(obj==null)
       return;
-    Pet pet=World.world.getPets(obj.getTemplate().getId());
+    Pet pet=Main.world.getPets(obj.getTemplate().getId());
     if(pet==null||pet.getType()!=1)
       return;
 
@@ -396,7 +397,7 @@ public class PetEntry
     GameObject obj=World.getGameObject(this.objectId);
     if(obj==null)
       return;
-    Pet pets=World.world.getPets(obj.getTemplate().getId());
+    Pet pets=Main.world.getPets(obj.getTemplate().getId());
     if(pets==null)
       return;
     if(this.pdv<=0&&obj.getTemplate().getId()==pets.getDeadTemplate())
@@ -436,7 +437,7 @@ public class PetEntry
 
       if(pets.getDeadTemplate()==0)//Si Pets DeadTemplate = 0 remove de l'item et pet entry
       {
-        World.world.removeGameObject(obj.getGuid());
+        Main.world.removeGameObject(obj.getGuid());
         p.removeItem(obj.getGuid());
         SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(p,obj.getGuid());
       }
@@ -482,7 +483,7 @@ public class PetEntry
     GameObject obj=World.getGameObject(this.objectId);
     if(obj==null)
       return;
-    Pet pets=World.world.getPets(obj.getTemplate().getId());
+    Pet pets=Main.world.getPets(obj.getTemplate().getId());
     if(pets==null)
       return;
 
@@ -514,7 +515,7 @@ public class PetEntry
     GameObject obj=World.getGameObject(this.objectId);
     if(obj==null)
       return;
-    Pet pets=World.world.getPets(obj.getTemplate().getId());
+    Pet pets=Main.world.getPets(obj.getTemplate().getId());
     if(pets==null)
       return;
     if(this.isEupeoh)

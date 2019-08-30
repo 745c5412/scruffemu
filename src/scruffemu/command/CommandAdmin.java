@@ -28,7 +28,6 @@ import scruffemu.game.scheduler.entity.WorldSave;
 import scruffemu.job.JobStat;
 import scruffemu.main.Config;
 import scruffemu.main.Constant;
-import scruffemu.main.Logging;
 import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.object.ObjectSet;
@@ -37,7 +36,6 @@ import scruffemu.quest.Quest;
 import scruffemu.quest.QuestStep;
 import scruffemu.quest.QuestPlayer;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -91,7 +89,7 @@ public class CommandAdmin extends AdminUser
       this.sendMessage("Les logs console sont : "+(Config.getInstance().debugMode ? "active" : "desactive"));
       if(infos.length>1)
       {
-        Player player=World.world.getPlayerByName(infos[1]);
+        Player player=Main.world.getPlayerByName(infos[1]);
 
         if(player!=null)
         {
@@ -152,7 +150,7 @@ public class CommandAdmin extends AdminUser
       {//Si un nom de perso est specifie
         try
         {
-          perso=World.world.getPlayerByName(infos[1]);
+          perso=Main.world.getPlayerByName(infos[1]);
         }
         catch(Exception e)
         {
@@ -170,9 +168,9 @@ public class CommandAdmin extends AdminUser
       perso.resetVars();
       Database.getStatics().getPlayerData().update(perso);
       SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(perso.getCurMap(),perso.getId());
-      World.world.unloadPerso(perso);
+      Main.world.unloadPerso(perso);
       Database.getStatics().getPlayerData().load(perso.getId());
-      World.world.ReassignAccountToChar(perso.getAccount());
+      Main.world.ReassignAccountToChar(perso.getAccount());
       String str="Le joueur "+perso.getName()+" a ete reinitialise de ces variables.";
       this.sendMessage(str);
       return;
@@ -194,7 +192,7 @@ public class CommandAdmin extends AdminUser
     }
     else if(command.equalsIgnoreCase("GONAME")||command.equalsIgnoreCase("JOIN")||command.equalsIgnoreCase("GON"))
     {
-      Player P=World.world.getPlayerByName(infos[1]);
+      Player P=Main.world.getPlayerByName(infos[1]);
       if(P==null)
       {
         String str="Le personnage de destination n'existe pas.";
@@ -207,7 +205,7 @@ public class CommandAdmin extends AdminUser
       Player perso=this.getPlayer();
       if(infos.length>2)//Si un nom de perso est specifie
       {
-        perso=World.world.getPlayerByName(infos[2]);
+        perso=Main.world.getPlayerByName(infos[2]);
         if(perso==null)
         {
           String str="Le personnage e teleporter n'a pas ete trouve.";
@@ -228,7 +226,7 @@ public class CommandAdmin extends AdminUser
     }
     else if(command.equalsIgnoreCase("KICKFIGHT"))
     {
-      Player P=World.world.getPlayerByName(infos[1]);
+      Player P=Main.world.getPlayerByName(infos[1]);
       if(P==null||P.getFight()==null)
       {
         this.sendMessage("Le personnage n'a pas ete trouve ou il n'est pas en combat.");
@@ -249,7 +247,7 @@ public class CommandAdmin extends AdminUser
       Player perso=this.getPlayer();
       if(infos.length>1)//Si un nom de perso est specifie
       {
-        perso=World.world.getPlayerByName(infos[1]);
+        perso=Main.world.getPlayerByName(infos[1]);
         if(perso==null)
         {
           String str="Le personnage n'a pas ete trouve.";
@@ -277,7 +275,7 @@ public class CommandAdmin extends AdminUser
       Player perso=this.getPlayer();
       try
       {
-        perso=World.world.getPlayerByName(infos[1]);
+        perso=Main.world.getPlayerByName(infos[1]);
       }
       catch(Exception e)
       {
@@ -296,7 +294,7 @@ public class CommandAdmin extends AdminUser
       this.sendMessage(mess);
       int i=0;
 
-      for(Player player : World.world.getOnlinePlayers())
+      for(Player player : Main.world.getOnlinePlayers())
       {
         if(i==30)
           break;
@@ -388,7 +386,7 @@ public class CommandAdmin extends AdminUser
     }
     else if(command.equalsIgnoreCase("NAMEGO")||command.equalsIgnoreCase("NGO"))
     {
-      Player perso=World.world.getPlayerByName(infos[1]);
+      Player perso=Main.world.getPlayerByName(infos[1]);
       if(perso==null)
       {
         String str="Le personnage e teleporter n'existe pas.";
@@ -404,7 +402,7 @@ public class CommandAdmin extends AdminUser
       Player P=this.getPlayer();
       if(infos.length>2)//Si un nom de perso est specifie
       {
-        P=World.world.getPlayerByName(infos[2]);
+        P=Main.world.getPlayerByName(infos[2]);
         if(P==null)
         {
           String str="Le personnage de destination n'a pas ete trouve.";
@@ -441,17 +439,17 @@ public class CommandAdmin extends AdminUser
         // ok
       }
 
-      if(mapID==-1||cellID==-1||World.world.getMap(mapID)==null)
+      if(mapID==-1||cellID==-1||Main.world.getMap(mapID)==null)
       {
         String str="";
-        if(mapID==-1||World.world.getMap(mapID)==null)
+        if(mapID==-1||Main.world.getMap(mapID)==null)
           str="MapID invalide.";
         else
           str="cellID invalide.";
         this.sendMessage(str);
         return;
       }
-      if(World.world.getMap(mapID).getCase(cellID)==null)
+      if(Main.world.getMap(mapID).getCase(cellID)==null)
       {
         String str="cellID invalide.";
         this.sendMessage(str);
@@ -460,7 +458,7 @@ public class CommandAdmin extends AdminUser
       Player perso=this.getPlayer();
       if(infos.length>3)//Si un nom de perso est specifie
       {
-        perso=World.world.getPlayerByName(infos[3]);
+        perso=Main.world.getPlayerByName(infos[3]);
         if(perso==null||perso.getFight()!=null)
         {
           String str="Le personnage n'a pas ete trouve ou est en combat";
@@ -469,8 +467,8 @@ public class CommandAdmin extends AdminUser
         }
         if(!perso.isOnline())
         {
-          perso.setCurMap(World.world.getMap(mapID));
-          perso.setCurCell(World.world.getMap(mapID).getCase(cellID));
+          perso.setCurMap(Main.world.getMap(mapID));
+          perso.setCurCell(Main.world.getMap(mapID).getCase(cellID));
         }
       }
       perso.teleport(mapID,cellID);
@@ -498,7 +496,7 @@ public class CommandAdmin extends AdminUser
       Player perso=this.getPlayer();
       if(infos.length>2)//Si un nom de perso est specifie
       {
-        perso=World.world.getPlayerByName(infos[2]);
+        perso=Main.world.getPlayerByName(infos[2]);
         if(perso==null)
         {
           String str="Le personnage n'a pas ete trouve.";
@@ -518,7 +516,7 @@ public class CommandAdmin extends AdminUser
       Player perso=this.getPlayer();
       if(infos.length>1)
       {
-        perso=World.world.getPlayerByName(infos[1]);
+        perso=Main.world.getPlayerByName(infos[1]);
       }
       if(perso==null)
       {
@@ -574,13 +572,13 @@ public class CommandAdmin extends AdminUser
       if(i==0)
       {
         Config.getInstance().fightAsBlocked=false;
-        for(Player player : World.world.getOnlinePlayers())
+        for(Player player : Main.world.getOnlinePlayers())
           player.sendServerMessage("You can now fight !");
         this.sendMessage("Les combats ont etes debloques.");
       }
       else if(i==1)
       {
-        for(Player player : World.world.getOnlinePlayers())
+        for(Player player : Main.world.getOnlinePlayers())
           player.sendServerMessage("You can't fight until new order.");
         this.sendMessage("Les combats ont etes bloques.");
       }
@@ -607,7 +605,7 @@ public class CommandAdmin extends AdminUser
         return;
       }
 
-      player=World.world.getPlayerByName(name);
+      player=Main.world.getPlayerByName(name);
 
       if(player==null||time<=0)
       {
@@ -645,7 +643,7 @@ public class CommandAdmin extends AdminUser
         return;
       }
 
-      player=World.world.getPlayerByName(name);
+      player=Main.world.getPlayerByName(name);
 
       if(player==null||time<=0)
       {
@@ -667,7 +665,7 @@ public class CommandAdmin extends AdminUser
         return;
       }
 
-      World.world.getAccountsByIp(ip).values().stream().filter(account -> account!=null&&account.getLastIP().equalsIgnoreCase(ip)).forEach(account -> {
+      Main.world.getAccountsByIp(ip).values().stream().filter(account -> account!=null&&account.getLastIP().equalsIgnoreCase(ip)).forEach(account -> {
         account.mute(time,this.getPlayer().getName());
         if(account.getCurrentPlayer()!=null)
           this.sendMessage("You've mute the account "+account.getName()+".");
@@ -691,7 +689,7 @@ public class CommandAdmin extends AdminUser
         return;
       }
 
-      player=World.world.getPlayerByName(name);
+      player=Main.world.getPlayerByName(name);
 
       if(player==null)
       {
@@ -713,7 +711,7 @@ public class CommandAdmin extends AdminUser
         return;
       }
 
-      World.world.getAccountsByIp(ip).values().stream().filter(account -> account!=null&&account.getLastIP().equalsIgnoreCase(ip)).forEach(account -> {
+      Main.world.getAccountsByIp(ip).values().stream().filter(account -> account!=null&&account.getLastIP().equalsIgnoreCase(ip)).forEach(account -> {
         account.unMute();
         if(account.getCurrentPlayer()!=null)
           this.sendMessage("The account "+account.getName()+" is free to talk.");
@@ -737,7 +735,7 @@ public class CommandAdmin extends AdminUser
         return;
       }
 
-      player=World.world.getPlayerByName(name);
+      player=Main.world.getPlayerByName(name);
 
       if(player==null)
       {
@@ -805,7 +803,7 @@ public class CommandAdmin extends AdminUser
       {
       }
 
-      player=World.world.getPlayerByName(name);
+      player=Main.world.getPlayerByName(name);
 
       if(player==null)
       {
@@ -836,7 +834,7 @@ public class CommandAdmin extends AdminUser
     {
       short mapID=666;
       int cellID=getCellJail();
-      if(mapID==-1||cellID==-1||World.world.getMap(mapID)==null)
+      if(mapID==-1||cellID==-1||Main.world.getMap(mapID)==null)
       {
         String str="MapID ou cellID invalide.";
         if(cellID==-1)
@@ -846,7 +844,7 @@ public class CommandAdmin extends AdminUser
         this.sendMessage(str);
         return;
       }
-      if(World.world.getMap(mapID).getCase(cellID)==null)
+      if(Main.world.getMap(mapID).getCase(cellID)==null)
       {
         String str="cellID invalide.";
         this.sendMessage(str);
@@ -856,7 +854,7 @@ public class CommandAdmin extends AdminUser
       {
         if(infos.length>1)//Si un nom de perso est specifie
         {
-          Player perso=World.world.getPlayerByName(infos[1]);
+          Player perso=Main.world.getPlayerByName(infos[1]);
           if(perso.getGroupe()!=null)
           {
             String str="Il est interdit d'emprisonner un personnage ayant des droits.";
@@ -887,7 +885,7 @@ public class CommandAdmin extends AdminUser
     }
     else if(command.equalsIgnoreCase("UNJAIL"))
     {
-      Player perso=World.world.getPlayerByName(infos[1]);
+      Player perso=Main.world.getPlayerByName(infos[1]);
       if(perso==null||perso.getFight()!=null)
       {
         String str="Le personnage n'a pas ete trouve ou est en combat.";
@@ -905,7 +903,7 @@ public class CommandAdmin extends AdminUser
     }
     else if(command.equalsIgnoreCase("BAN"))
     {
-      Player player=World.world.getPlayerByName(infos[1]);
+      Player player=Main.world.getPlayerByName(infos[1]);
       short days=0;
 
       try
@@ -962,7 +960,7 @@ public class CommandAdmin extends AdminUser
         this.sendMessage("Il faut le nom de compte.");
         return;
       }
-      for(Account account : World.world.getAccounts())
+      for(Account account : Main.world.getAccounts())
       {
         if(account==null)
           continue;
@@ -1010,7 +1008,7 @@ public class CommandAdmin extends AdminUser
         this.sendMessage("Une IP est necessaire.");
         return;
       }
-      for(Player player : World.world.getPlayers())
+      for(Player player : Main.world.getPlayers())
       {
         if(player==null)
           continue;
@@ -1059,7 +1057,7 @@ public class CommandAdmin extends AdminUser
         this.sendMessage("Une IP est necessaire.");
         return;
       }
-      for(Entry<Integer, Account> entry : World.world.getAccountsByIp(IP).entrySet())
+      for(Entry<Integer, Account> entry : Main.world.getAccountsByIp(IP).entrySet())
       {
         Account a=entry.getValue();
         if(a==null)
@@ -1089,7 +1087,7 @@ public class CommandAdmin extends AdminUser
       Player P=null;
       try
       {
-        P=World.world.getPlayerByName(infos[1]);
+        P=Main.world.getPlayerByName(infos[1]);
       }
       catch(Exception e)
       {
@@ -1109,7 +1107,7 @@ public class CommandAdmin extends AdminUser
       }
       Database.getStatics().getBanIpData().delete(IP);
       Database.getStatics().getBanIpData().add(IP);
-      for(Entry<Integer, Account> entry : World.world.getAccountsByIp(IP).entrySet())
+      for(Entry<Integer, Account> entry : Main.world.getAccountsByIp(IP).entrySet())
       {
         Account a=entry.getValue();
         if(a==null)
@@ -1147,7 +1145,7 @@ public class CommandAdmin extends AdminUser
         // ok
       }
 
-      perso=World.world.getPlayerByName(name);
+      perso=Main.world.getPlayerByName(name);
       if(perso==null)
       {
         String mess="Le personnage n'a pas ete trouve.";
@@ -1180,7 +1178,7 @@ public class CommandAdmin extends AdminUser
         // ok
       }
 
-      perso=World.world.getPlayerByName(name);
+      perso=Main.world.getPlayerByName(name);
       if(perso==null)
       {
         String mess="Le personnage n'a pas ete trouve.";
@@ -1213,7 +1211,7 @@ public class CommandAdmin extends AdminUser
         // ok
       }
 
-      perso=World.world.getPlayerByName(name);
+      perso=Main.world.getPlayerByName(name);
       if(perso==null)
       {
         String mess="Le personnage n'a pas ete trouve.";
@@ -1246,7 +1244,7 @@ public class CommandAdmin extends AdminUser
         // ok
       }
 
-      perso=World.world.getPlayerByName(name);
+      perso=Main.world.getPlayerByName(name);
       if(perso==null)
       {
         String mess="Le personnage n'a pas ete trouve.";
@@ -1297,7 +1295,7 @@ public class CommandAdmin extends AdminUser
     }
     else if(command.equalsIgnoreCase("ERASEALLMAP"))
     {
-      for(GameMap map : World.world.getMaps())
+      for(GameMap map : Main.world.getMaps())
         map.delAllDropItem();
       this.sendMessage("Tous les objets sur toutes les maps ont été supprimés.");
       return;
@@ -1329,7 +1327,7 @@ public class CommandAdmin extends AdminUser
       Player target=this.getPlayer();
       if(infos.length>2)//Si un nom de perso est specifie
       {
-        target=World.world.getPlayerByName(infos[2]);
+        target=Main.world.getPlayerByName(infos[2]);
         if(target==null)
         {
           String str="Le personnage n'a pas ete trouve.";
@@ -1359,7 +1357,7 @@ public class CommandAdmin extends AdminUser
     }
     else if(command.equalsIgnoreCase("DEMORPHALL"))
     {
-      for(Player player : World.world.getOnlinePlayers())
+      for(Player player : Main.world.getOnlinePlayers())
       {
         player.setGfxId(player.getClasse()*10+player.getSexe());
       }
@@ -1381,7 +1379,7 @@ public class CommandAdmin extends AdminUser
       Player perso=this.getPlayer();
       if(infos.length>2)//Si un nom de perso est specifie
       {
-        perso=World.world.getPlayerByName(infos[2]);
+        perso=Main.world.getPlayerByName(infos[2]);
         if(perso==null)
         {
           String str="Le personnage n'a pas ete trouve.";
@@ -1415,7 +1413,7 @@ public class CommandAdmin extends AdminUser
       Player perso=this.getPlayer();
       if(infos.length>2)//Si un nom de perso est specifie
       {
-        perso=World.world.getPlayerByName(infos[2]);
+        perso=Main.world.getPlayerByName(infos[2]);
         if(perso==null)
         {
           String str="Le personnage n'a pas ete trouve";
@@ -1447,7 +1445,7 @@ public class CommandAdmin extends AdminUser
         // ok
       }
 
-      perso=World.world.getPlayerByName(name);
+      perso=Main.world.getPlayerByName(name);
       if(perso==null)
       {
         String mess="Le personnage n'existe pas.";
@@ -1484,7 +1482,7 @@ public class CommandAdmin extends AdminUser
       if(name=="")
         return;
 
-      perso=World.world.getPlayerByName(name);
+      perso=Main.world.getPlayerByName(name);
       if(perso==null)
       {
         String mess="Le personnage n'existe pas.";
@@ -1497,7 +1495,7 @@ public class CommandAdmin extends AdminUser
         this.sendMessage(mess);
         return;
       }
-      java.util.Map<Integer, Account> accounts=World.world.getAccountsByIp(perso.getAccount().getLastIP());
+      java.util.Map<Integer, Account> accounts=Main.world.getAccountsByIp(perso.getAccount().getLastIP());
       String mess="Whois sur le joueur : "+name+"\n";
       mess+="Derniere IP : "+perso.getAccount().getLastIP()+"\n";
       int i=1;
@@ -1561,7 +1559,7 @@ public class CommandAdmin extends AdminUser
     }
     else if(command.equalsIgnoreCase("RETURNTP"))
     {
-      for(Player perso : World.world.getOnlinePlayers())
+      for(Player perso : Main.world.getOnlinePlayers())
       {
         if(perso.thatMap==-1||perso.getFight()!=null)
           continue;
@@ -1600,7 +1598,7 @@ public class CommandAdmin extends AdminUser
     else if(command.equalsIgnoreCase("LISTMAP"))
     {
       String data="";
-      ArrayList<GameMap> i=World.world.getMapByPosInArray(this.getPlayer().getCurMap().getX(),this.getPlayer().getCurMap().getY());
+      ArrayList<GameMap> i=Main.world.getMapByPosInArray(this.getPlayer().getCurMap().getX(),this.getPlayer().getCurMap().getY());
       for(GameMap map : i)
         data+=map.getId()+" | ";
       this.sendMessage(data);
@@ -1612,7 +1610,7 @@ public class CommandAdmin extends AdminUser
       infos=msg.split(" ",3);
       try
       {
-        perso=World.world.getPlayerByName(infos[1]);
+        perso=Main.world.getPlayerByName(infos[1]);
       }
       catch(Exception e)
       {
@@ -1662,7 +1660,7 @@ public class CommandAdmin extends AdminUser
 
       try
       {
-        perso=World.world.getPlayerByName(infos[2]);
+        perso=Main.world.getPlayerByName(infos[2]);
       }
       catch(Exception e)
       {
@@ -1779,7 +1777,7 @@ public class CommandAdmin extends AdminUser
         this.sendMessage("Impossible d'ajouter le trigger, veuillez utiliser la commande STRIGGER avant.");
         return;
       }
-      World.world.getMap((short)this.getPlayer().thatMap).getCase(this.getPlayer().thatCell).addOnCellStopAction(0,this.getPlayer().getCurMap().getId()+","+this.getPlayer().getCurCell().getId(),"-1",null);
+      Main.world.getMap((short)this.getPlayer().thatMap).getCase(this.getPlayer().thatCell).addOnCellStopAction(0,this.getPlayer().getCurMap().getId()+","+this.getPlayer().getCurCell().getId(),"-1",null);
       Database.getDynamics().getScriptedCellData().update(this.getPlayer().thatMap,this.getPlayer().thatCell,0,1,this.getPlayer().getCurMap().getId()+","+this.getPlayer().getCurCell().getId(),"-1");
       this.getPlayer().thatMap=-1;
       this.getPlayer().thatCell=-1;
@@ -1962,7 +1960,7 @@ public class CommandAdmin extends AdminUser
       Player perso=null;
       try
       {
-        perso=World.world.getPlayerByName(infos[1]);
+        perso=Main.world.getPlayerByName(infos[1]);
       }
       catch(Exception e)
       {
@@ -1982,7 +1980,7 @@ public class CommandAdmin extends AdminUser
     }
     else if(command.equalsIgnoreCase("UNBAN"))
     {
-      Player P=World.world.getPlayerByName(infos[1]);
+      Player P=Main.world.getPlayerByName(infos[1]);
       if(P==null)
       {
         this.sendMessage("Personnage non trouve.");
@@ -2031,13 +2029,13 @@ public class CommandAdmin extends AdminUser
         count=Integer.parseInt(infos[1]);
         if(count<1)
           count=1;
-        if(count>World.world.getExpLevelSize())
-          count=World.world.getExpLevelSize();
+        if(count>Main.world.getExpLevelSize())
+          count=Main.world.getExpLevelSize();
         Player perso=this.getPlayer();
         if(infos.length==3)//Si le nom du perso est specifie
         {
           String name=infos[2];
-          perso=World.world.getPlayerByName(name);
+          perso=Main.world.getPlayerByName(name);
           if(perso==null)
             perso=this.getPlayer();
         }
@@ -2085,7 +2083,7 @@ public class CommandAdmin extends AdminUser
       if(infos.length==3)//Si le nom du perso est specifie
       {
         String name=infos[2];
-        perso=World.world.getPlayerByName(name);
+        perso=Main.world.getPlayerByName(name);
         if(perso==null)
           perso=this.getPlayer();
       }
@@ -2114,7 +2112,7 @@ public class CommandAdmin extends AdminUser
         // ok
       }
 
-      ObjectSet IS=World.world.getItemSet(tID);
+      ObjectSet IS=Main.world.getItemSet(tID);
       if(tID==0||IS==null)
       {
         String mess="La panoplie "+tID+" n'existe pas.";
@@ -2174,7 +2172,7 @@ public class CommandAdmin extends AdminUser
         if(infos[3].equalsIgnoreCase("MAX"))
           useMax=true;
       }
-      ObjectTemplate t=World.world.getObjTemplate(tID);
+      ObjectTemplate t=Main.world.getObjTemplate(tID);
       if(t==null)
       {
         String mess="Le template "+tID+" n'existe pas.";
@@ -2231,7 +2229,7 @@ public class CommandAdmin extends AdminUser
       Player perso=this.getPlayer();
       if(infos.length>2)//Si un nom de perso est specifie
       {
-        perso=World.world.getPlayerByName(infos[2]);
+        perso=Main.world.getPlayerByName(infos[2]);
         if(perso==null)
         {
           String str="Le personnage n'a pas ete trouve.";
@@ -2253,7 +2251,7 @@ public class CommandAdmin extends AdminUser
           switch(infos[2].toUpperCase())
           {
             case "GET":
-              Collector collector=World.world.getCollector(Integer.parseInt(infos[3]));
+              Collector collector=Main.world.getCollector(Integer.parseInt(infos[3]));
               if(collector==null||collector.getInFight()>0||collector.getExchange()||collector.getMap()!=this.getPlayer().getCurMap().getId())
                 return;
               collector.setExchange(true);
@@ -2264,7 +2262,7 @@ public class CommandAdmin extends AdminUser
               break;
             default:
               final StringBuilder message=new StringBuilder("All id of collectors present on the map "+this.getPlayer().getCurMap().getId()+" :<br>");
-              World.world.getCollectors().values().stream().filter(collector1 -> collector1.getMap()==this.getPlayer().getCurMap().getId()).forEach(collector1 -> message.append("> ").append(collector1.getId()).append(" | ").append(collector1.getDate()).append(" | ").append(World.world.getGuild(collector1.getGuildId())!=null ? World.world.getGuild(collector1.getGuildId()).getName() : "Unknow").append("<br>"));
+              Main.world.getCollectors().values().stream().filter(collector1 -> collector1.getMap()==this.getPlayer().getCurMap().getId()).forEach(collector1 -> message.append("> ").append(collector1.getId()).append(" | ").append(collector1.getDate()).append(" | ").append(Main.world.getGuild(collector1.getGuildId())!=null ? Main.world.getGuild(collector1.getGuildId()).getName() : "Unknow").append("<br>"));
               this.sendMessage(message.toString());
               break;
           }
@@ -2295,7 +2293,7 @@ public class CommandAdmin extends AdminUser
       Player perso=this.getPlayer();
       if(infos.length>2)//Si un nom de perso est specifie
       {
-        perso=World.world.getPlayerByName(infos[2]);
+        perso=Main.world.getPlayerByName(infos[2]);
         if(perso==null)
         {
           String str="Le personnage n'a pas ete trouve.";
@@ -2329,7 +2327,7 @@ public class CommandAdmin extends AdminUser
       Player perso=this.getPlayer();
       if(infos.length>2)//Si un nom de perso est specifie
       {
-        perso=World.world.getPlayerByName(infos[2]);
+        perso=Main.world.getPlayerByName(infos[2]);
         if(perso==null)
         {
           String str="Le personnage n'a pas ete trouve.";
@@ -2364,7 +2362,7 @@ public class CommandAdmin extends AdminUser
       Player perso=this.getPlayer();
       if(infos.length>2)//Si un nom de perso est specifie
       {
-        perso=World.world.getPlayerByName(infos[2]);
+        perso=Main.world.getPlayerByName(infos[2]);
         if(perso==null)
         {
           String str="Le personnage n'a pas ete trouve.";
@@ -2400,7 +2398,7 @@ public class CommandAdmin extends AdminUser
         if(infos.length==3)//Si le nom du perso est specifie
         {
           String name=infos[2];
-          perso=World.world.getPlayerByName(name);
+          perso=Main.world.getPlayerByName(name);
           if(perso==null)
             perso=this.getPlayer();
         }
@@ -2442,7 +2440,7 @@ public class CommandAdmin extends AdminUser
       Player perso=this.getPlayer();
       if(infos.length>3)//Si un nom de perso est specifie
       {
-        perso=World.world.getPlayerByName(infos[3]);
+        perso=Main.world.getPlayerByName(infos[3]);
         if(perso==null)
         {
           String str="Le personnage n'a pas ete trouv.e";
@@ -2477,7 +2475,7 @@ public class CommandAdmin extends AdminUser
         // ok
       }
 
-      if(job==-1||World.world.getMetier(job)==null)
+      if(job==-1||Main.world.getMetier(job)==null)
       {
         String str="Valeur invalide.";
         this.sendMessage(str);
@@ -2486,7 +2484,7 @@ public class CommandAdmin extends AdminUser
       Player perso=this.getPlayer();
       if(infos.length>2)//Si un nom de perso est specifie
       {
-        perso=World.world.getPlayerByName(infos[2]);
+        perso=Main.world.getPlayerByName(infos[2]);
         if(perso==null)
         {
           String str="Le personnage n'a pas ete trouve.";
@@ -2494,7 +2492,7 @@ public class CommandAdmin extends AdminUser
           return;
         }
       }
-      perso.learnJob(World.world.getMetier(job));
+      perso.learnJob(Main.world.getMetier(job));
       String str="Le metier "+job+" a ete appris e "+perso.getName()+".";
       this.sendMessage(str);
       return;
@@ -2504,7 +2502,7 @@ public class CommandAdmin extends AdminUser
       Player perso=this.getPlayer();
       if(infos.length>2)//Si un nom de perso est specifie
       {
-        perso=World.world.getPlayerByName(infos[2]);
+        perso=Main.world.getPlayerByName(infos[2]);
         if(perso==null)
         {
           String str="Le personnage n'a pas ete trouve.";
@@ -2558,7 +2556,7 @@ public class CommandAdmin extends AdminUser
       {
         if(time<=15)
         {
-          for(Player player : World.world.getOnlinePlayers())
+          for(Player player : Main.world.getOnlinePlayers())
           {
             player.sendServerMessage("You can not start fights as the server will reboot soon.");
             player.send("M13");
@@ -2578,7 +2576,7 @@ public class CommandAdmin extends AdminUser
       {
         this.getTimer().stop();
         this.setTimerStart(false);
-        for(Player player : World.world.getOnlinePlayers())
+        for(Player player : Main.world.getOnlinePlayers())
           player.sendServerMessage("The reboot has been canceled. You can start fights again.");
         Config.getInstance().fightAsBlocked=true;
         this.sendMessage("Reboot arrêté.");
@@ -2595,7 +2593,7 @@ public class CommandAdmin extends AdminUser
       for(String split : infos[1].split(","))
       {
         int id=Integer.parseInt(split);
-        Monster monster=World.world.getMonstre(id);
+        Monster monster=Main.world.getMonstre(id);
 
         for(MobGrade mobGrade : monster.getGrades().values())
           line+=monster.getId()+","+mobGrade.getLevel()+"|";
@@ -2610,7 +2608,7 @@ public class CommandAdmin extends AdminUser
         Player perso=this.getPlayer();
         String name=null;
         name=infos[2];
-        perso=World.world.getPlayerByName(name);
+        perso=Main.world.getPlayerByName(name);
         int jet=Integer.parseInt(infos[1]);
         int EnergyTotal=perso.getEnergy()+jet;
         if(EnergyTotal>10000)
@@ -2630,7 +2628,7 @@ public class CommandAdmin extends AdminUser
     else if(command.equalsIgnoreCase("RES"))
     {
       Player perso=this.getPlayer();
-      perso=World.world.getPlayerByName(infos[1]);
+      perso=Main.world.getPlayerByName(infos[1]);
       if(perso==null)
       {
         String mess="Le personnage n'existe pas.";
@@ -2662,7 +2660,7 @@ public class CommandAdmin extends AdminUser
       Player perso=this.getPlayer();
       if(infos.length>1)
       {
-        perso=World.world.getPlayerByName(infos[1]);
+        perso=Main.world.getPlayerByName(infos[1]);
       }
       if(perso==null)
       {
@@ -2686,14 +2684,14 @@ public class CommandAdmin extends AdminUser
     {
       Player perso=this.getPlayer();
       if(infos.length>1)
-        perso=World.world.getPlayerByName(infos[1]);
+        perso=Main.world.getPlayerByName(infos[1]);
       if(perso==null)
       {
         String mess="Le personnage n'existe pas.";
         this.sendMessage(mess);
         return;
       }
-      if(World.world.getPlayerByName(infos[2])!=null)
+      if(Main.world.getPlayerByName(infos[2])!=null)
       {
         String mess="Le personnage "+infos[2]+" existe déjà.";
         this.sendMessage(mess);
@@ -2716,14 +2714,14 @@ public class CommandAdmin extends AdminUser
       if(infos.length>1)
         ancName=infos[1];
       newName=infos[2];
-      idGuild=World.world.getGuildByName(ancName);
+      idGuild=Main.world.getGuildByName(ancName);
       if(idGuild==-1)
       {
         String mess="La guilde n'existe pas.";
         this.sendMessage(mess);
         return;
       }
-      World.world.getGuild(idGuild).setName(newName);
+      Main.world.getGuild(idGuild).setName(newName);
       this.sendMessage("Vous avez renomme la guilde en "+newName+".");
       return;
     }
@@ -2760,7 +2758,7 @@ public class CommandAdmin extends AdminUser
 
       String gift=template+","+quantity+","+jp;
 
-      for(Account account : World.world.getAccounts())
+      for(Account account : Main.world.getAccounts())
       {
         String gifts=Database.getDynamics().getGiftData().getByAccount(account.getId());
         if(gifts.isEmpty())
@@ -2772,7 +2770,7 @@ public class CommandAdmin extends AdminUser
           Database.getDynamics().getGiftData().update(account.getId(),gifts+";"+gift);
         }
       }
-      this.sendMessage(World.world.getAccounts().size()+" ont reeu le cadeau : "+gift+".");
+      this.sendMessage(Main.world.getAccounts().size()+" ont reeu le cadeau : "+gift+".");
       return;
     }
     else if(command.equalsIgnoreCase("GIFTS"))
@@ -2794,7 +2792,7 @@ public class CommandAdmin extends AdminUser
         return;
       }
 
-      Player player=World.world.getPlayerByName(name);
+      Player player=Main.world.getPlayerByName(name);
 
       if(player==null)
       {
@@ -2819,7 +2817,7 @@ public class CommandAdmin extends AdminUser
     {
       Player perso=this.getPlayer();
       if(infos.length>1)
-        perso=World.world.getPlayerByName(infos[1]);
+        perso=Main.world.getPlayerByName(infos[1]);
       if(perso==null)
       {
         String mess="Le personnage n'existe pas.";
@@ -2841,7 +2839,7 @@ public class CommandAdmin extends AdminUser
         // ok
       }
 
-      if(id==0||World.world.getNPCTemplate(id)==null)
+      if(id==0||Main.world.getNPCTemplate(id)==null)
       {
         String str="NpcID invalide.";
         this.sendMessage(str);
@@ -2981,44 +2979,44 @@ public class CommandAdmin extends AdminUser
     }
     else if(command.equalsIgnoreCase("RELOADDROP"))
     {
-      World.world.reloadDrops();
+      Main.world.reloadDrops();
       this.sendMessage("Le rechargement des drops a ete effectue.");
       return;
     }
     else if(command.equalsIgnoreCase("RELOADENDFIGHT"))
     {
-      World.world.reloadEndFightActions();
+      Main.world.reloadEndFightActions();
       this.sendMessage("Le rechargement des endfights a ete effectue.");
       return;
     }
     else if(command.equalsIgnoreCase("RELOADHOUSE"))
     {
-      World.world.reloadHouses();
+      Main.world.reloadHouses();
       this.sendMessage("Le rechargement des maisons a ete effectue.");
       return;
     }
     else if(command.equalsIgnoreCase("RELOADCOFFRE"))
     {
-      World.world.reloadTrunks();
+      Main.world.reloadTrunks();
       this.sendMessage("Le rechargement des coffres a ete effectue.");
       return;
     }
     else if(command.equalsIgnoreCase("RELOADACTION"))
     {
-      World.world.reloadObjectsActions();
+      Main.world.reloadObjectsActions();
       this.sendMessage("Le rechargement des actions a ete effectue.");
       return;
     }
     else if(command.equalsIgnoreCase("RELOADMAP"))
     {
-      World.world.reloadMaps();
+      Main.world.reloadMaps();
       this.sendMessage("Le rechargement des maps a ete effectue.");
       return;
     }
     else if(command.equalsIgnoreCase("RELOADMOUNTPARK"))
     {
       int i=Integer.parseInt(infos[1]);
-      World.world.reloadMountParks(i);
+      Main.world.reloadMountParks(i);
       this.sendMessage("Le rechargement de l'enclos "+i+" a ete effectue.");
       return;
     }
@@ -3026,7 +3024,7 @@ public class CommandAdmin extends AdminUser
     {
       try
       {
-        World.world.reloadNpcs();
+        Main.world.reloadNpcs();
       }
       catch(Exception e)
       {
@@ -3038,25 +3036,25 @@ public class CommandAdmin extends AdminUser
     }
     else if(command.equalsIgnoreCase("RELOADSPELL"))
     {
-      World.world.reloadSpells();
+      Main.world.reloadSpells();
       this.sendMessage("Le rechargement des sorts a ete effectue.");
       return;
     }
     else if(command.equalsIgnoreCase("RELOADITEM"))
     {
-      World.world.reloadItems();
+      Main.world.reloadItems();
       this.sendMessage("Le rechargement des items a ete effectue.");
       return;
     }
     else if(command.equalsIgnoreCase("RELOADMONSTER"))
     {
-      World.world.reloadMonsters();
+      Main.world.reloadMonsters();
       this.sendMessage("Le rechargement des monstres a ete effectue.");
       return;
     }
     else if(command.equalsIgnoreCase("RELOADQUEST"))
     {
-      World.world.reloadQuests();
+      Main.world.reloadQuests();
       this.sendMessage("Le rechargement des quetes a ete effectue.");
       return;
     }
@@ -3064,7 +3062,7 @@ public class CommandAdmin extends AdminUser
     {
       Command.reload();
       Group.reload();
-      World.world.reloadPlayerGroup();
+      Main.world.reloadPlayerGroup();
       this.sendMessage("Le rechargement des commandes et des groupes ont etes effectues.");
       return;
     }
@@ -3084,7 +3082,7 @@ public class CommandAdmin extends AdminUser
     else if(command.equalsIgnoreCase("LISTTYPE"))
     {
       String s="";
-      for(ObjectTemplate obj : World.world.getObjTemplates())
+      for(ObjectTemplate obj : Main.world.getObjTemplates())
         if(obj.getType()==Integer.parseInt(infos[1]))
           s+=obj.getId()+",";
       this.sendMessage(s);
@@ -3097,7 +3095,7 @@ public class CommandAdmin extends AdminUser
       try
       {
         emoteId=Byte.parseByte(infos[1]);
-        perso=World.world.getPlayerByName(infos[2]);
+        perso=Main.world.getPlayerByName(infos[2]);
       }
       catch(Exception e)
       {
@@ -3127,7 +3125,7 @@ public class CommandAdmin extends AdminUser
       Npc npc=map.getNpc(npcGUID);
       NpcTemplate npcTemplate=null;
       if(npc==null)
-        npcTemplate=World.world.getNPCTemplate(npcGUID);
+        npcTemplate=Main.world.getNPCTemplate(npcGUID);
       else
         npcTemplate=npc.getTemplate();
       if(npcGUID==0||itmID==-1||npcTemplate==null)
@@ -3163,10 +3161,10 @@ public class CommandAdmin extends AdminUser
       Npc npc=map.getNpc(npcGUID);
       NpcTemplate npcTemplate=null;
       if(npc==null)
-        npcTemplate=World.world.getNPCTemplate(npcGUID);
+        npcTemplate=Main.world.getNPCTemplate(npcGUID);
       else
         npcTemplate=npc.getTemplate();
-      ObjectTemplate item=World.world.getObjTemplate(itmID);
+      ObjectTemplate item=Main.world.getObjTemplate(itmID);
       if(npcGUID==0||itmID==-1||npcTemplate==null||item==null)
       {
         String str="NpcGUID ou itemID invalide.";
@@ -3185,9 +3183,9 @@ public class CommandAdmin extends AdminUser
     else if(command.equalsIgnoreCase("LISTEXTRA"))
     {
       String mess="Liste des Extra Monstres :";
-      for(Entry<Integer, GameMap> i : World.world.getExtraMonsterOnMap().entrySet())
+      for(Entry<Integer, GameMap> i : Main.world.getExtraMonsterOnMap().entrySet())
         mess+="\n- "+i.getKey()+" est sur la map : "+i.getValue().getId();
-      if(World.world.getExtraMonsterOnMap().size()<=0)
+      if(Main.world.getExtraMonsterOnMap().size()<=0)
         mess="Aucun Extra Monstres existe.";
       this.sendMessage(mess);
       return;
@@ -3197,7 +3195,7 @@ public class CommandAdmin extends AdminUser
       Player perso=this.getPlayer();
       if(infos.length>1)
       {
-        perso=World.world.getPlayerByName(infos[1]);
+        perso=Main.world.getPlayerByName(infos[1]);
       }
       if(perso==null)
       {
@@ -3240,7 +3238,7 @@ public class CommandAdmin extends AdminUser
       Player perso=null;
       try
       {
-        perso=World.world.getPlayerByName(infos[1]);
+        perso=Main.world.getPlayerByName(infos[1]);
       }
       catch(Exception e)
       {
@@ -3251,7 +3249,7 @@ public class CommandAdmin extends AdminUser
         this.sendMessage("Le nom du personnage est incorrect.");
         return;
       }
-      SocketManager.send(World.world.getPlayerByName(infos[1]),msg.substring(8+infos[1].length()));
+      SocketManager.send(Main.world.getPlayerByName(infos[1]),msg.substring(8+infos[1].length()));
       this.sendMessage("Le paquet a ete envoye : "+msg.substring(8+infos[1].length())+" e "+infos[1]+".");
       return;
     }
@@ -3262,7 +3260,7 @@ public class CommandAdmin extends AdminUser
       try
       {
         TitleID=Byte.parseByte(infos[1]);
-        perso=World.world.getPlayerByName(infos[2]);
+        perso=Main.world.getPlayerByName(infos[2]);
       }
       catch(Exception e)
       {
@@ -3304,7 +3302,7 @@ public class CommandAdmin extends AdminUser
       if(infos.length==3)//Si le nom du perso est specifie
       {
         String name=infos[2];
-        perso=World.world.getPlayerByName(name);
+        perso=Main.world.getPlayerByName(name);
         if(perso==null)
           perso=this.getPlayer();
       }
@@ -3332,7 +3330,7 @@ public class CommandAdmin extends AdminUser
         // ok
       }
 
-      for(ObjectTemplate obj : World.world.getObjTemplates())
+      for(ObjectTemplate obj : Main.world.getObjTemplates())
       {
         if(obj.getType()==type)
         {
@@ -3361,7 +3359,7 @@ public class CommandAdmin extends AdminUser
       {
         // ok
       }
-      Player p=World.world.getPlayerByName(pseudo);
+      Player p=Main.world.getPlayerByName(pseudo);
       if(p==null)
         p=this.getPlayer();
       p.unsetFullMorph();
@@ -3380,7 +3378,7 @@ public class CommandAdmin extends AdminUser
         // ok
       }
 
-      PetEntry p=World.world.getPetsEntry(objID);
+      PetEntry p=Main.world.getPetsEntry(objID);
       if(p==null)
       {
         this.sendMessage("Le familier n'existe pas.");
@@ -3410,7 +3408,7 @@ public class CommandAdmin extends AdminUser
       Player perso=null;
       if(infos.length>2)//Si un nom de perso est specifie
       {
-        perso=World.world.getPlayerByName(infos[2]);
+        perso=Main.world.getPlayerByName(infos[2]);
         if(perso!=null&&g!=null)
           perso.setGroupe(g,true);
       }
@@ -3537,7 +3535,7 @@ public class CommandAdmin extends AdminUser
         this.sendMessage("Un des parametres est invalide.");
         return;
       }
-      Player p=World.world.getPlayerByName(perso);
+      Player p=Main.world.getPlayerByName(perso);
       Quest q=Quest.getQuestById(id);
       if(p==null||q==null)
       {
@@ -3579,7 +3577,7 @@ public class CommandAdmin extends AdminUser
         this.sendMessage("Un des parametres est invalide.");
         return;
       }
-      Player p=World.world.getPlayerByName(perso);
+      Player p=Main.world.getPlayerByName(perso);
       Quest q=Quest.getQuestById(id);
       if(p==null||q==null)
       {
@@ -3621,7 +3619,7 @@ public class CommandAdmin extends AdminUser
         this.sendMessage("Un des parametres est invalide.");
         return;
       }
-      Player p=World.world.getPlayerByName(perso);
+      Player p=Main.world.getPlayerByName(perso);
       Quest q=Quest.getQuestById(id);
       if(p==null||q==null)
       {
@@ -3661,7 +3659,7 @@ public class CommandAdmin extends AdminUser
         this.sendMessage("Un des parametres est invalide.");
         return;
       }
-      Player p=World.world.getPlayerByName(perso);
+      Player p=Main.world.getPlayerByName(perso);
       Quest q=Quest.getQuestById(id);
       if(p==null||q==null)
       {
@@ -3714,7 +3712,7 @@ public class CommandAdmin extends AdminUser
       {
         for(Entry<Integer, Integer> entry : e.getItemNecessaryList().entrySet())
         {
-          ObjectTemplate objT=World.world.getObjTemplate(entry.getKey());
+          ObjectTemplate objT=Main.world.getObjTemplate(entry.getKey());
           int qua=entry.getValue();
           GameObject obj=objT.createNewItem(qua,false);
           if(this.getPlayer().addObjet(obj,true))
@@ -3764,14 +3762,14 @@ public class CommandAdmin extends AdminUser
       for(int a=0;a<=team0.length()-2;a+=2)
       {
         String code=team0.substring(a,a+2);
-        mess+=World.world.getCryptManager().cellCode_To_ID(code)+",";
+        mess+=Main.world.getCryptManager().cellCode_To_ID(code)+",";
       }
       this.sendMessage(mess);
       mess="Team 1 : ";
       for(int a=0;a<=team1.length()-2;a+=2)
       {
         String code=team1.substring(a,a+2);
-        mess+=World.world.getCryptManager().cellCode_To_ID(code)+",";
+        mess+=Main.world.getCryptManager().cellCode_To_ID(code)+",";
       }
       this.sendMessage(mess);
     }
@@ -3822,10 +3820,10 @@ public class CommandAdmin extends AdminUser
       }
 
       for(int a=0;a<=team0.length()-2;a+=2)
-        if(cell==World.world.getCryptManager().cellCode_To_ID(team0.substring(a,a+2)))
+        if(cell==Main.world.getCryptManager().cellCode_To_ID(team0.substring(a,a+2)))
           already=true;
       for(int a=0;a<=team1.length()-2;a+=2)
-        if(cell==World.world.getCryptManager().cellCode_To_ID(team1.substring(a,a+2)))
+        if(cell==Main.world.getCryptManager().cellCode_To_ID(team1.substring(a,a+2)))
           already=true;
       if(already)
       {
@@ -3833,9 +3831,9 @@ public class CommandAdmin extends AdminUser
         return;
       }
       if(team==0)
-        team0+=World.world.getCryptManager().cellID_To_Code(cell);
+        team0+=Main.world.getCryptManager().cellID_To_Code(cell);
       else if(team==1)
-        team1+=World.world.getCryptManager().cellID_To_Code(cell);
+        team1+=Main.world.getCryptManager().cellID_To_Code(cell);
       String newPlaces=team0+"|"+team1;
       this.getPlayer().getCurMap().setPlaces(newPlaces);
       if(!Database.getDynamics().getMapData().update(this.getPlayer().getCurMap()))
@@ -3883,7 +3881,7 @@ public class CommandAdmin extends AdminUser
       for(int a=0;a<=team0.length()-2;a+=2)
       {
         String c=p[0].substring(a,a+2);
-        if(cell==World.world.getCryptManager().cellCode_To_ID(c))
+        if(cell==Main.world.getCryptManager().cellCode_To_ID(c))
           continue;
         newPlaces+=c;
       }
@@ -3891,7 +3889,7 @@ public class CommandAdmin extends AdminUser
       for(int a=0;a<=team1.length()-2;a+=2)
       {
         String c=p[1].substring(a,a+2);
-        if(cell==World.world.getCryptManager().cellCode_To_ID(c))
+        if(cell==Main.world.getCryptManager().cellCode_To_ID(c))
           continue;
         newPlaces+=c;
       }
@@ -3999,12 +3997,12 @@ public class CommandAdmin extends AdminUser
     }
     else if(command.equalsIgnoreCase("FINDEXTRAMONSTER"))
     {
-      java.util.Map<Integer, java.util.Map<String, java.util.Map<String, Integer>>> extras=World.world.getExtraMonsters();
+      java.util.Map<Integer, java.util.Map<String, java.util.Map<String, Integer>>> extras=Main.world.getExtraMonsters();
 
       for(Entry<Integer, java.util.Map<String, java.util.Map<String, Integer>>> entry : extras.entrySet())
       {
         Integer idMob=entry.getKey();
-        for(GameMap map : World.world.getMaps())
+        for(GameMap map : Main.world.getMaps())
           map.getMobPossibles().stream().filter(mob -> mob.getTemplate().getId()==idMob).forEach(mob -> this.sendMessage("Map avec extraMonster : "+map.getId()+" -> "+idMob+"."));
       }
       this.sendMessage("Recherche termine et affiche en console.");
@@ -4030,30 +4028,7 @@ public class CommandAdmin extends AdminUser
     }
     else if(command.equalsIgnoreCase("RESTART"))
     {
-      Main.gameServer.setState(0);
-      WorldSave.cast(0);
-      Main.gameServer.kickAll(true);
-      Main.gameServer.stop();
-      Main.isRunning=false;
-      Logging.getInstance().stop();
-      Database.getStatics().getServerData().loggedZero();
-      Set<Thread> threadSet=Thread.getAllStackTraces().keySet();
-      for(Thread t : threadSet)
-      {
-        if(t.getName().compareTo("main")==0)
-        {
-          try
-          {
-            Main.main(null);
-          }
-          catch(SQLException e)
-          {
-            e.printStackTrace();
-          }
-          t.interrupt();
-          break;
-        }
-      }
+      Main.restart();
     }
     else
     {

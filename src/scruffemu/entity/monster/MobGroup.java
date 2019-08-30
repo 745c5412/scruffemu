@@ -8,15 +8,21 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Map.Entry;
 
+import scruffemu.area.map.GameCase;
 import scruffemu.area.map.GameMap;
 import scruffemu.common.Formulas;
+import scruffemu.common.PathFinding;
+import scruffemu.common.SocketManager;
 import scruffemu.database.Database;
 import scruffemu.entity.boss.MaitreCorbac;
 import scruffemu.entity.monster.MobGrade;
+import scruffemu.fight.Fight;
 import scruffemu.game.World;
 import scruffemu.main.Config;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
+import scruffemu.utility.Pair;
 
 public class MobGroup
 {
@@ -39,10 +45,10 @@ public class MobGroup
   private long spawnTime=System.currentTimeMillis();
   private ArrayList<GameObject> objects;
   private boolean isDynamic=false;
+  private Fight fight=null;
 
   public MobGroup(int Aid, int Aalign, ArrayList<MobGrade> possibles, GameMap Map, int cell, int fixSize, int minSize, int maxSize, MobGrade extra, boolean dynamic)
   {
-
     id=Aid;
     align=Aalign;
     //D�termination du nombre de mob du groupe
@@ -501,7 +507,7 @@ public class MobGroup
         int idMonster=Integer.parseInt(infos[0]);
         int min=Integer.parseInt(infos[1]);
         int max=Integer.parseInt(infos[2]);
-        Monster m=World.world.getMonstre(idMonster);
+        Monster m=Main.world.getMonstre(idMonster);
         List<MobGrade> mgs=new ArrayList<MobGrade>();
         //on ajoute a la liste les grades possibles
 
@@ -558,7 +564,7 @@ public class MobGroup
         int idMonster=Integer.parseInt(infos[0]);
         int min=Integer.parseInt(infos[1]);
         int max=Integer.parseInt(infos[2]);
-        Monster m=World.world.getMonstre(idMonster);
+        Monster m=Main.world.getMonstre(idMonster);
         List<MobGrade> mgs=new ArrayList<MobGrade>();
         for(MobGrade MG : m.getGrades().values())
         {
@@ -839,5 +845,43 @@ public class MobGroup
   public void setIsDynamic(boolean isDynamic)
   {
     this.isDynamic=isDynamic;
+  }
+  
+  public void moveMobGroup(final GameMap map)
+  {
+    if(this.fight!=null)
+      return;
+    final short destionationCell=PathFinding.cellMoveSprite(map,this.cellId);
+    if(destionationCell==-1)
+      return;
+    final Pair<Integer, ArrayList<GameCase>> pathCeldas=PathFinding.getPath(map,(short)this.cellId,destionationCell,-1);
+    if(pathCeldas==null)
+      return;
+    final ArrayList<GameCase> celdas=pathCeldas.getRight();
+    String pathStr=PathFinding.getPathToString(map,celdas,(short)this.cellId,false);
+    if(pathStr.isEmpty())
+    {
+      return;
+    }
+    try
+    {
+      Thread.sleep(100);
+    }
+    catch(final Exception e)
+    {
+    }
+    SocketManager.ENVIAR_GA_MOVER_SPRITE_MAPA(map,0,1,this.id+"",Main.world.getCryptManager().getValorHashPorNumero(this.orientation)+Main.world.getCryptManager().cellID_To_Code(this.cellId)+pathStr);
+    this.orientation=PathFinding.getIndexDireccion(pathStr.charAt(pathStr.length()-3));
+    this.cellId=destionationCell;
+  }
+
+  public Fight getFight()
+  {
+    return fight;
+  }
+
+  public void setFight(Fight fight)
+  {
+    this.fight = fight;
   }
 }

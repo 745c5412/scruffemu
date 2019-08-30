@@ -6,8 +6,8 @@ import scruffemu.client.other.Stats;
 import scruffemu.database.Database;
 import scruffemu.entity.Collector;
 import scruffemu.fight.spells.Spell.SortStats;
-import scruffemu.game.World;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -73,7 +73,7 @@ public class Guild
 
   public GuildMember addMember(int id, int r, byte pXp, long x, int ri, String lastCo)
   {
-    Player player=World.world.getPlayer(id);
+    Player player=Main.world.getPlayer(id);
     if(player==null)
       return null;
     GuildMember guildMember=new GuildMember(player,this,r,x,pXp,ri,lastCo);
@@ -135,7 +135,7 @@ public class Guild
     SortStats SS=this.spells.get(ID);
     if(SS!=null&&SS.getLevel()==5)
       return;
-    this.spells.put(ID,((SS==null) ? World.world.getSort(ID).getStatsByLevel(1) : World.world.getSort(ID).getStatsByLevel(SS.getLevel()+1)));
+    this.spells.put(ID,((SS==null) ? Main.world.getSort(ID).getStatsByLevel(1) : Main.world.getSort(ID).getStatsByLevel(SS.getLevel()+1)));
   }
 
   public Stats getStatsFight()
@@ -237,7 +237,7 @@ public class Guild
   public void addXp(long xp)
   {
     this.xp+=xp;
-    while(this.xp>=World.world.getGuildXpMax(this.lvl)&&this.lvl<200)
+    while(this.xp>=Main.world.getGuildXpMax(this.lvl)&&this.lvl<200)
       this.levelUp();
   }
 
@@ -250,7 +250,7 @@ public class Guild
   public void decompileSpell(String spells)
   {
     for(String split : spells.split("\\|"))
-      this.spells.put(Integer.parseInt(split.split(";")[0]),World.world.getSort(Integer.parseInt(split.split(";")[0])).getStatsByLevel(Integer.parseInt(split.split(";")[1])));
+      this.spells.put(Integer.parseInt(split.split(";")[0]),Main.world.getSort(Integer.parseInt(split.split(";")[0])).getStatsByLevel(Integer.parseInt(split.split(";")[1])));
   }
 
   public void decompileStats(String statsStr)

@@ -4,7 +4,6 @@ import scruffemu.client.Player;
 import scruffemu.database.Database;
 import scruffemu.game.GameClient;
 import scruffemu.game.Updatable;
-import scruffemu.game.World;
 import scruffemu.main.Config;
 import scruffemu.main.Main;
 
@@ -27,7 +26,7 @@ public class WorldKickIdle extends Updatable
       int idleClient=0;
       int idleSession=0;
       int idlePlayer=0;
-      for(Player player : World.world.getOnlinePlayers())
+      for(Player player : Main.world.getOnlinePlayers())
       {
         if(player.getGameClient()==null)
         {
@@ -41,7 +40,7 @@ public class WorldKickIdle extends Updatable
       for(GameClient client : Main.gameServer.getClients())
       {
         boolean found=false;
-        for(Player player : World.world.getOnlinePlayers())
+        for(Player player : Main.world.getOnlinePlayers())
           if(client.getPlayer()==player)
             if(!client.getCharacterSelect()==true)
             {

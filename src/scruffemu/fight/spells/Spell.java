@@ -6,7 +6,6 @@ import scruffemu.common.PathFinding;
 import scruffemu.fight.Challenge;
 import scruffemu.fight.Fight;
 import scruffemu.fight.Fighter;
-import scruffemu.game.World;
 import scruffemu.main.Constant;
 import scruffemu.main.Main;
 
@@ -330,7 +329,7 @@ public class Spell
 
     public Spell getSpell()
     {
-      return World.world.getSort(spellID);
+      return Main.world.getSort(spellID);
     }
 
     public int getSpriteID()
@@ -466,7 +465,7 @@ public class Spell
           }
         }
 
-        SE.applyToFight(fight,perso,cell,cibles,(cells.size()>1) ? true : false, false);
+        SE.applyToFight(fight,perso,cell,cibles,(cells.size()>1) ? true : false,false);
       }
     }
 
@@ -517,7 +516,7 @@ public class Spell
           ArrayList<GameCase> cells=PathFinding.getCellListFromAreaString(fight.getMap(),cell.getId(),perso.getCell().getId(),porteeType,POnum,isCC,TauxCC);
           ArrayList<GameCase> finalCells=new ArrayList<GameCase>();
           int TE=0;
-          Spell S=World.world.getSort(spellID);
+          Spell S=Main.world.getSort(spellID);
           if(S!=null)
           {
             if(S.getEffectTargets().size()>1) //multiple levels

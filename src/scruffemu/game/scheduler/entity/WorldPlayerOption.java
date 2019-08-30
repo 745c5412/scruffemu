@@ -2,7 +2,7 @@ package scruffemu.game.scheduler.entity;
 
 import scruffemu.database.Database;
 import scruffemu.game.Updatable;
-import scruffemu.game.World;
+import scruffemu.main.Main;
 
 public class WorldPlayerOption extends Updatable
 {
@@ -19,7 +19,7 @@ public class WorldPlayerOption extends Updatable
     if(this.verify())
     {
       Database.getStatics().getAccountData().updateVoteAll();
-      World.world.getOnlinePlayers().stream().filter(player -> player!=null&&player.isOnline()).forEach(scruffemu.client.Player::checkVote);
+      Main.world.getOnlinePlayers().stream().filter(player -> player!=null&&player.isOnline()).forEach(scruffemu.client.Player::checkVote);
     }
   }
 

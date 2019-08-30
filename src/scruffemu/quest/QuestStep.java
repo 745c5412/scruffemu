@@ -1,7 +1,7 @@
 package scruffemu.quest;
 
 import scruffemu.entity.npc.NpcTemplate;
-import scruffemu.game.World;
+import scruffemu.main.Main;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class QuestStep
     this.id=id;
     this.type=(short)type;
     this.objectif=objectif;
-    this.npc=World.world.getNPCTemplate(npc);
+    this.npc=Main.world.getNPCTemplate(npc);
     this.condition=condition;
     this.validationType=validationType;
 

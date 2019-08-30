@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import scruffemu.database.Database;
 import scruffemu.database.active.AbstractDAO;
 import scruffemu.game.World;
+import scruffemu.main.Main;
 import scruffemu.market.Hdv;
 import scruffemu.market.HdvEntry;
 
@@ -39,7 +40,7 @@ public class HdvObjectData extends AbstractDAO<Object>
       ResultSet RS=result.resultSet;
       while(RS.next())
       {
-        Hdv tempHdv=World.world.getHdv(RS.getInt("map"));
+        Hdv tempHdv=Main.world.getHdv(RS.getInt("map"));
         if(tempHdv==null)
           continue;
         if(World.getGameObject(RS.getInt("itemID"))==null)
@@ -48,7 +49,7 @@ public class HdvObjectData extends AbstractDAO<Object>
           continue;
         }
         tempHdv.addEntry(new HdvEntry(RS.getInt("id"),RS.getInt("price"),RS.getByte("count"),RS.getInt("ownerGuid"),World.getGameObject(RS.getInt("itemID"))),true);
-        World.world.setNextObjectHdvId(RS.getInt("id"));
+        Main.world.setNextObjectHdvId(RS.getInt("id"));
       }
     }
     catch(SQLException e)

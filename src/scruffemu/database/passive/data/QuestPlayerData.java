@@ -5,7 +5,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import scruffemu.client.Player;
 import scruffemu.comhandler.transfer.DataQueue;
 import scruffemu.database.passive.AbstractDAO;
-import scruffemu.game.World;
 import scruffemu.main.Main;
 import scruffemu.quest.QuestPlayer;
 
@@ -140,11 +139,11 @@ public class QuestPlayerData extends AbstractDAO<QuestPlayer>
   {
     try
     {
-      final DataQueue.Queue<Integer> queue=World.world.getDataQueue().new Queue<>((byte)3);
+      final DataQueue.Queue<Integer> queue=Main.world.getDataQueue().new Queue<>((byte)3);
       synchronized(queue)
       {
-        long count=World.world.getDataQueue().count();
-        World.world.getDataQueue().queues.put(count,queue);
+        long count=Main.world.getDataQueue().count();
+        Main.world.getDataQueue().queues.put(count,queue);
         Main.exchangeClient.send("DI"+queue.getType()+count);
         queue.wait();
       }

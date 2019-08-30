@@ -33,10 +33,10 @@ public class IAHandler
       switch(mobGrade.getTemplate().getIa())
       {
         case 1://IA BASIQUE attaque,pm,attaque,pm
-          ia=new IA27(fight,fighter,(byte)4);
+          ia=new IA27(fight,fighter,(byte)8);
           break;
         case 2://IA Dragonnet rouge
-          ia=new IA2(fight,fighter,(byte)6);
+          ia=new IA2(fight,fighter,(byte)8);
           break;
         case 5://IA Bloqueuse : Avancer vers ennemis
           ia=new IA5(fight,fighter,(byte)5);
@@ -45,16 +45,16 @@ public class IAHandler
           ia=new IA6(fight,fighter,(byte)5);
           break;
         case 8://IA Surpuissante : Invocation, Buff, Fuite
-          ia=new IA8(fight,fighter,(byte)4);
+          ia=new IA8(fight,fighter,(byte)8);
           break;
         case 9://IA La Fourbe : Attaque[], Fuite
-          ia=new IA9(fight,fighter,(byte)4);
+          ia=new IA9(fight,fighter,(byte)8);
           break;
         case 10://IA Tonneau : Attaque[], Soin si Etat port�e
           ia=new IA10(fight,fighter,(byte)8);
           break;
         case 12://IA Tofus
-          ia=new IA12(fight,fighter,(byte)4);
+          ia=new IA12(fight,fighter,(byte)8);
           break;
         case 14://IA Tonneau : Attaque[], Soin si Etat port�e
           ia=new IA14(fight,fighter,(byte)8);
@@ -90,13 +90,13 @@ public class IAHandler
           ia=new IA24(fight,fighter,(byte)3);
           break;
         case 25: //IA Sacrifier
-          ia=new IA25(fight,fighter,(byte)4);
+          ia=new IA25(fight,fighter,(byte)8);
           break;
         case 26: //IA Kitsou
           ia=new IA26(fight,fighter,(byte)4);
           break;
         case 27://IA BASIQUE attaque,pm,attaque,pm
-          ia=new IA27(fight,fighter,(byte)4);
+          ia=new IA27(fight,fighter,(byte)8);
           break;
         case 28: //IA sphincter cell
           ia=new IA28(fight,fighter,(byte)5);
@@ -159,7 +159,7 @@ public class IAHandler
           ia=new IA47(fight,fighter,(byte)4);
           break;
         case 48://IA Sanglier
-          ia=new IA48(fight,fighter,(byte)4);
+          ia=new IA48(fight,fighter,(byte)12);
           break;
         case 49://IA Chaferfu lancier
           ia=new IA49(fight,fighter,(byte)6);
@@ -177,7 +177,7 @@ public class IAHandler
           ia=new IA53(fight,fighter,(byte)8);
           break;
         case 54://IA Bworkmage
-          ia=new IA54(fight,fighter,(byte)8);
+          ia=new IA54(fight,fighter,(byte)12);
           break;
         case 55://IA dopeul feca
           ia=new IA55(fight,fighter,(byte)8);

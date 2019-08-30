@@ -15,6 +15,7 @@ import scruffemu.game.action.GameAction;
 import scruffemu.job.JobConstant;
 import scruffemu.job.magus.BreakingObject;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.other.Action;
 import scruffemu.utility.TimerWaiterPlus;
@@ -933,7 +934,7 @@ public class GameCase
           this.getObject().desactive();
           SocketManager.GAME_SEND_GDF_PACKET_TO_MAP(player.getCurMap(),this);
           int qua=Formulas.getRandomValue(1,5);//On a entre 1 et 10 eaux
-          GameObject obj=World.world.getObjTemplate(537).createNewItem(qua,false);
+          GameObject obj=Main.world.getObjTemplate(537).createNewItem(qua,false);
           if(player.addObjet(obj,true))
             World.addGameObject(obj,true);
           SocketManager.GAME_SEND_IQ_PACKET(player,player.getId(),qua);
@@ -942,7 +943,7 @@ public class GameCase
 
       case 44://Sauvegarder pos
         short map=player.getCurMap().getId();
-        String str=map+","+World.world.getZaapCellIdByMapId(map);
+        String str=map+","+Main.world.getZaapCellIdByMapId(map);
         player.set_savePos(str);
         SocketManager.GAME_SEND_Im_PACKET(player,"06");
         break;
@@ -963,7 +964,7 @@ public class GameCase
           this.getObject().desactive();
           SocketManager.GAME_SEND_GDF_PACKET_TO_MAP(player.getCurMap(),this);
           int qua=Formulas.getRandomValue(1,10);//On a entre 1 et 10 eaux
-          GameObject obj=World.world.getObjTemplate(311).createNewItem(qua,false);
+          GameObject obj=Main.world.getObjTemplate(311).createNewItem(qua,false);
           if(player.addObjet(obj,true))
             World.addGameObject(obj,true);
           SocketManager.GAME_SEND_IQ_PACKET(player,player.getId(),qua);
@@ -1019,7 +1020,7 @@ public class GameCase
         try
         {
           park.getEtable().stream().filter(mount -> mount!=null).forEach(mount -> mount.checkBaby(player));
-          park.getListOfRaising().stream().filter(integer -> World.world.getMountById(integer)!=null).forEach(integer -> World.world.getMountById(integer).checkBaby(player));
+          park.getListOfRaising().stream().filter(integer -> Main.world.getMountById(integer)!=null).forEach(integer -> Main.world.getMountById(integer).checkBaby(player));
         }
         catch(Exception e)
         {
@@ -1099,7 +1100,7 @@ public class GameCase
         if(house==null)
           return;
 
-        GameMap mapHouse=World.world.getMap((short)house.getHouseMapId());
+        GameMap mapHouse=Main.world.getMap((short)house.getHouseMapId());
         if(mapHouse==null)
         {
           SocketManager.GAME_SEND_MESSAGE(player,"This house does not work. Please send a bug report message on discord.");
@@ -1137,7 +1138,7 @@ public class GameCase
           trunk.setKey("-");
           trunk.setKamas(0);
           Database.getStatics().getTrunkData().insert(trunk);
-          World.world.addTrunk(trunk);
+          Main.world.addTrunk(trunk);
         }
         if(player.getInHouse()!=null&&trunk.getOwnerId()!=player.getAccID()&&trunk.getHouseId()==player.getInHouse().getId()&&player.getId()==player.getInHouse().getOwnerId())
         {
@@ -1237,7 +1238,7 @@ public class GameCase
         this.object.desactive();
         SocketManager.GAME_SEND_GDF_PACKET_TO_MAP(perso.getCurMap(),this);
         int qua=Formulas.getRandomValue(1,5);//On a entre 1 et 5 patates
-        GameObject obj=World.world.getObjTemplate(537).createNewItem(qua,false);
+        GameObject obj=Main.world.getObjTemplate(537).createNewItem(qua,false);
         if(perso.addObjet(obj,true))
           World.addGameObject(obj,true);
         SocketManager.GAME_SEND_IQ_PACKET(perso,perso.getId(),qua);
@@ -1251,7 +1252,7 @@ public class GameCase
         this.object.desactive();
         SocketManager.GAME_SEND_GDF_PACKET_TO_MAP(perso.getCurMap(),this);
         qua=Formulas.getRandomValue(1,10);//On a entre 1 et 10 eaux
-        obj=World.world.getObjTemplate(311).createNewItem(qua,false);
+        obj=Main.world.getObjTemplate(311).createNewItem(qua,false);
         if(perso.addObjet(obj,true))
           World.addGameObject(obj,true);
         SocketManager.GAME_SEND_IQ_PACKET(perso,perso.getId(),qua);

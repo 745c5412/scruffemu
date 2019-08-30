@@ -3,8 +3,8 @@ package scruffemu.database.active.data;
 import com.zaxxer.hikari.HikariDataSource;
 
 import scruffemu.database.active.AbstractDAO;
-import scruffemu.game.World;
 import scruffemu.job.Job;
+import scruffemu.main.Main;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,7 +40,7 @@ public class JobData extends AbstractDAO<Job>
         String skills="";
         if(RS.getString("skills")!=null)
           skills=RS.getString("skills");
-        World.world.addJob(new Job(RS.getInt("id"),RS.getString("tools"),RS.getString("crafts"),skills));
+        Main.world.addJob(new Job(RS.getInt("id"),RS.getString("tools"),RS.getString("crafts"),skills));
       }
     }
     catch(SQLException e)

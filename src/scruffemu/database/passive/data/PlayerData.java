@@ -6,7 +6,6 @@ import scruffemu.client.Player;
 import scruffemu.command.administration.Group;
 import scruffemu.database.Database;
 import scruffemu.database.passive.AbstractDAO;
-import scruffemu.game.World;
 import scruffemu.main.Config;
 import scruffemu.main.Constant;
 import scruffemu.main.Main;
@@ -70,9 +69,9 @@ public class PlayerData extends AbstractDAO<Player>
         Player perso=new Player(RS.getInt("id"),RS.getString("name"),RS.getInt("groupe"),RS.getInt("sexe"),RS.getInt("class"),RS.getInt("color1"),RS.getInt("color2"),RS.getInt("color3"),RS.getLong("kamas"),RS.getInt("spellboost"),RS.getInt("capital"),RS.getInt("energy"),RS.getInt("level"),RS.getLong("xp"),RS.getInt("size"),RS.getInt("gfx"),RS.getByte("alignement"),RS.getInt("account"),stats,RS.getByte("seeFriend"),RS.getByte("seeAlign"),RS.getByte("seeSeller"),RS.getString("canaux"),RS.getShort("map"),RS.getInt("cell"),RS.getString("objets"),RS.getString("storeObjets"),RS.getInt("pdvper"),RS.getString("spells"),RS.getString("savepos"),RS.getString("jobs"),RS.getInt("mountxpgive"),RS.getInt("mount"),RS.getInt("honor"),RS.getInt("deshonor"),RS.getInt("alvl"),RS.getString("zaaps"),RS.getByte("title"),RS.getInt("wife"),RS.getString("morphMode"),RS.getString("allTitle"),RS.getString("emotes"),RS.getLong("prison"),false,RS.getString("parcho"),RS.getLong("timeDeblo"),RS.getBoolean("noall"),RS.getString("deadInformation"),RS.getByte("deathCount"),RS.getLong("totalKills"),RS.getInt("tokens"),RS.getInt("apExo"),RS.getInt("mpExo"),RS.getInt("raExo"));
 
         perso.VerifAndChangeItemPlace();
-        World.world.addPlayer(perso);
+        Main.world.addPlayer(perso);
         if(perso.isShowSeller())
-          World.world.addSeller(perso);
+          Main.world.addSeller(perso);
       }
     }
     catch(SQLException e)
@@ -106,18 +105,18 @@ public class PlayerData extends AbstractDAO<Player>
         stats.put(Constant.STATS_ADD_CHAN,RS.getInt("chance"));
         stats.put(Constant.STATS_ADD_AGIL,RS.getInt("agilite"));
 
-        Player oldPlayer=World.world.getPlayer((int)obj);
+        Player oldPlayer=Main.world.getPlayer((int)obj);
         player=new Player(RS.getInt("id"),RS.getString("name"),RS.getInt("groupe"),RS.getInt("sexe"),RS.getInt("class"),RS.getInt("color1"),RS.getInt("color2"),RS.getInt("color3"),RS.getLong("kamas"),RS.getInt("spellboost"),RS.getInt("capital"),RS.getInt("energy"),RS.getInt("level"),RS.getLong("xp"),RS.getInt("size"),RS.getInt("gfx"),RS.getByte("alignement"),RS.getInt("account"),stats,RS.getByte("seeFriend"),RS.getByte("seeAlign"),RS.getByte("seeSeller"),RS.getString("canaux"),RS.getShort("map"),RS.getInt("cell"),RS.getString("objets"),RS.getString("storeObjets"),RS.getInt("pdvper"),RS.getString("spells"),RS.getString("savepos"),RS.getString("jobs"),RS.getInt("mountxpgive"),RS.getInt("mount"),RS.getInt("honor"),RS.getInt("deshonor"),RS.getInt("alvl"),RS.getString("zaaps"),RS.getByte("title"),RS.getInt("wife"),RS.getString("morphMode"),RS.getString("allTitle"),RS.getString("emotes"),RS.getLong("prison"),false,RS.getString("parcho"),RS.getLong("timeDeblo"),RS.getBoolean("noall"),RS.getString("deadInformation"),RS.getByte("deathCount"),RS.getLong("totalKills"),RS.getInt("tokens"),RS.getInt("apExo"),RS.getInt("mpExo"),RS.getInt("raExo"));
 
         if(oldPlayer!=null)
           player.setNeededEndFight(oldPlayer.needEndFight(),oldPlayer.hasMobGroup());
 
         player.VerifAndChangeItemPlace();
-        World.world.addPlayer(player);
+        Main.world.addPlayer(player);
         int guild=Database.getDynamics().getGuildMemberData().isPersoInGuild(RS.getInt("id"));
 
         if(guild>=0)
-          player.setGuildMember(World.world.getGuild(guild).getMember(RS.getInt("id")));
+          player.setGuildMember(Main.world.getGuild(guild).getMember(RS.getInt("id")));
 
       }
     }
@@ -136,10 +135,10 @@ public class PlayerData extends AbstractDAO<Player>
   {
     try
     {
-      Account account=World.world.getAccount(id);
+      Account account=Main.world.getAccount(id);
       if(account!=null)
         if(account.getPlayers()!=null)
-          account.getPlayers().values().stream().filter(p -> p!=null).forEach(World.world::verifyClone);
+          account.getPlayers().values().stream().filter(p -> p!=null).forEach(Main.world::verifyClone);
     }
     catch(Exception e)
     {
@@ -156,7 +155,7 @@ public class PlayerData extends AbstractDAO<Player>
         if(RS.getInt("server")!=Config.getInstance().serverId)
           continue;
 
-        Player p=World.world.getPlayer(RS.getInt("id"));
+        Player p=Main.world.getPlayer(RS.getInt("id"));
         if(p!=null)
         {
           if(p.getFight()!=null)
@@ -178,10 +177,10 @@ public class PlayerData extends AbstractDAO<Player>
         if(p!=null)
           player.setNeededEndFight(p.needEndFight(),p.hasMobGroup());
         player.VerifAndChangeItemPlace();
-        World.world.addPlayer(player);
+        Main.world.addPlayer(player);
         int guild=Database.getDynamics().getGuildMemberData().isPersoInGuild(RS.getInt("id"));
         if(guild>=0)
-          player.setGuildMember(World.world.getGuild(guild).getMember(RS.getInt("id")));
+          player.setGuildMember(Main.world.getGuild(guild).getMember(RS.getInt("id")));
       }
     }
     catch(SQLException e)
@@ -357,7 +356,7 @@ public class PlayerData extends AbstractDAO<Player>
       p.setInt(46,player.getId());
       execute(p);
       if(player.getGuildMember()!=null)
-       Database.getDynamics().getGuildMemberData().update(player);
+        Database.getDynamics().getGuildMemberData().update(player);
       if(player.getMount()!=null)
         Database.getStatics().getMountData().update(player.getMount());
     }
@@ -689,7 +688,7 @@ public class PlayerData extends AbstractDAO<Player>
       this.close(p);
     }
   }
-  
+
   //2.0 - Exo Limit
   public void updateMpExo(int id, int mpExo)
   {
@@ -712,7 +711,7 @@ public class PlayerData extends AbstractDAO<Player>
       this.close(p);
     }
   }
-  
+
   //2.0 - Exo Limit
   public void updateRaExo(int id, int raExo)
   {
@@ -735,7 +734,7 @@ public class PlayerData extends AbstractDAO<Player>
       this.close(p);
     }
   }
-  
+
   //2.0 - Exo Limit
   public int loadApExo(String user)
   {
@@ -762,7 +761,7 @@ public class PlayerData extends AbstractDAO<Player>
     }
     return apExo;
   }
-  
+
   //2.0 - Exo Limit
   public int loadMpExo(String user)
   {
@@ -789,7 +788,7 @@ public class PlayerData extends AbstractDAO<Player>
     }
     return mpExo;
   }
-  
+
   //2.0 - Exo Limit
   public int loadRaExo(String user)
   {

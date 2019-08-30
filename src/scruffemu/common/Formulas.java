@@ -7,24 +7,24 @@ import scruffemu.entity.Collector;
 import scruffemu.fight.Fight;
 import scruffemu.fight.Fighter;
 import scruffemu.fight.spells.SpellEffect;
-import scruffemu.game.World;
 import scruffemu.guild.GuildMember;
 import scruffemu.job.magus.Rune;
 import scruffemu.utility.Pair;
 import scruffemu.main.Config;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 
+import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Formulas
 {
 
-  public final static Random random=new Random();
+  public static SecureRandom random=new SecureRandom();
 
   public static int countCell(int i)
   {
@@ -1583,13 +1583,13 @@ public class Formulas
     {
       Collector collector=(Collector)object;
 
-      if(World.world.getGuild(collector.getGuildId())==null)
+      if(Main.world.getGuild(collector.getGuildId())==null)
         return 0;
 
       if(lvlWinners<=0)
         return 0;
 
-      double sagesse=World.world.getGuild(collector.getGuildId()).getLvl()*0.5+World.world.getGuild(collector.getGuildId()).getStats(Constant.STATS_ADD_SAGE),
+      double sagesse=Main.world.getGuild(collector.getGuildId()).getLvl()*0.5+Main.world.getGuild(collector.getGuildId()).getStats(Constant.STATS_ADD_SAGE),
           nvGrpMonster=((double)lvlMax/(double)lvlMin),bonus=1.0,rapport=((double)lvlLoosers/(double)lvlWinners);
 
       if(winners.size()==1)
@@ -1725,4 +1725,8 @@ public class Formulas
     return val;
   }
 
+  public static boolean getRandomBoolean()
+  {
+    return random.nextBoolean();
+  }
 }

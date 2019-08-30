@@ -6,8 +6,8 @@ import scruffemu.fight.Fight;
 import scruffemu.fight.Fighter;
 import scruffemu.fight.spells.Spell;
 import scruffemu.fight.spells.Spell.SortStats;
-import scruffemu.game.World;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 
 public class Glyph
 {
@@ -109,7 +109,7 @@ public class Glyph
     }
     else
     {
-      Spell spell=World.world.getSort(this.spell);
+      Spell spell=Main.world.getSort(this.spell);
       if(spell!=null)
       {
         if(spell.getEffectTargets().size()>1)

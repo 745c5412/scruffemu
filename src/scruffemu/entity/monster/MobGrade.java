@@ -12,8 +12,8 @@ import scruffemu.fight.Fighter;
 import scruffemu.fight.spells.Spell;
 import scruffemu.fight.spells.SpellEffect;
 import scruffemu.fight.spells.Spell.SortStats;
-import scruffemu.game.World;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 
 public class MobGrade
 {
@@ -88,7 +88,7 @@ public class MobGrade
     }
     catch(Exception e)
     {
-      World.world.logger.error("#1# Erreur lors du chargement du grade du monstre (template) : "+template.getId());
+      Main.world.logger.error("#1# Erreur lors du chargement du grade du monstre (template) : "+template.getId());
       e.printStackTrace();
     }
 
@@ -116,7 +116,7 @@ public class MobGrade
 
         if(id==0||lvl==0)
           continue;
-        Spell spell=World.world.getSort(id);
+        Spell spell=Main.world.getSort(id);
         if(spell==null)
           continue;
         SortStats spellStats=spell.getStatsByLevel(lvl);
@@ -166,7 +166,7 @@ public class MobGrade
       for(String split : spells.toString().split("\\;"))
       {
         int id=Integer.parseInt(split.split("\\,")[0]);
-        this.spells.put(id,World.world.getSort(id).getStatsByLevel(Integer.parseInt(split.split("\\,")[1])));
+        this.spells.put(id,Main.world.getSort(id).getStatsByLevel(Integer.parseInt(split.split("\\,")[1])));
       }
     }
   }

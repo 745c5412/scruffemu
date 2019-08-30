@@ -4,6 +4,7 @@ import scruffemu.fight.Fight;
 import scruffemu.fight.Fighter;
 import scruffemu.fight.ia.AbstractNeedSpell;
 import scruffemu.fight.ia.util.Function;
+import scruffemu.fight.spells.Spell.SortStats;
 
 public class IA48 extends AbstractNeedSpell
 {
@@ -18,10 +19,16 @@ public class IA48 extends AbstractNeedSpell
   {
     if(!this.stop&&this.fighter.canPlay()&&this.count>0)
     {
-      int time=100;
+      int time=100,apCost=5;
       boolean action=false;
+
+      for(SortStats spellStats : this.cacs)
+        if(spellStats!=null)
+          if(spellStats.getPACost()<apCost)
+            apCost=spellStats.getPACost();
+
       Fighter E=Function.getInstance().getNearestEnnemy(this.fight,this.fighter);
-      Fighter C=Function.getInstance().getNearestEnnemymurnbrcasemax(this.fight,this.fighter,0,2);//2 = po min 1 + 1;
+      Fighter C=Function.getInstance().getNearestEnnemymurnbrcasemax(this.fight,this.fighter,0,2); //2 = po min 1 + 1;
 
       if(C!=null&&C.isHide())
         C=null;
@@ -36,7 +43,7 @@ public class IA48 extends AbstractNeedSpell
           C=Function.getInstance().getNearestEnnemymurnbrcasemax(this.fight,this.fighter,0,2);//2 = po min 1 + 1;
         }
       }
-      if(this.fighter.getCurPa(this.fight)>0&&!action)
+      if(this.fighter.getCurPa(this.fight)>=apCost&&!action)
       {
         if(Function.getInstance().invocIfPossible(this.fight,this.fighter,this.invocations))
         {
@@ -44,7 +51,7 @@ public class IA48 extends AbstractNeedSpell
           action=true;
         }
       }
-      if(this.fighter.getCurPa(this.fight)>0&&C!=null&&!action)
+      if(this.fighter.getCurPa(this.fight)>=apCost&&C!=null&&!action)
       {
         int value=Function.getInstance().attackIfPossible(this.fight,this.fighter,this.cacs);
         if(value!=-1)
@@ -63,7 +70,8 @@ public class IA48 extends AbstractNeedSpell
       if(this.fighter.getCurPa(this.fight)==0&&this.fighter.getCurPm(this.fight)==0)
         this.stop=true;
       addNext(this::decrementCount,time);
-    } else
+    }
+    else
     {
       this.stop=true;
     }

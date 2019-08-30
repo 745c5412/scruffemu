@@ -16,6 +16,7 @@ import scruffemu.database.Database;
 import scruffemu.game.World;
 import scruffemu.main.Config;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.utility.TimerWaiterPlus;
 
@@ -66,7 +67,7 @@ public class Mount
     this.orientation=1;
     this.savage=(savage ? 1 : 0);
 
-    World.world.addMount(this);
+    Main.world.addMount(this);
     Database.getStatics().getMountData().add(this);
   }
 
@@ -114,7 +115,7 @@ public class Mount
     this.fecundatedDate=-1;
     this.couple=-1;
     this.savage=0;
-    World.world.addMount(this);
+    Main.world.addMount(this);
     Database.getStatics().getMountData().add(this);
   }
 
@@ -178,7 +179,7 @@ public class Mount
     {
       for(Integer arg : park.getListOfRaising())
       {
-        Mount mountArg=World.world.getMountById(arg);
+        Mount mountArg=Main.world.getMountById(arg);
         if(mountArg==null)
           continue;
         if(mountArg.getSex()!=mount.getSex()&&mountArg.isFecund()!=0&&mount.isFecund()!=0&&mountArg.getCellId()==cellTest)
@@ -198,7 +199,7 @@ public class Mount
               {
                 park.getListOfRaising().remove(mount.id);
                 park.getMap().send("GM|-"+mount.getId());
-                Player player=World.world.getPlayer(mount.getOwner());
+                Player player=Main.world.getPlayer(mount.getOwner());
                 if(player!=null&&player.isOnline())
                 {
                   player.send("Im0111;~"+park.getMap().getX()+","+park.getMap().getY());
@@ -222,7 +223,7 @@ public class Mount
               {
                 park.getListOfRaising().remove(mountArg.id);
                 park.getMap().send("GM|-"+mountArg.getId());
-                Player player=World.world.getPlayer(mountArg.getOwner());
+                Player player=Main.world.getPlayer(mountArg.getOwner());
                 if(player!=null&&player.isOnline())
                 {
                   player.send("Im0111;~"+park.getMap().getX()+","+park.getMap().getY());
@@ -249,7 +250,7 @@ public class Mount
     int actualHours=(int)((System.currentTimeMillis()-this.getFecundatedDate())/3600000)+1;
     if(time<actualHours&&actualHours<time+24*7)
     {
-      boolean coupleReprod=World.world.getMountById(this.getCouple())!=null&&World.world.getMountById(this.getCouple()).getCapacitys().contains(3);
+      boolean coupleReprod=Main.world.getMountById(this.getCouple())!=null&&Main.world.getMountById(this.getCouple()).getCapacitys().contains(3);
       boolean reproductrice=this.getCapacitys().contains(3)||coupleReprod;
       int offspring=1+(reproductrice ? 1 : 0),value=Formulas.getRandomValue(0,16),max=3+(reproductrice ? 1 : 0);
 
@@ -261,7 +262,7 @@ public class Mount
         offspring*=2;
 
       SocketManager.GAME_SEND_Im_PACKET(player,"1111;"+offspring);
-      Mount father=World.world.getMountById(this.getCouple());
+      Mount father=Main.world.getMountById(this.getCouple());
       for(int i=0;i<offspring;i++)
       {
         int color=Constant.colorToEtable(player,this,(father==null ? this : father));
@@ -279,14 +280,14 @@ public class Mount
         Database.getStatics().getMountData().delete(father.getId());
         player.getCurMap().getMountPark().delRaising(father.getId());
         player.getCurMap().getMountPark().getEtable().remove(father);
-        World.world.removeMount(father.getId());
+        Main.world.removeMount(father.getId());
       }
       if(this.getSavage()==1)
       {
         Database.getStatics().getMountData().delete(this.getId());
         player.getCurMap().getMountPark().delRaising(this.getId());
         player.getCurMap().getMountPark().getEtable().remove(this);
-        World.world.removeMount(this.getId());
+        Main.world.removeMount(this.getId());
         player.send("Im0112; "+this.getName());
       }
     }
@@ -551,7 +552,7 @@ public class Mount
   public void addXp(long amount)
   {
     this.exp+=amount;
-    while(this.exp>=World.world.getExpLevel(this.level+1).mount&&this.level<100)
+    while(this.exp>=Main.world.getExpLevel(this.level+1).mount&&this.level<100)
       this.addLvl();
     Database.getStatics().getMountData().update(this);
   }
@@ -624,7 +625,7 @@ public class Mount
         this.maturity+=Config.getInstance().rateMount*(Resist/100);
       if(this.size<100)
       {
-        GameMap map=World.world.getMap(this.mapId);
+        GameMap map=Main.world.getMap(this.mapId);
         if((this.getMaxMaturity()/this.maturity)<=1)
         {
           this.size=100;
@@ -836,7 +837,7 @@ public class Mount
       if(map.getCase(cellTest).isWalkable(false)&&MP.getDoor()!=cellTest&&!map.cellSide(cell,cellTest))
       {
         cell=cellTest;
-        path.append(dir+World.world.getCryptManager().cellID_To_Code(cell));
+        path.append(dir+Main.world.getCryptManager().cellID_To_Code(cell));
       }
       else
       {
@@ -845,7 +846,7 @@ public class Mount
     }
     if(cell==this.cellId)
     {
-      this.orientation=World.world.getCryptManager().getIntByHashedValue(dir);
+      this.orientation=Main.world.getCryptManager().getIntByHashedValue(dir);
       SocketManager.GAME_SEND_eD_PACKET_TO_MAP(map,this.id,this.orientation);
       SocketManager.SEND_GDE_FRAME_OBJECT_EXTERNAL(map,cellTest+";4");
       SocketManager.GAME_SEND_eUK_PACKET_TO_MAP(map,this.id,action);
@@ -856,9 +857,9 @@ public class Mount
     int nb=Mount.checkCanKen(MP,this,cellTest,action);
     if(nb==4)
       action=4;
-    SocketManager.GAME_SEND_GA_PACKET_TO_MAP(map,""+0,1,this.id+"","a"+World.world.getCryptManager().cellID_To_Code(this.cellId)+path.toString());
+    SocketManager.GAME_SEND_GA_PACKET_TO_MAP(map,""+0,1,this.id+"","a"+Main.world.getCryptManager().cellID_To_Code(this.cellId)+path.toString());
     this.cellId=cell;
-    this.orientation=World.world.getCryptManager().getIntByHashedValue(dir);
+    this.orientation=Main.world.getCryptManager().getIntByHashedValue(dir);
     int ID=this.id;
 
     final int finalCell=cellTest,finalAction=action;
@@ -876,7 +877,7 @@ public class Mount
   {
     int action=0;
     StringBuilder path=new StringBuilder();
-    GameMap map=World.world.getMap(this.mapId);
+    GameMap map=Main.world.getMap(this.mapId);
     if(map==null)
       return;
     if(map.getMountPark()==null)
@@ -888,7 +889,7 @@ public class Mount
     int cellTest=this.cellId;
     for(int i=0;i<cellules;i++)
     {
-      cellTest=PathFinding.getCellArroundByDir(cellTest,dir,World.world.getMap(this.mapId));
+      cellTest=PathFinding.getCellArroundByDir(cellTest,dir,Main.world.getMap(this.mapId));
       if(map.getCase(cellTest)==null)
         return;
       if(MP.getCellAndObject().containsKey(cellTest)&&(this.fatigue>=240||this.isFecund()==10))
@@ -965,7 +966,7 @@ public class Mount
       if(map.getCase(cellTest).isWalkable(false)&&MP.getDoor()!=cellTest&&!map.cellSide(cell,cellTest))
       {
         cell=cellTest;
-        path.append(dir+World.world.getCryptManager().cellID_To_Code(cell));
+        path.append(dir+Main.world.getCryptManager().cellID_To_Code(cell));
       }
       else
       {
@@ -974,7 +975,7 @@ public class Mount
     }
     if(cell==this.cellId)
     {
-      this.orientation=World.world.getCryptManager().getIntByHashedValue(dir);
+      this.orientation=Main.world.getCryptManager().getIntByHashedValue(dir);
       SocketManager.GAME_SEND_eD_PACKET_TO_MAP(map,this.id,this.orientation);
       SocketManager.SEND_GDE_FRAME_OBJECT_EXTERNAL(map,cellTest+";4");
       SocketManager.GAME_SEND_eUK_PACKET_TO_MAP(map,this.id,action);
@@ -984,9 +985,9 @@ public class Mount
       action=8;
     int id=this.id;
     action=Mount.checkCanKen(MP,this,cellTest,action);
-    SocketManager.GAME_SEND_GA_ACTION_TO_MAP(map,""+0,1,this.id+"","a"+World.world.getCryptManager().cellID_To_Code(this.cellId)+path.toString());
+    SocketManager.GAME_SEND_GA_ACTION_TO_MAP(map,""+0,1,this.id+"","a"+Main.world.getCryptManager().cellID_To_Code(this.cellId)+path.toString());
     this.cellId=cell;
-    this.orientation=World.world.getCryptManager().getIntByHashedValue(dir);
+    this.orientation=Main.world.getCryptManager().getIntByHashedValue(dir);
 
     final int finalCell=cellTest,finalAction=action;
 
@@ -1060,7 +1061,7 @@ public class Mount
         //On enleve l'objet du sac du joueur
         P.removeItem(playerObj.getGuid());
         //On enleve l'objet du monde
-        World.world.removeGameObject(playerObj.getGuid());
+        Main.world.removeGameObject(playerObj.getGuid());
         //On ajoute la quantite a l'objet dans le coffre
         TrunkObj.setQuantity(TrunkObj.getQuantity()+playerObj.getQuantity());
         //On envoie l'ajout au coffre de l'objet
@@ -1136,7 +1137,7 @@ public class Mount
       {
         //On retire l'item du coffre
         this.objects.remove(TrunkObj.getGuid());
-        World.world.removeGameObject(TrunkObj.getGuid());
+        Main.world.removeGameObject(TrunkObj.getGuid());
         //On Modifie la quantite de l'item du sac du joueur
         playerObj.setQuantity(playerObj.getQuantity()+TrunkObj.getQuantity());
 
@@ -1220,10 +1221,10 @@ public class Mount
     str.append(this.orientation).append(";0;").append(this.id).append(";").append(this.name).append(";-9;");
     str.append((this.color==88) ? 7005 : 7002);
     str.append("^").append(this.size).append(";");
-    if(World.world.getPlayer(this.owner)==null)
+    if(Main.world.getPlayer(this.owner)==null)
       str.append("Sans Maitre");
     else
-      str.append(World.world.getPlayer(this.owner).getName());
+      str.append(Main.world.getPlayer(this.owner).getName());
     str.append(";").append(this.level).append(";").append(this.color);
     return str.toString();
   }
@@ -1256,6 +1257,6 @@ public class Mount
 
   private String parseExp()
   {
-    return this.exp+","+World.world.getExpLevel(this.level).mount+","+World.world.getExpLevel(this.level+1).mount;
+    return this.exp+","+Main.world.getExpLevel(this.level).mount+","+Main.world.getExpLevel(this.level+1).mount;
   }
 }

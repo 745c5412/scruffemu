@@ -8,7 +8,6 @@ import scruffemu.client.other.Stats;
 import scruffemu.entity.mount.Mount;
 import scruffemu.fight.spells.SpellEffect;
 import scruffemu.fight.spells.Spell.SortStats;
-import scruffemu.game.World;
 import scruffemu.object.GameObject;
 import scruffemu.object.ObjectTemplate;
 import scruffemu.utility.Pair;
@@ -91,6 +90,7 @@ public class Constant
   public static final int FIGHT_TYPE_DOPEUL=3; //Dopeuls de temple
   public static final int FIGHT_TYPE_PVM=4; //PvM
   public static final int FIGHT_TYPE_PVT=5; //Percepteur
+  public static final int FIGHT_TYPE_STAKE=6; //Stakes
   public static final int FIGHT_STATE_INIT=1;
   public static final int FIGHT_STATE_PLACE=2;
   public static final int FIGHT_STATE_ACTIVE=3;
@@ -388,6 +388,7 @@ public class Constant
   public static final int STATS_PETS_DATE=808;
   public static final int STATS_PETS_EPO=940;
   public static final int STATS_PETS_SOUL=717;
+  public static final int STAT_AGREDIR_AUTOMATICAMENTE=731;
   // Objet d'�levage
   public static final int STATS_RESIST=812;
   // Other
@@ -453,7 +454,7 @@ public class Constant
   public static int getQuestByMobSkin(int mobSkin)
   {
     for(int v=0;v<HUNTING_QUESTS.length;v++)
-      if(World.world.getMonstre(Integer.parseInt(HUNTING_QUESTS[v][3]))!=null&&World.world.getMonstre(Integer.parseInt(HUNTING_QUESTS[v][3])).getGfxId()==mobSkin)
+      if(Main.world.getMonstre(Integer.parseInt(HUNTING_QUESTS[v][3]))!=null&&Main.world.getMonstre(Integer.parseInt(HUNTING_QUESTS[v][3])).getGfxId()==mobSkin)
         return Integer.parseInt(HUNTING_QUESTS[v][5]);
     return -1;
   }
@@ -462,7 +463,7 @@ public class Constant
   {
     for(int v=0;v<HUNTING_QUESTS.length;v++)
       if(Integer.parseInt(HUNTING_QUESTS[v][3])==mobId)
-        return World.world.getMonstre(mobId).getGfxId();
+        return Main.world.getMonstre(mobId).getGfxId();
     return -1;
   }
 
@@ -477,7 +478,7 @@ public class Constant
   public static int getItemByMobSkin(int mobSkin)
   {
     for(int v=0;v<HUNTING_QUESTS.length;v++)
-      if(World.world.getMonstre(Integer.parseInt(HUNTING_QUESTS[v][3]))!=null&&World.world.getMonstre(Integer.parseInt(HUNTING_QUESTS[v][3])).getGfxId()==mobSkin)
+      if(Main.world.getMonstre(Integer.parseInt(HUNTING_QUESTS[v][3]))!=null&&Main.world.getMonstre(Integer.parseInt(HUNTING_QUESTS[v][3])).getGfxId()==mobSkin)
         return Integer.parseInt(HUNTING_QUESTS[v][4]);
     return -1;
   }
@@ -728,64 +729,64 @@ public class Constant
     switch(classID)
     {
       case CLASS_FECA:
-        start.put(3,World.world.getSort(3).getStatsByLevel(1));//Attaque Naturelle
-        start.put(6,World.world.getSort(6).getStatsByLevel(1));//Armure Terrestre
-        start.put(17,World.world.getSort(17).getStatsByLevel(1));//Glyphe Agressif
+        start.put(3,Main.world.getSort(3).getStatsByLevel(1));//Attaque Naturelle
+        start.put(6,Main.world.getSort(6).getStatsByLevel(1));//Armure Terrestre
+        start.put(17,Main.world.getSort(17).getStatsByLevel(1));//Glyphe Agressif
         break;
       case CLASS_SRAM:
-        start.put(61,World.world.getSort(61).getStatsByLevel(1));//Sournoiserie
-        start.put(72,World.world.getSort(72).getStatsByLevel(1));//Invisibilit�
-        start.put(65,World.world.getSort(65).getStatsByLevel(1));//Piege sournois
+        start.put(61,Main.world.getSort(61).getStatsByLevel(1));//Sournoiserie
+        start.put(72,Main.world.getSort(72).getStatsByLevel(1));//Invisibilit�
+        start.put(65,Main.world.getSort(65).getStatsByLevel(1));//Piege sournois
         break;
       case CLASS_ENIRIPSA:
-        start.put(125,World.world.getSort(125).getStatsByLevel(1));//Mot Interdit
-        start.put(128,World.world.getSort(128).getStatsByLevel(1));//Mot de Frayeur
-        start.put(121,World.world.getSort(121).getStatsByLevel(1));//Mot Curatif
+        start.put(125,Main.world.getSort(125).getStatsByLevel(1));//Mot Interdit
+        start.put(128,Main.world.getSort(128).getStatsByLevel(1));//Mot de Frayeur
+        start.put(121,Main.world.getSort(121).getStatsByLevel(1));//Mot Curatif
         break;
       case CLASS_ECAFLIP:
-        start.put(102,World.world.getSort(102).getStatsByLevel(1));//Pile ou Face
-        start.put(103,World.world.getSort(103).getStatsByLevel(1));//Chance d'ecaflip
-        start.put(105,World.world.getSort(105).getStatsByLevel(1));//Bond du felin
+        start.put(102,Main.world.getSort(102).getStatsByLevel(1));//Pile ou Face
+        start.put(103,Main.world.getSort(103).getStatsByLevel(1));//Chance d'ecaflip
+        start.put(105,Main.world.getSort(105).getStatsByLevel(1));//Bond du felin
         break;
       case CLASS_CRA:
-        start.put(161,World.world.getSort(161).getStatsByLevel(1));//Fleche Magique
-        start.put(169,World.world.getSort(169).getStatsByLevel(1));//Fleche de Recul
-        start.put(164,World.world.getSort(164).getStatsByLevel(1));//Fleche Empoisonn�e(ex Fleche chercheuse)
+        start.put(161,Main.world.getSort(161).getStatsByLevel(1));//Fleche Magique
+        start.put(169,Main.world.getSort(169).getStatsByLevel(1));//Fleche de Recul
+        start.put(164,Main.world.getSort(164).getStatsByLevel(1));//Fleche Empoisonn�e(ex Fleche chercheuse)
         break;
       case CLASS_IOP:
-        start.put(143,World.world.getSort(143).getStatsByLevel(1));//Intimidation
-        start.put(141,World.world.getSort(141).getStatsByLevel(1));//Pression
-        start.put(142,World.world.getSort(142).getStatsByLevel(1));//Bond
+        start.put(143,Main.world.getSort(143).getStatsByLevel(1));//Intimidation
+        start.put(141,Main.world.getSort(141).getStatsByLevel(1));//Pression
+        start.put(142,Main.world.getSort(142).getStatsByLevel(1));//Bond
         break;
       case CLASS_SADIDA:
-        start.put(183,World.world.getSort(183).getStatsByLevel(1));//Ronce
-        start.put(200,World.world.getSort(200).getStatsByLevel(1));//Poison Paralysant
-        start.put(193,World.world.getSort(193).getStatsByLevel(1));//La bloqueuse
+        start.put(183,Main.world.getSort(183).getStatsByLevel(1));//Ronce
+        start.put(200,Main.world.getSort(200).getStatsByLevel(1));//Poison Paralysant
+        start.put(193,Main.world.getSort(193).getStatsByLevel(1));//La bloqueuse
         break;
       case CLASS_OSAMODAS:
-        start.put(34,World.world.getSort(34).getStatsByLevel(1));//Invocation de tofu
-        start.put(21,World.world.getSort(21).getStatsByLevel(1));//Griffe Spectrale
-        start.put(23,World.world.getSort(23).getStatsByLevel(1));//Cri de l'ours
+        start.put(34,Main.world.getSort(34).getStatsByLevel(1));//Invocation de tofu
+        start.put(21,Main.world.getSort(21).getStatsByLevel(1));//Griffe Spectrale
+        start.put(23,Main.world.getSort(23).getStatsByLevel(1));//Cri de l'ours
         break;
       case CLASS_XELOR:
-        start.put(82,World.world.getSort(82).getStatsByLevel(1));//Contre
-        start.put(81,World.world.getSort(81).getStatsByLevel(1));//Ralentissement
-        start.put(83,World.world.getSort(83).getStatsByLevel(1));//Aiguille
+        start.put(82,Main.world.getSort(82).getStatsByLevel(1));//Contre
+        start.put(81,Main.world.getSort(81).getStatsByLevel(1));//Ralentissement
+        start.put(83,Main.world.getSort(83).getStatsByLevel(1));//Aiguille
         break;
       case CLASS_PANDAWA:
-        start.put(686,World.world.getSort(686).getStatsByLevel(1));//Picole
-        start.put(692,World.world.getSort(692).getStatsByLevel(1));//Gueule de bois
-        start.put(687,World.world.getSort(687).getStatsByLevel(1));//Poing enflamm�
+        start.put(686,Main.world.getSort(686).getStatsByLevel(1));//Picole
+        start.put(692,Main.world.getSort(692).getStatsByLevel(1));//Gueule de bois
+        start.put(687,Main.world.getSort(687).getStatsByLevel(1));//Poing enflamm�
         break;
       case CLASS_ENUTROF:
-        start.put(51,World.world.getSort(51).getStatsByLevel(1));//Lancer de Piece
-        start.put(43,World.world.getSort(43).getStatsByLevel(1));//Lancer de Pelle
-        start.put(41,World.world.getSort(41).getStatsByLevel(1));//Sac anim�
+        start.put(51,Main.world.getSort(51).getStatsByLevel(1));//Lancer de Piece
+        start.put(43,Main.world.getSort(43).getStatsByLevel(1));//Lancer de Pelle
+        start.put(41,Main.world.getSort(41).getStatsByLevel(1));//Sac anim�
         break;
       case CLASS_SACRIEUR:
-        start.put(432,World.world.getSort(432).getStatsByLevel(1));//Pied du Sacrieur
-        start.put(431,World.world.getSort(431).getStatsByLevel(1));//Chatiment Forc�
-        start.put(434,World.world.getSort(434).getStatsByLevel(1));//Attirance
+        start.put(432,Main.world.getSort(432).getStatsByLevel(1));//Pied du Sacrieur
+        start.put(431,Main.world.getSort(431).getStatsByLevel(1));//Chatiment Forc�
+        start.put(434,Main.world.getSort(434).getStatsByLevel(1));//Attirance
         break;
     }
     return start;
@@ -2275,217 +2276,217 @@ public class Constant
     {
       //Ammande sauvage
       case 2:
-        return World.world.getObjTemplate(7807);
+        return Main.world.getObjTemplate(7807);
       //Ebene | Page 1
       case 3:
-        return World.world.getObjTemplate(7808);
+        return Main.world.getObjTemplate(7808);
       //Rousse sauvage
       case 4:
-        return World.world.getObjTemplate(7809);
+        return Main.world.getObjTemplate(7809);
       //Ebene-ivoire
       case 9:
-        return World.world.getObjTemplate(7810);
+        return Main.world.getObjTemplate(7810);
       //Rousse
       case 10:
-        return World.world.getObjTemplate(7811);
+        return Main.world.getObjTemplate(7811);
       //Ivoire-Rousse
       case 11:
-        return World.world.getObjTemplate(7812);
+        return Main.world.getObjTemplate(7812);
       //Ebene-rousse
       case 12:
-        return World.world.getObjTemplate(7813);
+        return Main.world.getObjTemplate(7813);
       //Turquoise
       case 15:
-        return World.world.getObjTemplate(7814);
+        return Main.world.getObjTemplate(7814);
       //Ivoire
       case 16:
-        return World.world.getObjTemplate(7815);
+        return Main.world.getObjTemplate(7815);
       //Indigo
       case 17:
-        return World.world.getObjTemplate(7816);
+        return Main.world.getObjTemplate(7816);
       //Dor�e
       case 18:
-        return World.world.getObjTemplate(7817);
+        return Main.world.getObjTemplate(7817);
       //Pourpre
       case 19:
-        return World.world.getObjTemplate(7818);
+        return Main.world.getObjTemplate(7818);
       //Amande
       case 20:
-        return World.world.getObjTemplate(7819);
+        return Main.world.getObjTemplate(7819);
       //Emeraude
       case 21:
-        return World.world.getObjTemplate(7820);
+        return Main.world.getObjTemplate(7820);
       //Orchid�e
       case 22:
-        return World.world.getObjTemplate(7821);
+        return Main.world.getObjTemplate(7821);
       //Prune
       case 23:
-        return World.world.getObjTemplate(7822);
+        return Main.world.getObjTemplate(7822);
       //Amande-Dor�e
       case 33:
-        return World.world.getObjTemplate(7823);
+        return Main.world.getObjTemplate(7823);
       //Amande-Ebene
       case 34:
-        return World.world.getObjTemplate(7824);
+        return Main.world.getObjTemplate(7824);
       //Amande-Emeraude
       case 35:
-        return World.world.getObjTemplate(7825);
+        return Main.world.getObjTemplate(7825);
       //Amande-Indigo
       case 36:
-        return World.world.getObjTemplate(7826);
+        return Main.world.getObjTemplate(7826);
       //Amande-Ivoire
       case 37:
-        return World.world.getObjTemplate(7827);
+        return Main.world.getObjTemplate(7827);
       //Amande-Rousse
       case 38:
-        return World.world.getObjTemplate(7828);
+        return Main.world.getObjTemplate(7828);
       //Amande-Turquoise
       case 39:
-        return World.world.getObjTemplate(7829);
+        return Main.world.getObjTemplate(7829);
       //Amande-Orchid�e
       case 40:
-        return World.world.getObjTemplate(7830);
+        return Main.world.getObjTemplate(7830);
       //Amande-Pourpre
       case 41:
-        return World.world.getObjTemplate(7831);
+        return Main.world.getObjTemplate(7831);
       //Dor�e-Eb�ne
       case 42:
-        return World.world.getObjTemplate(7832);
+        return Main.world.getObjTemplate(7832);
       //Dor�e-Emeraude
       case 43:
-        return World.world.getObjTemplate(7833);
+        return Main.world.getObjTemplate(7833);
       //Dor�e-Indigo
       case 44:
-        return World.world.getObjTemplate(7834);
+        return Main.world.getObjTemplate(7834);
       //Dor�e-Ivoire
       case 45:
-        return World.world.getObjTemplate(7835);
+        return Main.world.getObjTemplate(7835);
       //Dor�e-Rousse | Page 2
       case 46:
-        return World.world.getObjTemplate(7836);
+        return Main.world.getObjTemplate(7836);
       //Dor�e-Turquoise
       case 47:
-        return World.world.getObjTemplate(7837);
+        return Main.world.getObjTemplate(7837);
       //Dor�e-Orchid�e
       case 48:
-        return World.world.getObjTemplate(7838);
+        return Main.world.getObjTemplate(7838);
       //Dor�e-Pourpre
       case 49:
-        return World.world.getObjTemplate(7839);
+        return Main.world.getObjTemplate(7839);
       //Eb�ne-Emeraude
       case 50:
-        return World.world.getObjTemplate(7840);
+        return Main.world.getObjTemplate(7840);
       //Eb�ne-Indigo
       case 51:
-        return World.world.getObjTemplate(7841);
+        return Main.world.getObjTemplate(7841);
       //Eb�ne-Turquoise
       case 52:
-        return World.world.getObjTemplate(7842);
+        return Main.world.getObjTemplate(7842);
       //Eb�ne-Orchid�e
       case 53:
-        return World.world.getObjTemplate(7843);
+        return Main.world.getObjTemplate(7843);
       //Eb�ne-Pourpre
       case 54:
-        return World.world.getObjTemplate(7844);
+        return Main.world.getObjTemplate(7844);
       //Emeraude-Indigo
       case 55:
-        return World.world.getObjTemplate(7845);
+        return Main.world.getObjTemplate(7845);
       //Emeraude-Ivoire
       case 56:
-        return World.world.getObjTemplate(7846);
+        return Main.world.getObjTemplate(7846);
       //Emeraude-Rousse
       case 57:
-        return World.world.getObjTemplate(7847);
+        return Main.world.getObjTemplate(7847);
       //Emeraude-Turquoise
       case 58:
-        return World.world.getObjTemplate(7848);
+        return Main.world.getObjTemplate(7848);
       //Emeraude-Orchid�e
       case 59:
-        return World.world.getObjTemplate(7849);
+        return Main.world.getObjTemplate(7849);
       //Emeraude-Pourpre
       case 60:
-        return World.world.getObjTemplate(7850);
+        return Main.world.getObjTemplate(7850);
       //Indigo-Ivoire
       case 61:
-        return World.world.getObjTemplate(7851);
+        return Main.world.getObjTemplate(7851);
       //Indigo-Rousse
       case 62:
-        return World.world.getObjTemplate(7852);
+        return Main.world.getObjTemplate(7852);
       //Indigo-Turquoise
       case 63:
-        return World.world.getObjTemplate(7853);
+        return Main.world.getObjTemplate(7853);
       //Indigo-Orchid�e
       case 64:
-        return World.world.getObjTemplate(7854);
+        return Main.world.getObjTemplate(7854);
       //Indigo-Pourpre
       case 65:
-        return World.world.getObjTemplate(7855);
+        return Main.world.getObjTemplate(7855);
       //Ivoire-Turquoise
       case 66:
-        return World.world.getObjTemplate(7856);
+        return Main.world.getObjTemplate(7856);
       //Ivoire-Ochid�e
       case 67:
-        return World.world.getObjTemplate(7857);
+        return Main.world.getObjTemplate(7857);
       //Ivoire-Pourpre
       case 68:
-        return World.world.getObjTemplate(7858);
+        return Main.world.getObjTemplate(7858);
       //Turquoise-Rousse
       case 69:
-        return World.world.getObjTemplate(7859);
+        return Main.world.getObjTemplate(7859);
       //Ochid�e-Rousse
       case 70:
-        return World.world.getObjTemplate(7860);
+        return Main.world.getObjTemplate(7860);
       //Pourpre-Rousse
       case 71:
-        return World.world.getObjTemplate(7861);
+        return Main.world.getObjTemplate(7861);
       //Turquoise-Orchid�e
       case 72:
-        return World.world.getObjTemplate(7862);
+        return Main.world.getObjTemplate(7862);
       //Turquoise-Pourpre
       case 73:
-        return World.world.getObjTemplate(7863);
+        return Main.world.getObjTemplate(7863);
       //Dor�e sauvage
       case 74:
-        return World.world.getObjTemplate(7864);
+        return Main.world.getObjTemplate(7864);
       //Squelette
       case 75:
-        return World.world.getObjTemplate(7865);
+        return Main.world.getObjTemplate(7865);
       //Orchid�e-Pourpre
       case 76:
-        return World.world.getObjTemplate(7866);
+        return Main.world.getObjTemplate(7866);
       //Prune-Amande
       case 77:
-        return World.world.getObjTemplate(7867);
+        return Main.world.getObjTemplate(7867);
       //Prune-Dor�e
       case 78:
-        return World.world.getObjTemplate(7868);
+        return Main.world.getObjTemplate(7868);
       //Prune-Eb�ne
       case 79:
-        return World.world.getObjTemplate(7869);
+        return Main.world.getObjTemplate(7869);
       //Prune-Emeraude
       case 80:
-        return World.world.getObjTemplate(7870);
+        return Main.world.getObjTemplate(7870);
       //Prune et Indigo
       case 82:
-        return World.world.getObjTemplate(7871);
+        return Main.world.getObjTemplate(7871);
       //Prune-Ivoire
       case 83:
-        return World.world.getObjTemplate(7872);
+        return Main.world.getObjTemplate(7872);
       //Prune-Rousse
       case 84:
-        return World.world.getObjTemplate(7873);
+        return Main.world.getObjTemplate(7873);
       //Prune-Turquoise
       case 85:
-        return World.world.getObjTemplate(7874);
+        return Main.world.getObjTemplate(7874);
       //Prune-Orchid�e
       case 86:
-        return World.world.getObjTemplate(7875);
+        return Main.world.getObjTemplate(7875);
       //Prune-Pourpre
       case 87:
-        return World.world.getObjTemplate(7876);
+        return Main.world.getObjTemplate(7876);
       //Armure
       case 88:
-        return World.world.getObjTemplate(9582);
+        return Main.world.getObjTemplate(9582);
     }
     return null;
   }
@@ -2835,7 +2836,7 @@ public class Constant
 
   public static String getStatsOfCandy(int id, int turn)
   {
-    String a=World.world.getObjTemplate(id).getStrTemplate();
+    String a=Main.world.getObjTemplate(id).getStrTemplate();
     a+=",32b#64#0#"+Integer.toHexString(turn)+"#0d0+1;";
     return a;
   }

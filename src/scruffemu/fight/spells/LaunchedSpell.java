@@ -19,7 +19,8 @@ public class LaunchedSpell
     {
       int modi=caster.getPersonnage().getItemClasseModif(SS.getSpellID(),286);
       this.cooldown=SS.getCoolDown()-modi;
-    } else
+    }
+    else
     {
       this.cooldown=SS.getCoolDown();
     }

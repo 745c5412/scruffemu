@@ -7,7 +7,7 @@ import scruffemu.area.map.GameCase;
 import scruffemu.area.map.GameMap;
 import scruffemu.client.Player;
 import scruffemu.entity.monster.MobGroup;
-import scruffemu.game.World;
+import scruffemu.main.Main;
 import scruffemu.utility.Pair;
 import scruffemu.object.GameObject;
 import scruffemu.utility.TimerWaiterPlus;
@@ -138,7 +138,7 @@ public class InteractiveDoor
 
     for(Entry<Short, ArrayList<Pair<Short, String>>> requiredCells : this.requiredCells.entrySet())
     {
-      final GameMap gameMap=World.world.getMap(requiredCells.getKey());
+      final GameMap gameMap=Main.world.getMap(requiredCells.getKey());
       if(gameMap==null)
         continue;
       boolean loc=false;
@@ -219,7 +219,7 @@ public class InteractiveDoor
 
     for(Entry<Short, ArrayList<Short>> entry : arrayListMap.entrySet())
     {
-      GameMap gameMap=World.world.getMap(entry.getKey());
+      GameMap gameMap=Main.world.getMap(entry.getKey());
       if(gameMap==null)
         continue;
       if(player!=null&&player.getCurMap()!=null&&player.getCurMap().getId()!=gameMap.getId())

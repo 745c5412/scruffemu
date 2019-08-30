@@ -12,7 +12,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
 public class ObjectData extends AbstractDAO<GameObject>
 {
 
@@ -40,7 +39,7 @@ public class ObjectData extends AbstractDAO<GameObject>
 
         if(quantity==0)
           continue;
-        World.addGameObject(World.world.newObjet(id,template,quantity,position,stats,puit),false);
+        World.addGameObject(Main.world.newObjet(id,template,quantity,position,stats,puit),false);
       }
     }
     catch(SQLException e)
@@ -71,7 +70,7 @@ public class ObjectData extends AbstractDAO<GameObject>
 
         if(quantity==0)
           continue;
-        World.addGameObject(World.world.newObjet(id,template,quantity,position,stats,puit),false);
+        World.addGameObject(Main.world.newObjet(id,template,quantity,position,stats,puit),false);
       }
     }
     catch(SQLException e)
@@ -121,7 +120,8 @@ public class ObjectData extends AbstractDAO<GameObject>
     {
       super.sendError("ObjectData insert",new Exception("Object null"));
       return;
-    } else if(object.getTemplate()==null)
+    }
+    else if(object.getTemplate()==null)
     {
       super.sendError("ObjectData insert",new Exception("Template null"));
       return;
@@ -169,11 +169,11 @@ public class ObjectData extends AbstractDAO<GameObject>
   {
     try
     {
-      final DataQueue.Queue<Integer> queue=World.world.getDataQueue().new Queue<>((byte)2);
+      final DataQueue.Queue<Integer> queue=Main.world.getDataQueue().new Queue<>((byte)2);
       synchronized(queue)
       {
-        long count=World.world.getDataQueue().count();
-        World.world.getDataQueue().queues.put(count,queue);
+        long count=Main.world.getDataQueue().count();
+        Main.world.getDataQueue().queues.put(count,queue);
         Main.exchangeClient.send("DI"+queue.getType()+count);
         queue.wait();
       }

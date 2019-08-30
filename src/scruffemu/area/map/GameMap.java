@@ -70,7 +70,7 @@ public class GameMap
     this.maxSize=maxSize;
     this.minSize=minSize;
     this.fixSize=fixSize;
-    this.cases=World.world.getCryptManager().decompileMapData(this,dData,sniffed);
+    this.cases=Main.world.getCryptManager().decompileMapData(this,dData,sniffed);
     this.setMinRespawnTime(minRespawnTime);
     this.setMaxRespawnTime(maxRespawnTime);
 
@@ -92,13 +92,13 @@ public class GameMap
 
       if(subArea==0&&id==32)
       {
-        this.subArea=World.world.getSubArea(subArea);
+        this.subArea=Main.world.getSubArea(subArea);
         if(this.subArea!=null)
           this.subArea.addMap(this);
       }
       else if(subArea!=0)
       {
-        this.subArea=World.world.getSubArea(subArea);
+        this.subArea=Main.world.getSubArea(subArea);
         if(this.subArea!=null)
           this.subArea.addMap(this);
       }
@@ -141,28 +141,28 @@ public class GameMap
       }
       if(id1==0||lvl==0)
         continue;
-      if(World.world.getMonstre(id1)==null)
+      if(Main.world.getMonstre(id1)==null)
         continue;
-      if(World.world.getMonstre(id1).getGradeByLevel(lvl)==null)
+      if(Main.world.getMonstre(id1).getGradeByLevel(lvl)==null)
         continue;
       if(Config.getInstance().HALLOWEEN)
       {
         switch(id1)
         {
           case 98://Tofu
-            if(World.world.getMonstre(794)!=null)
-              if(World.world.getMonstre(794).getGradeByLevel(lvl)!=null)
+            if(Main.world.getMonstre(794)!=null)
+              if(Main.world.getMonstre(794).getGradeByLevel(lvl)!=null)
                 id1=794;
             break;
           case 101://Bouftou
-            if(World.world.getMonstre(793)!=null)
-              if(World.world.getMonstre(793).getGradeByLevel(lvl)!=null)
+            if(Main.world.getMonstre(793)!=null)
+              if(Main.world.getMonstre(793).getGradeByLevel(lvl)!=null)
                 id1=793;
             break;
         }
       }
 
-      this.mobPossibles.add(World.world.getMonstre(id1).getGradeByLevel(lvl));
+      this.mobPossibles.add(Main.world.getMonstre(id1).getGradeByLevel(lvl));
     }
   }
 
@@ -201,17 +201,17 @@ public class GameMap
   {
     try
     {
-      World.world.getMountPark().values().stream().filter(park -> park.getGuild()!=null).filter(park -> park.getGuild().getId()==guildId).forEach(park -> {
+      Main.world.getMountPark().values().stream().filter(park -> park.getGuild()!=null).filter(park -> park.getGuild().getId()==guildId).forEach(park -> {
         if(!park.getListOfRaising().isEmpty())
         {
           for(Integer id : new ArrayList<>(park.getListOfRaising()))
           {
-            if(World.world.getMountById(id)==null)
+            if(Main.world.getMountById(id)==null)
             {
               park.delRaising(id);
               continue;
             }
-            World.world.removeMount(id);
+            Main.world.removeMount(id);
             Database.getStatics().getMountData().delete(id);
           }
           park.getListOfRaising().clear();
@@ -222,7 +222,7 @@ public class GameMap
           {
             if(mount==null)
               continue;
-            World.world.removeMount(mount.getId());
+            Main.world.removeMount(mount.getId());
             Database.getStatics().getMountData().delete(mount.getId());
           }
           park.getEtable().clear();
@@ -383,11 +383,11 @@ public class GameMap
       }
       if(id1==0||lvl==0)
         continue;
-      if(World.world.getMonstre(id1)==null)
+      if(Main.world.getMonstre(id1)==null)
         continue;
-      if(World.world.getMonstre(id1).getGradeByLevel(lvl)==null)
+      if(Main.world.getMonstre(id1).getGradeByLevel(lvl)==null)
         continue;
-      this.mobPossibles.add(World.world.getMonstre(id1).getGradeByLevel(lvl));
+      this.mobPossibles.add(Main.world.getMonstre(id1).getGradeByLevel(lvl));
     }
     try
     {
@@ -397,13 +397,13 @@ public class GameMap
       int subArea=Integer.parseInt(mapInfos[2]);
       if(subArea==0&&id==32)
       {
-        this.subArea=World.world.getSubArea(subArea);
+        this.subArea=Main.world.getSubArea(subArea);
         if(this.subArea!=null)
           this.subArea.addMap(this);
       }
       else if(subArea!=0)
       {
-        this.subArea=World.world.getSubArea(subArea);
+        this.subArea=Main.world.getSubArea(subArea);
         if(this.subArea!=null)
           this.subArea.addMap(this);
       }
@@ -461,28 +461,28 @@ public class GameMap
       }
       if(id1==0||lvl==0)
         continue;
-      if(World.world.getMonstre(id1)==null)
+      if(Main.world.getMonstre(id1)==null)
         continue;
-      if(World.world.getMonstre(id1).getGradeByLevel(lvl)==null)
+      if(Main.world.getMonstre(id1).getGradeByLevel(lvl)==null)
         continue;
       if(Config.getInstance().HALLOWEEN)
       {
         switch(id1)
         {
           case 98://Tofu
-            if(World.world.getMonstre(794)!=null)
-              if(World.world.getMonstre(794).getGradeByLevel(lvl)!=null)
+            if(Main.world.getMonstre(794)!=null)
+              if(Main.world.getMonstre(794).getGradeByLevel(lvl)!=null)
                 id1=794;
             break;
           case 101://Bouftou
-            if(World.world.getMonstre(793)!=null)
-              if(World.world.getMonstre(793).getGradeByLevel(lvl)!=null)
+            if(Main.world.getMonstre(793)!=null)
+              if(Main.world.getMonstre(793).getGradeByLevel(lvl)!=null)
                 id1=793;
             break;
         }
       }
 
-      this.mobPossibles.add(World.world.getMonstre(id1).getGradeByLevel(lvl));
+      this.mobPossibles.add(Main.world.getMonstre(id1).getGradeByLevel(lvl));
     }
   }
 
@@ -638,7 +638,7 @@ public class GameMap
 
   public Npc addNpc(int npcID, int cellID, int dir)
   {
-    NpcTemplate temp=World.world.getNPCTemplate(npcID);
+    NpcTemplate temp=Main.world.getNPCTemplate(npcID);
     if(temp==null)
       return null;
     if(getCase(cellID)==null)
@@ -854,9 +854,9 @@ public class GameMap
 
   public int getStoreCount()
   {
-    if(World.world.getSeller(this.getId())==null)
+    if(Main.world.getSeller(this.getId())==null)
       return 0;
-    return World.world.getSeller(this.getId()).size();
+    return Main.world.getSeller(this.getId()).size();
   }
 
   public boolean haveMobFix()
@@ -874,9 +874,9 @@ public class GameMap
 
   public boolean loadExtraMonsterOnMap(int idMob)
   {
-    if(World.world.getMonstre(idMob)==null)
+    if(Main.world.getMonstre(idMob)==null)
       return false;
-    MobGrade grade=World.world.getMonstre(idMob).getRandomGrade();
+    MobGrade grade=Main.world.getMonstre(idMob).getRandomGrade();
     int cell=this.getRandomFreeCellId();
 
     MobGroup group=new MobGroup(this.nextObjectId,Constant.ALIGNEMENT_NEUTRE,this.mobPossibles,this,cell,this.fixSize,this.maxSize,this.maxSize,grade,false);
@@ -966,7 +966,7 @@ public class GameMap
           int random=Formulas.getRandomValue(0,99);
           while(entry.getValue()>random)
           {
-            Monster mob=World.world.getMonstre(entry.getKey());
+            Monster mob=Main.world.getMonstre(entry.getKey());
             if(mob==null)
               continue;
             MobGrade mobG=mob.getRandomGrade();
@@ -1191,7 +1191,7 @@ public class GameMap
   public String getPrismeGMPacket()
   {
     String str="";
-    Collection<Prism> prisms=World.world.AllPrisme();
+    Collection<Prism> prisms=Main.world.AllPrisme();
     if(prisms!=null)
     {
       for(Prism prism : prisms)
@@ -1794,7 +1794,7 @@ public class GameMap
 
     for(Integer id : this.mountPark.getListOfRaising())
     {
-      Mount mount=World.world.getMountById(id);
+      Mount mount=Main.world.getMountById(id);
 
       if(mount!=null)
         if(this.getPlayer(mount.getOwner())!=null||this.mountPark.getGuild()!=null)
@@ -1899,5 +1899,49 @@ public class GameMap
   public void setMaxRespawnTime(int maxRespawnTime)
   {
     this.maxRespawnTime=maxRespawnTime;
+  }
+  
+  public void moveMobGroups(int mover)
+  {
+    // String str = "";
+    try
+    {
+      int cantGruposAMover=0;
+      while(cantGruposAMover<mover)
+      {
+        boolean noHay=true;
+        for(final MobGroup grupoMob : mobGroups.values())
+        {
+          if(grupoMob.getFight()!=null)
+          {
+            continue;
+          }
+          noHay=false;
+          if(Formulas.getRandomBoolean())
+          {
+            grupoMob.moveMobGroup(this);
+            cantGruposAMover++;
+          }
+        }
+        if(noHay)
+        {
+          break;
+        }
+      }
+    }
+    catch(final Exception e)
+    {
+    }
+    // return str;
+  }
+  
+  public void zillaTimer()
+  {
+    new TimerWaiterPlus(() -> this.spawnZilla(),3*60*1000); //3 minutes before spawn
+  }
+
+  private void spawnZilla()
+  {
+    this.spawnGroupWith(Main.world.getMonstre(599));
   }
 }

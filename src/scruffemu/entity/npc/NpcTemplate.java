@@ -1,6 +1,7 @@
 package scruffemu.entity.npc;
 
 import scruffemu.game.World;
+import scruffemu.main.Main;
 import scruffemu.utility.Pair;
 import scruffemu.object.ObjectTemplate;
 import scruffemu.quest.Quest;
@@ -48,7 +49,7 @@ public class NpcTemplate
         catch(Exception e)
         {
           e.printStackTrace();
-          World.world.logger.error("#1# Erreur sur une question id sur le PNJ d'id : "+id);
+          Main.world.logger.error("#1# Erreur sur une question id sur le PNJ d'id : "+id);
         }
       }
     } else
@@ -65,14 +66,14 @@ public class NpcTemplate
       {
         try
         {
-          ObjectTemplate template=World.world.getObjTemplate(Integer.parseInt(obj));
+          ObjectTemplate template=Main.world.getObjTemplate(Integer.parseInt(obj));
           if(template!=null)
             this.sales.add(template);
         }
         catch(NumberFormatException e)
         {
           e.printStackTrace();
-          World.world.logger.error("#2# Erreur sur un item en vente sur le PNJ d'id : "+id);
+          Main.world.logger.error("#2# Erreur sur un item en vente sur le PNJ d'id : "+id);
         }
       }
     }
@@ -107,7 +108,7 @@ public class NpcTemplate
       catch(Exception e)
       {
         e.printStackTrace();
-        World.world.logger.error("#3# Erreur sur l'exchanges sur le PNJ d'id : "+id);
+        Main.world.logger.error("#3# Erreur sur l'exchanges sur le PNJ d'id : "+id);
       }
     }
   }
@@ -142,7 +143,7 @@ public class NpcTemplate
         catch(Exception e)
         {
           e.printStackTrace();
-          World.world.logger.error("#2# Erreur sur une question id sur le PNJ d'id : "+this.id);
+          Main.world.logger.error("#2# Erreur sur une question id sur le PNJ d'id : "+this.id);
         }
       }
     } else
@@ -156,14 +157,14 @@ public class NpcTemplate
       {
         try
         {
-          ObjectTemplate template=World.world.getObjTemplate(Integer.parseInt(obj));
+          ObjectTemplate template=Main.world.getObjTemplate(Integer.parseInt(obj));
           if(template!=null)
             this.sales.add(template);
         }
         catch(NumberFormatException e)
         {
           e.printStackTrace();
-          World.world.logger.error("#2# Erreur sur un item en vente sur le PNJ d'id : "+id);
+          Main.world.logger.error("#2# Erreur sur un item en vente sur le PNJ d'id : "+id);
         }
       }
     }
@@ -197,7 +198,7 @@ public class NpcTemplate
       catch(Exception e)
       {
         e.printStackTrace();
-        World.world.logger.error("#3# Erreur sur l'exchanges sur le PNJ d'id : "+id);
+        Main.world.logger.error("#3# Erreur sur l'exchanges sur le PNJ d'id : "+id);
       }
     }
   }

@@ -4,11 +4,11 @@ import scruffemu.area.map.GameMap;
 import scruffemu.client.Player;
 import scruffemu.common.ConditionParser;
 import scruffemu.entity.Npc;
-import scruffemu.game.World;
 import scruffemu.utility.Pair;
 import scruffemu.job.JobStat;
 import scruffemu.main.Config;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.other.Action;
 import scruffemu.other.Dopeul;
@@ -69,7 +69,7 @@ public class NpcQuestion
           if(loc1.equalsIgnoreCase(""))
             continue;
           Integer ans=Integer.parseInt(loc1);
-          NpcAnswer answer=World.world.getAnswers().get(ans);
+          NpcAnswer answer=Main.world.getAnswers().get(ans);
           // answer.getActions() avec id = 40, on r�cup�re l'id de qu�te. Si on a la qu�te alors on affiche pas !
           if(answer==null)
             continue;
@@ -119,9 +119,9 @@ public class NpcQuestion
                   ok=false; // S'il a d�j� le m�tier, alors on d�gage
                 else if(player.totalJobFM()>2)
                   ok=false;
-                else if(World.world.getMetier(mId2).isMaging()) // Sinon si c'est un m�tier de FM
+                else if(Main.world.getMetier(mId2).isMaging()) // Sinon si c'est un m�tier de FM
                 {
-                  JobStat metier=player.getMetierByID(World.world.getMetierByMaging(mId2)); // On r�cup�re le m�tier associ�
+                  JobStat metier=player.getMetierByID(Main.world.getMetierByMaging(mId2)); // On r�cup�re le m�tier associ�
                   if(metier!=null) // S'il existe
                   {
                     if(metier.get_lvl()<65)
@@ -444,7 +444,7 @@ public class NpcQuestion
 
               case 6699: // Apprendre le sort de sa classe
                 GameMap curMap=player.getCurMap();
-                int idMap=World.world.getTempleByClasse(player.getClasse());
+                int idMap=Main.world.getTempleByClasse(player.getClasse());
                 if(curMap.getId()==(short)idMap) // Si on est dans le temple de notre classe
                 {
                   // si on a le doplon de classe
@@ -458,7 +458,7 @@ public class NpcQuestion
                 break;
               case 7326: // Reset caract�ristique
                 GameMap curMap2=player.getCurMap();
-                int idMap2=World.world.getTempleByClasse(player.getClasse());
+                int idMap2=Main.world.getTempleByClasse(player.getClasse());
                 if(curMap2.getId()==(short)idMap2) // Si on est dans le temple de notre classe
                 {
                   if(!player.hasItemTemplate(Dopeul.getDoplonByClasse(player.getClasse()),1))
@@ -498,11 +498,11 @@ public class NpcQuestion
       {
         if(this.falseQuestion.contains("|"))
         {
-          return World.world.getNPCQuestion(Integer.parseInt(this.falseQuestion.split("|")[0])).parse(player);
+          return Main.world.getNPCQuestion(Integer.parseInt(this.falseQuestion.split("|")[0])).parse(player);
         }
         else
         {
-          return World.world.getNPCQuestion(Integer.parseInt(this.falseQuestion)).parse(player);
+          return Main.world.getNPCQuestion(Integer.parseInt(this.falseQuestion)).parse(player);
         }
       }
     }
@@ -539,7 +539,7 @@ public class NpcQuestion
           {
             if(rep.isEmpty())
               continue;
-            NpcAnswer answer=World.world.getNpcAnswer(Integer.parseInt(rep));
+            NpcAnswer answer=Main.world.getNpcAnswer(Integer.parseInt(rep));
             if(answer==null)
               continue;
 

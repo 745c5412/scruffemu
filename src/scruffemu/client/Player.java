@@ -18,6 +18,7 @@ import scruffemu.common.SocketManager;
 import scruffemu.database.Database;
 import scruffemu.entity.Collector;
 import scruffemu.entity.Prism;
+import scruffemu.entity.exchange.Stake;
 import scruffemu.entity.monster.MobGroup;
 import scruffemu.entity.mount.Mount;
 import scruffemu.entity.pet.Pet;
@@ -229,6 +230,7 @@ public class Player
   public boolean ipDrop=false;
   private Pair<InteractiveObject,GameCase> inInteractiveObject=null;
   private boolean canDrop=true;
+  private Stake stake=null;
 
   public ArrayList<Integer> getIsCraftingType()
   {
@@ -256,13 +258,13 @@ public class Player
     this.level=level;
     this.exp=exp;
     if(mount!=-1)
-      this._mount=World.world.getMountById(mount);
+      this._mount=Main.world.getMountById(mount);
     this._size=_size;
     this.gfxId=_gfxid;
     this._mountXpGive=mountXp;
     this.stats=new Stats(stats,true,this);
     this._accID=account;
-    this.account=World.world.getAccount(account);
+    this.account=Main.world.getAccount(account);
     this._showFriendConnection=seeFriend==1;
     this.wife=wifeGuid;
     this._metierPublic=false;
@@ -272,7 +274,7 @@ public class Player
     this._seeSeller=seeSeller==1;
     savestat=0;
     this._canaux=canaux;
-    this.curMap=World.world.getMap(map);
+    this.curMap=Main.world.getMap(map);
     this._savePos=savePos;
     this.isNew=isNew;
     this.regenTime=System.currentTimeMillis();
@@ -323,12 +325,12 @@ public class Player
         this.enteredOnEnnemyFaction=prison;
       }
       this._showWings=this.get_align()!=0&&seeAlign==1;
-      if(curMap==null&&World.world.getMap((short)7411)!=null)
+      if(curMap==null&&Main.world.getMap((short)7411)!=null)
       {
-        this.curMap=World.world.getMap((short)7411);
+        this.curMap=Main.world.getMap((short)7411);
         this.curCell=curMap.getCase(311);
       }
-      else if(curMap==null&&World.world.getMap((short)7411)==null)
+      else if(curMap==null&&Main.world.getMap((short)7411)==null)
       {
         Main.gameServer.a();
         Main.stop("Player1");
@@ -339,7 +341,7 @@ public class Player
         this.curCell=curMap.getCase(cell);
         if(curCell==null)
         {
-          this.curMap=World.world.getMap((short)7411);
+          this.curMap=Main.world.getMap((short)7411);
           this.curCell=curMap.getCase(311);
         }
       }
@@ -449,7 +451,7 @@ public class Player
           {
             int jobID=Integer.parseInt(infos[0]);
             long xp=Long.parseLong(infos[1]);
-            Job m=World.world.getMetier(jobID);
+            Job m=Main.world.getMetier(jobID);
             JobStat SM=_metiers.get(learnJob(m));
             SM.addXp(this,xp);
           }
@@ -511,7 +513,7 @@ public class Player
     this._align=alignement;
     this._showWings=this.get_align()!=0&&seeAlign==1;
     if(mount!=-1)
-      this._mount=World.world.getMountById(mount);
+      this._mount=Main.world.getMountById(mount);
     this._isForgetingSpell=false;
   }
 
@@ -532,7 +534,7 @@ public class Player
       return null;
     if(sexe<0||sexe>1)
       return null;
-    Player perso=new Player(Database.getStatics().getPlayerData().getNextId(),name,-1,sexe,classe,color1,color2,color3,Config.getInstance().startKamas,((Config.getInstance().startLevel-1)),((Config.getInstance().startLevel-1)*5),10000,Config.getInstance().startLevel,World.world.getPersoXpMin(Config.getInstance().startLevel),100,Integer.parseInt(classe+""+sexe),(byte)0,compte.getId(),new HashMap<Integer, Integer>(),(byte)1,(byte)0,(byte)0,"*#%!pi$:?",(Config.getInstance().startMap!=0 ? (short)Config.getInstance().startMap : Constant.getStartMap(classe)),(Config.getInstance().startCell!=0 ? (short)Config.getInstance().startCell : Constant.getStartCell(classe)),"","",100,"",(Config.getInstance().startMap!=0 ? (short)Config.getInstance().startMap : Constant.getStartMap(classe))+","+(Config.getInstance().startCell!=0 ? (short)Config.getInstance().startCell : Constant.getStartCell(classe)),"",0,-1,0,0,0,z.toString(),(byte)0,0,"0;0","",(Config.getInstance().allEmote ? "0;1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;16;17;18;19;20;21" : "0"),0,true,"118,0;119,0;123,0;124,0;125,0;126,0",0,false,"0,0,0,0",(byte)0,0,0,0,0,0);
+    Player perso=new Player(Database.getStatics().getPlayerData().getNextId(),name,-1,sexe,classe,color1,color2,color3,Config.getInstance().startKamas,((Config.getInstance().startLevel-1)),((Config.getInstance().startLevel-1)*5),10000,Config.getInstance().startLevel,Main.world.getPersoXpMin(Config.getInstance().startLevel),100,Integer.parseInt(classe+""+sexe),(byte)0,compte.getId(),new HashMap<Integer, Integer>(),(byte)1,(byte)0,(byte)0,"*#%!pi$:?",(Config.getInstance().startMap!=0 ? (short)Config.getInstance().startMap : Constant.getStartMap(classe)),(Config.getInstance().startCell!=0 ? (short)Config.getInstance().startCell : Constant.getStartCell(classe)),"","",100,"",(Config.getInstance().startMap!=0 ? (short)Config.getInstance().startMap : Constant.getStartMap(classe))+","+(Config.getInstance().startCell!=0 ? (short)Config.getInstance().startCell : Constant.getStartCell(classe)),"",0,-1,0,0,0,z.toString(),(byte)0,0,"0;0","",(Config.getInstance().allEmote ? "0;1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;16;17;18;19;20;21" : "0"),0,true,"118,0;119,0;123,0;124,0;125,0;126,0",0,false,"0,0,0,0",(byte)0,0,0,0,0,0);
     perso.emotes.add(1);
     perso._sorts=Constant.getStartSorts(classe);
     for(int a=1;a<=perso.getLevel();a++)
@@ -543,7 +545,7 @@ public class Player
 
     if(!Database.getStatics().getPlayerData().add(perso))
       return null;
-    World.world.addPlayer(perso);
+    Main.world.addPlayer(perso);
     return perso;
   }
 
@@ -786,7 +788,7 @@ public class Player
       this.deleteItem(guid);
     }
 
-    GameObject obj=World.world.getObjTemplate(objTemplate).createNewRoleplayBuff();
+    GameObject obj=Main.world.getObjTemplate(objTemplate).createNewRoleplayBuff();
     this.addObjet(obj,false);
     World.addGameObject(obj,true);
     SocketManager.GAME_SEND_ALTER_GM_PACKET(this.getCurMap(),this);
@@ -819,7 +821,7 @@ public class Player
         break;
     }
 
-    GameObject obj=World.world.getObjTemplate(id).createNewBenediction(turn);
+    GameObject obj=Main.world.getObjTemplate(id).createNewBenediction(turn);
     this.addObjet(obj,false);
     World.addGameObject(obj,true);
     SocketManager.GAME_SEND_ALTER_GM_PACKET(this.getCurMap(),this);
@@ -851,7 +853,7 @@ public class Player
       this.deleteItem(guid);
     }
 
-    GameObject obj=World.world.getObjTemplate(objTemplate).createNewMalediction();
+    GameObject obj=Main.world.getObjTemplate(objTemplate).createNewMalediction();
     this.addObjet(obj,false);
     World.addGameObject(obj,true);
     if(this.getFight()!=null)
@@ -877,7 +879,7 @@ public class Player
       return;
     }
 
-    GameObject obj=World.world.getObjTemplate(id).createNewFollowPnj(1);
+    GameObject obj=Main.world.getObjTemplate(id).createNewFollowPnj(1);
     if(obj!=null)
       if(this.addObjet(obj,false))
         World.addGameObject(obj,true);
@@ -917,7 +919,7 @@ public class Player
         break;
     }
 
-    GameObject obj=World.world.getObjTemplate(id).createNewCandy(turn);
+    GameObject obj=Main.world.getObjTemplate(id).createNewCandy(turn);
     this.addObjet(obj,false);
     World.addGameObject(obj,true);
     SocketManager.GAME_SEND_Ow_PACKET(this);
@@ -1459,7 +1461,7 @@ public class Player
 
   public void learnSpell(int spell, int level, char pos)
   {
-    if(World.world.getSort(spell).getStatsByLevel(level)==null)
+    if(Main.world.getSort(spell).getStatsByLevel(level)==null)
     {
       Main.gameServer.a();
       return;
@@ -1467,7 +1469,7 @@ public class Player
 
     if(!_sorts.containsKey(Integer.valueOf(spell)))
     {
-      _sorts.put(Integer.valueOf(spell),World.world.getSort(spell).getStatsByLevel(level));
+      _sorts.put(Integer.valueOf(spell),Main.world.getSort(spell).getStatsByLevel(level));
       replace_SpellInBook(pos);
       _sortsPlaces.remove(spell);
       _sortsPlaces.put(spell,pos);
@@ -1478,7 +1480,7 @@ public class Player
 
   public boolean learnSpell(int spellID, int level, boolean save, boolean send, boolean learn)
   {
-    if(World.world.getSort(spellID).getStatsByLevel(level)==null)
+    if(Main.world.getSort(spellID).getStatsByLevel(level)==null)
     {
       Main.gameServer.a();
       return false;
@@ -1491,7 +1493,7 @@ public class Player
     }
     else
     {
-      _sorts.put(Integer.valueOf(spellID),World.world.getSort(spellID).getStatsByLevel(level));
+      _sorts.put(Integer.valueOf(spellID),Main.world.getSort(spellID).getStatsByLevel(level));
       if(send)
       {
         SocketManager.GAME_SEND_SPELL_LIST(this);
@@ -1505,7 +1507,7 @@ public class Player
 
   public boolean learnSpell(int spellID, int level)
   {
-    if(World.world.getSort(spellID).getStatsByLevel(level)==null)
+    if(Main.world.getSort(spellID).getStatsByLevel(level)==null)
     {
       Main.gameServer.a();
       return false;
@@ -1517,14 +1519,14 @@ public class Player
     }
     else
     {
-      _saveSorts.put(Integer.valueOf(spellID),World.world.getSort(spellID).getStatsByLevel(level));
+      _saveSorts.put(Integer.valueOf(spellID),Main.world.getSort(spellID).getStatsByLevel(level));
       return true;
     }
   }
 
   public boolean unlearnSpell(int spell)
   {
-    if(World.world.getSort(spell)==null)
+    if(Main.world.getSort(spell)==null)
     {
       Main.gameServer.a();
       return false;
@@ -1552,13 +1554,13 @@ public class Player
     if(ancLevel==6)
       spellPoint=5+10;
 
-    if(World.world.getSort(spellID).getStatsByLevel(level)==null)
+    if(Main.world.getSort(spellID).getStatsByLevel(level)==null)
     {
       Main.gameServer.a();
       return false;
     }
 
-    _sorts.put(Integer.valueOf(spellID),World.world.getSort(spellID).getStatsByLevel(level));
+    _sorts.put(Integer.valueOf(spellID),Main.world.getSort(spellID).getStatsByLevel(level));
     if(send)
     {
       SocketManager.GAME_SEND_SPELL_LIST(this);
@@ -1578,7 +1580,7 @@ public class Player
     int AncLevel=getSortStatBySortIfHas(spellID).getLevel();
     if(AncLevel==6)
       return false;
-    if(_spellPts>=AncLevel&&World.world.getSort(spellID).getStatsByLevel(AncLevel+1).getReqLevel()<=this.getLevel())
+    if(_spellPts>=AncLevel&&Main.world.getSort(spellID).getStatsByLevel(AncLevel+1).getReqLevel()<=this.getLevel())
     {
       if(learnSpell(spellID,AncLevel+1,true,false,false))
       {
@@ -1595,7 +1597,7 @@ public class Player
     //Pas le niveau ou pas les Points
     {
       if(_spellPts<AncLevel)
-        if(World.world.getSort(spellID).getStatsByLevel(AncLevel+1).getReqLevel()>this.getLevel())
+        if(Main.world.getSort(spellID).getStatsByLevel(AncLevel+1).getReqLevel()>this.getLevel())
           return false;
     }
     return away;
@@ -1672,7 +1674,7 @@ public class Player
       return;
     }
 
-    Map<String, String> fullMorph=World.world.getFullMorph(morphid);
+    Map<String, String> fullMorph=Main.world.getFullMorph(morphid);
 
     if(fullMorph==null)
       return;
@@ -1879,7 +1881,7 @@ public class Player
     if(this.isShowSeller())
     {
       this.setShowSeller(false);
-      World.world.removeSeller(this.getId(),this.getCurMap().getId());
+      Main.world.removeSeller(this.getId(),this.getCurMap().getId());
       SocketManager.GAME_SEND_ALTER_GM_PACKET(this.getCurMap(),this);
     }
     if(this._mount!=null)
@@ -1888,7 +1890,7 @@ public class Player
       this.send("AR3K");
     SocketManager.GAME_SEND_Rx_PACKET(this);
     SocketManager.GAME_SEND_ASK(client,this);
-    for(int a=1;a<World.world.getItemSetNumber();a++)
+    for(int a=1;a<Main.world.getItemSetNumber();a++)
       if(this.getNumbEquipedItemOfPanoplie(a)!=0)
         SocketManager.GAME_SEND_OS_PACKET(this,a);
     if(this.fight!=null)
@@ -1947,7 +1949,7 @@ public class Player
     if(_guildMember!=null)
       _guildMember.setLastCo(annee+"~"+mois+"~"+jour+"~"+heure+"~"+min);
     //Affichage des prismes
-    World.world.showPrismes(this);
+    Main.world.showPrismes(this);
     //Actualisation dans la DB
     Database.getStatics().getAccountData().updateLastConnection(account);
 
@@ -1955,8 +1957,8 @@ public class Player
     {
       if(object.getTemplate().getType()==Constant.ITEM_TYPE_FAMILIER)
       {
-        PetEntry p=World.world.getPetsEntry(object.getGuid());
-        Pet pets=World.world.getPets(object.getTemplate().getId());
+        PetEntry p=Main.world.getPetsEntry(object.getGuid());
+        Pet pets=Main.world.getPets(object.getTemplate().getId());
 
         if(p==null||pets==null)
         {
@@ -1996,7 +1998,7 @@ public class Player
 
     //this.checkVote();
 
-    World.world.logger.info("The player "+this.getName()+" come to connect.");
+    Main.world.logger.info("The player "+this.getName()+" come to connect.");
 
     if(this.getCurMap().getSubArea()!=null)
     {
@@ -2009,6 +2011,7 @@ public class Player
       this.setGhost();
 
     SocketManager.sendAveragePingPacket(this.getGameClient());
+    refreshItemClasse();
     Main.refreshTitle();
   }
 
@@ -2017,7 +2020,7 @@ public class Player
     String IP=this.getAccount().getLastIP();
     long now=System.currentTimeMillis()/1000;
     boolean vote=true;
-    for(Account account : World.world.getAccounts())
+    for(Account account : Main.world.getAccounts())
     {
       if(account!=null&&account.getLastVoteIP()!=null&&!account.getLastVoteIP().equalsIgnoreCase(""))
       {
@@ -2327,7 +2330,7 @@ public class Player
     if(_honor>=17500)
       return 10;
     for(int n=1;n<=10;n++)
-      if(_honor<World.world.getExpLevel(n).pvp)
+      if(_honor<Main.world.getExpLevel(n).pvp)
         return n-1;
     return 0;
   }
@@ -2336,14 +2339,14 @@ public class Player
   {
     if(!_morphMode)
     {
-      return this.getExp()+c+World.world.getPersoXpMin(this.getLevel())+c+World.world.getPersoXpMax(this.getLevel());
+      return this.getExp()+c+Main.world.getPersoXpMin(this.getLevel())+c+Main.world.getPersoXpMax(this.getLevel());
     }
     else
     {
       if(this.getObjetByPos(Constant.ITEM_POS_ARME)!=null)
         if(Constant.isIncarnationWeapon(this.getObjetByPos(Constant.ITEM_POS_ARME).getTemplate().getId()))
           if(this.getObjetByPos(Constant.ITEM_POS_ARME).getSoulStat().get(Constant.ERR_STATS_XP)!=null)
-            return this.getObjetByPos(Constant.ITEM_POS_ARME).getSoulStat().get(Constant.ERR_STATS_XP)+c+World.world.getBanditsXpMin(this.getObjetByPos(Constant.ITEM_POS_ARME).getSoulStat().get(Constant.STATS_NIVEAU))+c+World.world.getBanditsXpMax(this.getObjetByPos(Constant.ITEM_POS_ARME).getSoulStat().get(Constant.STATS_NIVEAU));
+            return this.getObjetByPos(Constant.ITEM_POS_ARME).getSoulStat().get(Constant.ERR_STATS_XP)+c+Main.world.getBanditsXpMin(this.getObjetByPos(Constant.ITEM_POS_ARME).getSoulStat().get(Constant.STATS_NIVEAU))+c+Main.world.getBanditsXpMax(this.getObjetByPos(Constant.ITEM_POS_ARME).getSoulStat().get(Constant.STATS_NIVEAU));
     }
     return 1+c+1+c+1;
   }
@@ -2380,7 +2383,7 @@ public class Player
         if(id>0&&!itemSetApplied.contains(id))
         {
           itemSetApplied.add(id);
-          ObjectSet objectSet=World.world.getItemSet(id);
+          ObjectSet objectSet=Main.world.getItemSet(id);
           if(objectSet!=null)
             stats=Stats.cumulStat(stats,objectSet.getBonusStatByItemNumb(this.getNumbEquipedItemOfPanoplie(id)));
         }
@@ -2823,7 +2826,7 @@ public class Player
     if(newQua<=0)//Ne devrait pas etre <0, S'il n'y a plus d'item apres la vente
     {
       objects.remove(guid);
-      World.world.removeGameObject(guid);
+      Main.world.removeGameObject(guid);
       Database.getStatics().getObjectData().delete(guid);
       SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(this,guid);
     }
@@ -2866,7 +2869,7 @@ public class Player
         //on supprime de l'inventaire et du Monde
         objects.remove(obj.getGuid());
         if(deleteFromWorld)
-          World.world.removeGameObject(obj.getGuid());
+          Main.world.removeGameObject(obj.getGuid());
         //on envoie le packet si connect�
         if(send&&isOnline)
           SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(this,obj.getGuid());
@@ -2879,7 +2882,7 @@ public class Player
   public void deleteItem(int guid)
   {
     objects.remove(guid);
-    World.world.removeGameObject(guid);
+    Main.world.removeGameObject(guid);
   }
 
   public GameObject getObjetByPos(int pos)
@@ -2893,7 +2896,7 @@ public class Player
       {
         if(gameObject.getTxtStat().isEmpty())
           return null;
-        else if(World.world.getPetsEntry(gameObject.getGuid())==null)
+        else if(Main.world.getPetsEntry(gameObject.getGuid())==null)
           return null;
       }
       if(gameObject.getPosition()==pos)
@@ -2929,7 +2932,7 @@ public class Player
 
   public boolean levelUp(boolean send, boolean addXp)
   {
-    if(this.getLevel()==World.world.getExpLevelSize())
+    if(this.getLevel()==Main.world.getExpLevelSize())
       return false;
     this.level++;
     _capital+=5;
@@ -2941,7 +2944,7 @@ public class Player
       this.getStats().addOneStat(Constant.STATS_ADD_PA,1);
     Constant.onLevelUpSpells(this,this.getLevel());
     if(addXp)
-      this.exp=World.world.getExpLevel(this.getLevel()).perso;
+      this.exp=Main.world.getExpLevel(this.getLevel()).perso;
     if(send&&isOnline)
     {
       SocketManager.GAME_SEND_NEW_LVL_PACKET(account.getGameClient(),this.getLevel());
@@ -2956,7 +2959,7 @@ public class Player
     boolean up=false;
     this.exp+=winxp;
     int exLevel=this.getLevel();
-    while(this.getExp()>=World.world.getPersoXpMax(this.getLevel())&&this.getLevel()<World.world.getExpLevelSize())
+    while(this.getExp()>=Main.world.getPersoXpMax(this.getLevel())&&this.getLevel()<Main.world.getExpLevelSize())
       up=levelUp(true,false);
     if(isOnline)
     {
@@ -3010,7 +3013,7 @@ public class Player
     exp+=winxp;
     if(Constant.isBanditsWeapon(this.getObjetByPos(Constant.ITEM_POS_ARME).getTemplate().getId()))
     {
-      while(exp>=World.world.getBanditsXpMax(level)&&level<50)
+      while(exp>=Main.world.getBanditsXpMax(level)&&level<50)
       {
         up=levelUpIncarnations(true,false);
         level=this.getObjetByPos(Constant.ITEM_POS_ARME).getSoulStat().get(Constant.STATS_NIVEAU);
@@ -3018,7 +3021,7 @@ public class Player
     }
     else if(Constant.isTourmenteurWeapon(this.getObjetByPos(Constant.ITEM_POS_ARME).getTemplate().getId()))
     {
-      while(exp>=World.world.getTourmenteursXpMax(level)&&level<50)
+      while(exp>=Main.world.getTourmenteursXpMax(level)&&level<50)
       {
         up=levelUpIncarnations(true,false);
         level=this.getObjetByPos(Constant.ITEM_POS_ARME).getSoulStat().get(Constant.STATS_NIVEAU);
@@ -3263,8 +3266,8 @@ public class Player
   {
     if(this.getFight()!=null)
       return;
-    this.curMap=World.world.getMap(newMapID);
-    this.curCell=World.world.getMap(newMapID).getCase(newCellID);
+    this.curMap=Main.world.getMap(newMapID);
+    this.curCell=Main.world.getMap(newMapID).getCase(newCellID);
     Database.getStatics().getPlayerData().update(this);
   }
 
@@ -3277,10 +3280,10 @@ public class Player
     if(client==null)
       return;
 
-    if(World.world.getMap(newMapID)==null)
+    if(Main.world.getMap(newMapID)==null)
       return;
 
-    if(World.world.getMap(newMapID).getCase(newCellID)==null)
+    if(Main.world.getMap(newMapID).getCase(newCellID)==null)
       return;
 
     SocketManager.GAME_SEND_GA2_PACKET(client,this.getId());
@@ -3298,7 +3301,7 @@ public class Player
     }
     if(this.curCell.getPlayers().contains(this))
       this.curCell.removePlayer(this);
-    this.curMap=World.world.getMap(newMapID);
+    this.curMap=Main.world.getMap(newMapID);
     this.curCell=this.curMap.getCase(newCellID);
 
     SocketManager.GAME_SEND_MAPDATA(client,newMapID,this.curMap.getDate(),this.curMap.getKey());
@@ -3325,7 +3328,7 @@ public class Player
     if(client==null)
       return;
 
-    GameMap map=World.world.getMap(newMapID);
+    GameMap map=Main.world.getMap(newMapID);
     if(map==null)
     {
       Main.gameServer.a();
@@ -3376,7 +3379,7 @@ public class Player
 
     if(this.curMap.getMountPark()!=null&&this.curMap.getMountPark().getOwner()>0&&this.curMap.getMountPark().getGuild().getId()!=-1)
     {
-      if(World.world.getGuild(this.curMap.getMountPark().getGuild().getId())==null)
+      if(Main.world.getGuild(this.curMap.getMountPark().getGuild().getId())==null)
       {// Ne devrait  pas  arriver
         Main.gameServer.a();
         //FIXME : Map.MountPark.removeMountPark(curMap.getMountPark().get_guild().getId());
@@ -3387,7 +3390,7 @@ public class Player
     Collector col=Collector.getCollectorByMapId(this.curMap.getId());
     if(col!=null)
     {
-      if(World.world.getGuild(col.getGuildId())==null)// Ne devrait pas arriver
+      if(Main.world.getGuild(col.getGuildId())==null)// Ne devrait pas arriver
       {
         Main.gameServer.a();
         Collector.removeCollector(col.getGuildId());
@@ -3514,7 +3517,7 @@ public class Player
     // Verifier la validit� du mountpark
     if(curMap.getMountPark()!=null&&curMap.getMountPark().getOwner()>0&&curMap.getMountPark().getGuild().getId()!=-1)
     {
-      if(World.world.getGuild(curMap.getMountPark().getGuild().getId())==null)// Ne devrait  pas  arriver
+      if(Main.world.getGuild(curMap.getMountPark().getGuild().getId())==null)// Ne devrait  pas  arriver
       {
         Main.gameServer.a();
         //FIXME : Map.MountPark.removeMountPark(curMap.getMountPark().get_guild().getId());
@@ -3523,7 +3526,7 @@ public class Player
     // Verifier la validit� du Collector
     if(Collector.getCollectorByMapId(curMap.getId())!=null)
     {
-      if(World.world.getGuild(Collector.getCollectorByMapId(curMap.getId()).getGuildId())==null)// Ne devrait pas arriver
+      if(Main.world.getGuild(Collector.getCollectorByMapId(curMap.getId()).getGuildId())==null)// Ne devrait pas arriver
       {
         Main.gameServer.a();
         Collector.removeCollector(Collector.getCollectorByMapId(curMap.getId()).getGuildId());
@@ -3558,7 +3561,7 @@ public class Player
     resetVars();
     Database.getStatics().getPlayerData().update(this);
     set_isClone(true);
-    World.world.unloadPerso(this.getId());
+    Main.world.unloadPerso(this.getId());
   }
 
   public int getBankCost()
@@ -3579,7 +3582,7 @@ public class Player
       case "nbrOnline":
         return Main.gameServer.getClients().size()+"";
       case "align":
-        return World.world.getStatOfAlign();
+        return Main.world.getStatOfAlign();
     }
     return "";
   }
@@ -3682,7 +3685,7 @@ public class Player
       if(newQua<=0) //S'il ne reste pas d'item dans le sac
       {
         removeItem(PersoObj.getGuid()); //On enleve l'objet du sac du joueur
-        World.world.removeGameObject(PersoObj.getGuid()); //On enleve l'objet du monde
+        Main.world.removeGameObject(PersoObj.getGuid()); //On enleve l'objet du monde
         BankObj.setQuantity(BankObj.getQuantity()+PersoObj.getQuantity()); //On ajoute la quantit� a l'objet en banque
         String str="O+"+BankObj.getGuid()+"|"+BankObj.getQuantity()+"|"+BankObj.getTemplate().getId()+"|"+BankObj.parseStatsString(); //on envoie l'ajout a la banque de l'objet
         SocketManager.GAME_SEND_EsK_PACKET(this,str);
@@ -3768,7 +3771,7 @@ public class Player
       {
         //On retire l'item de la banque
         account.getBank().remove(index);
-        World.world.removeGameObject(BankObj.getGuid());
+        Main.world.removeGameObject(BankObj.getGuid());
         //On Modifie la quantit� de l'item du sac du joueur
         PersoObj.setQuantity(PersoObj.getQuantity()+BankObj.getQuantity());
 
@@ -3839,7 +3842,7 @@ public class Player
     if(mountPark.getListOfRaising().size()>0) //in field
       for(Integer id : mountPark.getListOfRaising())
       {
-        Mount mount=World.world.getMountById(id);
+        Mount mount=Main.world.getMountById(id);
         if(mount==null)
           continue;
 
@@ -3911,7 +3914,7 @@ public class Player
         {
           //on supprime de l'inventaire et du Monde
           objects.remove(obj.getGuid());
-          World.world.removeGameObject(obj.getGuid());
+          Main.world.removeGameObject(obj.getGuid());
           //on envoie le packet si connect�
           if(isOnline)
             SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(this,obj.getGuid());
@@ -3939,7 +3942,7 @@ public class Player
 
             objects.remove(o.getGuid());
 
-            World.world.removeGameObject(o.getGuid());
+            Main.world.removeGameObject(o.getGuid());
             //on envoie le packet si connect�
             if(isOnline)
               SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(this,o.getGuid());
@@ -4405,11 +4408,11 @@ public class Player
 
     for(short i : _zaaps)
     {
-      if(World.world.getMap(i)==null)
+      if(Main.world.getMap(i)==null)
         continue;
-      if(World.world.getMap(i).getSubArea().getArea().getSuperArea()!=SubAreaID)
+      if(Main.world.getMap(i).getSubArea().getArea().getSuperArea()!=SubAreaID)
         continue;
-      int cost=Formulas.calculZaapCost(curMap,World.world.getMap(i));
+      int cost=Formulas.calculZaapCost(curMap,Main.world.getMap(i));
       if(i==curMap.getId())
         cost=0;
       str.append("|").append(i).append(";").append(cost);
@@ -4423,14 +4426,14 @@ public class Player
     String map=curMap.getId()+"";
     StringBuilder str=new StringBuilder(map+"");
     int SubAreaID=curMap.getSubArea().getArea().getSuperArea();
-    for(Prism Prisme : World.world.AllPrisme())
+    for(Prism Prisme : Main.world.AllPrisme())
     {
       if(Prisme.getAlignement()!=_align)
         continue;
       short MapID=Prisme.getMap();
-      if(World.world.getMap(MapID)==null)
+      if(Main.world.getMap(MapID)==null)
         continue;
-      if(World.world.getMap(MapID).getSubArea().getArea().getSuperArea()!=SubAreaID)
+      if(Main.world.getMap(MapID).getSubArea().getArea().getSuperArea()!=SubAreaID)
         continue;
       if(Prisme.getInFight()==0||Prisme.getInFight()==-2)
       {
@@ -4438,7 +4441,7 @@ public class Player
       }
       else
       {
-        int costo=Formulas.calculZaapCost(curMap,World.world.getMap(MapID));
+        int costo=Formulas.calculZaapCost(curMap,Main.world.getMap(MapID));
         if(MapID==curMap.getId())
           costo=0;
         str.append("|"+MapID+";"+costo);
@@ -4501,31 +4504,31 @@ public class Player
       return; //Si il combat
     if(!_zaaps.contains(id))
       return; //S'il n'a pas le zaap demand�(ne devrais pas arriver)
-    int cost=Formulas.calculZaapCost(curMap,World.world.getMap(id));
+    int cost=Formulas.calculZaapCost(curMap,Main.world.getMap(id));
     if(kamas<cost)
       return; //S'il n'a pas les kamas (verif cot� client)
     short mapID=id;
     int SubAreaID=curMap.getSubArea().getArea().getSuperArea();
-    int cellID=World.world.getZaapCellIdByMapId(id);
-    if(World.world.getMap(mapID)==null)
+    int cellID=Main.world.getZaapCellIdByMapId(id);
+    if(Main.world.getMap(mapID)==null)
     {
       Main.gameServer.a();
       SocketManager.GAME_SEND_WUE_PACKET(this);
       return;
     }
-    if(World.world.getMap(mapID).getCase(cellID)==null)
+    if(Main.world.getMap(mapID).getCase(cellID)==null)
     {
       Main.gameServer.a();
       SocketManager.GAME_SEND_WUE_PACKET(this);
       return;
     }
-    if(!World.world.getMap(mapID).getCase(cellID).isWalkable(true))
+    if(!Main.world.getMap(mapID).getCase(cellID).isWalkable(true))
     {
       Main.gameServer.a();
       SocketManager.GAME_SEND_WUE_PACKET(this);
       return;
     }
-    if(World.world.getMap(mapID).getSubArea().getArea().getSuperArea()!=SubAreaID)
+    if(Main.world.getMap(mapID).getSubArea().getArea().getSuperArea()!=SubAreaID)
     {
       SocketManager.GAME_SEND_WUE_PACKET(this);
       return;
@@ -4547,7 +4550,7 @@ public class Player
       return;
     int celdaID=340;
     short MapID=7411;
-    for(Prism Prisme : World.world.AllPrisme())
+    for(Prism Prisme : Main.world.AllPrisme())
     {
       if(Prisme.getMap()==Short.valueOf(packet.substring(2)))
       {
@@ -4556,7 +4559,7 @@ public class Player
         break;
       }
     }
-    int costo=Formulas.calculZaapCost(curMap,World.world.getMap(MapID));
+    int costo=Formulas.calculZaapCost(curMap,Main.world.getMap(MapID));
     if(MapID==curMap.getId())
       costo=0;
     if(kamas<costo)
@@ -4591,7 +4594,7 @@ public class Player
   public String parsePrisme()
   {
     String str="";
-    Prism Prisme=World.world.getPrisme(curMap.getSubArea().getPrismId());
+    Prism Prisme=Main.world.getPrisme(curMap.getSubArea().getPrismId());
     if(Prisme==null)
       str="-3";
     else if(Prisme.getInFight()==0)
@@ -4634,7 +4637,7 @@ public class Player
   {
     if(this.getExchangeAction()==null||this.getExchangeAction().getType()!=ExchangeAction.IN_ZAPPI)
       return;
-    GameMap map=World.world.getMap(Short.valueOf(packet.substring(2)));
+    GameMap map=Main.world.getMap(Short.valueOf(packet.substring(2)));
     short cell=100;
     if(map!=null)
     {
@@ -4986,7 +4989,7 @@ public class Player
 
   public String get_wife_friendlist()
   {
-    Player wife=World.world.getPlayer(this.wife);
+    Player wife=Main.world.getPlayer(this.wife);
     StringBuilder str=new StringBuilder();
     if(wife!=null)
     {
@@ -5062,7 +5065,7 @@ public class Player
   public void Divorce()
   {
     if(isOnline())
-      SocketManager.GAME_SEND_Im_PACKET(this,"047;"+World.world.getPlayer(wife).getName());
+      SocketManager.GAME_SEND_Im_PACKET(this,"047;"+Main.world.getPlayer(wife).getName());
 
     wife=0;
     Database.getStatics().getPlayerData().update(this);
@@ -5136,8 +5139,8 @@ public class Player
 
     if(revive==1)
     {
-      this.curMap=World.world.getMap((short)7411);
-      this.curCell=World.world.getMap((short)7411).getCase(311);
+      this.curMap=Main.world.getMap((short)7411);
+      this.curCell=Main.world.getMap((short)7411).getCase(311);
     }
     else
     {
@@ -5158,7 +5161,7 @@ public class Player
       this._spellPts=0;
       this.level=1;
       this.exp=0;
-      this.curMap=World.world.getMap(Constant.getStartMap(this.classe));
+      this.curMap=Main.world.getMap(Constant.getStartMap(this.classe));
       this.curCell=this.curMap.getCase(Constant.getStartCell(this.classe));
     }
     this._honor=0;
@@ -5169,7 +5172,7 @@ public class Player
     if(this._mount!=null)
     {
       for(GameObject gameObject : this._mount.getObjects().values())
-        World.world.removeGameObject(gameObject.getGuid());
+        Main.world.removeGameObject(gameObject.getGuid());
       this._mount.getObjects().clear();
 
       this.setMount(null);
@@ -5398,7 +5401,7 @@ public class Player
         //On enleve l'objet du sac du joueur
         removeItem(PersoObj.getGuid());
         //On enleve l'objet du monde
-        World.world.removeGameObject(PersoObj.getGuid());
+        Main.world.removeGameObject(PersoObj.getGuid());
         //On ajoute la quantit� a l'objet en banque
         SimilarObj.setQuantity(SimilarObj.getQuantity()+PersoObj.getQuantity());
 
@@ -5475,7 +5478,7 @@ public class Player
       {
         //On retire l'item de la banque
         _storeItems.remove(SimilarObj.getGuid());
-        World.world.removeGameObject(SimilarObj.getGuid());
+        Main.world.removeGameObject(SimilarObj.getGuid());
         //On Modifie la quantit� de l'item du sac du joueur
         PersoObj.setQuantity(PersoObj.getQuantity()+SimilarObj.getQuantity());
         //On envoie les packets
@@ -5889,12 +5892,12 @@ public class Player
     {
       PW=account.getGameClient();
     }
-    if(World.world.getMap(newMapID)==null)
+    if(Main.world.getMap(newMapID)==null)
     {
       Main.gameServer.a();
       return;
     }
-    if(World.world.getMap(newMapID).getCase(newCellID)==null)
+    if(Main.world.getMap(newMapID).getCase(newCellID)==null)
     {
       Main.gameServer.a();
       return;
@@ -5905,14 +5908,14 @@ public class Player
       SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(curMap,this.getId());
     }
     curCell.removePlayer(this);
-    curMap=World.world.getMap(newMapID);
+    curMap=Main.world.getMap(newMapID);
     curCell=curMap.getCase(newCellID);
 
     //Verification de la Map
     //Verifier la validit� du mountpark
     if(curMap.getMountPark()!=null&&curMap.getMountPark().getOwner()>0&&curMap.getMountPark().getGuild().getId()!=-1)
     {
-      if(World.world.getGuild(curMap.getMountPark().getGuild().getId())==null)//Ne devrait pas arriver
+      if(Main.world.getGuild(curMap.getMountPark().getGuild().getId())==null)//Ne devrait pas arriver
       {
         Main.gameServer.a();
         GameMap.removeMountPark(curMap.getMountPark().getGuild().getId());
@@ -5921,7 +5924,7 @@ public class Player
     //Verifier la validit� du Collector
     if(Collector.getCollectorByMapId(curMap.getId())!=null)
     {
-      if(World.world.getGuild(Collector.getCollectorByMapId(curMap.getId()).getGuildId())==null)//Ne devrait pas arriver
+      if(Main.world.getGuild(Collector.getCollectorByMapId(curMap.getId()).getGuildId())==null)//Ne devrait pas arriver
       {
         Main.gameServer.a();
         Collector.removeCollector(Collector.getCollectorByMapId(curMap.getId()).getGuildId());
@@ -6169,18 +6172,18 @@ public class Player
         return;
       if((Integer)this.getExchangeAction().getValue()!=0)
       {
-        Collector Collector=World.world.getCollector((Integer)this.getExchangeAction().getValue());
+        Collector Collector=Main.world.getCollector((Integer)this.getExchangeAction().getValue());
         if(Collector==null)
           return;
         Collector.reloadTimer();
-        for(Player z : World.world.getGuild(Collector.getGuildId()).getMembers())
+        for(Player z : Main.world.getGuild(Collector.getGuildId()).getMembers())
         {
           if(z==null)
             continue;
           if(z.isOnline())
           {
             SocketManager.GAME_SEND_gITM_PACKET(z,scruffemu.entity.Collector.parseToGuild(z.get_guild().getId()));
-            String str="G"+Collector.getN1()+","+Collector.getN2()+"|.|"+World.world.getMap(Collector.getMap()).getX()+"|"+World.world.getMap(Collector.getMap()).getY()+"|"+getName()+"|"+Collector.getXp()+";";
+            String str="G"+Collector.getN1()+","+Collector.getN2()+"|.|"+Main.world.getMap(Collector.getMap()).getX()+"|"+Main.world.getMap(Collector.getMap()).getY()+"|"+getName()+"|"+Collector.getXp()+";";
 
             if(!Collector.getLogObjects().equals(""))
               str+=Collector.getLogObjects();
@@ -6570,6 +6573,16 @@ public class Player
   public Map<Integer, Spell.SortStats> getSorts()
   {
     return _sorts;
+  }
+
+  public Stake getStake()
+  {
+    return stake;
+  }
+
+  public void setStake(Stake stake)
+  {
+    this.stake = stake;
   }
 
 }

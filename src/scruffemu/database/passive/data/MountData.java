@@ -7,7 +7,6 @@ import scruffemu.comhandler.transfer.DataQueue;
 import scruffemu.database.Database;
 import scruffemu.database.passive.AbstractDAO;
 import scruffemu.entity.mount.Mount;
-import scruffemu.game.World;
 import scruffemu.main.Main;
 
 import java.sql.PreparedStatement;
@@ -32,7 +31,7 @@ public class MountData extends AbstractDAO<Mount>
       ResultSet RS=result.resultSet;
       while(RS.next())
       {
-        World.world.addMount(new Mount(RS.getInt("id"),RS.getInt("color"),RS.getInt("sex"),RS.getInt("amour"),RS.getInt("endurance"),RS.getInt("level"),RS.getLong("xp"),RS.getString("name"),RS.getInt("fatigue"),RS.getInt("energy"),RS.getInt("reproductions"),RS.getInt("maturity"),RS.getInt("serenity"),RS.getString("objects"),RS.getString("ancestors"),RS.getString("capacitys"),RS.getInt("size"),RS.getInt("cell"),RS.getShort("map"),RS.getInt("owner"),RS.getInt("orientation"),RS.getLong("fecundatedDate"),RS.getInt("couple"),RS.getInt("savage")));
+        Main.world.addMount(new Mount(RS.getInt("id"),RS.getInt("color"),RS.getInt("sex"),RS.getInt("amour"),RS.getInt("endurance"),RS.getInt("level"),RS.getLong("xp"),RS.getString("name"),RS.getInt("fatigue"),RS.getInt("energy"),RS.getInt("reproductions"),RS.getInt("maturity"),RS.getInt("serenity"),RS.getString("objects"),RS.getString("ancestors"),RS.getString("capacitys"),RS.getInt("size"),RS.getInt("cell"),RS.getShort("map"),RS.getInt("owner"),RS.getInt("orientation"),RS.getLong("fecundatedDate"),RS.getInt("couple"),RS.getInt("savage")));
       }
     }
     catch(SQLException e)
@@ -107,7 +106,7 @@ public class MountData extends AbstractDAO<Mount>
   public void delete(Player player)
   {
     this.delete(player.getMount().getId());
-    World.world.delDragoByID(player.getMount().getId());
+    Main.world.delDragoByID(player.getMount().getId());
     player.setMountGiveXp(0);
     player.setMount(null);
     Database.getStatics().getPlayerData().update(player);
@@ -158,11 +157,11 @@ public class MountData extends AbstractDAO<Mount>
   {
     try
     {
-    final DataQueue.Queue<Integer> queue=World.world.getDataQueue().new Queue<>((byte)1);
+      final DataQueue.Queue<Integer> queue=Main.world.getDataQueue().new Queue<>((byte)1);
       synchronized(queue)
       {
-        long count=World.world.getDataQueue().count();
-        World.world.getDataQueue().queues.put(count,queue);
+        long count=Main.world.getDataQueue().count();
+        Main.world.getDataQueue().queues.put(count,queue);
         Main.exchangeClient.send("DI"+queue.getType()+count);
         queue.wait();
       }

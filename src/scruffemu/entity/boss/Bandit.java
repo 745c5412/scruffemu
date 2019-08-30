@@ -4,7 +4,7 @@ import scruffemu.area.map.GameMap;
 import scruffemu.common.Formulas;
 import scruffemu.database.Database;
 import scruffemu.entity.monster.Monster;
-import scruffemu.game.World;
+import scruffemu.main.Main;
 import scruffemu.utility.TimerWaiterPlus;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class Bandit
         if(_mob==null)
           continue;
 
-        Monster monstre=World.world.getMonstre(_mob);
+        Monster monstre=Main.world.getMonstre(_mob);
         if(monstre==null)
         {
           continue;
@@ -60,7 +60,7 @@ public class Bandit
         if(_map==null)
           continue;
 
-        GameMap _Map=World.world.getMap(_map);
+        GameMap _Map=Main.world.getMap(_map);
         if(_Map==null)
           continue;
 

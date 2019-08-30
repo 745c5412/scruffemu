@@ -1,7 +1,7 @@
 package scruffemu.entity.boss;
 
 import scruffemu.area.map.GameMap;
-import scruffemu.game.World;
+import scruffemu.main.Main;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -24,9 +24,9 @@ public class MaitreCorbac
     this.oldMap=id;
 
     ArrayList<GameMap> maps=new ArrayList<>();
-    maps.addAll(World.world.getSubArea(211).getMaps());
-    maps.remove(World.world.getMap((short)9589));
-    maps.remove(World.world.getMap((short)9604));
+    maps.addAll(Main.world.getSubArea(211).getMaps());
+    maps.remove(Main.world.getMap((short)9589));
+    maps.remove(Main.world.getMap((short)9604));
 
     int index=new Random().nextInt(maps.size());
     GameMap map=maps.get(index);

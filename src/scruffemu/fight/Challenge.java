@@ -241,7 +241,6 @@ public class Challenge
         {
           if(target.getBuff(9)==null) // Si d�robade
             challengeLoose(target);
-          break;
         }
         break;
       case 31: // Focus

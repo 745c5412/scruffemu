@@ -1832,3 +1832,43 @@ Reordered mount stats in the order:
 	- summon
 	- prospecting
 	- initiative
+Properly object-oriented game world
+Properly object-oriented Minotoror's maze
+Properly object-oriented Dragon Pig's labyrith
+Added restart command
+
+29-08-2019
+Made monsters only move on maps where there are currently players
+Set monster movement timer to 3 minutes (was 10 minutes)
+Changed random number generator to secure random number generator
+Fixed a bug where packets sent to players instead of gameclients could cause nullpointerexceptions
+Added Staking system where you can bet items and equipment in a 1v1 pvp scenario
+Fixed a bug where Zilla didn't always spawn in firefoux dungeon
+Fixed a bug where Zilla dropped 2-3 firefacts instead of 1
+Added 101 max exomaged power limit
+Redid Spiritual Leash's mechanics so it now correctly summons the most recently died ally
+Fixed a bug where class items' effects did not show up on spell effects even though they applied correctly when logging in while having a class item equiped
+Fixed a bug with the staking system where it had a small chance to lock you out of any type of exchange
+Fixed a bug with the mob movement system where it would try to move mobs on gameclients who weren't logged into a character yet
+
+30-08-2019
+Added 1 missing map connection (brakmar magus, top map is missing and cant add teleport to it)
+Fixed a bug where the exomaged power limit did not correctly detect when it was passed
+Removed Peki as a drop from Peki Peki
+Tofu can now attack more than twice if it has enough AP to do so
+Increased Tofu's max action count from 4 to 8
+Increased Gobball's max action count from 4 to 8
+Increased Boar's max action count from 4 to 12
+Made Bwork Magus only move towards close range if it has enough AP to use tornado and can still use tornado on that target
+Made Bwork Magus only flee if it has attacked in its turn
+Decreased Serial Lightning's duration to 1600ms (was 2000ms)
+Added 500ms extra movement delay to Bwork Magus' movement
+Fixed a bug where the critical hit of Bwork Magus' Serial Lightnings also damaged the Bwork and his allies
+Fixed a bug where the spell type of dragofire was not correctly set to linear for AI
+Completely redid Red Wyrmling's AI, it now dispells enemies if a certain buff threshold is met and dispells the summoner if a certain debuff threshold is met
+Decreased Dragofire's duration to 1200ms (was 1500ms)
+Increased Ultra Powerful's max action count from 4 to 8
+Increased Swindling's max action count from 4 to 8
+Fixed a bug where Ultra Powerful's Revitalized Cutting did not correctly buff the vitality of the Ultra Powerful
+
+to export: drops.sql, sorts.sql

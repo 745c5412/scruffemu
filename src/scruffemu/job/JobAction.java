@@ -17,6 +17,7 @@ import scruffemu.job.magus.Rune;
 import scruffemu.main.Config;
 import scruffemu.main.Constant;
 import scruffemu.main.Logging;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.object.ObjectTemplate;
 import scruffemu.utility.TimerWaiterPlus;
@@ -123,7 +124,7 @@ public class JobAction
 
     if(P.getObjetByPos(Constant.ITEM_POS_ARME)!=null&&SM.getTemplate().getId()==36)
     {
-      if(World.world.getMetier(36).isValidTool(P.getObjetByPos(Constant.ITEM_POS_ARME).getTemplate().getId()))
+      if(Main.world.getMetier(36).isValidTool(P.getObjetByPos(Constant.ITEM_POS_ARME).getTemplate().getId()))
       {
         int dist=PathFinding.getDistanceBetween(P.getCurMap(),P.getCurCell().getId(),cell.getId());
         int distItem=JobConstant.getDistCanne(P.getObjetByPos(Constant.ITEM_POS_ARME).getTemplate().getId());
@@ -208,7 +209,7 @@ public class JobAction
 
         if(_tID!=-1)
         {
-          ObjectTemplate _T=World.world.getObjTemplate(_tID);
+          ObjectTemplate _T=Main.world.getObjTemplate(_tID);
           if(_T!=null)
           {
             GameObject _O=_T.createNewItem(rareQua,true);
@@ -224,7 +225,7 @@ public class JobAction
         }
       }
 
-      ObjectTemplate T=World.world.getObjTemplate(tID);
+      ObjectTemplate T=Main.world.getObjTemplate(tID);
       if(T==null)
         return;
       GameObject O=T.createNewItem(qua,true);
@@ -309,7 +310,7 @@ public class JobAction
       if(newQua==0)
       {
         this.player.removeItem(e.getKey());
-        World.world.removeGameObject(e.getKey());
+        Main.world.removeGameObject(e.getKey());
         SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(this.player,e.getKey());
       }
       else
@@ -335,7 +336,7 @@ public class JobAction
     if(!isUnjobSkill)
     {
       final JobStat SM=this.player.getMetierBySkill(this.id);
-      final int tID=World.world.getObjectByIngredientForJob(SM.getTemplate().getListBySkill(this.id),items);
+      final int tID=Main.world.getObjectByIngredientForJob(SM.getTemplate().getListBySkill(this.id),items);
       if(tID==-1||!SM.getTemplate().canCraft(this.id,tID))
       {
         SocketManager.GAME_SEND_Ec_PACKET(this.player,"EI");
@@ -354,7 +355,7 @@ public class JobAction
       }
       else
       {
-        GameObject newObj=World.world.getObjTemplate(tID).createNewItemWithoutDuplication(this.player.getItems().values(),1,false);
+        GameObject newObj=Main.world.getObjTemplate(tID).createNewItemWithoutDuplication(this.player.getItems().values(),1,false);
 
         int guid=newObj.getGuid();
         if(guid==-1)
@@ -396,8 +397,8 @@ public class JobAction
     }
     else
     {
-      final int templateId=World.world.getObjectByIngredientForJob(World.world.getMetier(this.id).getListBySkill(this.id),items);
-      if(templateId==-1||!World.world.getMetier(this.id).canCraft(this.id,templateId))
+      final int templateId=Main.world.getObjectByIngredientForJob(Main.world.getMetier(this.id).getListBySkill(this.id),items);
+      if(templateId==-1||!Main.world.getMetier(this.id).canCraft(this.id,templateId))
       {
         SocketManager.GAME_SEND_Ec_PACKET(this.player,"EI");
         SocketManager.GAME_SEND_IO_PACKET_TO_MAP(this.player.getCurMap(),this.player.getId(),"-");
@@ -405,7 +406,7 @@ public class JobAction
         return;
       }
 
-      GameObject newObj=World.world.getObjTemplate(templateId).createNewItemWithoutDuplication(this.player.getItems().values(),1,false);
+      GameObject newObj=Main.world.getObjTemplate(templateId).createNewItemWithoutDuplication(this.player.getItems().values(),1,false);
 
       int guid=newObj.getGuid();
 
@@ -503,7 +504,7 @@ public class JobAction
         if(newQua==0)
         {
           player.removeItem(e.getKey());
-          World.world.removeGameObject(e.getKey());
+          Main.world.removeGameObject(e.getKey());
           SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(player,e.getKey());
         }
         else
@@ -524,7 +525,7 @@ public class JobAction
         signed=true;
     items.remove(7508);
 
-    int template=World.world.getObjectByIngredientForJob(SM.getTemplate().getListBySkill(this.id),items);
+    int template=Main.world.getObjectByIngredientForJob(SM.getTemplate().getListBySkill(this.id),items);
 
     if(template==-1||!SM.getTemplate().canCraft(this.id,template))
     {
@@ -538,7 +539,7 @@ public class JobAction
     boolean success=true;
 
     if(Logging.USE_LOG)
-      Logging.getInstance().write("SecureCraft",this.player.getName()+" � crafter avec "+(success ? "SUCCES" : "ECHEC")+" l'item "+template+" ("+World.world.getObjTemplate(template).getName()+") pour "+receiver.getName());
+      Logging.getInstance().write("SecureCraft",this.player.getName()+" � crafter avec "+(success ? "SUCCES" : "ECHEC")+" l'item "+template+" ("+Main.world.getObjTemplate(template).getName()+") pour "+receiver.getName());
     if(!success)
     {
       SocketManager.GAME_SEND_Ec_PACKET(this.player,"EF");
@@ -548,7 +549,7 @@ public class JobAction
     }
     else
     {
-      GameObject newObj=World.world.getObjTemplate(template).createNewItem(1,false);
+      GameObject newObj=Main.world.getObjTemplate(template).createNewItem(1,false);
       if(signed)
         newObj.addTxtStat(988,this.player.getName());
       int guid=this.addCraftObject(receiver,newObj);
@@ -704,7 +705,7 @@ public class JobAction
           }
           else
           {
-            World.world.removeGameObject(idIngredient);
+            Main.world.removeGameObject(idIngredient);
             player.removeItem(idIngredient);
             SocketManager.GAME_SEND_DELETE_STATS_ITEM_FM(player,idIngredient);
           }
@@ -741,7 +742,10 @@ public class JobAction
         if(itemType==1||itemType==9||itemType==10||itemType==11||itemType==16||itemType==17||itemType==81)
         {
           SocketManager.GAME_SEND_MESSAGE(this.player,"You can only use this rune on weapons.");
-          clearMage(objectFm,runeObject);
+          if(receiver!=null)
+            clearMage(objectFm,runeObject,receiver);
+          else
+            clearMage(objectFm,runeObject,this.player);
           return false;
         }
 
@@ -757,9 +761,38 @@ public class JobAction
     if(lvlJob<(int)Math.floor(objTemplate.getLevel()/2))
     {
       SocketManager.GAME_SEND_MESSAGE(this.player,"You can only mage items up to twice your job's level.");
-      clearMage(objectFm,runeObject);
+      if(receiver!=null)
+        clearMage(objectFm,runeObject,receiver);
+      else
+        clearMage(objectFm,runeObject,this.player);
       return false;
     }
+
+    String exoStatStr=objectFm.findAllExo(objectFm);
+    float exoPower=0;
+    if(exoStatStr!="") //item has exo
+    {
+      String[] exoSplit=exoStatStr.split(";"); //calculate total exo power
+      for(int i=0;i<exoSplit.length;i++)
+      {
+        String[] exoSplit2=exoSplit[i].split(",");
+        float statPwr=Constant.getPowerByStatId(Integer.valueOf(exoSplit2[0]),false);
+        float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
+        exoPower=exoPower+entryPower;
+      }
+    }
+
+    //v2.8 - total power limit
+    if(Job.getActualJet(objectFm,rune.getStatId())+rune.getStatsAdd()>getStatBaseMaxs(objectFm.getTemplate(),rune.getStatId())) //current mage exceeds bae stats
+      if(rune.getPower()+exoPower>101f)
+      {
+        SocketManager.GAME_SEND_MESSAGE(this.player,"This mage would exceed the maximum allowed exomaged power limit.");
+        if(receiver!=null)
+          clearMage(objectFm,runeObject,receiver);
+        else
+          clearMage(objectFm,runeObject,this.player);
+        return false;
+      }
 
     //ALL CHECKS ARE DONE FROM THIS POINT
 
@@ -790,7 +823,10 @@ public class JobAction
       if(currentStat+rune.getStatsAdd()>maxOvermage)
       {
         SocketManager.GAME_SEND_MESSAGE(this.player,"This mage would exceed the maximum allowed stat limit.");
-        clearMage(objectFm,runeObject);
+        if(receiver!=null)
+          clearMage(objectFm,runeObject,receiver);
+        else
+          clearMage(objectFm,runeObject,this.player);
         return false;
       }
 
@@ -1067,10 +1103,10 @@ public class JobAction
   }
 
   //TODO: fix so you dont have to re-open magus interface
-  public void clearMage(GameObject item, GameObject rune)
+  public void clearMage(GameObject item, GameObject rune, Player receiver)
   {
     World.addGameObject(item,true);
-    this.player.addObjet(item);
+    receiver.addObjet(item);
   }
 
   public void doCritPotionMage(Potion potion, GameObject objectFm)
@@ -1613,7 +1649,7 @@ public class JobAction
     float weight=0;
     float alt=0;
     String statsTemplate="";
-    statsTemplate=World.world.getObjTemplate(objTemplateID).getStrTemplate();
+    statsTemplate=Main.world.getObjTemplate(objTemplateID).getStrTemplate();
     if(statsTemplate==null||statsTemplate.isEmpty())
       return 0;
     final String[] split=statsTemplate.split(",");
@@ -1662,7 +1698,7 @@ public class JobAction
     float weight=0;
     float alt=0;
     String statsTemplate="";
-    statsTemplate=World.world.getObjTemplate(objTemplateID).getStrTemplate();
+    statsTemplate=Main.world.getObjTemplate(objTemplateID).getStrTemplate();
     if(statsTemplate==null||statsTemplate.isEmpty())
       return 0;
     final String[] split=statsTemplate.split(",");
@@ -1717,7 +1753,7 @@ public class JobAction
 
   public static int getBaseMaxJet(int templateID, String statsModif)
   {
-    ObjectTemplate t=World.world.getObjTemplate(templateID);
+    ObjectTemplate t=Main.world.getObjTemplate(templateID);
     String[] splitted=t.getStrTemplate().split(",");
     for(String s : splitted)
     {

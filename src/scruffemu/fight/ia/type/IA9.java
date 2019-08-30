@@ -30,13 +30,15 @@ public class IA9 extends AbstractIA
       {
         if(this.fight.canCastSpell1(this.fighter,spellStats,this.fighter.getCell(),cellId))
           this.fight.tryCastSpell(this.fighter,spellStats,cellId);
-      } else if(Function.getInstance().moveFarIfPossible(this.fight,this.fighter)!=0)
+      }
+      else if(Function.getInstance().moveFarIfPossible(this.fight,this.fighter)!=0)
       {
         this.stop=true;
       }
 
       addNext(this::decrementCount,800);
-    } else
+    }
+    else
     {
       this.stop=true;
     }

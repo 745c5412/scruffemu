@@ -9,7 +9,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import scruffemu.area.map.GameMap;
 import scruffemu.area.map.entity.MountPark;
 import scruffemu.database.passive.AbstractDAO;
-import scruffemu.game.World;
+import scruffemu.main.Main;
 
 public class MountParkData extends AbstractDAO<MountPark>
 {
@@ -57,11 +57,11 @@ public class MountParkData extends AbstractDAO<MountPark>
       ResultSet RS=result.resultSet;
       while(RS.next())
       {
-        GameMap map=World.world.getMap(RS.getShort("mapid"));
+        GameMap map=Main.world.getMap(RS.getShort("mapid"));
         if(map==null)
           continue;
         MountPark MP=new MountPark(map,RS.getInt("cellid"),RS.getInt("size"),RS.getInt("cellMount"),RS.getInt("cellporte"),RS.getString("cellEnclos"),RS.getInt("sizeObj"));
-        World.world.addMountPark(MP);
+        Main.world.addMountPark(MP);
         nbr++;
       }
     }
@@ -84,19 +84,19 @@ public class MountParkData extends AbstractDAO<MountPark>
       ResultSet RS=result.resultSet;
       while(RS.next())
       {
-        GameMap map=World.world.getMap(RS.getShort("mapid"));
+        GameMap map=Main.world.getMap(RS.getShort("mapid"));
         if(map==null)
           continue;
         if(RS.getShort("mapid")!=i)
           continue;
-        if(!World.world.getMountPark().containsKey(RS.getShort("mapid")))
+        if(!Main.world.getMountPark().containsKey(RS.getShort("mapid")))
         {
           MountPark MP=new MountPark(map,RS.getInt("cellid"),RS.getInt("size"),RS.getInt("cellMount"),RS.getInt("cellporte"),RS.getString("cellEnclos"),RS.getInt("sizeObj"));
-          World.world.addMountPark(MP);
+          Main.world.addMountPark(MP);
         }
         else
         {
-          World.world.getMountPark().get(RS.getShort("mapid")).setInfos(map,RS.getInt("cellid"),RS.getInt("size"),RS.getInt("cellMount"),RS.getInt("cellporte"),RS.getString("cellEnclos"),RS.getInt("sizeObj"));
+          Main.world.getMountPark().get(RS.getShort("mapid")).setInfos(map,RS.getInt("cellid"),RS.getInt("size"),RS.getInt("cellMount"),RS.getInt("cellporte"),RS.getString("cellEnclos"),RS.getInt("sizeObj"));
         }
       }
     }

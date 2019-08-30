@@ -3,7 +3,7 @@ package scruffemu.database.active.data;
 import com.zaxxer.hikari.HikariDataSource;
 
 import scruffemu.database.active.AbstractDAO;
-import scruffemu.game.World;
+import scruffemu.main.Main;
 import scruffemu.utility.Pair;
 
 import java.sql.ResultSet;
@@ -57,7 +57,7 @@ public class CraftData extends AbstractDAO<Object>
         if(!cont) // S'il y a eu une erreur de parsing, on ignore cette recette
           continue;
 
-        World.world.addCraft(RS.getInt("id"),m);
+        Main.world.addCraft(RS.getInt("id"),m);
       }
     }
     catch(SQLException e)

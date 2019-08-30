@@ -59,8 +59,6 @@ import java.util.Map.Entry;
 
 public class World
 {
-  public final static World world=new World();
-
   public Logger logger=(Logger)LoggerFactory.getLogger(World.class);
 
   private Map<Integer, Account> accounts=new HashMap<>();
@@ -85,7 +83,7 @@ public class World
   private Map<Integer, Hdv> Hdvs=new HashMap<>();
   private Map<Integer, Map<Integer, ArrayList<HdvEntry>>> hdvsItems=new HashMap<>();
   private Map<Integer, Animation> Animations=new HashMap<>();
-  private Map<Short, scruffemu.area.map.entity.MountPark> MountPark=new HashMap<>();
+  private Map<Short, MountPark> MountPark=new HashMap<>();
   private Map<Integer, Trunk> Trunks=new HashMap<>();
   private Map<Integer, Collector> collectors=new HashMap<>();
   private Map<Integer, House> Houses=new HashMap<>();
@@ -99,9 +97,11 @@ public class World
   private Map<String, Map<String, String>> randomMobsGroupsFix=new HashMap<>();
   private Map<Integer, Map<String, Map<String, Integer>>> extraMonstre=new HashMap<>();
   private Map<Integer, GameMap> extraMonstreOnMap=new HashMap<>();
-  private Map<Integer, scruffemu.area.map.entity.Tutorial> Tutorial=new HashMap<>();
+  private Map<Integer, Tutorial> Tutorial=new HashMap<>();
   private int nextObjectHdvId, nextLineHdvId;
   private CryptManager cryptManager=new CryptManager();
+  public Minotoror minotoror;
+  public PigDragon pigDragon;
 
   public CryptManager getCryptManager()
   {
@@ -174,28 +174,24 @@ public class World
   public synchronized List<Player> getOnlinePlayers()
   {
     final List<Player> online=new ArrayList<Player>();
-    for(final Map.Entry<Integer, Player> perso : World.world.players.entrySet())
+    for(final Map.Entry<Integer, Player> perso : Main.world.players.entrySet())
     {
       if(perso.getValue()==null)
-      {
         continue;
-      }
       if(!perso.getValue().isOnline()||perso.getValue().getGameClient()==null)
-      {
         continue;
-      }
       online.add(perso.getValue());
     }
     return online;
   }
 
   //v2.6 - max connection bugfix
-  public static int getOnlinePlayerCountSameIP(GameClient source)
+  public int getOnlinePlayerCountSameIP(GameClient source)
   {
     int i=0;
 
     final List<Player> online=new ArrayList<Player>();
-    for(final Map.Entry<Integer, Player> perso : World.world.players.entrySet())
+    for(final Map.Entry<Integer, Player> perso : Main.world.players.entrySet())
     {
       if(perso.getValue()==null)
       {
@@ -222,12 +218,12 @@ public class World
   }
 
   //v2.8 - same IP player list for .ipdrop command
-  public static ArrayList<Player> getOnlinePlayersSameIP(GameClient source)
+  public ArrayList<Player> getOnlinePlayersSameIP(GameClient source)
   {
     ArrayList<Player> sameIpPlayers=new ArrayList<>();
 
     final List<Player> online=new ArrayList<Player>();
-    for(final Map.Entry<Integer, Player> perso : World.world.players.entrySet())
+    for(final Map.Entry<Integer, Player> perso : Main.world.players.entrySet())
     {
       if(perso.getValue()==null)
       {
@@ -537,13 +533,20 @@ public class World
     loadMonsterOnMap();
     logger.debug("The adding of mobs groups on the maps were done successfully.");
 
+    this.initializeFirefoux();
+    logger.debug("The adding of mobs groups to firefoux dungeon was done succesfully.");
+
     Database.getDynamics().getGangsterData().load();
     logger.debug("The adding of gangsters on the maps were done successfully.");
 
     logger.debug("Initialization of the dungeon : Dragon Pig.");
-    PigDragon.initialize();
+    pigDragon=new PigDragon();
+    pigDragon.initialize();
+
     logger.debug("Initialization of the dungeon : Labyrinth of the Minotoror.");
-    Minotoror.initialize();
+    minotoror=new Minotoror();
+    minotoror.initialize();
+
     logger.debug("Initialization of the voteshop.");
     Boutique.initPacket();
     logger.debug("Loading "+Tokenshop.items.size()+" tokenshop items.");
@@ -554,7 +557,7 @@ public class World
     logger.debug("Runes have been added succesfully");
     Potion.addPotions();
     logger.debug("Runes have been added succesfully");
-    
+
     Database.getStatics().getServerData().updateTime(time);
     logger.info("All data was loaded successfully at "+new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss",Locale.FRANCE).format(new Date())+" in "+new SimpleDateFormat("mm",Locale.FRANCE).format((System.currentTimeMillis()-time))+" min "+new SimpleDateFormat("ss",Locale.FRANCE).format((System.currentTimeMillis()-time))+" s.");
     logger.setLevel(Level.ALL);
@@ -713,13 +716,16 @@ public class World
   {
     long time=System.currentTimeMillis();
     maps.values().stream().filter(map -> map!=null).forEach(map -> {
-      try
-      {
-        map.loadMonsterOnMap();
-      }
-      catch(Exception e)
-      {
-        logger.error("An error occurred when the server try to put monster on the map id "+map.getId()+".");
+      if(map.getId()!=8338&&map.getId()!=8340&&map.getId()!=8342&&map.getId()!=8344&&map.getId()!=8345&&map.getId()!=8347)
+      {//dont spawn on firefoux maps
+        try
+        {
+          map.loadMonsterOnMap();
+        }
+        catch(Exception e)
+        {
+          logger.error("An error occurred when the server try to put monster on the map id "+map.getId()+".");
+        }
       }
     });
     long time2=System.currentTimeMillis();
@@ -2139,6 +2145,16 @@ public class World
         break;
     }
     return temple;
+  }
+
+  public void initializeFirefoux()
+  {
+    Main.world.getMap((short)8338).spawnGroupWith(Main.world.getMonstre(599)); //room 1
+    Main.world.getMap((short)8340).spawnGroupWith(Main.world.getMonstre(599)); //room 2
+    Main.world.getMap((short)8342).spawnGroupWith(Main.world.getMonstre(599)); //room 3
+    Main.world.getMap((short)8344).spawnGroupWith(Main.world.getMonstre(599)); //room 4
+    Main.world.getMap((short)8345).spawnGroupWith(Main.world.getMonstre(599)); //room 5
+    Main.world.getMap((short)8347).spawnGroupWith(Main.world.getMonstre(599)); //room 6
   }
 
   //v2.8 - min/maxdrop

@@ -3,8 +3,8 @@ package scruffemu.area.map.entity;
 import scruffemu.area.map.GameMap;
 import scruffemu.common.Formulas;
 import scruffemu.entity.mount.Mount;
-import scruffemu.game.World;
 import scruffemu.guild.Guild;
+import scruffemu.main.Main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +52,7 @@ public class MountPark
   public void setData(int owner, int guild, int price, String raising, String objects, String objDurab, String etable)
   {
     this.owner=owner;
-    this.guild=World.world.getGuild(guild);
+    this.guild=Main.world.getGuild(guild);
     this.price=price;
     if(!objects.isEmpty())
     {
@@ -73,7 +73,7 @@ public class MountPark
     {
       try
       {
-        Mount DD=World.world.getMountById(Integer.parseInt(i));
+        Mount DD=Main.world.getMountById(Integer.parseInt(i));
         if(DD!=null)
           this.etable.add(DD);
       }
@@ -100,7 +100,7 @@ public class MountPark
         try
         {
           this.raising.add(Integer.parseInt(dd));
-          Mount mount=World.world.getMountById(Integer.parseInt(dd));
+          Mount mount=Main.world.getMountById(Integer.parseInt(dd));
           mount.setMapId(this.map.getId());
           mount.setCellId(mount.getCellId());
         }
@@ -115,7 +115,7 @@ public class MountPark
       try
       {
         String[] secondCut=firstCut.split(",");
-        Mount DD=World.world.getMountById(Integer.parseInt(secondCut[1]));
+        Mount DD=Main.world.getMountById(Integer.parseInt(secondCut[1]));
         if(DD==null)
           continue;
         this.raising.add(Integer.parseInt(secondCut[1]),Integer.parseInt(secondCut[0]));
@@ -357,7 +357,7 @@ public class MountPark
       char[] directions= { 'b', 'd', 'f', 'h' };
       for(Integer id : this.raising)
       {
-        Mount mount=World.world.getMountById(id);
+        Mount mount=Main.world.getMountById(id);
         if(mount!=null)
         {
           mount.moveMountsAuto(directions[Formulas.getRandomValue(0,3)],3,false);

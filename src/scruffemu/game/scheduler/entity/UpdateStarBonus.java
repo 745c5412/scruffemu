@@ -8,14 +8,14 @@ import scruffemu.database.Database;
 import scruffemu.entity.monster.MobGroup;
 import scruffemu.fight.Fight;
 import scruffemu.game.Updatable;
-import scruffemu.game.World;
 import scruffemu.main.Config;
+import scruffemu.main.Main;
 import scruffemu.utility.Pair;
 
 public class UpdateStarBonus extends Updatable
 {
   public final static Updatable updatable=new UpdateStarBonus(Config.getInstance().starUpdate);
-  public final static ArrayList<MobGroup> groups = new ArrayList<MobGroup>();
+  public final static ArrayList<MobGroup> groups=new ArrayList<MobGroup>();
   public UpdateStarBonus(int wait)
   {
     super(wait);
@@ -28,7 +28,7 @@ public class UpdateStarBonus extends Updatable
     {
       List<Pair<Pair<MobGroup, Integer>, Integer>> normalMobs=new ArrayList<Pair<Pair<MobGroup, Integer>, Integer>>();
       List<Pair<MobGroup, Integer>> fixedMobs=new ArrayList<Pair<MobGroup, Integer>>();
-      for(GameMap map : World.world.getMaps())
+      for(GameMap map : Main.world.getMaps())
       {
         for(MobGroup group : map.getMobGroups().values())
         {

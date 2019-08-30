@@ -1,10 +1,10 @@
 package scruffemu.game.scheduler.entity;
 
-import scruffemu.area.map.GameMap;
 import scruffemu.entity.npc.NpcMovable;
+import scruffemu.game.GameClient;
 import scruffemu.game.Updatable;
-import scruffemu.game.World;
 import scruffemu.main.Config;
+import scruffemu.main.Main;
 
 public class MoveEntities extends Updatable
 {
@@ -18,8 +18,9 @@ public class MoveEntities extends Updatable
   {
     if(this.verify())
     {
-      for(GameMap map : World.world.getMaps())
-        map.onMapMonsterDeplacement();
+      for(GameClient client : Main.gameServer.getClients())
+        if(client.getPlayer()!=null)
+          client.getPlayer().getCurMap().moveMobGroups(5);
       NpcMovable.moveAll();
     }
   }

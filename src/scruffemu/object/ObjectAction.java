@@ -18,6 +18,7 @@ import scruffemu.game.World;
 import scruffemu.game.action.ExchangeAction;
 import scruffemu.job.JobStat;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.object.entity.Fragment;
 import scruffemu.object.entity.SoulStone;
 import scruffemu.other.Action;
@@ -249,7 +250,7 @@ public class ObjectAction
             if(player0.getFight()!=null)
               return;
             int id0=Integer.parseInt(arg);
-            Animation anim=World.world.getAnimation(id0);
+            Animation anim=Main.world.getAnimation(id0);
             if(player.getFight()!=null)
               return;
             player.changeOrientation(1);
@@ -260,7 +261,7 @@ public class ObjectAction
             if(player0.getFight()!=null)
               return;
             id0=Integer.parseInt(arg);
-            if(World.world.getSort(id0)==null)
+            if(Main.world.getSort(id0)==null)
               return;
             if(!player.learnSpell(id0,1,true,true,true))
               return;
@@ -314,7 +315,7 @@ public class ObjectAction
             GameObject pets=player.getObjetByPos(Constant.ITEM_POS_FAMILIER);
             if(pets==null)
               return;
-            PetEntry MyPets=World.world.getPetsEntry(pets.getGuid());
+            PetEntry MyPets=Main.world.getPetsEntry(pets.getGuid());
             if(MyPets==null)
               return;
             if(obj.getTemplate().getConditions().contains(pets.getTemplate().getId()+""))
@@ -359,7 +360,7 @@ public class ObjectAction
             if(player0.getFight()!=null)
               return;
             job=Integer.parseInt(arg);
-            if(World.world.getMetier(job)==null)
+            if(Main.world.getMetier(job)==null)
               return;
             if(player.getMetierByID(job)!=null)//M�tier d�j� appris
             {
@@ -383,11 +384,11 @@ public class ObjectAction
                 if(!player.hasItemTemplate(966,1))
                   return;
                 SocketManager.GAME_SEND_Im_PACKET(player,"022;"+966+"~"+1);
-                player.learnJob(World.world.getMetier(job));
+                player.learnJob(Main.world.getMetier(job));
               }
               else
               {
-                player.learnJob(World.world.getMetier(job));
+                player.learnJob(Main.world.getMetier(job));
               }
             }
             break;
@@ -396,7 +397,7 @@ public class ObjectAction
             if(player0.getFight()!=null)
               return;
             boolean tp=false;
-            for(House i : World.world.getHouses().values())
+            for(House i : Main.world.getHouses().values())
             {
               if(i.getOwnerId()==player.getAccount().getId())
               {
@@ -511,10 +512,10 @@ public class ObjectAction
               SocketManager.GAME_SEND_MESSAGE(player,"The alignment of this subarea is not neutral.");
               return;
             }
-            Prism Prisme=new Prism(World.world.getNextIDPrisme(),alignement,1,map0.getId(),cellId1,player.get_honor(),-1);
+            Prism Prisme=new Prism(Main.world.getNextIDPrisme(),alignement,1,map0.getId(),cellId1,player.get_honor(),-1);
             subArea.setAlignement(alignement);
             subArea.setPrismId(Prisme.getId());
-            for(Player z : World.world.getOnlinePlayers())
+            for(Player z : Main.world.getOnlinePlayers())
             {
               if(z==null)
                 continue;
@@ -535,7 +536,7 @@ public class ObjectAction
               area.setAlignement(alignement);
               Prisme.setConquestArea(area.getId());
             }
-            World.world.addPrisme(Prisme);
+            Main.world.addPrisme(Prisme);
             Database.getDynamics().getPrismData().add(Prisme);
             player.getCurMap().getSubArea().setAlignement(player.get_align());
             Database.getDynamics().getSubAreaData().update(player.getCurMap().getSubArea());
@@ -548,11 +549,11 @@ public class ObjectAction
             int dist=99999,alea;
             mapId=0;
             cellId=0;
-            for(Prism i : World.world.AllPrisme())
+            for(Prism i : Main.world.AllPrisme())
             {
               if(i.getAlignement()!=player.get_align())
                 continue;
-              alea=(World.world.getMap(i.getMap()).getX()-player.getCurMap().getX())*(World.world.getMap(i.getMap()).getX()-player.getCurMap().getX())+(World.world.getMap(i.getMap()).getY()-player.getCurMap().getY())*(World.world.getMap(i.getMap()).getY()-player.getCurMap().getY());
+              alea=(Main.world.getMap(i.getMap()).getX()-player.getCurMap().getX())*(Main.world.getMap(i.getMap()).getX()-player.getCurMap().getX())+(Main.world.getMap(i.getMap()).getY()-player.getCurMap().getY())*(Main.world.getMap(i.getMap()).getY()-player.getCurMap().getY());
               if(alea<dist)
               {
                 dist=alea;
@@ -569,7 +570,7 @@ public class ObjectAction
               return;
             mapId=(short)Integer.parseInt(arg.split(",")[0]);
             cellId=Integer.parseInt(arg.split(",")[1]);
-            if(World.world.getMap(mapId).getSubArea().getAlignement()==player.get_align())
+            if(Main.world.getMap(mapId).getSubArea().getAlignement()==player.get_align())
               player.teleport(mapId,cellId);
             break;
 
@@ -598,7 +599,7 @@ public class ObjectAction
               return;
             for(String i : arg.split(";"))
             {
-              obj=World.world.getObjTemplate(Integer.parseInt(i.split(",")[0])).createNewItem(Integer.parseInt(i.split(",")[1]),false);
+              obj=Main.world.getObjTemplate(Integer.parseInt(i.split(",")[0])).createNewItem(Integer.parseInt(i.split(",")[1]),false);
               if(player.addObjet(obj,true))
                 World.addGameObject(obj,true);
             }
@@ -638,7 +639,7 @@ public class ObjectAction
             if(traque==null)
               break;
 
-            Player cible=World.world.getPlayerByName(traque);
+            Player cible=Main.world.getPlayerByName(traque);
 
             if(cible==null)
               break;
@@ -780,7 +781,7 @@ public class ObjectAction
       case 8378://Fragment magique.
         for(Pair<Integer, Integer> couple : ((Fragment)gameObject).getRunes())
         {
-          ObjectTemplate objectTemplate=World.world.getObjTemplate(couple.getLeft());
+          ObjectTemplate objectTemplate=Main.world.getObjTemplate(couple.getLeft());
 
           if(objectTemplate==null)
             continue;

@@ -8,6 +8,7 @@ import scruffemu.database.Database;
 import scruffemu.game.World;
 import scruffemu.guild.Guild;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 
 import java.util.Collection;
@@ -73,7 +74,7 @@ public class Collector
     StringBuilder sock=new StringBuilder();
     sock.append("GM|");
     boolean isFirst=true;
-    for(java.util.Map.Entry<Integer, Collector> Collector : World.world.getCollectors().entrySet())
+    for(java.util.Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
     {
       Collector c=Collector.getValue();
       if(c==null)
@@ -82,12 +83,12 @@ public class Collector
         continue;//On affiche pas le Collector si il est en combat
       if(c.map==map.getId())
       {
-        Guild G=World.world.getGuild(c.guildId);
+        Guild G=Main.world.getGuild(c.guildId);
         if(G==null)
         {
           c.reloadTimer();
           Database.getDynamics().getCollectorData().delete(c.getId());
-          World.world.getCollectors().remove(c.getId());
+          Main.world.getCollectors().remove(c.getId());
           continue;
         }
         if(!isFirst)
@@ -130,11 +131,11 @@ public class Collector
     // date quand on pose
     StringBuilder packet=new StringBuilder();
     boolean isFirst=true;
-    for(java.util.Map.Entry<Integer, Collector> Collector : World.world.getCollectors().entrySet())
+    for(java.util.Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
     {
       if(Collector.getValue().getGuildId()==GuildID)
       {
-        GameMap map=World.world.getMap(Collector.getValue().getMap());
+        GameMap map=Main.world.getMap(Collector.getValue().getMap());
         if(isFirst)
           packet.append("+");
         if(!isFirst)
@@ -163,7 +164,7 @@ public class Collector
         packet.append(",");
         packet.append("-1"); // lastHD
         packet.append(",");
-        packet.append(Long.toString(perco.date+World.world.getGuild(GuildID).getLvl()*600000)); // nextHD
+        packet.append(Long.toString(perco.date+Main.world.getGuild(GuildID).getLvl()*600000)); // nextHD
         packet.append(";");
 
         packet.append(Integer.toString(map.getId(),36));
@@ -191,7 +192,7 @@ public class Collector
           packet.append("45000");//TimerInit
           packet.append(";");
 
-          int numcase=(World.world.getMap(Collector.getValue().getMap()).getMaxTeam()-1);
+          int numcase=(Main.world.getMap(Collector.getValue().getMap()).getMaxTeam()-1);
           if(numcase>7)
             numcase=7;
           packet.append(numcase);//Nombre de place maximum : En fonction de la map moins celle du Collector
@@ -214,7 +215,7 @@ public class Collector
 
   public static int getCollectorByGuildId(int id)
   {
-    for(java.util.Map.Entry<Integer, Collector> Collector : World.world.getCollectors().entrySet())
+    for(java.util.Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
       if(Collector.getValue().getMap()==id)
         return Collector.getValue().getGuildId();
     return 0;
@@ -222,16 +223,16 @@ public class Collector
 
   public static Collector getCollectorByMapId(short id)
   {
-    for(java.util.Map.Entry<Integer, Collector> Collector : World.world.getCollectors().entrySet())
+    for(java.util.Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
       if(Collector.getValue().getMap()==id)
-        return World.world.getCollectors().get(Collector.getValue().getId());
+        return Main.world.getCollectors().get(Collector.getValue().getId());
     return null;
   }
 
   public static int countCollectorGuild(int GuildID)
   {
     int i=0;
-    for(java.util.Map.Entry<Integer, Collector> Collector : World.world.getCollectors().entrySet())
+    for(java.util.Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
       if(Collector.getValue().getGuildId()==GuildID)
         i++;
     return i;
@@ -239,14 +240,14 @@ public class Collector
 
   public static void parseAttaque(Player perso, int guildID)
   {
-    for(java.util.Map.Entry<Integer, Collector> Collector : World.world.getCollectors().entrySet())
+    for(java.util.Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
       if(Collector.getValue().getInFight()>0&&Collector.getValue().getGuildId()==guildID)
         SocketManager.GAME_SEND_gITp_PACKET(perso,parseAttaqueToGuild(Collector.getValue().getId(),Collector.getValue().getMap(),Collector.getValue().get_inFightID()));
   }
 
   public static void parseDefense(Player perso, int guildID)
   {
-    for(java.util.Map.Entry<Integer, Collector> Collector : World.world.getCollectors().entrySet())
+    for(java.util.Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
       if(Collector.getValue().getInFight()>0&&Collector.getValue().getGuildId()==guildID)
         SocketManager.GAME_SEND_gITP_PACKET(perso,parseDefenseToGuild(Collector.getValue()));
   }
@@ -255,7 +256,7 @@ public class Collector
   {
     StringBuilder str=new StringBuilder();
     str.append("+").append(id);
-    GameMap gameMap=World.world.getMap(map);
+    GameMap gameMap=Main.world.getMap(map);
 
     if(gameMap!=null)
     {
@@ -295,12 +296,12 @@ public class Collector
 
   public static void removeCollector(int GuildID)
   {
-    for(java.util.Map.Entry<Integer, Collector> Collector : World.world.getCollectors().entrySet())
+    for(java.util.Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
     {
       if(Collector.getValue().getGuildId()==GuildID)
       {
-        World.world.getCollectors().remove(Collector.getKey());
-        for(Player p : World.world.getMap(Collector.getValue().getMap()).getPlayers())
+        Main.world.getCollectors().remove(Collector.getKey());
+        for(Player p : Main.world.getMap(Collector.getValue().getMap()).getPlayers())
         {
           SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(p.getCurMap(),Collector.getValue().getId());//Suppression visuelle
         }
@@ -312,12 +313,12 @@ public class Collector
 
   public void reloadTimer()
   {
-    if(World.world.getGuild(getGuildId())==null)
+    if(Main.world.getGuild(getGuildId())==null)
       return;
-    Long time=World.world.getGuild(getGuildId()).timePutCollector.get(getMap());
+    Long time=Main.world.getGuild(getGuildId()).timePutCollector.get(getMap());
     if(time!=null)
       return;
-    World.world.getGuild(getGuildId()).timePutCollector.put(getMap(),getDate());
+    Main.world.getGuild(getGuildId()).timePutCollector.put(getMap(),getDate());
   }
 
   public long getDate()
@@ -473,7 +474,7 @@ public class Collector
 
   public int getMaxPod()
   {
-    return World.world.getGuild(this.getGuildId()).getStats(Constant.STATS_ADD_PODS);
+    return Main.world.getGuild(this.getGuildId()).getStats(Constant.STATS_ADD_PODS);
   }
 
   public boolean addObjet(GameObject newObj)
@@ -499,8 +500,8 @@ public class Collector
   public void delCollector(int id)
   {
     for(GameObject obj : this.objects.values())
-      World.world.removeGameObject(obj.getGuid());
-    World.world.getCollectors().remove(id);
+      Main.world.removeGameObject(obj.getGuid());
+    Main.world.getCollectors().remove(id);
   }
 
   public String getItemCollectorList()
@@ -565,7 +566,7 @@ public class Collector
       {
         //On retire l'item
         this.removeObjet(id);
-        World.world.removeGameObject(CollectorObj.getGuid());
+        Main.world.removeGameObject(CollectorObj.getGuid());
         //On Modifie la quantit� de l'item du sac du joueur
         PersoObj.setQuantity(PersoObj.getQuantity()+CollectorObj.getQuantity());
 
@@ -593,7 +594,7 @@ public class Collector
 
   public boolean addDefenseFight(Player P)
   {
-    if(this.defenserId.size()>=World.world.getMap(getMap()).getMaxTeam())
+    if(this.defenserId.size()>=Main.world.getMap(getMap()).getMaxTeam())
     {
       return false;
     } else

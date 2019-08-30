@@ -14,9 +14,9 @@ import scruffemu.fight.Fighter;
 import scruffemu.fight.spells.Spell.SortStats;
 import scruffemu.fight.traps.Glyph;
 import scruffemu.fight.traps.Trap;
-import scruffemu.game.World;
 import scruffemu.main.Config;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 import scruffemu.utility.TimerWaiterPlus;
 
 public class SpellEffect
@@ -1174,7 +1174,7 @@ public class SpellEffect
         case 79: //+ X chance(%) dommage subis * Y sinon soigné de dommage *Z
           applyEffect_79(cibles,fight);
           break;
-        case 81:// Cura, PDV devueltos
+        case 81://Cura, PDV devueltos
           applyEffect_81(cibles,fight);
           break;
         case 82://Vol de Vie fixe
@@ -1617,7 +1617,7 @@ public class SpellEffect
         case 1026: //+ Damage on hit (Moowolf)
           applyEffect_1026(cibles,fight);
           break;
-        case 1027://Dommage Terre
+        case 1027: //Earth damage 50% chance to hit self
           applyEffect_1027(cibles,fight,isCaC);
           break;
         case 1028: //AP bonus if hitting target
@@ -1659,7 +1659,7 @@ public class SpellEffect
         if(dist<=p.getSize())
           p.onTraped(caster);
       }
-      
+
       SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,4,caster.getId()+"",caster.getId()+","+cell.getId());
     }
   }
@@ -5571,13 +5571,13 @@ public class SpellEffect
     MobGrade MG;
     try
     {
-      MG=World.world.getMonstre(id).getGradeByLevel(level).getCopy();
+      MG=Main.world.getMonstre(id).getGradeByLevel(level).getCopy();
     }
     catch(Exception e1)
     {
       try
       {
-        MG=World.world.getMonstre(id).getRandomGrade().getCopy();
+        MG=Main.world.getMonstre(id).getRandomGrade().getCopy();
       }
       catch(Exception e2)
       {
@@ -5687,7 +5687,7 @@ public class SpellEffect
 
     try
     {
-      mobGrade=World.world.getMonstre(monster).getGradeByLevel(level).getCopy();
+      mobGrade=Main.world.getMonstre(monster).getGradeByLevel(level).getCopy();
     }
     catch(Exception e)
     {
@@ -6181,9 +6181,9 @@ public class SpellEffect
     String[] infos=args.split(";");
     int spellID=Short.parseShort(infos[0]);
     int level=Byte.parseByte(infos[1]);
-    String po=World.world.getSort(spell).getStatsByLevel(spellLvl).getPorteeType();
-    byte size=(byte)World.world.getCryptManager().getIntByHashedValue(po.charAt(1));
-    SortStats TS=World.world.getSort(spellID).getStatsByLevel(level);
+    String po=Main.world.getSort(spell).getStatsByLevel(spellLvl).getPorteeType();
+    byte size=(byte)Main.world.getCryptManager().getIntByHashedValue(po.charAt(1));
+    SortStats TS=Main.world.getSort(spellID).getStatsByLevel(level);
     Trap g=new Trap(fight,caster,cell,size,TS,spell);
     fight.getAllTraps().add(g);
     int unk=g.getColor();
@@ -6210,9 +6210,9 @@ public class SpellEffect
     int spellID=Short.parseShort(infos[0]);
     int level=Byte.parseByte(infos[1]);
     byte duration=Byte.parseByte(infos[3]);
-    String po=World.world.getSort(spell).getStatsByLevel(spellLvl).getPorteeType();
-    byte size=(byte)World.world.getCryptManager().getIntByHashedValue(po.charAt(1));
-    SortStats TS=World.world.getSort(spellID).getStatsByLevel(level);
+    String po=Main.world.getSort(spell).getStatsByLevel(spellLvl).getPorteeType();
+    byte size=(byte)Main.world.getCryptManager().getIntByHashedValue(po.charAt(1));
+    SortStats TS=Main.world.getSort(spellID).getStatsByLevel(level);
     Glyph g=new Glyph(fight,caster,cell,size,TS,duration,spell);
     fight.getAllGlyphs().add(g);
     if(spell==17&&fight.getAllGlyphs().size()>1) //move excursion glyph forward
@@ -6233,9 +6233,9 @@ public class SpellEffect
     int spellID=Short.parseShort(infos[0]);
     int level=Byte.parseByte(infos[1]);
     byte duration=Byte.parseByte(infos[3]);
-    String po=World.world.getSort(spell).getStatsByLevel(spellLvl).getPorteeType();
-    byte size=(byte)World.world.getCryptManager().getIntByHashedValue(po.charAt(1));
-    SortStats TS=World.world.getSort(spellID).getStatsByLevel(level);
+    String po=Main.world.getSort(spell).getStatsByLevel(spellLvl).getPorteeType();
+    byte size=(byte)Main.world.getCryptManager().getIntByHashedValue(po.charAt(1));
+    SortStats TS=Main.world.getSort(spellID).getStatsByLevel(level);
     Glyph g=new Glyph(fight,caster,cell,size,TS,duration,spell);
     fight.getAllGlyphs().add(g);
     int unk=g.getColor();
@@ -6410,11 +6410,24 @@ public class SpellEffect
   {
     Fighter target=null;
 
-    for(Fighter fighter : fight.getDeadList().values())
+    for(int i=fight.getDeadList().size()-1;i>=0;i--)
+    {
+      Fighter fighter=fight.getDeadList().get(i).getRight();
+      if(!fighter.hasLeft()&&fighter.getTeam()==caster.getTeam())
+      {
+        target=fighter;
+        break; 
+      }
+    }
+    
+    if(target==null)
+      return;
+
+    /*for(Fighter fighter : fight.getDeadList().values())
       if(!fighter.hasLeft()&&fighter.getTeam()==caster.getTeam())
         target=fighter;
     if(target==null)
-      return;
+      return;*/
 
     fight.addFighterInTeam(target,target.getTeam());
     target.setIsDead(false);
@@ -6550,7 +6563,7 @@ public class SpellEffect
     {
       e.printStackTrace();
     }
-    Spell hechizo=World.world.getSort(hechizoID);
+    Spell hechizo=Main.world.getSort(hechizoID);
     ArrayList<SpellEffect> EH=hechizo.getStatsByLevel(hechizoNivel).getEffects();
     for(SpellEffect eh : EH)
     {
@@ -6661,7 +6674,7 @@ public class SpellEffect
     int spellID=Short.parseShort(infos[0]);
     int level=Byte.parseByte(infos[1]);
     byte duration=1;
-    SortStats TS=World.world.getSort(spellID).getStatsByLevel(level);
+    SortStats TS=Main.world.getSort(spellID).getStatsByLevel(level);
     GameCase celll=null;
     int casenbr=0;
     boolean quatorze=false;
@@ -6720,7 +6733,7 @@ public class SpellEffect
     int spellID=Short.parseShort(infos[0]);
     int level=Byte.parseByte(infos[1]);
     byte duration=1;
-    SortStats TS=World.world.getSort(spellID).getStatsByLevel(level);
+    SortStats TS=Main.world.getSort(spellID).getStatsByLevel(level);
     GameCase celll=null;
     int casenbr=0;
     boolean quatorze=false;
@@ -6764,7 +6777,7 @@ public class SpellEffect
     int spellID=Short.parseShort(infos[0]);
     int level=Byte.parseByte(infos[1]);
     byte duration=100;
-    SortStats TS=World.world.getSort(spellID).getStatsByLevel(level);
+    SortStats TS=Main.world.getSort(spellID).getStatsByLevel(level);
 
     if(cell.isWalkable(true)&&!fight.isOccuped(cell.getId()))
     {
@@ -7559,7 +7572,7 @@ public class SpellEffect
       SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,4,caster.getId()+"",caster.getId()+","+cell.getId());
     }
   }
-  
+
   private ArrayList<Fighter> trierCibles(ArrayList<Fighter> cibles, Fight fight)
   {
     ArrayList<Fighter> array=new ArrayList<>();

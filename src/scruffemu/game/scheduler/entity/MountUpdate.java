@@ -3,8 +3,8 @@ package scruffemu.game.scheduler.entity;
 import scruffemu.area.map.GameMap;
 import scruffemu.entity.mount.Mount;
 import scruffemu.game.Updatable;
-import scruffemu.game.World;
 import scruffemu.main.Config;
+import scruffemu.main.Main;
 
 public class MountUpdate extends Updatable
 {
@@ -21,11 +21,11 @@ public class MountUpdate extends Updatable
       for(String s : Config.getInstance().mountMaps)
       {
         short mapId=(short)Integer.parseInt(s);
-        GameMap map = World.world.getMap(mapId);
+        GameMap map = Main.world.getMap(mapId);
         map.getMountPark().startMoveMounts();
       }
 
-      for(Mount mount : World.world.getMounts().values())
+      for(Mount mount : Main.world.getMounts().values())
       {
         if(mount.getFatigue()<=0)
           continue;

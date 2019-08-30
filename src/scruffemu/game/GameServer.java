@@ -80,7 +80,7 @@ public class GameServer
   public int getPlayersNumberByIp()
   {
     ArrayList<String> IPs=new ArrayList<String>();
-    for(Player player : World.world.getOnlinePlayers())
+    for(Player player : Main.world.getOnlinePlayers())
       if(player.getGameClient()!=null)
       {
         boolean same=false;
@@ -123,9 +123,19 @@ public class GameServer
     Main.logger.warn("Unexpected behaviour detected");
   }
 
+  public void kickAll()
+  {
+    for(Player player : Main.world.getOnlinePlayers())
+      if(player!=null&&player.getGameClient()!=null)
+      {
+        player.send("M04");
+        player.getGameClient().disconnectRestart();
+      }
+  }
+
   public void kickAll(boolean kickGm)
   {
-    for(Player player : World.world.getOnlinePlayers())
+    for(Player player : Main.world.getOnlinePlayers())
     {
       if(player!=null&&player.getGameClient()!=null)
       {
@@ -149,6 +159,6 @@ public class GameServer
 
   public void setSessions(int sessions)
   {
-    this.sessions = sessions;
+    this.sessions=sessions;
   }
 }

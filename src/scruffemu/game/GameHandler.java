@@ -5,8 +5,6 @@ import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import scruffemu.game.GameClient;
 import scruffemu.game.filter.PacketFilter;
-import scruffemu.game.World;
-
 import scruffemu.main.Config;
 import scruffemu.main.Main;
 
@@ -25,7 +23,7 @@ public class GameHandler implements IoHandler
     }
     else
     {
-      World.world.logger.info("Session "+arg0.getId()+" created");
+      Main.world.logger.info("Session "+arg0.getId()+" created");
 
       arg0.setAttachment(new GameClient(arg0));
       Main.gameServer.setSessions(Main.gameServer.getSessions()+1);
@@ -42,7 +40,7 @@ public class GameHandler implements IoHandler
 
     if(Config.getInstance().encryptPackets&&!packet.startsWith("AT")&&!packet.startsWith("Ak"))
     {
-      packet=World.world.getCryptManager().decryptMessage(packet,client.getPreparedKeys());
+      packet=Main.world.getCryptManager().decryptMessage(packet,client.getPreparedKeys());
       if(packet!=null)
         packet=packet.replace("\n","");
       else
@@ -55,7 +53,7 @@ public class GameHandler implements IoHandler
     {
       client.parsePacket(str);
       if(Config.getInstance().debugMode)
-        World.world.logger.trace(" <-- "+str);
+        Main.world.logger.trace(" <-- "+str);
     }
   }
 
@@ -66,7 +64,7 @@ public class GameHandler implements IoHandler
     GameClient client=(GameClient)arg0.getAttachment();
     if(client!=null)
       client.disconnect();
-    World.world.logger.info("Session "+arg0.getId()+" closed");
+    Main.world.logger.info("Session "+arg0.getId()+" closed");
     Main.gameServer.setSessions(Main.gameServer.getSessions()-1);
     Main.refreshTitle();
   }
@@ -79,7 +77,7 @@ public class GameHandler implements IoHandler
     if(arg1.getMessage()!=null&&(arg1 instanceof org.apache.mina.filter.codec.RecoverableProtocolDecoderException||arg1.getMessage().startsWith("Une connexion ")||arg1.getMessage().startsWith("Connection reset by peer")||arg1.getMessage().startsWith("Connection timed out")))
       return;
     arg1.printStackTrace();
-    World.world.logger.warn("Exception connexion client : "+arg1.getMessage());
+    Main.world.logger.warn("Exception connexion client : "+arg1.getMessage());
     this.kick(arg0);
   }
 
@@ -93,11 +91,11 @@ public class GameHandler implements IoHandler
     {
       String packet=(String)arg1;
       if(Config.getInstance().encryptPackets&&!packet.startsWith("AT")&&!packet.startsWith("HG"))
-        packet=World.world.getCryptManager().decryptMessage(packet,client.getPreparedKeys()).replace("\n","");
+        packet=Main.world.getCryptManager().decryptMessage(packet,client.getPreparedKeys()).replace("\n","");
       if(packet.startsWith("am"))
         return;
       if(Config.getInstance().debugMode)
-        World.world.logger.trace(" --> "+packet);
+        Main.world.logger.trace(" --> "+packet);
     }
   }
 
@@ -110,13 +108,13 @@ public class GameHandler implements IoHandler
   @Override
   public void sessionIdle(IoSession arg0, IdleStatus arg1) throws Exception
   {
-    World.world.logger.info("Session "+arg0.getId()+" idle");
+    Main.world.logger.info("Session "+arg0.getId()+" idle");
   }
 
   @Override
   public void sessionOpened(IoSession arg0) throws Exception
   {
-    World.world.logger.info("Session "+arg0.getId()+" opened");
+    Main.world.logger.info("Session "+arg0.getId()+" opened");
   }
 
   @SuppressWarnings("deprecation")

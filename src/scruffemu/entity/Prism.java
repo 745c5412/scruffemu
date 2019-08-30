@@ -8,8 +8,8 @@ import scruffemu.client.other.Stats;
 import scruffemu.common.SocketManager;
 import scruffemu.fight.Fight;
 import scruffemu.fight.Fighter;
-import scruffemu.game.World;
 import scruffemu.main.Constant;
+import scruffemu.main.Main;
 
 import java.util.HashMap;
 
@@ -58,14 +58,14 @@ public class Prism
 
   public static void parseAttack(Player perso)
   {
-    for(Prism Prisme : World.world.AllPrisme())
+    for(Prism Prisme : Main.world.AllPrisme())
       if((Prisme.inFight==0||Prisme.inFight==-2)&&perso.get_align()==Prisme.getAlignement())
         SocketManager.SEND_Cp_INFO_ATTAQUANT_PRISME(perso,attackerOfPrisme(Prisme.id,Prisme.Map,Prisme.fightId));
   }
 
   public static void parseDefense(Player perso)
   {
-    for(Prism Prisme : World.world.AllPrisme())
+    for(Prism Prisme : Main.world.AllPrisme())
       if((Prisme.inFight==0||Prisme.inFight==-2)&&perso.get_align()==Prisme.getAlignement())
         SocketManager.SEND_CP_INFO_DEFENSEURS_PRISME(perso,defenderOfPrisme(Prisme.id,Prisme.Map,Prisme.fightId));
   }
@@ -75,7 +75,7 @@ public class Prism
   {
     StringBuilder str=new StringBuilder("+");
     str.append(Integer.toString(id,36));
-    GameMap gameMap=World.world.getMap(MapId);
+    GameMap gameMap=Main.world.getMap(MapId);
     if(gameMap!=null)
     {
       for(Fight fight : gameMap.getFights())
@@ -104,7 +104,7 @@ public class Prism
     StringBuilder str=new StringBuilder("+");
     String stra;
     str.append(Integer.toString(id,36));
-    GameMap gameMap=World.world.getMap(MapId);
+    GameMap gameMap=Main.world.getMap(MapId);
     if(gameMap!=null)
     {
       for(Fight fight : gameMap.getFights())
@@ -212,7 +212,7 @@ public class Prism
     int g=1;
     for(int n=1;n<=10;n++)
     {
-      if(this.honor<World.world.getExpLevel(n).pvp)
+      if(this.honor<Main.world.getExpLevel(n).pvp)
       {
         g=n-1;
         break;
@@ -273,25 +273,25 @@ public class Prism
 
   public int getX()
   {
-    GameMap Map=World.world.getMap(this.Map);
+    GameMap Map=Main.world.getMap(this.Map);
     return Map.getX();
   }
 
   public int getY()
   {
-    GameMap Map=World.world.getMap(this.Map);
+    GameMap Map=Main.world.getMap(this.Map);
     return Map.getY();
   }
 
   public SubArea getSubArea()
   {
-    GameMap Map=World.world.getMap(this.Map);
+    GameMap Map=Main.world.getMap(this.Map);
     return Map.getSubArea();
   }
 
   public Area getArea()
   {
-    GameMap Map=World.world.getMap(this.Map);
+    GameMap Map=Main.world.getMap(this.Map);
     return Map.getSubArea().getArea();
   }
 
