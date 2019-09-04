@@ -13,6 +13,7 @@ import scruffemu.object.GameObject;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Collector
 {
@@ -33,10 +34,10 @@ public class Collector
   //Timer
   private long timeTurn=45000;
   //Les logs
-  private java.util.Map<Integer, GameObject> logObjects=new HashMap<Integer, GameObject>();
-  private java.util.Map<Integer, GameObject> objects=new HashMap<Integer, GameObject>();
+  private Map<Integer, GameObject> logObjects=new HashMap<Integer, GameObject>();
+  private Map<Integer, GameObject> objects=new HashMap<Integer, GameObject>();
   //La d�fense
-  private java.util.Map<Integer, Player> defenserId=new HashMap<>();
+  private Map<Integer, Player> defenserId=new HashMap<>();
 
   public Collector(int id, short map, int cell, byte orientation, int aGuildID, short N1, short N2, Player poseur, long date, String items, long kamas, long xp)
   {
@@ -74,7 +75,7 @@ public class Collector
     StringBuilder sock=new StringBuilder();
     sock.append("GM|");
     boolean isFirst=true;
-    for(java.util.Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
+    for(Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
     {
       Collector c=Collector.getValue();
       if(c==null)
@@ -131,7 +132,7 @@ public class Collector
     // date quand on pose
     StringBuilder packet=new StringBuilder();
     boolean isFirst=true;
-    for(java.util.Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
+    for(Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
     {
       if(Collector.getValue().getGuildId()==GuildID)
       {
@@ -183,7 +184,8 @@ public class Collector
           {
             packet.append("45000");//TimerActuel
             packet.append(";");
-          } else
+          }
+          else
           {
             packet.append(Collector.getValue().getTurnTimer());//TimerActuel si combat
             packet.append(";");
@@ -197,7 +199,8 @@ public class Collector
             numcase=7;
           packet.append(numcase);//Nombre de place maximum : En fonction de la map moins celle du Collector
           packet.append(";");
-        } else
+        }
+        else
         {
           packet.append("0;");
           packet.append("45000;");
@@ -215,7 +218,7 @@ public class Collector
 
   public static int getCollectorByGuildId(int id)
   {
-    for(java.util.Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
+    for(Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
       if(Collector.getValue().getMap()==id)
         return Collector.getValue().getGuildId();
     return 0;
@@ -223,7 +226,7 @@ public class Collector
 
   public static Collector getCollectorByMapId(short id)
   {
-    for(java.util.Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
+    for(Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
       if(Collector.getValue().getMap()==id)
         return Main.world.getCollectors().get(Collector.getValue().getId());
     return null;
@@ -232,7 +235,7 @@ public class Collector
   public static int countCollectorGuild(int GuildID)
   {
     int i=0;
-    for(java.util.Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
+    for(Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
       if(Collector.getValue().getGuildId()==GuildID)
         i++;
     return i;
@@ -240,14 +243,14 @@ public class Collector
 
   public static void parseAttaque(Player perso, int guildID)
   {
-    for(java.util.Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
+    for(Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
       if(Collector.getValue().getInFight()>0&&Collector.getValue().getGuildId()==guildID)
         SocketManager.GAME_SEND_gITp_PACKET(perso,parseAttaqueToGuild(Collector.getValue().getId(),Collector.getValue().getMap(),Collector.getValue().get_inFightID()));
   }
 
   public static void parseDefense(Player perso, int guildID)
   {
-    for(java.util.Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
+    for(Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
       if(Collector.getValue().getInFight()>0&&Collector.getValue().getGuildId()==guildID)
         SocketManager.GAME_SEND_gITP_PACKET(perso,parseDefenseToGuild(Collector.getValue()));
   }
@@ -296,7 +299,7 @@ public class Collector
 
   public static void removeCollector(int GuildID)
   {
-    for(java.util.Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
+    for(Map.Entry<Integer, Collector> Collector : Main.world.getCollectors().entrySet())
     {
       if(Collector.getValue().getGuildId()==GuildID)
       {
@@ -453,7 +456,7 @@ public class Collector
     return str.toString();
   }
 
-  public java.util.Map<Integer, GameObject> getOjects()
+  public Map<Integer, GameObject> getOjects()
   {
     return this.objects;
   }
@@ -479,7 +482,7 @@ public class Collector
 
   public boolean addObjet(GameObject newObj)
   {
-    for(java.util.Map.Entry<Integer, GameObject> entry : this.objects.entrySet())
+    for(Map.Entry<Integer, GameObject> entry : this.objects.entrySet())
     {
       GameObject obj=entry.getValue();
       if(ConditionParser.stackIfSimilar(obj,newObj,true))
@@ -543,7 +546,8 @@ public class Collector
         //On envoie les packets
         String str="O-"+id;
         SocketManager.GAME_SEND_EsK_PACKET(P,str);
-      } else
+      }
+      else
       //S'il reste des this.objects
       {
         //On cr�e une copy de l'item
@@ -559,7 +563,8 @@ public class Collector
         String str="O+"+CollectorObj.getGuid()+"|"+CollectorObj.getQuantity()+"|"+CollectorObj.getTemplate().getId()+"|"+CollectorObj.parseStatsString();
         SocketManager.GAME_SEND_EsK_PACKET(P,str);
       }
-    } else
+    }
+    else
     {
       //S'il ne reste rien
       if(newQua<=0)
@@ -574,7 +579,8 @@ public class Collector
         SocketManager.GAME_SEND_OBJECT_QUANTITY_PACKET(P,PersoObj);
         String str="O-"+id;
         SocketManager.GAME_SEND_EsK_PACKET(P,str);
-      } else
+      }
+      else
       //S'il reste des this.objects
       {
         //On retire X objet
@@ -597,7 +603,8 @@ public class Collector
     if(this.defenserId.size()>=Main.world.getMap(getMap()).getMaxTeam())
     {
       return false;
-    } else
+    }
+    else
     {
       this.defenserId.put(P.getId(),P);
       return true;
@@ -615,7 +622,7 @@ public class Collector
     this.defenserId.clear();
   }
 
-  public java.util.Map<Integer, Player> getDefenseFight()
+  public Map<Integer, Player> getDefenseFight()
   {
     return this.defenserId;
   }

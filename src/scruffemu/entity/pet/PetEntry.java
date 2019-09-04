@@ -4,6 +4,7 @@ import scruffemu.client.Player;
 import scruffemu.common.SocketManager;
 import scruffemu.database.Database;
 import scruffemu.game.World;
+import scruffemu.job.magus.Rune;
 import scruffemu.main.Constant;
 import scruffemu.main.Main;
 import scruffemu.object.GameObject;
@@ -107,7 +108,11 @@ public class PetEntry
     float cumul=0;
     for(Entry<Integer, Integer> entry : obj.getStats().getMap().entrySet())
       if(entry.getKey()!=Integer.parseInt("320",16)&&entry.getKey()!=Integer.parseInt("326",16)&&entry.getKey()!=Integer.parseInt("328",16)) //textstats of pet
-        cumul+=Constant.getPowerByStatId(entry.getKey(),true)*entry.getValue();
+        if(Rune.getRuneByStatId(Integer.toHexString(entry.getKey()))!=null)
+        {
+          Rune rune=Rune.getRuneByStatId(Integer.toHexString(entry.getKey()));
+          cumul+=rune.getPower()/rune.getStatsAdd()*entry.getValue();
+        }
     return cumul;
   }
 
@@ -355,7 +360,12 @@ public class PetEntry
                 if(pet.getNumbMonster(ent.getKey(),list.getKey())!=0) //Do not eat monsters not in eatable list, divide-by-zero handler
                 {
                   int statsAdd=(int)Math.floor(list.getValue()/pet.getNumbMonster(ent.getKey(),list.getKey()));
-                  float statPower=Constant.getPowerByStatId(ent.getKey(),true);
+                  float statPower=0;
+                  if(Rune.getRuneByStatId(Integer.toHexString(ent.getKey()))!=null)
+                  {
+                    Rune rune=Rune.getRuneByStatId(Integer.toHexString(ent.getKey()));
+                    statPower=rune.getPower()/rune.getStatsAdd();
+                  }
                   int max=(int)Math.floor((this.getIsEupeoh() ? pet.getMax()*1.1 : pet.getMax()));
                   while((max<(getCurrentStatsPoids()+statsAdd*statPower))&&statsAdd!=0)
                   {
@@ -374,7 +384,7 @@ public class PetEntry
                   if(pts+nbr>this.getMaxStat())
                     pts=this.getMaxStat()-nbr;
                   pts+=nbr;
-                  
+
                   obj.getStats().getMap().remove(ent.getKey());
                 }
                 obj.getStats().getMap().put(ent.getKey(),pts);
@@ -403,9 +413,8 @@ public class PetEntry
     if(this.pdv<=0&&obj.getTemplate().getId()==pets.getDeadTemplate())
       return;//Ne le met pas a jour si deja mort
 
-    if(this.lastEatDate+(max*3600000)<System.currentTimeMillis())//Oublier de le nourrir
+    if(this.lastEatDate+(max*3600000)<System.currentTimeMillis()) //Oublier de le nourrir
     {
-      //On calcul le nombre de repas oublier arrondi au sup�rieur :
       int nbrepas=(int)Math.floor((System.currentTimeMillis()-this.lastEatDate)/(max*3600000));
       //Perte corpulence
       this.corpulence=this.corpulence-nbrepas;
@@ -415,13 +424,6 @@ public class PetEntry
         obj.getTxtStat().remove(Constant.STATS_PETS_POIDS);
         obj.getTxtStat().put(Constant.STATS_PETS_POIDS,Integer.toString(this.corpulence));
       }
-      //Perte pdv
-      this.pdv--;
-      obj.getTxtStat().remove(Constant.STATS_PETS_PDV);
-      obj.getTxtStat().put(Constant.STATS_PETS_PDV,Integer.toHexString((this.pdv>0 ? (this.pdv) : 0)));
-      this.lastEatDate=System.currentTimeMillis();
-      obj.getTxtStat().remove(Constant.STATS_PETS_DATE);
-      obj.getTxtStat().put(Constant.STATS_PETS_DATE,this.getLastEatDate()+"");
     }
     else
     {

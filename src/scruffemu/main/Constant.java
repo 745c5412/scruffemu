@@ -33,7 +33,7 @@ public class Constant
   public static final int ETAT_PEUREUX=4;
   public static final int ETAT_DESORIENTE=5;
   public static final int ETAT_ENRACINE=6;
-  public static final int ETAT_PESANTEUR=7;
+  public static final int STATE_GRAVITY=7;
   public static final int ETAT_PORTE=8;
   public static final int ETAT_MOTIV_SYLVESTRE=9;
   public static final int ETAT_APPRIVOISEMENT=10;
@@ -268,7 +268,7 @@ public class Constant
   //GamePlay
   public static final int MAX_EFFECTS_ID=1500;
   //Buff a v�rifier en d�but de tour
-  public static final int[] BEGIN_TURN_BUFF= { 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 108, 787 };
+  public static final int[] BEGIN_TURN_BUFF= { 85, 86, 87, 88, 89, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 108, 787 };
   //Buff des Armes
   public static final int[] ARMES_EFFECT_IDS= { 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 108 };
   //Buff a ne pas booster en cas de CC
@@ -343,16 +343,16 @@ public class Constant
   public static final int STATS_RETDOM=220;
   public static final int STATS_TRAPDOM=225;
   public static final int STATS_TRAPPER=226;
-  public static final int STATS_ADD_R_FEU=240;
-  public static final int STATS_ADD_R_NEU=241;
-  public static final int STATS_ADD_R_TER=242;
-  public static final int STATS_ADD_R_EAU=243;
-  public static final int STATS_ADD_R_AIR=244;
-  public static final int STATS_REM_R_FEU=245;
-  public static final int STATS_REM_R_NEU=246;
-  public static final int STATS_REM_R_TER=247;
-  public static final int STATS_REM_R_EAU=248;
-  public static final int STATS_REM_R_AIR=249;
+  public static final int STATS_ADD_R_TER=240;
+  public static final int STATS_ADD_R_EAU=241;
+  public static final int STATS_ADD_R_AIR=242;
+  public static final int STATS_ADD_R_FEU=243;
+  public static final int STATS_ADD_R_NEU=244;
+  public static final int STATS_REM_R_TER=245;
+  public static final int STATS_REM_R_EAU=246;
+  public static final int STATS_REM_R_AIR=247;
+  public static final int STATS_REM_R_FEU=248;
+  public static final int STATS_REM_R_NEU=249;
   public static final int STATS_ADD_RP_PVP_TER=250;
   public static final int STATS_ADD_RP_PVP_EAU=251;
   public static final int STATS_ADD_RP_PVP_AIR=252;
@@ -368,6 +368,7 @@ public class Constant
   public static final int STATS_ADD_R_PVP_AIR=262;
   public static final int STATS_ADD_R_PVP_FEU=263;
   public static final int STATS_ADD_R_PVP_NEU=264;
+  public static final int STATS_HUNTING=795;
   public static final int STATS_ADD_PUSH=1004;
   public static final int STATS_REM_PUSH=1005;
   public static final int STATS_ADD_R_PUSH=1006;
@@ -4032,62 +4033,6 @@ public class Constant
         break;
     }
     return modifier;
-  }
-
-  public static float getPowerByStatId(int statId, boolean zero)
-  {
-    float statX=1f;
-    if(zero)
-      statX=0f;
-    if(statId==175) //-initiative
-      statX=-0.05f;
-    else if(statId==174) //initiative
-      statX=0.1f;
-    else if(statId==153) //-vita
-      statX=-0.1f;
-    else if(statId==125) //vitality
-      statX=0.2f;
-    else if(statId==159) //-pods
-      statX=-0.25f;
-    else if(statId==158) //pods
-      statX=0.25f;
-    else if(statId==157||statId==155||statId==152||statId==154) //-elemental stats
-      statX=-1f;
-    else if(statId==118||statId==126||statId==119||statId==123) //elemental stats
-      statX=1f;
-    else if(statId==186||statId==246||statId==247||statId==245||statId==248||statId==249||statId==156||statId==177) //-%dmg, -neutral res, -earth res, -fire res, -water res, -air res, -wisdom, -PP
-      statX=-2f;
-    else if(statId==138||statId==226||statId==244||statId==240||statId==243||statId==241||statId==242) //%dmg, %trapdmg, neutral res, earth res, fire res, water res, air res
-      statX=2f;
-    else if(statId==219||statId==215||statId==218||statId==216||statId==217) //-%resist
-      statX=-3f;
-    else if(statId==124||statId==176) //wisdom, PP
-      statX=3f;
-    else if(statId==179||statId==171) //-heal, -crit
-      statX=-5f;
-    else if(statId==225||statId==666) //trap damage, hunting
-      statX=5f;
-    else if(statId==210||statId==211||statId==212||statId==213||statId==214) //%resist
-      statX=6f;
-    else if(statId==178||statId==115||statId==220) //heal, crit, reflect
-      statX=10f;
-    else if(statId==112) //damage
-      statX=20f;
-    else if(statId==116) //-range
-      statX=-25f;
-    else if(statId==182) //summon
-      statX=30;
-    else if(statId==127) //-mp
-      statX=-45;
-    else if(statId==101) //-ap
-      statX=-50;
-    else if(statId==117) //range
-      statX=51;
-    else if(statId==128) //mp
-      statX=90;
-    else if(statId==111) //ap
-      statX=100;
-    return statX;
   }
 
   public static boolean isFecaGlyph(int spellId)

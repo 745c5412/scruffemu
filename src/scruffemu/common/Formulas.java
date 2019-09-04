@@ -607,7 +607,7 @@ public class Formulas
       if(aoeMultiplier<0.7f)
         aoeMultiplier=0.7f;
     }
-    
+
     float trapMultiplier=1f;
     if(isTrap)
       for(SpellEffect SS : target.getBuffsByEffectID(1029))
@@ -719,6 +719,8 @@ public class Formulas
         int niveauMob=caster.getLvl();
         double CalculCoef=((niveauMob*0.5)/100);
         int Multiplicateur=(int)Math.ceil(CalculCoef);
+        if(Multiplicateur>3)
+          Multiplicateur=3;
         return (int)num*Multiplicateur;
       }
     }
@@ -1162,7 +1164,7 @@ public class Formulas
 
   public static float chanceForRuneFormula(float runePower)
   {
-    return (float)((100/runePower*Math.sqrt(10))-2)/100;
+    return (float)((1000/runePower)-9)/100;
   }
 
   public static float itemPowerFormula(float averageItemPower, float itemPower, float runePower, boolean negative)
@@ -1229,7 +1231,7 @@ public class Formulas
     float averageStatPower=averageStat*statPower;
 
     if(negative)
-      averageStatPower=averageStat*(-Constant.getPowerByStatId(Integer.parseInt(Rune.getNegativeStatByRuneStat(rune.getStatId()),16),false));
+      averageStatPower=averageStat*(-rune.getnPower()/rune.getStatsAdd());
 
     float statPowerModifier=statPowerFormula(averageStatPower,itemStatPower,negative);
     if(statPowerModifier<0.17f)

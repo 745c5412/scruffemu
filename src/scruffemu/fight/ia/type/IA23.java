@@ -21,7 +21,7 @@ public class IA23 extends AbstractIA
       Fighter ennemy=Function.getInstance().getNearestFriendNoInvok(this.fight,this.fighter);
 
       if(!Function.getInstance().moveNearIfPossible(this.fight,this.fighter,ennemy))
-        Function.getInstance().HealIfPossible(this.fight,this.fighter,false);
+        Function.getInstance().HealIfPossible(this.fight,this.fighter,false,90);
 
       addNext(this::decrementCount,500);
     } else

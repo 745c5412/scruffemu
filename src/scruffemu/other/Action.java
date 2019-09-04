@@ -176,7 +176,8 @@ public class Action
         if(dopeuls.containsKey((int)mapActuel.getId()))
         {
           IDmob=dopeuls.get((int)mapActuel.getId()).getLeft();
-        } else
+        }
+        else
         {
           SocketManager.GAME_SEND_MESSAGE(player,"Dopple error, please report this on the bug report channel on discord.");
           return true;
@@ -201,7 +202,8 @@ public class Action
           {
             SocketManager.GAME_SEND_MESSAGE(player,"You have to wait at least 24 hours to fight this dopple.");
             return true;
-          } else
+          }
+          else
             player.removeByTemplateID(certificat,1);
         }
         boolean b=true;
@@ -506,6 +508,9 @@ public class Action
         {
           if(client==null)
             return true;
+          if(player.getParty()!=null)
+            if(player.getParty().getMaster()!=null)
+              return true;
           player.setIsOnDialogAction(1);
           int mID=Integer.parseInt(args.split(",")[0]);
           int mapId=Integer.parseInt(args.split(",")[1]);
@@ -1607,7 +1612,7 @@ public class Action
           if(player.hasItemTemplate(42,10))
           {
             player.removeByTemplateID(42,10);
-            SocketManager.GAME_SEND_Im_PACKET(player,"022;"+42+"~"+10);
+            SocketManager.GAME_SEND_Im_PACKET(player,"022;"+10+"~"+42);
             player.modifAlignement((byte)1);
           }
         }
@@ -1616,7 +1621,7 @@ public class Action
           if(player.hasItemTemplate(95,10))
           {
             player.removeByTemplateID(95,10);
-            SocketManager.GAME_SEND_Im_PACKET(player,"022;"+95+"~"+10);
+            SocketManager.GAME_SEND_Im_PACKET(player,"022;"+10+"~"+95);
             player.modifAlignement((byte)2);
           }
         }
@@ -3526,6 +3531,8 @@ public class Action
             player.getItemTemplate(10207).getTxtStat().put(Constant.STATS_NAME_DJ,newStats.toString());
             SocketManager.GAME_SEND_UPDATE_ITEM(player,player.getItemTemplate(10207));
           }
+          else
+            return true;
         }
         else
           return true;

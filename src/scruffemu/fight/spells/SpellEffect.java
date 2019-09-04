@@ -101,7 +101,7 @@ public class SpellEffect
         switch(id)
         {
           case 114: //multiply damage by x
-            if(buff.spell==521) //kitsou ruse
+            if(buff.getSpell()==521) //kitsou ruse
               finalDommage=finalDommage*2;
             break;
           case 138: //% damage
@@ -118,13 +118,17 @@ public class SpellEffect
                 stats=219;
               else if(elementId==Constant.ELEMENT_TERRE)
                 stats=215;
-              int val=target.getBuff(stats).getValue();
-              int turns=target.getBuff(stats).getTurn();
-              int duration=target.getBuff(stats).getDurationFixed();
-              String args=target.getBuff(stats).getArgs();
+              int value=50;
+              int turns=buff.getDuration();
+              int duration=buff.getDuration();
+              String args=buff.getArgs();
               for(int i : Constant.getOppositeStats(stats))
-                target.addBuff(i,val,turns,duration,true,buff.getSpell(),args,caster,true);
-              target.addBuff(stats,val,duration,turns,true,buff.getSpell(),args,caster,true);
+              {
+                target.addBuff(i,value,turns,duration,true,buff.getSpell(),args,caster,true);
+                SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,i,caster.getId()+"",target.getId()+","+value+","+turns);
+              }
+              target.addBuff(stats,value,turns,duration,true,buff.getSpell(),args,caster,true);
+              SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,stats,caster.getId()+"",target.getId()+","+value+","+turns);
             }
             break;
           case 9: //Derobade
@@ -642,7 +646,7 @@ public class SpellEffect
             if(caster.hasBuff(293)||caster.haveState(300))
             {
               if(caster.haveState(300))
-                caster.setState(300,0);
+                caster.setState(300,0,caster.getId());
               for(SpellEffect SE : caster.getBuffsByEffectID(293))
               {
                 if(SE==null)
@@ -732,7 +736,7 @@ public class SpellEffect
             if(caster.hasBuff(293)||caster.haveState(300))
             {
               if(caster.haveState(300))
-                caster.setState(300,0);
+                caster.setState(300,0,caster.getId());
               for(SpellEffect SE : caster.getBuffsByEffectID(293))
               {
                 if(SE==null)
@@ -822,7 +826,7 @@ public class SpellEffect
             if(caster.hasBuff(293)||caster.haveState(300))
             {
               if(caster.haveState(300))
-                caster.setState(300,0);
+                caster.setState(300,0,caster.getId());
               for(SpellEffect SE : caster.getBuffsByEffectID(293))
               {
                 if(SE==null)
@@ -912,7 +916,7 @@ public class SpellEffect
             if(caster.hasBuff(293)||caster.haveState(300))
             {
               if(caster.haveState(300))
-                caster.setState(300,0);
+                caster.setState(300,0,caster.getId());
               for(SpellEffect SE : caster.getBuffsByEffectID(293))
               {
                 if(SE==null)
@@ -1077,10 +1081,7 @@ public class SpellEffect
       this.setEffectID(1003);
       this.setArgs("33;-1;-1;0;0;0d0+33");
     }
-    if((this.effectID>=85&&this.effectID<=89)||(this.effectID>=91&&this.effectID<=100)) //if damage % of vit, lifesteal or damage
-      this.applyToFight(fight,this.caster,targets,true);
-    else
-      this.applyToFight(fight,this.caster,targets,false);
+    this.applyToFight(fight,this.caster,targets,false);
   }
 
   public void applyToFight(Fight fight, Fighter perso, GameCase Cell, ArrayList<Fighter> cibles, boolean aoe, boolean isTrap)
@@ -1554,10 +1555,10 @@ public class SpellEffect
         case 951://Enleve l'Etat X
           applyEffect_951(fight,cibles);
           break;
-        case 1000: //Glyph pair
+        case 1000: //Even Glyph
           applyEffect_1000(fight,cibles);
           break;
-        case 1001: //Glyph impair
+        case 1001: //Odd Glyph
           applyEffect_1001(fight,cibles);
           break;
         case 1002: //Glyph kaskargo
@@ -1901,15 +1902,14 @@ public class SpellEffect
 
     target.getCell().getFighters().clear();
     target.setCell(caster.getCell());
-    target.setState(Constant.ETAT_PORTE,-1); //infinite duration
-    caster.setState(Constant.ETAT_PORTEUR,-1); //infinite duration
+    target.setState(Constant.ETAT_PORTE,-1,caster.getId()); //infinite duration
+    caster.setState(Constant.ETAT_PORTEUR,-1,caster.getId()); //infinite duration
     target.setHoldedBy(caster);
     caster.setIsHolding(target);
     if(target.haveState(Constant.STATE_SOBER))
     {
       target.setHadSober(true);
-      target.setState(Constant.STATE_SOBER,0); //duration 0, remove state
-      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,target.getId()+"",target.getId()+","+Constant.STATE_SOBER+",0");
+      target.setState(Constant.STATE_SOBER,0,caster.getId()); //duration 0, remove state
     }
     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,target.getId()+"",target.getId()+","+Constant.ETAT_PORTE+",1");
     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",caster.getId()+","+Constant.ETAT_PORTEUR+",1");
@@ -1930,21 +1930,19 @@ public class SpellEffect
       caster.getCell().removeFighter(target);
       target.setCell(cell);
       target.getCell().addFighter(target);
-      target.setState(Constant.ETAT_PORTE,0); //duration 0, remove state
+      target.setState(Constant.ETAT_PORTE,0,caster.getId()); //duration 0, remove state
       target.setHoldedBy(null);
-      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,new StringBuilder(String.valueOf(caster.getId())).toString(),String.valueOf(target.getId())+","+Constant.ETAT_PORTE+",0");
       if(target.getHadSober()==true)
       {
         target.setHadSober(false);
-        target.setState(Constant.STATE_SOBER,-1); //infinite duration
+        target.setState(Constant.STATE_SOBER,-1,caster.getId()); //infinite duration
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,target.getId()+"",target.getId()+","+Constant.STATE_SOBER+",1");
       }
     }
 
-    caster.setState(Constant.ETAT_PORTEUR,0); //duration 0, remove state
+    caster.setState(Constant.ETAT_PORTEUR,0,caster.getId()); //duration 0, remove state
     caster.setIsHolding(null);
     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,51,new StringBuilder(String.valueOf(this.caster.getId())).toString(),new StringBuilder(String.valueOf(this.cell.getId())).toString());
-    SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,new StringBuilder(String.valueOf(this.caster.getId())).toString(),String.valueOf(this.caster.getId())+","+Constant.ETAT_PORTEUR+",0");
     this.checkTraps(fight,target);
     fight.setCurAction("");
   }
@@ -3587,7 +3585,7 @@ public class SpellEffect
         if(caster.hasBuff(293)||caster.haveState(300))
         {
           if(caster.haveState(300))
-            caster.setState(300,0);
+            caster.setState(300,0,caster.getId());
           for(SpellEffect SE : caster.getBuffsByEffectID(293))
           {
             if(SE==null)
@@ -3912,7 +3910,7 @@ public class SpellEffect
         }
       }
     }
-    else if(turns==0)
+    else if(turns<=0)
     {
       for(Fighter target : cibles)
       {
@@ -4110,7 +4108,7 @@ public class SpellEffect
         }
         if(spell==2000&&caster.isInvocation())
         {
-          target.setState(7,1);
+          target.setState(7,1,caster.getId());
           SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+7+",1");
           target.addBuff(950,1,1,1,false,spell,args,target,true);
         }
@@ -4452,31 +4450,24 @@ public class SpellEffect
       return;
     }
     boolean repetibles=false;
-    int lostPA=0;
+    int gainedAP=0;
     for(Fighter target : cibles)
     {
-      if(spell==89&&target.getTeam()!=caster.getTeam())
-      {
-        continue;
-      }
       if(spell==101&&target!=caster)
-      {
         continue;
-      }
       if(spell==115)
-      {// odorat
+      { // odorat
         if(!repetibles)
         {
-          lostPA=Formulas.getRandomJet(jet);
-          if(lostPA==-1)
+          gainedAP=Formulas.getRandomJet(jet);
+          if(gainedAP==-1)
             continue;
-          value=lostPA;
         }
-        target.addBuff(effectID,value,turns,turns,true,spell,args,caster,false);
+        target.addBuff(effectID,gainedAP,turns,turns,true,spell,args,caster,false);
+        if(target.canPlay())
+          target.setCurPa(fight,gainedAP);
         repetibles=true;
-        if(target.canPlay()&&target==caster)
-          target.setCurPa(fight,val);
-        SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,effectID,caster.getId()+"",target.getId()+","+val+","+turns);
+        SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,effectID,caster.getId()+"",target.getId()+","+gainedAP+","+turns);
         continue;
       }
 
@@ -4487,7 +4478,7 @@ public class SpellEffect
           continue;
       target.addBuff(effectID,val,turns,1,true,spell,args,caster,false);
       //Gain de PA pendant le tour de jeu
-      if(target.canPlay()&&target==caster)
+      if(target.canPlay())
         target.setCurPa(fight,val);
       SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,effectID,caster.getId()+"",target.getId()+","+val+","+turns);
     }
@@ -4793,23 +4784,22 @@ public class SpellEffect
       return;
     }
     boolean repetibles=false;
-    int lostPM=0;
+    int gainedMP=0;
     for(Fighter target : cibles)
     {
       if(spell==115)
-      {// odorat
+      { // odorat
         if(!repetibles)
         {
-          lostPM=Formulas.getRandomJet(jet);
-          if(lostPM==-1)
+          gainedMP=Formulas.getRandomJet(jet);
+          if(gainedMP==-1)
             continue;
-          value=lostPM;
         }
-        target.addBuff(effectID,value,turns,turns,true,spell,args,caster,false);
-        repetibles=true;
+        target.addBuff(effectID,gainedMP,turns,turns,true,spell,args,caster,false);
         if(target.canPlay()&&target==caster)
-          target.setCurPm(fight,val);
-        SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,effectID,caster.getId()+"",target.getId()+","+val+","+turns);
+          target.setCurPm(fight,gainedMP);
+        repetibles=true;
+        SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,effectID,caster.getId()+"",target.getId()+","+gainedMP+","+turns);
         continue;
       }
       else if(spell==521)// ruse kistoune
@@ -4882,9 +4872,9 @@ public class SpellEffect
       SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,132,caster.getId()+"",target.getId()+"");
       if(target.getPersonnage()!=null&&!target.hasLeft())
         SocketManager.GAME_SEND_STATS_PACKET(target.getPersonnage());
-      target.debuff();
       if(target.isHide())
         target.unHide(spell);
+      target.debuff();
     }
   }
 
@@ -5101,13 +5091,19 @@ public class SpellEffect
       if(target==fight.getFighterByOrdreJeu())
       {
         if(spell==72)
-          target.lastInvisMP=target.getCurPm(fight)+1;
+        {
+          if(spellLvl==6)
+            target.lastInvisMP=target.getCurPm(fight)+2;
+          else
+            target.lastInvisMP=target.getCurPm(fight)+1;
+        }
         else
           target.lastInvisMP=target.getCurPm(fight);
       }
       else
         target.lastInvisMP=0;
       target.addBuff(effectID,0,turns,1,true,spell,args,caster,true);
+      
       SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,effectID,caster.getId()+"",target.getId()+","+(turns-1));
     }
   }
@@ -5332,16 +5328,20 @@ public class SpellEffect
           cible.addBuff(effectID,value,turns,turns,true,spell,args,caster,false);
         }
         else if(spell==115)
-        {// Odorat
+        { // Odorat
           if(!repetibles)
           {
             lostPA=Formulas.getRandomJet(jet);
             if(lostPA==-1)
               continue;
-            value=lostPA;
           }
-          cible.addBuff(effectID,value,turns,turns,true,spell,args,caster,false);
+          cible.addBuff(effectID,lostPA,turns,turns,true,spell,args,caster,false);
+
+          if(cible.canPlay()&&cible==caster)
+            cible.setCurPa(fight,-lostPA);
           repetibles=true;
+          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,effectID,caster.getId()+"",cible.getId()+",-"+lostPA+","+turns);
+          continue;
         }
         else
         {
@@ -5355,6 +5355,9 @@ public class SpellEffect
 
         if(cible.getMob()!=null)
           verifmobs(fight,cible,168,0);
+
+        if(cible.canPlay()&&cible==caster)
+          cible.setCurPa(fight,-lostPA);
       }
     }
   }
@@ -5392,20 +5395,24 @@ public class SpellEffect
         if(cible.isDead())
           continue;
         if(spell==192)
-        {// zarza tranquilizadora
+        {
           cible.addBuff(effectID,value,turns,0,true,spell,args,caster,false);
         }
-        else if(spell==115)
-        {// odorat
+        else if(spell==115) //smell
+        {
           if(!repetibles)
           {
             lostPM=Formulas.getRandomJet(jet);
             if(lostPM==-1)
               continue;
-            value=lostPM;
           }
-          cible.addBuff(effectID,value,turns,turns,true,spell,args,caster,false);
+          cible.addBuff(effectID,lostPM,turns,turns,true,spell,args,caster,false);
+          if(cible.canPlay()&&cible==caster)
+            cible.setCurPm(fight,-lostPM);
+          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,effectID,caster.getId()+"",cible.getId()+",-"+lostPM+","+turns);
           repetibles=true;
+
+          continue;
         }
         else if(spell==197)
         {// portencia sivelstre
@@ -5423,6 +5430,8 @@ public class SpellEffect
           SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,169,cible.getId()+"",cible.getId()+",-"+value);
         if(cible.getMob()!=null)
           verifmobs(fight,cible,168,0);
+        if(cible.canPlay()&&cible==caster)
+          cible.setCurPm(fight,-lostPM);
       }
     }
   }
@@ -5733,23 +5742,20 @@ public class SpellEffect
 
   private void applyEffect_202(Fight fight, ArrayList<Fighter> cibles)
   {
-    if(spell==113||spell==64)
+    // unhide des personnages
+    for(Fighter target : cibles)
     {
-      // unhide des personnages
-      for(Fighter target : cibles)
+      if(target.isHide())
       {
-        if(target.isHide())
-        {
-          if(target!=caster)
-            target.unHide(spell);
-        }
+        if(target!=caster)
+          target.unHide(spell);
       }
-      // unhide des pi�ges
-      for(Trap p : fight.getAllTraps())
-      {
-        p.setIsUnHide(caster);
-        p.appear(caster);
-      }
+    }
+    // unhide des pi�ges
+    for(Trap p : fight.getAllTraps())
+    {
+      p.setIsUnHide(caster);
+      p.appear(caster);
     }
   }
 
@@ -6135,7 +6141,7 @@ public class SpellEffect
   private void applyEffect_293(Fight fight)
   {
     caster.addBuff(effectID,value,turns,1,false,spell,args,caster,false);
-    caster.setState(300,turns+1);
+    caster.setState(300,turns+1,caster.getId());
   }
 
   private void applyEffect_320(Fight fight, ArrayList<Fighter> cibles)
@@ -6416,23 +6422,18 @@ public class SpellEffect
       if(!fighter.hasLeft()&&fighter.getTeam()==caster.getTeam())
       {
         target=fighter;
-        break; 
+        break;
       }
     }
-    
+
     if(target==null)
       return;
-
-    /*for(Fighter fighter : fight.getDeadList().values())
-      if(!fighter.hasLeft()&&fighter.getTeam()==caster.getTeam())
-        target=fighter;
-    if(target==null)
-      return;*/
 
     fight.addFighterInTeam(target,target.getTeam());
     target.setIsDead(false);
     target.getFightBuff().clear();
-    if(target.isInvocation())
+    target.setInvocator(caster);
+    if(target.isInvocation()&&target.getPersonnage()==null)
       fight.getOrderPlaying().add((fight.getOrderPlaying().indexOf(target.getInvocator())+1),target);
 
     target.setCell(cell);
@@ -6440,8 +6441,8 @@ public class SpellEffect
 
     target.fullPdv();
     int percent=(100-value)*target.getPdvMax()/100;
-    target.removePdv(caster,percent);
-    target.removePdvMax((int)Math.floor(percent*(Config.getInstance().erosion+caster.getTotalStats().getEffect(Constant.STATS_ADD_ERO)-caster.getTotalStats().getEffect(Constant.STATS_REM_ERO)-target.getTotalStats().getEffect(Constant.STATS_ADD_R_ERO)+target.getTotalStats().getEffect(Constant.STATS_REM_R_ERO)))/100);
+    target.removePdv(target,percent);
+    target.removePdvMax((int)Math.floor(percent*(Config.getInstance().erosion+target.getTotalStats().getEffect(Constant.STATS_ADD_ERO)-target.getTotalStats().getEffect(Constant.STATS_REM_ERO)-target.getTotalStats().getEffect(Constant.STATS_ADD_R_ERO)+target.getTotalStats().getEffect(Constant.STATS_REM_R_ERO)))/100);
     String gm=target.getGmPacket('+',true).substring(3);
     String gtl=fight.getGTL();
     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,181,target.getId()+"",gm);
@@ -6601,7 +6602,7 @@ public class SpellEffect
       for(Entry<Integer, Fighter> entry : fight.getTeam1().entrySet())
       {
         Fighter mob=entry.getValue();
-        mob.setState(id,turns);
+        mob.setState(id,turns,caster.getId());
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",mob.getId()+","+id+",1");
         mob.addBuff(effectID,value,turns,1,false,spell,args,mob,true);
       }
@@ -6619,17 +6620,14 @@ public class SpellEffect
       }
       if(turns<=0)
       {
-        target.setState(id,turns);
+        target.setState(id,turns,caster.getId());
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+id+",1");
       }
       else
       {
         if(id==Constant.STATE_DRUNK)
-        {
-          target.setState(Constant.STATE_SOBER,0); //duration 0, remove state
-          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,target.getId()+"",target.getId()+","+Constant.STATE_SOBER+",0");
-        }
-        target.setState(id,turns);
+          target.setState(Constant.STATE_SOBER,0,caster.getId()); //duration 0, remove state
+        target.setState(id,turns,caster.getId());
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+id+",1");
         if(spell==20&&caster==target)
           turns--;
@@ -6659,12 +6657,11 @@ public class SpellEffect
 
       if(target.haveState(Constant.STATE_DRUNK))
       {
-        target.setState(Constant.STATE_SOBER,-1); //infinite duration
+        target.setState(Constant.STATE_SOBER,-1,caster.getId()); //infinite duration
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,target.getId()+"",target.getId()+","+Constant.STATE_SOBER+",1");
       }
 
-      target.setState(id,0);
-      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+id+",0");
+      target.setState(id,0,caster.getId());
     }
   }
 
@@ -6675,55 +6672,65 @@ public class SpellEffect
     int level=Byte.parseByte(infos[1]);
     byte duration=1;
     SortStats TS=Main.world.getSort(spellID).getStatsByLevel(level);
-    GameCase celll=null;
-    int casenbr=0;
-    boolean quatorze=false;
+
+    GameCase baseCell=this.caster.getCell();
+    GameCase UnsafeBorderCell=fight.getMap().getCase(baseCell.getId()%(2*fight.getMap().getW()-1));
+    int last=fight.getMap().getW();
+    int currentCell=UnsafeBorderCell.getId();
+    int loops=0;
+    int curloop=0;
+    boolean fifteen=true;
+    boolean fourteen=false;
+    boolean stop=false;
+    while(!stop)
+    {
+      if(currentCell<=fight.getMap().getW())
+        stop=true;
+      currentCell-=last;
+
+      if(last==fight.getMap().getW()-1)
+        last=fight.getMap().getW();
+      if(last==fight.getMap().getW())
+        last=fight.getMap().getW()-1;
+      if(!stop)
+        loops++;
+    }
+
     for(GameCase entry : fight.getMap().getCases())
     {
-      casenbr=casenbr+1;
+      curloop++;
+      if(fifteen&&curloop==fight.getMap().getW())
+      {
+        fourteen=true;
+        fifteen=false;
+        curloop=0;
+      }
+      else if(fourteen&&curloop==fight.getMap().getW()-1)
+      {
+        fourteen=false;
+        fifteen=true;
+        curloop=0;
+      }
 
-      if(casenbr==14&&quatorze)
+      if(entry.isWalkable(false))
       {
-        quatorze=false;
-        casenbr=0;
-      }
-      if(casenbr==15)
-      {
-        quatorze=true;
-        casenbr=0;
-      }
-      if(quatorze)
-        continue;
-      celll=entry;
-      if(celll==null)
-        continue;
-      switch(celll.getId())
-      {
-        case 28:
-        case 57:
-        case 86:
-        case 115:
-        case 144:
-        case 173:
-        case 202:
-        case 231:
-        case 260:
-        case 289:
-        case 318:
-        case 347:
-        case 376:
-        case 405:
-        case 434:
-        case 463:
-          continue;
-      }
-      if(!celll.isWalkable(false))
-        continue;
-      Glyph g=new Glyph(fight,caster,celll,(byte)0,TS,duration,spell);
-      fight.getAllGlyphs().add(g);
+        if(loops%2==0&&fifteen) //if even
+        {
+          Glyph g=new Glyph(fight,caster,entry,(byte)0,TS,duration,spell);
+          fight.getAllGlyphs().add(g);
 
-      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,999,caster.getId()+"","GDZ+"+celll.getId()+";"+0+";"+g.getColor());
-      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,999,caster.getId()+"","GDC"+celll.getId()+";Haaaaaaaaa3005;");
+          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,999,caster.getId()+"","GDZ+"+entry.getId()+";"+0+";"+g.getColor());
+          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,999,caster.getId()+"","GDC"+entry.getId()+";Haaaaaaaaa3005;");
+        }
+        else if(loops%2!=0&&fourteen) //if odd
+        {
+          Glyph g=new Glyph(fight,caster,entry,(byte)0,TS,duration,spell);
+          fight.getAllGlyphs().add(g);
+
+          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,999,caster.getId()+"","GDZ+"+entry.getId()+";"+0+";"+g.getColor());
+          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,999,caster.getId()+"","GDC"+entry.getId()+";Haaaaaaaaa3005;");
+        }
+      }
     }
   }
 
@@ -6734,40 +6741,65 @@ public class SpellEffect
     int level=Byte.parseByte(infos[1]);
     byte duration=1;
     SortStats TS=Main.world.getSort(spellID).getStatsByLevel(level);
-    GameCase celll=null;
-    int casenbr=0;
-    boolean quatorze=false;
+
+    GameCase baseCell=this.caster.getCell();
+    GameCase UnsafeBorderCell=fight.getMap().getCase(baseCell.getId()%(2*fight.getMap().getW()-1));
+    int last=fight.getMap().getW();
+    int currentCell=UnsafeBorderCell.getId();
+    int loops=0;
+    int curloop=0;
+    boolean fifteen=true;
+    boolean fourteen=false;
+    boolean stop=false;
+    while(!stop)
+    {
+      if(currentCell<=fight.getMap().getW())
+        stop=true;
+      currentCell-=last;
+
+      if(last==fight.getMap().getW()-1)
+        last=fight.getMap().getW();
+      if(last==fight.getMap().getW())
+        last=fight.getMap().getW()-1;
+      if(!stop)
+        loops++;
+    }
+
     for(GameCase entry : fight.getMap().getCases())
     {
-      casenbr=casenbr+1;
+      curloop++;
+      if(fifteen&&curloop==fight.getMap().getW())
+      {
+        fourteen=true;
+        fifteen=false;
+        curloop=0;
+      }
+      else if(fourteen&&curloop==fight.getMap().getW()-1)
+      {
+        fourteen=false;
+        fifteen=true;
+        curloop=0;
+      }
 
-      if(casenbr==14&&quatorze==true)
+      if(entry.isWalkable(false))
       {
-        quatorze=false;
-        casenbr=0;
+        if(loops%2==0&&fourteen) //if even
+        {
+          Glyph g=new Glyph(fight,caster,entry,(byte)0,TS,duration,spell);
+          fight.getAllGlyphs().add(g);
+
+          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,999,caster.getId()+"","GDZ+"+entry.getId()+";"+0+";"+g.getColor());
+          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,999,caster.getId()+"","GDC"+entry.getId()+";Haaaaaaaaa3005;");
+        }
+        else if(loops%2!=0&&fifteen) //if odd
+        {
+          Glyph g=new Glyph(fight,caster,entry,(byte)0,TS,duration,spell);
+          fight.getAllGlyphs().add(g);
+
+          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,999,caster.getId()+"","GDZ+"+entry.getId()+";"+0+";"+g.getColor());
+          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,999,caster.getId()+"","GDC"+entry.getId()+";Haaaaaaaaa3005;");
+        }
       }
-      if(casenbr==15)
-      {
-        quatorze=true;
-        casenbr=0;
-      }
-      if(quatorze==false)
-        continue;
-      celll=entry;
-      if(celll==null)
-        continue;
-      if(!celll.isWalkable(false))
-        continue;
-      Glyph g=new Glyph(fight,caster,celll,(byte)0,TS,duration,spell);
-      fight.getAllGlyphs().add(g);
-      int unk=g.getColor();
-      String str="GDZ+"+celll.getId()+";"+0+";"+unk;
-      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,999,caster.getId()+"",str);
-      str="GDC"+celll.getId()+";Haaaaaaaaa3005;";
-      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,999,caster.getId()+"",str);
-      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,999,caster.getId()+"",str);
-      str="GDC"+celll.getId()+";Haaaaaaaaa3005;";
-      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,999,caster.getId()+"",str);
     }
   }
 
@@ -7128,7 +7160,7 @@ public class SpellEffect
       if(caster.hasBuff(293)||caster.haveState(300))
       {
         if(caster.haveState(300))
-          caster.setState(300,0);
+          caster.setState(300,0,caster.getId());
         for(SpellEffect SE : caster.getBuffsByEffectID(293))
         {
           if(SE==null)
@@ -7440,7 +7472,7 @@ public class SpellEffect
         if(caster.hasBuff(293)||caster.haveState(300))
         {
           if(caster.haveState(300))
-            caster.setState(300,0);
+            caster.setState(300,0,caster.getId());
           for(SpellEffect SE : caster.getBuffsByEffectID(293))
           {
             if(SE==null)
@@ -7535,9 +7567,9 @@ public class SpellEffect
   private void applyEffect_1030(ArrayList<Fighter> cibles, Fight fight)
   {
     if(turns>1)
-      return; //Olol bondir 3 tours apres ?
+      return;
 
-    if(cell.isWalkable(true)&&!fight.isOccuped(cell.getId()))//Si la case est prise, on va �viter que les joueurs se montent dessus *-*
+    if(cell.isWalkable(true)&&!fight.isOccuped(cell.getId()))
     {
       caster.getCell().getFighters().clear();
       caster.setCell(cell);
@@ -7548,11 +7580,10 @@ public class SpellEffect
       for(Trap p : P)
       {
         int dist=PathFinding.getDistanceBetween(fight.getMap(),p.getCell().getId(),caster.getCell().getId());
-        //on active le piege
         if(dist<=p.getSize())
           p.onTraped(caster);
       }
-      ArrayList<Glyph> glyphs=new ArrayList<>(caster.getFight().getAllGlyphs());// Copie du tableau
+      ArrayList<Glyph> glyphs=new ArrayList<>(caster.getFight().getAllGlyphs());
       ArrayList<Glyph> targetGlyphs=new ArrayList<>();
       for(Glyph glyph : glyphs)
       {
@@ -7566,7 +7597,16 @@ public class SpellEffect
           if(f==caster)
             continue;
           else if(PathFinding.getDistanceBetween(f.getFight().getMap(),f.getCell().getId(),glyph.getCell().getId())<=glyph.getSize()&&Constant.isFecaGlyph(glyph.getSpell()))
+          {
             glyph.onTrapped(f);
+            if(f.getPdv()<=0)
+            {
+              if(f.canPlay()&&f.getPersonnage()!=null)
+                fight.endTurn(false);
+              else if(f.canPlay())
+                f.setCanPlay(false);
+            }
+          }
         }
       }
       SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,4,caster.getId()+"",caster.getId()+","+cell.getId());
@@ -7647,153 +7687,107 @@ public class SpellEffect
       case 1045://kimbo
         if(effet==99||effet==98||effet==94||effet==93)
         {
-          target.setState(30,1);//etat pair
-          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+30+",1");
-          if(target.haveState(29))
-          {
-            target.setState(29,0);//etat 29 impair
-            SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+29+",0");
-          }
+          if(target.haveState(Constant.STATE_EVEN_GLYPH))
+            target.setState(Constant.STATE_EVEN_GLYPH,0,caster.getId()); //Remove even
+          target.setState(Constant.STATE_EVEN_GLYPH,1,caster.getId()); //Add even
+          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+Constant.STATE_EVEN_GLYPH+",1");
+          if(target.haveState(Constant.STATE_ODD_GLYPH))
+            target.setState(Constant.STATE_ODD_GLYPH,0,caster.getId()); //Remove odd
         }
         else if(effet==97||effet==96||effet==92||effet==91)
         {
-          target.setState(29,1);//etat etat si pair
-          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+29+",1");
-          if(target.haveState(30))
-          {
-            target.setState(30,0);//etat 29 si pair
-            SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+30+",0");
-          }
+          if(target.haveState(Constant.STATE_ODD_GLYPH))
+            target.setState(Constant.STATE_ODD_GLYPH,0,caster.getId()); //Remove odd
+          target.setState(Constant.STATE_ODD_GLYPH,1,caster.getId()); //Add odd
+          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+Constant.STATE_ODD_GLYPH+",1");
+          if(target.haveState(Constant.STATE_EVEN_GLYPH))
+            target.setState(Constant.STATE_EVEN_GLYPH,0,caster.getId()); //Remove even
         }
         break;
       case 423://kralamour
         if(effet==99||effet==94)
         {
-          target.setState(37,1);//etat tersiaire feu
+          target.setState(37,1,caster.getId());//etat tersiaire feu
           SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+37+",1");
           if(target.haveState(38))//secondaire terre
           {
-            target.setState(38,0);
+            target.setState(38,0,caster.getId());
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+38+",0");
           }
           if(target.haveState(36))//quanternaire eau
           {
-            target.setState(36,0);
+            target.setState(36,0,caster.getId());
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+36+",0");
           }
           if(target.haveState(35))//primaire air
           {
-            target.setState(35,0);
+            target.setState(35,0,caster.getId());
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+35+",0");
           }
         }
         else if(effet==98||effet==93)
         {
-          target.setState(35,1);//etat primaire air
+          target.setState(35,1,caster.getId());//etat primaire air
           SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+35+",1");
           if(target.haveState(38))//secondaire terre
           {
-            target.setState(38,0);
+            target.setState(38,0,caster.getId());
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+38+",0");
           }
           if(target.haveState(36))//quanternaire eau
           {
-            target.setState(36,0);
+            target.setState(36,0,caster.getId());
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+36+",0");
           }
           if(target.haveState(37))//tersiaire feu
           {
-            target.setState(37,0);
+            target.setState(37,0,caster.getId());
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+37+",0");
           }
         }
         else if(effet==97||effet==92)
         {
-          target.setState(38,1);//etat secondaire terre
+          target.setState(38,1,caster.getId());//etat secondaire terre
           SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+38+",1");
           if(target.haveState(35))//primaire air
           {
-            target.setState(35,0);
+            target.setState(35,0,caster.getId());
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+35+",0");
           }
           if(target.haveState(36))//quanternaire eau
           {
-            target.setState(36,0);
+            target.setState(36,0,caster.getId());
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+36+",0");
           }
           if(target.haveState(37))//tersiaire feu
           {
-            target.setState(37,0);
+            target.setState(37,0,caster.getId());
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+37+",0");
           }
         }
         else if(effet==96||effet==91)
         {
-          target.setState(36,1);//etat quanternaire eau
+          target.setState(36,1,caster.getId());//etat quanternaire eau
           SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+36+",1");
           if(target.haveState(35))//primaire air
           {
-            target.setState(35,0);
+            target.setState(35,0,caster.getId());
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+35+",0");
           }
           if(target.haveState(38))//secondaire terre
           {
-            target.setState(38,0);
+            target.setState(38,0,caster.getId());
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+38+",0");
           }
           if(target.haveState(37))//tersiaire feu
           {
-            target.setState(37,0);
+            target.setState(37,0,caster.getId());
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,caster.getId()+"",target.getId()+","+37+",0");
           }
         }
 
         break;
       case 1071://Rasboul
-        if(effet==99||effet==94)
-        {
-          if(target.hasBuff(214))
-          {
-            target.addBuff(218,50,4,1,false,1039,"",target,true);// - 50 feu
-            target.addBuff(210,50,4,1,false,1039,"",target,true);// + 50 terre
-            target.addBuff(211,50,4,1,false,1039,"",target,true);// + 50 eau
-            target.addBuff(212,50,4,1,false,1039,"",target,true);// + 50 air
-            SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,1039,caster.getId()+"",target.getId()+","+""+","+1);
-          }
-        }
-        else if(effet==98||effet==93)
-        {
-          if(target.hasBuff(214))
-          {
-            target.addBuff(217,50,4,1,false,1039,"",target,true);// - 50 air
-            target.addBuff(210,50,4,1,false,1039,"",target,true);// + 50 terre
-            target.addBuff(211,50,4,1,false,1039,"",target,true);// + 50 eau
-            target.addBuff(213,50,4,1,false,1039,"",target,true);// + 50 feu
-            SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,1039,caster.getId()+"",target.getId()+","+""+","+1);
-          }
-        }
-        else if(effet==97||effet==92)
-        {
-          if(target.hasBuff(214))
-          {
-            target.addBuff(215,50,4,1,false,1039,"",target,true);// - 50 terre
-            target.addBuff(212,50,4,1,false,1039,"",target,true);// + 50 air
-            target.addBuff(211,50,4,1,false,1039,"",target,true);// + 50 eau
-            target.addBuff(213,50,4,1,false,1039,"",target,true);// + 50 feu
-            SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,1039,caster.getId()+"",target.getId()+","+""+","+1);
-          }
-        }
-        else if(effet==96||effet==91)
-        {
-          if(target.hasBuff(214))
-          {
-            target.addBuff(216,50,4,1,false,1039,"",target,true);// - 50 eau
-            target.addBuff(212,50,4,1,false,1039,"",target,true);// + 50 air
-            target.addBuff(210,50,4,1,false,1039,"",target,true);// + 50 terre
-            target.addBuff(213,50,4,1,false,1039,"",target,true);// + 50 feu
-            SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,1039,caster.getId()+"",target.getId()+","+""+","+1);
-          }
-        }
         if(effet==101)
         {
           target.addBuff(111,value,1,1,true,spell,args,target,false);

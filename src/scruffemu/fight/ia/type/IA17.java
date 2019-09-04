@@ -40,6 +40,11 @@ public class IA17 extends AbstractNeedSpell
           time=3000;
           action=true;
         }
+        else if(Function.getInstance().invocIfPossible(this.fight,this.fighter))
+        {
+          time=3000;
+          action=true;
+        }
       }
 
       if(this.fighter.getCurPm(this.fight)>0&&target==null)
@@ -72,7 +77,8 @@ public class IA17 extends AbstractNeedSpell
           time=num;
           action=true;
         }
-      } else if(this.fighter.getCurPa(this.fight)>0&&target!=null&&!action)
+      }
+      else if(this.fighter.getCurPa(this.fight)>0&&target!=null&&!action)
       {
         int num=Function.getInstance().attackIfPossible(this.fight,this.fighter,this.cacs);
         if(num!=-1)
@@ -92,7 +98,8 @@ public class IA17 extends AbstractNeedSpell
       if(this.fighter.getCurPa(this.fight)==0&&this.fighter.getCurPm(this.fight)==0)
         this.stop=true;
       addNext(this::decrementCount,time);
-    } else
+    }
+    else
     {
       this.stop=true;
     }

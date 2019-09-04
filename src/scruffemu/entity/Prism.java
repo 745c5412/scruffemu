@@ -12,10 +12,10 @@ import scruffemu.main.Constant;
 import scruffemu.main.Main;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class Prism
 {
-
   private int id;
   private int alignement;
   private int level;
@@ -30,7 +30,7 @@ public class Prism
   private int honor=0;
   private int area=-1;
   private Fight fight;
-  private java.util.Map<Integer, Integer> stats=new HashMap<Integer, Integer>();
+  private Map<Integer, Integer> stats=new HashMap<Integer, Integer>();
 
   public Prism(int id, int alignement, int level, short Map, int cell, int honor, int area)
   {

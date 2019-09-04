@@ -2202,7 +2202,7 @@ public class SocketManager
 
   }
 
-  public static void REALM_SEND_REQUIRED_APK(GameClient out)//FIXME:G�n�rateur de nom
+  public static void REALM_SEND_REQUIRED_APK(GameClient out) //FIXME:G�n�rateur de nom
   {
     String pass="";
     String noms="fantasy;mr;beau;fort;dark;knight;sword;big;boss;chuck;norris;wood;rick;roll;food;play;volt;rick;ven;bana;sam;ron;fou;pui;to;fu;lo;rien;bank;cap;chap;fort;dou;soleil;gentil;mechant;bad;killer;fight;gra;evil;dark;jerry;fatal;haut;bas;arc;epe;cac;ec;mai;invo;tro;com;koi;bou;let;top;fun;fai;sony;kani;meulou;faur;asus;choa;chau;cho;miel;beur;pain;cry;big;sma;to;day;bi;cih;geni;bou;che;scania;dave;swi;cas;que;chi;er;de;nul;do;a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;a;e;i;o;u;y";
@@ -2909,5 +2909,13 @@ public class SocketManager
       packet+=";"+s2;
     for(final Player p : mapa.getPlayers())
       send(p,packet);
+  }
+  
+  //v2.8 - Average ping system
+  public static void sendClearChallengePacket(GameClient out)
+  {
+    System.out.println("sent");
+    String packet="zC";
+    send(out,packet);
   }
 }

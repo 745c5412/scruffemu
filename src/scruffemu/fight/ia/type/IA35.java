@@ -8,7 +8,8 @@ import scruffemu.fight.spells.Spell;
 
 public class IA35 extends AbstractNeedSpell
 {
-
+  private boolean hasMoved=false;
+  
   public IA35(Fight fight, Fighter fighter, byte count)
   {
     super(fight,fighter,count);
@@ -27,8 +28,8 @@ public class IA35 extends AbstractNeedSpell
         if(S.getMaxPO()>maxPo)
           maxPo=S.getMaxPO();
 
-      Fighter ennemy1=Function.getInstance().getNearestEnnemynbrcasemax(this.fight,this.fighter,1,maxPo+1);// pomax +1;
-      Fighter ennemy2=Function.getInstance().getNearestEnnemynbrcasemax(this.fight,this.fighter,0,2);//2 = po min 1 + 1;
+      Fighter ennemy1=Function.getInstance().getNearestEnnemynbrcasemax(this.fight,this.fighter,1,maxPo+1); // pomax +1;
+      Fighter ennemy2=Function.getInstance().getNearestEnnemynbrcasemax(this.fight,this.fighter,0,2); //2 = po min 1 + 1;
 
       if(maxPo==1)
         ennemy1=null;
@@ -39,23 +40,9 @@ public class IA35 extends AbstractNeedSpell
         if(ennemy1.isHide())
           ennemy1=null;
 
-      if(this.fighter.getCurPm(this.fight)>0&&(ennemy1==null||ennemy2==null))
+      if(this.fighter.getCurPa(this.fight)>0&&!action&&hasMoved)
       {
-        if(Function.getInstance().moveNearIfPossible(this.fight,this.fighter,nearestEnnemy))
-        {
-          time=1000;
-          action=true;
-          ennemy1=Function.getInstance().getNearestEnnemynbrcasemax(this.fight,this.fighter,1,maxPo+1);// pomax +1;
-          ennemy2=Function.getInstance().getNearestEnnemynbrcasemax(this.fight,this.fighter,0,2);//2 = po min 1 + 1;
-
-          if(maxPo==1)
-            ennemy1=null;
-        }
-      }
-
-      if(this.fighter.getCurPa(this.fight)>0&&!action)
-      {
-        if(Function.getInstance().invocIfPossible(this.fight,this.fighter,this.invocations))
+        if(Function.getInstance().invocIfPossibleloin(this.fight,this.fighter,this.invocations))
         {
           time=600;
           action=true;
@@ -99,8 +86,21 @@ public class IA35 extends AbstractNeedSpell
       if(this.fighter.getCurPm(this.fight)>0&&!action)
       {
         int value=Function.getInstance().moveautourIfPossible(this.fight,this.fighter,nearestEnnemy);
+        nearestEnnemy=Function.getInstance().getNearestEnnemy(this.fight,this.fighter);
+        ennemy1=Function.getInstance().getNearestEnnemynbrcasemax(this.fight,this.fighter,1,maxPo+1);// pomax +1;
+        ennemy2=Function.getInstance().getNearestEnnemynbrcasemax(this.fight,this.fighter,0,2);//2 = po min 1 + 1;
+        hasMoved=true;
         if(value!=0)
           time=value;
+      }
+      
+      if(this.fighter.getCurPa(this.fight)>0&&!action)
+      {
+        if(Function.getInstance().invocIfPossibleloin(this.fight,this.fighter,this.invocations))
+        {
+          time=600;
+          action=true;
+        }
       }
 
       if(this.fighter.getCurPa(this.fight)==0&&this.fighter.getCurPm(this.fight)==0)

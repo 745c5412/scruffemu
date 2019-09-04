@@ -1110,7 +1110,6 @@ public class GameObject
     String stats="notEmpty";
     double lost=0.0;
     boolean stop=false;
-    
     while(lost<power&&!stats.isEmpty()) //stop looping when power limit is reached or item doesnt have stats
     {
       stats="";
@@ -1131,7 +1130,7 @@ public class GameObject
         }
         first=true;
       }
-      
+
       Map<Integer, Integer> statsObj=new HashMap<Integer, Integer>(obj.Stats.getMap());
       ArrayList<Integer> keys=new ArrayList<Integer>(obj.Stats.getMap().keySet());
       ArrayList<Integer> noNegativeMaxKeys=new ArrayList<Integer>();
@@ -1139,7 +1138,7 @@ public class GameObject
       ArrayList<Integer> removedStats=new ArrayList<Integer>();
       ArrayList<Integer> overmageKeys=new ArrayList<Integer>();
       Collections.shuffle(keys);
-      
+
       for(Integer i : keys)
       {
         if(Rune.isNegativeStat(Integer.toHexString(i)))
@@ -1187,9 +1186,11 @@ public class GameObject
         int newstats=0;
         int statID=i;
         int statAmount=statsObj.get(i);
+        Rune rune=Rune.getRuneByStatId(Integer.toHexString(statID));
+        float statPower=rune.getPower()/rune.getStatsAdd();
         if((statID==stat&&filteredKeys.size()!=1)||lost>=power) //stop removing if stat being targeted is runestat while more options are available or if more power than runepower has been lost
           newstats=statAmount;
-        else if(statID==stat&&filteredKeys.size()==1&&statAmount*Constant.getPowerByStatId(statID,false)<=power-lost) //only stat available is runeStat and less than power limit
+        else if(statID==stat&&filteredKeys.size()==1&&statAmount*statPower<=power-lost) //only stat available is runeStat and less than power limit
         {
           newstats=0;
           stop=true;
@@ -1205,23 +1206,23 @@ public class GameObject
           newstats=(int)Math.ceil(chute); //ceil to prevent infinite loops (stat always goes up at least one)
           if(newstats>JobAction.getBaseMaxJet(obj.getTemplate().getId(),Integer.toHexString(i)))
             newstats=JobAction.getBaseMaxJet(obj.getTemplate().getId(),Integer.toHexString(i));
-          double chutePwr=(newstats-statAmount)*-Constant.getPowerByStatId(statID,false);
+          double chutePwr=(newstats-statAmount)*-statPower;
           lost+=chutePwr;
         }
         else
         {
-          double totalPower=statAmount*Constant.getPowerByStatId(statID,false);
+          double totalPower=statAmount*statPower;
           if(isOverFm(i,statsObj.get(i))&&power-lost<=totalPower) //if overmaged and has enough power
           {
-            newstats=(int)Math.floor((totalPower-(power-lost))/Constant.getPowerByStatId(statID,false));
-            double chutePwr=(statAmount-newstats)*Constant.getPowerByStatId(statID,false);
+            newstats=(int)Math.floor((totalPower-(power-lost))/statPower);
+            double chutePwr=(statAmount-newstats)*statPower;
             lost+=chutePwr;
           }
           else
           {
             float chute=(float)(statAmount-statAmount*(power-(int)Math.floor(lost))/100.0D);
             newstats=(int)Math.floor(chute);
-            double chutePwr=(statAmount-newstats)*Constant.getPowerByStatId(statID,false);
+            double chutePwr=(statAmount-newstats)*statPower;
             lost+=chutePwr;
             newstats=(int)Math.floor(chute);
           }
@@ -1335,7 +1336,7 @@ public class GameObject
     }
     return stats;
   }
-  
+
   //v2.6 - Soulstone fix
   public String findAllExo(final GameObject obj)
   {
@@ -1448,7 +1449,7 @@ public class GameObject
     }
     return true;
   }
-  
+
   public ArrayList<String> getSpellStats()
   {
     return SortStats;

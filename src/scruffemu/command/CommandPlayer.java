@@ -1,6 +1,7 @@
 package scruffemu.command;
 
 import scruffemu.client.Player;
+import scruffemu.client.other.Party;
 import scruffemu.common.SocketManager;
 import scruffemu.main.Config;
 import scruffemu.main.Main;
@@ -70,7 +71,7 @@ public class CommandPlayer
           done=doSetTitle(perso,msg);
         break;
       case "LEADER":
-        if(msgSplit.length==1)
+        if(msgSplit.length==1||msgSplit.length==2)
           done=doLeader(perso,msg);
         break;
       case "INFO":
@@ -93,6 +94,10 @@ public class CommandPlayer
       case "NODROP":
         if(msgSplit.length==1)
           done=doNoDrop(perso);
+        break;
+      case "AUTOSKIP":
+        if(msgSplit.length==1)
+          done=doAutoSkip(perso);
         break;
     }
     return done;
@@ -477,7 +482,7 @@ public class CommandPlayer
     if(perso.cantTP())
       return true;
 
-    final scruffemu.client.other.Party party=perso.getParty();
+    final Party party=perso.getParty();
 
     if(party==null)
     {
@@ -487,7 +492,15 @@ public class CommandPlayer
 
     final List<Player> players=perso.getParty().getPlayers();
 
-    if(!party.getChief().getName().equals(perso.getName()))
+    if(party.getMaster()!=null)
+    {
+      if(!party.getChief().getName().equals(perso.getName())&&!party.getMaster().getName().equals(perso.getName()))
+      {
+        perso.sendMessage("You aren't the leader of your group.");
+        return true;
+      }
+    }
+    else if(!party.getChief().getName().equals(perso.getName()))
     {
       perso.sendMessage("You aren't the leader of your group.");
       return true;
@@ -608,29 +621,29 @@ public class CommandPlayer
   {
     if(Config.getInstance().HEROIC)
     {
-      SocketManager.GAME_SEND_MESSAGE(perso,"\nThe available commands are: \n<b>.info</b> - Gives you info about the server.\n<b>.staff</b> - Lists all the connected staff members.\n<b>.votepoints</b> - Shows how many votepoints you have.\n<b>.voteshop</b> - Opens the voteshop.\n<b>.tokens</b> - Shows how many tokens you have.\n<b>.restat</b> - Resets your unscrolled stats for 50000 kamas. (Does not reset scrolled stats)\n<b>.respell</b> - Allows you to reset a single spell and recieve back the spellpoints you've invested in it for 25000 kamas.\n<b>.gettitles</b> - Shows you a list of all the titles that you have.\n<b>.settitle (ID)</b> - Sets your title to the title with the provided ID. You can find this ID by using .gettitles.\n<b>.leader (name)</b> - Allows other players in your group to follow you (if no name is entered) or the person whose name has been entered, enter again to stop players from following the leader.\n<b>.ipdrop</b> - Makes all drops from monster fights from characters logged in on the same IP as you go to you.\n<b>.nodrop</b> - Stops you from getting drops from monsters, type again to re-enable drops from monsters.\n");
+      SocketManager.GAME_SEND_MESSAGE(perso,"\nThe available commands are: \n<b>.info</b> - Gives you info about the server.\n<b>.staff</b> - Lists all the connected staff members.\n<b>.votepoints</b> - Shows how many votepoints you have.\n<b>.voteshop</b> - Opens the voteshop.\n<b>.tokens</b> - Shows how many tokens you have.\n<b>.restat</b> - Resets your unscrolled stats for 50000 kamas. (Does not reset scrolled stats)\n<b>.respell</b> - Allows you to reset a single spell and recieve back the spellpoints you've invested in it for 25000 kamas.\n<b>.gettitles</b> - Shows you a list of all the titles that you have.\n<b>.settitle (ID)</b> - Sets your title to the title with the provided ID. You can find this ID by using .gettitles.\n<b>.leader (name)</b> - Allows other players in your group to follow you (if no name is entered) or the person whose name has been entered, enter again to stop players from following the leader.\n<b>.ipdrop</b> - Makes all drops from monster fights from characters logged in on the same IP as you go to you.\n<b>.nodrop</b> - Stops you from getting drops from monsters, type again to re-enable drops from monsters.\n<b>.autoskip</b> - Makes you automatically skip your turn in combat.\n");
       return true;
     }
     else
     {
       if(Config.getInstance().VOTESHOP==true&&Config.getInstance().ALIGNCOMM==true)
       {
-        SocketManager.GAME_SEND_MESSAGE(perso,"\nThe available commands are: \n<b>.info</b> - Gives you info about the server.\n<b>.staff</b> - Lists all the connected staff members.\n<b>.astrub</b> - Teleports you to astrub zaap for 2000 kamas.\n<b>.votepoints</b> - Shows how many votepoints you have.\n<b>.voteshop</b> - Opens the voteshop.\n<b>.tokens</b> - Shows how many tokens you have.\n<b>.restat</b> - Resets your unscrolled stats for 50000 kamas.\n<b>.respell</b> - Allows you to reset a single spell and recieve back the spellpoints you've invested in it for 25000 kamas.\n<b>.gettitles</b> - Shows you a list of all the titles that you have.\n<b>.settitle (ID)</b> - Sets your title to the title with the provided ID. You can find this ID by using .gettitles.\n<b>.alignment (ID)</b> - Gives you the bontarian alignment (ID=1) or the brakmarian alignment (ID=2).\n<b>.leader</b> - Allows other players in your group to follow you (if no name is entered) or the person whose name has been entered, enter again to stop players from following the leader.\n<b>.ipdrop</b> - Makes all drops from monster fights from characters logged in on the same IP as you go to you.\n<b>.nodrop</b> - Stops you from getting drops from monsters, type again to re-enable drops from monsters.\n");
+        SocketManager.GAME_SEND_MESSAGE(perso,"\nThe available commands are: \n<b>.info</b> - Gives you info about the server.\n<b>.staff</b> - Lists all the connected staff members.\n<b>.astrub</b> - Teleports you to astrub zaap for 2000 kamas.\n<b>.votepoints</b> - Shows how many votepoints you have.\n<b>.voteshop</b> - Opens the voteshop.\n<b>.tokens</b> - Shows how many tokens you have.\n<b>.restat</b> - Resets your unscrolled stats for 50000 kamas.\n<b>.respell</b> - Allows you to reset a single spell and recieve back the spellpoints you've invested in it for 25000 kamas.\n<b>.gettitles</b> - Shows you a list of all the titles that you have.\n<b>.settitle (ID)</b> - Sets your title to the title with the provided ID. You can find this ID by using .gettitles.\n<b>.alignment (ID)</b> - Gives you the bontarian alignment (ID=1) or the brakmarian alignment (ID=2).\n<b>.leader</b> - Allows other players in your group to follow you (if no name is entered) or the person whose name has been entered, enter again to stop players from following the leader.\n<b>.ipdrop</b> - Makes all drops from monster fights from characters logged in on the same IP as you go to you.\n<b>.nodrop</b> - Stops you from getting drops from monsters, type again to re-enable drops from monsters.\n<b>.autoskip</b> - Makes you automatically skip your turn in combat.\n");
         return true;
       }
       else if(Config.getInstance().VOTESHOP==true&&Config.getInstance().ALIGNCOMM==false)
       {
-        SocketManager.GAME_SEND_MESSAGE(perso,"\nThe available commands are: \n<b>.info</b> - Gives you info about the server.\n<b>.staff</b> - Lists all the connected staff members.\n<b>.astrub</b> - Teleports you to astrub zaap for 2000 kamas.\n<b>.votepoints</b> - Shows how many votepoints you have.\n<b>.voteshop</b> - Opens the voteshop.\n<b>.tokens</b> - Shows how many tokens you have.\n<b>.restat</b> - Resets your unscrolled stats for 50000 kamas.\n<b>.respell</b> - Allows you to reset a single spell and recieve back the spellpoints you've invested in it for 25000 kamas.\n<b>.gettitles</b> - Shows you a list of all the titles that you have.\n<b>.settitle (ID)</b> - Sets your title to the title with the provided ID. You can find this ID by using .gettitles.\n<b>.leader</b> - Allows other players in your group to follow you (if no name is entered) or the person whose name has been entered, enter again to stop players from following the leader.\n<b>.ipdrop</b> - Makes all drops from monster fights from characters logged in on the same IP as you go to you.\n<b>.nodrop</b> - Stops you from getting drops from monsters, type again to re-enable drops from monsters.\n");
+        SocketManager.GAME_SEND_MESSAGE(perso,"\nThe available commands are: \n<b>.info</b> - Gives you info about the server.\n<b>.staff</b> - Lists all the connected staff members.\n<b>.astrub</b> - Teleports you to astrub zaap for 2000 kamas.\n<b>.votepoints</b> - Shows how many votepoints you have.\n<b>.voteshop</b> - Opens the voteshop.\n<b>.tokens</b> - Shows how many tokens you have.\n<b>.restat</b> - Resets your unscrolled stats for 50000 kamas.\n<b>.respell</b> - Allows you to reset a single spell and recieve back the spellpoints you've invested in it for 25000 kamas.\n<b>.gettitles</b> - Shows you a list of all the titles that you have.\n<b>.settitle (ID)</b> - Sets your title to the title with the provided ID. You can find this ID by using .gettitles.\n<b>.leader</b> - Allows other players in your group to follow you (if no name is entered) or the person whose name has been entered, enter again to stop players from following the leader.\n<b>.ipdrop</b> - Makes all drops from monster fights from characters logged in on the same IP as you go to you.\n<b>.nodrop</b> - Stops you from getting drops from monsters, type again to re-enable drops from monsters.\n<b>.autoskip</b> - Makes you automatically skip your turn in combat.\n");
         return true;
       }
       else if(Config.getInstance().VOTESHOP==false&&Config.getInstance().ALIGNCOMM==true)
       {
-        SocketManager.GAME_SEND_MESSAGE(perso,"\nThe available commands are: \n<b>.info</b> - Gives you info about the server.\n<b>.staff</b> - Lists all the connected staff members.\n<b>.astrub</b> - Teleports you to astrub zaap for 2000 kamas.\n<b>.tokens</b> - Shows how many tokens you have.\n<b>.restat</b> - Resets your unscrolled stats for 50000 kamas.\n<b>.respell</b> - Allows you to reset a single spell and recieve back the spellpoints you've invested in it for 25000 kamas.\n<b>.gettitles</b> - Shows you a list of all the titles that you have.\n<b>.settitle (ID)</b> - Sets your title to the title with the provided ID. You can find this ID by using .gettitles.\n<b>.alignment (ID)</b> - Gives you the bontarian alignment (ID=1) or the brakmarian alignment (ID=2).\n<b>.leader</b> - Allows other players in your group to follow you (if no name is entered) or the person whose name has been entered, enter again to stop players from following the leader.\n<b>.ipdrop</b> - Makes all drops from monster fights from characters logged in on the same IP as you go to you.\n<b>.nodrop</b> - Stops you from getting drops from monsters, type again to re-enable drops from monsters.\n");
+        SocketManager.GAME_SEND_MESSAGE(perso,"\nThe available commands are: \n<b>.info</b> - Gives you info about the server.\n<b>.staff</b> - Lists all the connected staff members.\n<b>.astrub</b> - Teleports you to astrub zaap for 2000 kamas.\n<b>.tokens</b> - Shows how many tokens you have.\n<b>.restat</b> - Resets your unscrolled stats for 50000 kamas.\n<b>.respell</b> - Allows you to reset a single spell and recieve back the spellpoints you've invested in it for 25000 kamas.\n<b>.gettitles</b> - Shows you a list of all the titles that you have.\n<b>.settitle (ID)</b> - Sets your title to the title with the provided ID. You can find this ID by using .gettitles.\n<b>.alignment (ID)</b> - Gives you the bontarian alignment (ID=1) or the brakmarian alignment (ID=2).\n<b>.leader</b> - Allows other players in your group to follow you (if no name is entered) or the person whose name has been entered, enter again to stop players from following the leader.\n<b>.ipdrop</b> - Makes all drops from monster fights from characters logged in on the same IP as you go to you.\n<b>.nodrop</b> - Stops you from getting drops from monsters, type again to re-enable drops from monsters.\n<b>.autoskip</b> - Makes you automatically skip your turn in combat.\n");
         return true;
       }
       else
       {
-        SocketManager.GAME_SEND_MESSAGE(perso,"\nThe available commands are: \n<b>.info</b> - Gives you info about the server.\n<b>.staff</b> - Lists all the connected staff members.\n<b>.astrub</b> - Teleports you to astrub zaap for 2000 kamas.\n<b>.tokens</b> - Shows how many tokens you have.\n<b>.restat</b> - Resets your unscrolled stats for 50000 kamas.\n<b>.respell</b> - Allows you to reset a single spell and recieve back the spellpoints you've invested in it for 25000 kamas.\n<b>.gettitles</b> - Shows you a list of all the titles that you have.\n<b>.settitle (ID)</b> - Sets your title to the title with the provided ID. You can find this ID by using .gettitles.\n<b>.leader</b> - Allows other players in your group to follow you (if no name is entered) or the person whose name has been entered, enter again to stop players from following the leader.\n<b>.ipdrop</b> - Makes all drops from monster fights from characters logged in on the same IP as you go to you.\n<b>.nodrop</b> - Stops you from getting drops from monsters, type again to re-enable drops from monsters.\n");
+        SocketManager.GAME_SEND_MESSAGE(perso,"\nThe available commands are: \n<b>.info</b> - Gives you info about the server.\n<b>.staff</b> - Lists all the connected staff members.\n<b>.astrub</b> - Teleports you to astrub zaap for 2000 kamas.\n<b>.tokens</b> - Shows how many tokens you have.\n<b>.restat</b> - Resets your unscrolled stats for 50000 kamas.\n<b>.respell</b> - Allows you to reset a single spell and recieve back the spellpoints you've invested in it for 25000 kamas.\n<b>.gettitles</b> - Shows you a list of all the titles that you have.\n<b>.settitle (ID)</b> - Sets your title to the title with the provided ID. You can find this ID by using .gettitles.\n<b>.leader</b> - Allows other players in your group to follow you (if no name is entered) or the person whose name has been entered, enter again to stop players from following the leader.\n<b>.ipdrop</b> - Makes all drops from monster fights from characters logged in on the same IP as you go to you.\n<b>.nodrop</b> - Stops you from getting drops from monsters, type again to re-enable drops from monsters.\n<b>.autoskip</b> - Makes you automatically skip your turn in combat.\n");
         return true;
       }
     }
@@ -650,7 +663,7 @@ public class CommandPlayer
     }
     return true;
   }
-  
+
   private static boolean doNoDrop(Player perso)
   {
     if(perso.getCanDrop())
@@ -662,6 +675,21 @@ public class CommandPlayer
     {
       perso.setCanDrop(true);
       SocketManager.GAME_SEND_MESSAGE(perso,"You will now gain drops from monsters again.");
+    }
+    return true;
+  }
+
+  private static boolean doAutoSkip(Player perso)
+  {
+    if(perso.getAutoSkip()==false)
+    {
+      perso.setAutoSkip(true);
+      SocketManager.GAME_SEND_MESSAGE(perso,"You will now automatically skip your turn in combat.");
+    }
+    else
+    {
+      perso.setAutoSkip(false);
+      SocketManager.GAME_SEND_MESSAGE(perso,"You will no longer automatically skip your turn in combat.");
     }
     return true;
   }

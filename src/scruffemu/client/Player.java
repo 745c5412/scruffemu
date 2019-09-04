@@ -230,6 +230,7 @@ public class Player
   public boolean ipDrop=false;
   private Pair<InteractiveObject,GameCase> inInteractiveObject=null;
   private boolean canDrop=true;
+  private boolean autoSkip=false;
   private Stake stake=null;
 
   public ArrayList<Integer> getIsCraftingType()
@@ -3307,7 +3308,7 @@ public class Player
     SocketManager.GAME_SEND_MAPDATA(client,newMapID,this.curMap.getDate(),this.curMap.getKey());
     this.curMap.addPlayer(this);
 
-    if(!this.follower.isEmpty())// On met a jour la Map des personnages qui nous suivent
+    if(!this.follower.isEmpty()) //On met a jour la Map des personnages qui nous suivent
     {
       for(Player t : this.follower.values())
       {
@@ -6583,6 +6584,16 @@ public class Player
   public void setStake(Stake stake)
   {
     this.stake = stake;
+  }
+
+  public boolean getAutoSkip()
+  {
+    return autoSkip;
+  }
+
+  public void setAutoSkip(boolean autoSkip)
+  {
+    this.autoSkip = autoSkip;
   }
 
 }

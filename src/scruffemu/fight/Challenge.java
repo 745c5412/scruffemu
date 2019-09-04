@@ -244,13 +244,17 @@ public class Challenge
         }
         break;
       case 31: // Focus
-        if(caster.getTeam()==0&&target.getTeam()==1)
+        if(caster.getTeam()==0&&target.getTeam()==1&&!caster.isInvocation())
         {
           if(Args.isEmpty())
             Args+=""+target.getId();
           else if(!Args.contains(""+target.getId()))
             challengeLoose(caster);
         }
+        break;
+      case 47: // Contamination
+        if(target.getTeam()==0&&!target.isInvocation()&&!Args.contains(";"+target.getId()+","))
+          Args+=";"+target.getId()+","+"3;";
         break;
     }
   }
@@ -386,10 +390,13 @@ public class Challenge
         {
           for(Fighter target : targets)
           {
-            if(target.getTeam()==1)
+            if(this.target!=null)
             {
-              if(this.target.getId()!=target.getId())
-                challengeLoose(caster);
+              if(target.getTeam()==1)
+              {
+                if(this.target.getId()!=target.getId()&&!target.isInvocation())
+                  challengeLoose(caster);
+              }
             }
           }
         }
@@ -399,7 +406,7 @@ public class Challenge
         {
           for(Fighter target : targets)
           {
-            if(target.getTeam()==1)
+            if(target.getTeam()==1&&!target.isInvocation())
             {
               StringBuilder id=new StringBuilder();
               id.append(";").append(target.getId()).append(",");
@@ -424,7 +431,7 @@ public class Challenge
         {
           for(Fighter target : targets)
           {
-            if(target.getTeam()==1)
+            if(target.getTeam()==1&&!caster.isInvocation())
             {
               if(!Args.contains(";"+target.getId()+","))
                 Args+=";"+target.getId()+","+caster.getId()+";";
@@ -433,10 +440,6 @@ public class Challenge
             }
           }
         }
-        break;
-      case 47: // Contamination
-        if(DamagingEffects.contains("|"+effectID+"|"))
-          targets.stream().filter(target -> target.getTeam()==0&&target.getPdv()!=target.getPdvMax()).filter(target -> !Args.contains(";"+target.getId()+",")).forEach(target -> Args+=";"+target.getId()+","+"3;");
         break;
     }
   }
@@ -505,11 +508,11 @@ public class Challenge
         break;
 
       case 31: // Focus
-        if(killer.getMob()!=null||killer==mob||mob.getLevelUp())
+        if(mob.getLevelUp())
           break;
         if(Args.contains(""+mob.getId()))
           Args="";
-        else
+        else if(!mob.isInvocation())
           challengeLoose(killer);
         break;
 
@@ -528,7 +531,7 @@ public class Challenge
         break;
       case 44: // Partage
       case 46: // Chacun son monstre
-        if(isKiller)
+        if(isKiller&&!mob.isInvocation())
           Args+=(Args.isEmpty() ? killer.getId() : ";"+killer.getId());
         break;
       case 30: // Les petits d'abord
@@ -595,7 +598,7 @@ public class Challenge
           return;
         if(target.getId()!=mob.getId()&&target.getLvl()!=mob.getLvl()&&killer.getPersonnage()!=null)
         {
-          if(mob.getLvl()>target.getLvl())
+          if(mob.getLvl()>target.getLvl()&&!mob.isInvocation())
             challengeLoose(fight.getFighterByOrdreJeu());
         }
         else
@@ -669,7 +672,6 @@ public class Challenge
     {
       case 1: // Zombie
         if(this.fight.getCurFighterUsedPm()>1) // Si l'on a utilis� plus d'un PM
-          //if (fighter.getPm() - fighter.getCurPm(fight) > 1)
           challengeLoose(fight.getFighterByOrdreJeu());
         break;
     }

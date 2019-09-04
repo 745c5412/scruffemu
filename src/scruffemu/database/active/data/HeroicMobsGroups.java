@@ -70,19 +70,7 @@ public class HeroicMobsGroups extends AbstractDAO<Object>
       ResultSet RS=result.resultSet;
       while(RS.next())
       {
-        /*final Monster.MobGroup group=new Monster.MobGroup(RS.getInt("id"),RS.getInt("cell"),RS.getString("group"));
-        final GameMap map=Main.world.getMap(RS.getShort("map"));
-        if(map!=null)
-          map.respawnGroup(group);
-        
-        ArrayList<GameObject> objects=new ArrayList<>();
-        for(String value : RS.getString("objects").split(","))
-        {
-          final GameObject object=World.getGameObject(Integer.parseInt(value));
-          if(object!=null)
-            objects.add(object);
-        }*/
-        RespawnGroup.fixMobGroupObjects.put(RS.getInt("map")+","+RS.getInt("cell"),new Pair <ArrayList<GameObject>,Integer>(new ArrayList<GameObject>(), RS.getInt("stars")));
+        RespawnGroup.fixMobGroupObjects.put(RS.getInt("map")+","+RS.getInt("cell"),new Pair<ArrayList<GameObject>, Integer>(new ArrayList<GameObject>(),RS.getInt("stars")));
       }
     }
     catch(SQLException e)
@@ -184,7 +172,7 @@ public class HeroicMobsGroups extends AbstractDAO<Object>
     PreparedStatement prepare=null;
     try
     {
-      for(Map.Entry<String, Pair <ArrayList<GameObject>,Integer>> entry : RespawnGroup.fixMobGroupObjects.entrySet())
+      for(Map.Entry<String, Pair<ArrayList<GameObject>, Integer>> entry : RespawnGroup.fixMobGroupObjects.entrySet())
       {
         String[] split=entry.getKey().split(",");
         final StringBuilder objects=new StringBuilder();
@@ -292,7 +280,7 @@ public class HeroicMobsGroups extends AbstractDAO<Object>
   {
     try
     {
-      PreparedStatement prepare=getPreparedStatement("UPDATE `mobgroups_fix_dynamic` SET `objects` = ?, `stars` = ?, `group` = ?, `cell` = ? WHERE `map` = ?;");
+      PreparedStatement prepare=getPreparedStatement("UPDATE `mobgroups_fix_dynamic` SET `objects` = ?, `stars` = ?, `group` = ? WHERE `map` = ? AND `cell` = ?;");
       for(Pair<Short, MobGroup> p : groupsFix)
       {
         Short mapId=(Short)p.getLeft();
@@ -302,8 +290,8 @@ public class HeroicMobsGroups extends AbstractDAO<Object>
         prepare.setString(1,"");
         prepare.setInt(2,group.getStarBonus(group.getInternalStarBonus()));
         prepare.setString(3,groups.toString());
-        prepare.setInt(4,group.getCellId());
-        prepare.setInt(5,mapId);
+        prepare.setInt(4,mapId);
+        prepare.setInt(5,group.getCellId());
         prepare.addBatch();
       }
       prepare.executeBatch();
@@ -323,9 +311,9 @@ public class HeroicMobsGroups extends AbstractDAO<Object>
       PreparedStatement prepare=getPreparedStatement("UPDATE `mobgroups_dynamic` SET `stars` = ? WHERE `id` = ? AND `map` = ?;");
       for(Pair<Pair<MobGroup, Integer>, Integer> p : info)
       {
-        MobGroup group = p.getLeft().getLeft();
-        int mobId = p.getLeft().getRight();
-        int mapId = p.getRight();
+        MobGroup group=p.getLeft().getLeft();
+        int mobId=p.getLeft().getRight();
+        int mapId=p.getRight();
         prepare.setInt(1,group.getStarBonus(group.getInternalStarBonus()));
         prepare.setInt(2,mobId);
         prepare.setInt(3,mapId);
@@ -339,7 +327,7 @@ public class HeroicMobsGroups extends AbstractDAO<Object>
       super.sendError("HeroicMobsGroups updateStars",e);
     }
   }
-  
+
   //v2.8 - batch SQL updating
   public void batchUpdateFixStars(List<Pair<MobGroup, Integer>> info)
   {
@@ -348,8 +336,8 @@ public class HeroicMobsGroups extends AbstractDAO<Object>
       PreparedStatement prepare=getPreparedStatement("UPDATE `mobgroups_fix_dynamic` SET `stars` = ? WHERE `map` = ? AND `cell` = ?;");
       for(Pair<MobGroup, Integer> p : info)
       {
-        MobGroup group = p.getLeft();
-        int mapId = p.getRight();
+        MobGroup group=p.getLeft();
+        int mapId=p.getRight();
         prepare.setInt(1,group.getStarBonus(group.getInternalStarBonus()));
         prepare.setInt(2,mapId);
         prepare.setInt(3,group.getSpawnCellId());

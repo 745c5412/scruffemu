@@ -690,14 +690,14 @@ public class Fight
     this.curFighterPm=curFighterPm;
   }
 
-  int getCurFighterUsedPa()
+  private int getCurFighterUsedPa()
   {
     return curFighterUsedPa;
   }
 
-  void setCurFighterUsedPa()
+  private void setCurFighterUsedPa(int ap)
   {
-    this.curFighterUsedPa=0;
+    this.curFighterUsedPa=ap;
   }
 
   public int getCurFighterUsedPm()
@@ -705,9 +705,9 @@ public class Fight
     return curFighterUsedPm;
   }
 
-  void setCurFighterUsedPm()
+  private void setCurFighterUsedPm(int mp)
   {
-    this.curFighterUsedPm=0;
+    this.curFighterUsedPm=mp;
   }
 
   public Map<Integer, Fighter> getTeam(int team)
@@ -1280,7 +1280,7 @@ public class Fight
           SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this,3,950,player.getId()+"",player.getId()+","+Constant.ETAT_CHEVAUCHANT+",1");
         if(player.getClasse()==Constant.CLASS_PANDAWA)
         {
-          F.setState(Constant.STATE_SOBER,-1); //infinite duration
+          F.setState(Constant.STATE_SOBER,-1,F.getId()); //infinite duration
           SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this,7,950,F.getId()+"",F.getId()+","+Constant.STATE_SOBER+",1");
         }
       }
@@ -1754,8 +1754,8 @@ public class Fight
 
     setCurFighterPa(current.getPa());
     setCurFighterPm(current.getPm());
-    setCurFighterUsedPa();
-    setCurFighterUsedPm();
+    setCurFighterUsedPa(0);
+    setCurFighterUsedPm(0);
 
     if(current.hasLeft()||current.isDead())
     {
@@ -1818,8 +1818,11 @@ public class Fight
         }
       }
 
-      if(PathFinding.getDistanceBetween(getMap(),current.getCell().getId(),glyph.getCell().getId())<=glyph.getSize()&&glyph.getSpell()!=476)
-        glyph.onTrapped(current);
+      if(getState()<Constant.FIGHT_STATE_FINISHED)
+      {
+        if(PathFinding.getDistanceBetween(getMap(),current.getCell().getId(),glyph.getCell().getId())<=glyph.getSize()&&glyph.getSpell()!=476)
+          glyph.onTrapped(current);
+      }
     }
 
     if((getType()==Constant.FIGHT_TYPE_PVM)&&(getAllChallenges().size()>0)&&!current.isInvocation()&&!current.isDouble()&&!current.isCollector()||getType()==Constant.FIGHT_TYPE_DOPEUL&&(getAllChallenges().size()>0)&&!current.isInvocation()&&!current.isDouble()&&!current.isCollector())
@@ -1855,6 +1858,13 @@ public class Fight
       current.lastInvisCell=null;
     if(current.lastInvisMP!=-1)
       current.lastInvisMP=-1;
+
+    if(current.getPersonnage()!=null)
+      if(current.getPersonnage().getAutoSkip()==true)
+      {
+        this.endTurn(false,current);
+        return;
+      }
 
     if(current.getPersonnage()==null||current.getDouble()!=null||current.getCollector()!=null)
       IAHandler.select(this,current);
@@ -2001,8 +2011,8 @@ public class Fight
         c.getValue().onPlayerEndTurn(current);
       }
     }
-    setCurFighterUsedPa();
-    setCurFighterUsedPm();
+    setCurFighterUsedPa(0);
+    setCurFighterUsedPm(0);
     setCurFighterPa(current.getTotalStats().getEffect(Constant.STATS_ADD_PA));
     setCurFighterPm(current.getTotalStats().getEffect(Constant.STATS_ADD_PM));
     current.refreshEndTurnBuff();
@@ -2711,7 +2721,7 @@ public class Fight
     }
   }
 
-  public synchronized int tryCastSpell(Fighter fighter, SortStats spell, int cell)
+  public synchronized int tryCastSpell(Fighter fighter, SortStats spell, int cell) //0 = success, 5 = crit fail, 10 = error
   {
     final Fighter current=this.getFighterByOrdreJeu();
 
@@ -2736,7 +2746,7 @@ public class Fight
                   SocketManager.GAME_SEND_MESSAGE(f.getPersonnage(),player.getName()+" cannot cast "+spell.getSpell().getNombre()+" because of an invisible obstacle.");
             setCurAction("");
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this,7,102,fighter.getId()+"",fighter.getId()+",-0");
-            return 0;
+            return 10;
           }
 
     setCurAction("casting");
@@ -2749,12 +2759,12 @@ public class Fight
       {
         int modi=player.getItemClasseModif(spell.getSpellID(),285);
         setCurFighterPa(getCurFighterPa()-(spell.getPACost()-modi));
-        this.curFighterUsedPa+=spell.getPACost()-modi;
+        setCurFighterUsedPa(getCurFighterUsedPa()+spell.getPACost()-modi);
       }
       else
       {
         setCurFighterPa(getCurFighterPa()-spell.getPACost());
-        this.curFighterUsedPa+=spell.getPACost();
+        setCurFighterUsedPa(getCurFighterUsedPa()+spell.getPACost());
       }
 
       boolean isEc=Formulas.isCriticalFail(spell.getTauxEC(),fighter);
@@ -3204,12 +3214,12 @@ public class Fight
       return false;
     Fighter targetTacle=PathFinding.getEnemyAround(fighter.getCell().getId(),getMap(),this);
     this.setCurAction("deplace");
-    if(targetTacle!=null&&!fighter.haveState(6)&&!fighter.haveState(8))
+    if(targetTacle!=null&&!fighter.haveState(Constant.ETAT_ENRACINE)&&!fighter.haveState(Constant.ETAT_PORTE)&&!fighter.isHide())
     {
       int esquive=Formulas.getTacleChance(fighter,targetTacle);
       int rand=Formulas.getRandomValue(0,99);
       if(targetTacle.haveState(Constant.STATE_UNDODGEABLE))
-        rand=1000000;
+        rand=100;
       if(rand>esquive)
       {
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this,7,GA.id,"104",fighter.getId()+";","");
@@ -3237,7 +3247,7 @@ public class Fight
       return false;
     }
     setCurFighterPm(getCurFighterPm()-nStep);
-    this.curFighterUsedPm+=nStep;
+    this.setCurFighterUsedPm(this.getCurFighterUsedPm()+nStep);
 
     int nextCellID=Main.world.getCryptManager().cellCode_To_ID(newPath.substring(newPath.length()-2));
     // les monstres n'ont pas de GAS//GAF
@@ -3268,15 +3278,13 @@ public class Fight
       if((short)nextCellID!=po.getCell().getId())
       {
         // on retire les �tats
-        po.setState(Constant.ETAT_PORTEUR,0);
-        current.setState(Constant.ETAT_PORTE,0);
+        po.setState(Constant.ETAT_PORTEUR,0,po.getId());
+        current.setState(Constant.ETAT_PORTE,0,po.getId());
         // on retire d� lie les 2 fighters
         po.setIsHolding(null);
         current.setHoldedBy(null);
         // La nouvelle case sera d�finie plus tard dans le code. On
         // envoie les packets !
-        SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this,7,950,po.getId()+"",po.getId()+","+Constant.ETAT_PORTEUR+",0");
-        SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this,7,950,current.getId()+"",current.getId()+","+Constant.ETAT_PORTE+",0");
       }
     }
 
@@ -3353,8 +3361,8 @@ public class Fight
         Fighter f=target.getIsHolding();
         f.setCell(f.getCell());
         f.getCell().addFighter(f);// Le bug venait par manque de ceci, il ni avait plus de firstFighter
-        f.setState(Constant.ETAT_PORTE,0);// J'ajoute ceci quand m�me pour signaler qu'ils ne sont plus en �tat port�/porteur
-        target.setState(Constant.ETAT_PORTEUR,0);
+        f.setState(Constant.ETAT_PORTE,0,caster.getId());// J'ajoute ceci quand m�me pour signaler qu'ils ne sont plus en �tat port�/porteur
+        target.setState(Constant.ETAT_PORTEUR,0,caster.getId());
         f.setHoldedBy(null);
         target.setIsHolding(null);
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this,7,950,f.getId()+"",f.getId()+","+Constant.ETAT_PORTE+",0");
@@ -3552,9 +3560,8 @@ public class Fight
   public void removeCarry(Fighter target)
   {
     Fighter carry=target.getHoldedBy();
-    carry.setState(Constant.ETAT_PORTEUR,0); //duration 0, remove state
+    carry.setState(Constant.ETAT_PORTEUR,0,target.getId()); //duration 0, remove state
     carry.setIsHolding(null);
-    SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this,7,950,carry.getId()+"",carry.getId()+","+Constant.ETAT_PORTEUR+",0");
     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this,7,51,carry.getId()+"",carry.getCell().getId()+"");
   }
 
@@ -4197,6 +4204,7 @@ public class Fight
                 player.removeByTemplateID(7377,1);
                 player.removeByTemplateID(7378,1);
               }
+
               player.send(packet);
             }
           }
@@ -5080,7 +5088,7 @@ public class Fight
             public int compare(Fighter f1, Fighter f2)
             {
               if(f1.getPersonnage()!=null&&f2.getPersonnage()==null) //1 exists 2 doesnt
-                return Boolean.valueOf(f1.getPersonnage().ipDrop).compareTo(Boolean.valueOf(false));
+                return Boolean.valueOf(f1.getPersonnage().ipDrop).compareTo(false);
               else if(f1.getPersonnage()==null&&f2.getPersonnage()!=null) //2 exists 1 doesnt
                 return Boolean.valueOf(false).compareTo(Boolean.valueOf(f2.getPersonnage().ipDrop));
               else if(f1.getPersonnage()!=null&&f2.getPersonnage()!=null) //both exist
@@ -5095,7 +5103,7 @@ public class Fight
         }
       }
 
-      StringBuilder ipDrops=new StringBuilder();
+      Map<Fighter, String> ipDroppers=new HashMap<Fighter, String>();
       for(Fighter i : winners)
       {
         if(i.isInvocation()&&i.getMob()!=null&&i.getMob().getTemplate().getId()!=285)
@@ -5104,6 +5112,14 @@ public class Fight
           continue;
 
         final Player player=i.getPersonnage();
+
+        boolean add=true;
+        if(player!=null&&player.ipDrop)
+          for(Fighter ipDropper : ipDroppers.keySet())
+            if(player.getAccount().getCurrentIp().compareTo(ipDropper.getPersonnage().getAccount().getCurrentIp())==0) //same IP of two IpDroppers, do not add
+              add=false;
+        if(add)
+          ipDroppers.put(i,"");
 
         if(player!=null&&getType()!=Constant.FIGHT_TYPE_CHALLENGE)
           player.calculTurnCandy();
@@ -5656,7 +5672,7 @@ public class Fight
             for(Fighter fighter : winners)
             {
               if(fighter.getPersonnage()!=null)
-                if(fighter.getPersonnage().ipDrop&&fighter.getPersonnage()!=player)
+                if(fighter.getPersonnage().ipDrop&&fighter.getPersonnage()!=player&&fighter.getPersonnage().getAccount().getCurrentIp().equals(player.getAccount().getCurrentIp()))
                 {
                   target=fighter;
                   break;
@@ -5683,27 +5699,27 @@ public class Fight
               {
                 if(i.getPersonnage()!=null)
                   if(i.getPersonnage().getCanDrop()==true)
-                    p.append(stackDrops(drops,ipDrops.toString()));
+                    p.append(stackDrops(drops,ipDroppers.get(i)));
                 p.append(";");
               }
               else
               {
                 if(i.getPersonnage()!=null)
                   if(i.getPersonnage().getCanDrop()==true)
-                    p.append(ipDrops.toString());
+                    p.append(ipDroppers.get(i));
                 p.append(";");
               }
             }
             else if(target!=i) //give ipDrops away person
             {
               p.append(";");
-              if(ipDrops.toString().isEmpty())
-                ipDrops.append(drops);
+              if(ipDroppers.get(target).isEmpty())
+                ipDroppers.put(target,drops);
               else
               {
                 StringBuilder temp=new StringBuilder();
-                temp.append(stackDrops(drops,ipDrops.toString()));
-                ipDrops=temp;
+                temp.append(stackDrops(drops,ipDroppers.get(target)));
+                ipDroppers.put(target,temp.toString());
               }
             }
             else //no ipDrop enabled
@@ -5721,19 +5737,20 @@ public class Fight
           else if(target!=i) //give ipDrops away summon (living chest)
           {
             p.append(";");
-            if(ipDrops.toString().isEmpty())
-              ipDrops.append(drops);
+            if(ipDroppers.get(i).isEmpty())
+              ipDroppers.put(i,drops);
             else
             {
               StringBuilder temp=new StringBuilder();
-              temp.append(stackDrops(drops,ipDrops.toString()));
-              ipDrops=temp;
+              temp.append(stackDrops(drops,ipDroppers.get(i)));
+              ipDroppers.put(i,temp.toString());
             }
           }
           else
             p.append(drops).append(";");
 
           p.append((winKamas==0 ? "" : winKamas)).append("|");
+
           gains.put(i.getId(),p);
         }
         else
@@ -5895,7 +5912,6 @@ public class Fight
       /** Looser **/
       for(Fighter i : loosers)
       {
-
         if(i.isInvocation()&&i.getMob()!=null&&i.getMob().getTemplate().getId()!=285)
           continue;
         if(i.isDouble())

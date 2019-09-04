@@ -1013,7 +1013,7 @@ public class Quest
         case 1: // Niveau
           if(player.getLevel()<this.condition.getRight())
           {
-            SocketManager.GAME_SEND_MESSAGE(player,"Votre niveau est insuffisant pour apprendre la quête.");
+            SocketManager.GAME_SEND_MESSAGE(player,"Your level is not high enough to receive this quest.");
             return;
           }
           break;

@@ -57,18 +57,15 @@ public class Guild
     decompileStats(stats);
     //Mise en place des stats
     statsFight.clear();
-    statsFight.put(Constant.STATS_ADD_FORC,this.lvl);
-    statsFight.put(Constant.STATS_ADD_SAGE,getStats(Constant.STATS_ADD_SAGE));
-    statsFight.put(Constant.STATS_ADD_INTE,this.lvl);
-    statsFight.put(Constant.STATS_ADD_CHAN,this.lvl);
-    statsFight.put(Constant.STATS_ADD_AGIL,this.lvl);
+    statsFight.put(Constant.STATS_ADD_DOMA,(int)Math.floor(getLvl()/4));
+    statsFight.put(Constant.STATS_ADD_CC,(int)Math.floor(getLvl()/10));
+    statsFight.put(Constant.STATS_ADD_SOIN,(int)Math.floor(getLvl()/2));
+    statsFight.put(Constant.STATS_ADD_PERDOM,(int)Math.floor(getLvl()));
     statsFight.put(Constant.STATS_ADD_RP_NEU,(int)Math.floor(getLvl()/2));
     statsFight.put(Constant.STATS_ADD_RP_FEU,(int)Math.floor(getLvl()/2));
     statsFight.put(Constant.STATS_ADD_RP_EAU,(int)Math.floor(getLvl()/2));
     statsFight.put(Constant.STATS_ADD_RP_AIR,(int)Math.floor(getLvl()/2));
     statsFight.put(Constant.STATS_ADD_RP_TER,(int)Math.floor(getLvl()/2));
-    statsFight.put(Constant.STATS_ADD_AFLEE,(int)Math.floor(getLvl()/2));
-    statsFight.put(Constant.STATS_ADD_MFLEE,(int)Math.floor(getLvl()/2));
   }
 
   public GuildMember addMember(int id, int r, byte pXp, long x, int ri, String lastCo)

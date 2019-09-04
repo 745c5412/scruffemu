@@ -1440,6 +1440,7 @@ public class PathFinding
       case Constant.ITEM_TYPE_BAGUETTE:
       case Constant.ITEM_TYPE_ARC:
       case Constant.ITEM_TYPE_OUTIL:
+      case Constant.ITEM_TYPE_FILET_CAPTURE: //capture net
         Fighter t=cell.getFirstFighter();
         if(t!=null)
           cibles.add(t);

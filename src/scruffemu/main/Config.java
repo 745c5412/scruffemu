@@ -40,7 +40,7 @@ public class Config
   public boolean ALIGNCOMM=false; //alignment commands
   public boolean EXOLIMIT=true; //ap, mp and ra exo limit
   public int starHour=2; //how many hours for a mob to gain one star
-  public int AIDelay=100, craftDelay=200, gameActionDelay=5; //delay in ms
+  public int AIDelay=100, AIMovementCellDelay=180, AIMovementFlatDelay=700, craftDelay=200, gameActionDelay=5; //delay in ms
   public int weaponBonusBase=80, primaryWeaponBonus=30, secondaryWeaponBonus=20, daggerSwordNerf=5; //class weapon bonus
   public String lessDurationSpells=",16,20,95,98,148,149,577,612,741,760,811,813,962,1004,1092,1122,1129,1143,2079,2081,53,170,1164,1169,1172,2118,"; //spells with one turn less duration when selfcast, e.g. amplification, mutilation, clock
   public int erosion=10;

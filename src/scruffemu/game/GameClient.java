@@ -311,24 +311,12 @@ public class GameClient
     if(isValid)
     {
       int tiretCount=0;
-      char exLetterA=' ';
-      char exLetterB=' ';
       for(char curLetter : name.toCharArray())
       {
         if(!((curLetter>='a'&&curLetter<='z')||curLetter=='-'))
         {
           isValid=false;
           break;
-        }
-        if(curLetter==exLetterA&&curLetter==exLetterB)
-        {
-          isValid=false;
-          break;
-        }
-        if(curLetter>='a'&&curLetter<='z')
-        {
-          exLetterA=exLetterB;
-          exLetterB=curLetter;
         }
         if(curLetter=='-')
         {
@@ -344,6 +332,9 @@ public class GameClient
         }
       }
     }
+    
+    String cap = name.substring(0,1).toUpperCase() + name.substring(1);
+    
     //Si le nom est invalide
     if(!isValid)
     {
@@ -355,7 +346,7 @@ public class GameClient
       SocketManager.GAME_SEND_CREATE_PERSO_FULL(this);
       return;
     }
-    if(this.account.createPlayer(infos[0],Integer.parseInt(infos[2]),Integer.parseInt(infos[1]),Integer.parseInt(infos[3]),Integer.parseInt(infos[4]),Integer.parseInt(infos[5])))
+    if(this.account.createPlayer(cap,Integer.parseInt(infos[2]),Integer.parseInt(infos[1]),Integer.parseInt(infos[3]),Integer.parseInt(infos[4]),Integer.parseInt(infos[5])))
     {
       SocketManager.GAME_SEND_CREATE_OK(this);
       SocketManager.GAME_SEND_PERSO_LIST(this,this.account.getPlayers(),this.account.getSubscribeRemaining());
@@ -1804,7 +1795,7 @@ public class GameClient
         }
         player.setTokens(tokens);
         GameObject newObj=null;
-        newObj=template.createNewItem(quantity,true);
+        newObj=template.createNewItem(quantity,false);
 
         if(player.addObjet(newObj,true))// Return TRUE si c'est un
           World.addGameObject(newObj,true);
@@ -6282,7 +6273,7 @@ public class GameClient
       SocketManager.GAME_SEND_EXCHANGE_REQUEST_ERROR(this.player.getGameClient(),'S');
       return;
     }
-    short price=(short)(1000+10*this.player.get_guild().getLvl());//Calcul du prix du Collector
+    short price=(short)(1000+10*this.player.get_guild().getLvl()); //Calcul du prix du Collector
     if(this.player.getKamas()<price)
     {//Kamas insuffisants
       SocketManager.GAME_SEND_Im_PACKET(this.player,"182");
@@ -7203,14 +7194,16 @@ public class GameClient
           }
           this.player.removeItemClasse(objTemplate.getId());
         }
-        if(!Constant.isValidPlaceForItem(object.getTemplate(),position)&&position!=Constant.ITEM_POS_NO_EQUIPED&&object.getTemplate().getType()!=113)
+        
+        if(!Constant.isValidPlaceForItem(object.getTemplate(),position)&&position!=Constant.ITEM_POS_NO_EQUIPED&&object.getTemplate().getType()!=Constant.ITEM_TYPE_OBJET_VIVANT)
           return;
-
+        
         if(!object.getTemplate().getConditions().equalsIgnoreCase("")&&!ConditionParser.validConditions(this.player,object.getTemplate().getConditions()))
         {
           SocketManager.GAME_SEND_Im_PACKET(this.player,"119|44"); // si le this.player ne v�rifie pas les conditions diverses
           return;
         }
+        
         if((position==Constant.ITEM_POS_BOUCLIER&&this.player.getObjetByPos(Constant.ITEM_POS_ARME)!=null)||(position==Constant.ITEM_POS_ARME&&this.player.getObjetByPos(Constant.ITEM_POS_BOUCLIER)!=null))
         {
           if(this.player.getObjetByPos(Constant.ITEM_POS_ARME)!=null)
@@ -7237,23 +7230,24 @@ public class GameClient
           SocketManager.GAME_SEND_OAEL_PACKET(this);
           return;
         }
+        
         //On ne peut �quiper 2 items de panoplies identiques, ou 2 Dofus identiques
         if(position!=Constant.ITEM_POS_NO_EQUIPED&&(object.getTemplate().getPanoId()!=-1||object.getTemplate().getType()==Constant.ITEM_TYPE_DOFUS)&&this.player.hasEquiped(object.getTemplate().getId()))
           return;
 
         // FIN DES VERIFS
-        GameObject exObj=this.player.getObjetByPos2(position);//Objet a l'ancienne position
+        GameObject exObj=this.player.getObjetByPos2(position); //Objet a l'ancienne position
         int objGUID=object.getTemplate().getId();
         // CODE OBVI
-        if(object.getTemplate().getType()==113)
+        if(object.getTemplate().getType()==Constant.ITEM_TYPE_OBJET_VIVANT)
         {
           if(exObj==null)
           {// si on place l'obvi sur un emplacement vide
             SocketManager.send(this.player,"Im1161");
             return;
           }
-          if(exObj.getObvijevanPos()!=0)
-          {// si il y a d�j� un obvi
+          if(exObj.getObvijevanPos()!=0) //already a living item equipped
+          {
             SocketManager.GAME_SEND_BN(this.player);
             return;
           }
@@ -8532,7 +8526,11 @@ public class GameClient
 
     if(party!=null&&this.player.getFight()==null&&party.getMaster()!=null&&party.getMaster().getName().equals(this.player.getName()))
     {
-      party.getPlayers().stream().filter((follower1) -> party.isWithTheMaster(follower1,false)&&follower1.getExchangeAction()==null).forEach(follower -> {
+      party.getPlayers().stream().filter((follower1) -> follower1.getDeshonor()>=2).forEach(follower -> {
+        SocketManager.GAME_SEND_Im_PACKET(follower,"183");
+      });
+
+      party.getPlayers().stream().filter((follower1) -> party.isWithTheMaster(follower1,false)&&follower1.getExchangeAction()==null&&follower1.getDeshonor()<2).forEach(follower -> {
         follower.setExchangeAction(new ExchangeAction<>(ExchangeAction.IN_ZAPPI,null));
         follower.getGameClient().zaapiUse(packet);
       });
@@ -8548,6 +8546,20 @@ public class GameClient
       SocketManager.GAME_SEND_Im_PACKET(this.player,"183");
       return;
     }
+
+    final Party party=this.player.getParty();
+
+    if(party!=null&&this.player.getFight()==null&&party.getMaster()!=null&&party.getMaster().getName().equals(this.player.getName()))
+    {
+      party.getPlayers().stream().filter((follower1) -> follower1.getDeshonor()>=2).forEach(follower -> {
+        SocketManager.GAME_SEND_Im_PACKET(follower,"183");
+      });
+      party.getPlayers().stream().filter((follower1) -> party.isWithTheMaster(follower1,false)&&follower1.getExchangeAction()==null&&follower1.get_align()==this.player.get_align()&&follower1.getDeshonor()<2).forEach(follower -> {
+        follower.setExchangeAction(new ExchangeAction<>(ExchangeAction.IN_PRISM,null));
+        follower.usePrisme(packet);
+      });
+    }
+
     this.player.usePrisme(packet);
   }
 

@@ -412,7 +412,7 @@ public class Fighter implements Comparable<Fighter>
     this.isTraqued=isTraqued;
   }
 
-  public void setState(int id, int t)
+  public void setState(int id, int t, int casterId)
   {
     if(t!=0)
     {
@@ -434,6 +434,7 @@ public class Fighter implements Comparable<Fighter>
     else //t=0 removes state
     {
       this.state.remove(id);
+      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,new StringBuilder(String.valueOf(casterId)).toString(),String.valueOf(this.getId())+","+id+",0");
     }
   }
 
@@ -552,31 +553,7 @@ public class Fighter implements Comparable<Fighter>
         if(id1==this.mob.getTemplate().getId())
           return;
     //v2.0 - infinite duration spells fix, damage reflect spell fix
-    if(id==85||id==86||id==87||id==88||id==89) //hp% based damage
-    {
-      int id2=0;
-      if(id==85)
-        id2=96;
-      if(id==86)
-        id2=97;
-      if(id==87)
-        id2=98;
-      if(id==88)
-        id2=99;
-      if(id==89)
-        id2=100;
-      String[] argSplit=args.split(";");
-      argSplit[0]=Integer.toString((int)Math.floor((float)val/100*caster.getPdv()));
-      argSplit[5]="0d0+"+(int)Math.floor((float)val/100*caster.getPdv());
-
-      if(Config.getInstance().lessDurationSpells.contains(","+Integer.toString(spellID)+",")) //selfbuff less duration
-        this.fightBuffs.add(new SpellEffect(id2,(int)Math.floor((float)val/100*caster.getPdv()),duration,turns,debuff,caster,String.join(";",argSplit),spellID));
-      else if(duration==-1) //infinite duration
-        this.fightBuffs.add(new SpellEffect(id2,(int)Math.floor((float)val/100*caster.getPdv()),9999999,turns,debuff,caster,String.join(";",argSplit),spellID));
-      else //normal
-        this.fightBuffs.add(new SpellEffect(id2,(int)Math.floor((float)val/100*caster.getPdv()),(this.canPlay ? duration+1 : duration),turns,debuff,caster,String.join(";",argSplit),spellID));
-    }
-    else if(id==106) //reflect
+    if(id==106) //reflect
     {
       if(Config.getInstance().lessDurationSpells.contains(","+Integer.toString(spellID)+",")) //selfbuff less duration
         this.fightBuffs.add(new SpellEffect(id,val,duration,turns,debuff,caster,val+";;",spellID));
@@ -584,6 +561,10 @@ public class Fighter implements Comparable<Fighter>
         this.fightBuffs.add(new SpellEffect(id,val,9999999,turns,debuff,caster,val+";;",spellID));
       else
         this.fightBuffs.add(new SpellEffect(id,val,(this.canPlay ? duration+1 : duration),turns,debuff,caster,val+";;",spellID));
+    }
+    else if(id==128&&(spellID==3500||spellID==3501)) //reflect
+    {
+      this.fightBuffs.add(new SpellEffect(id,val,duration,turns,debuff,caster,val+";;",spellID));
     }
     else //standard
     {
@@ -628,10 +609,12 @@ public class Fighter implements Comparable<Fighter>
       case 99:
       case 100:
       case 106:
-        if(duration!=-1)
-          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,Integer.toString(val),"","",duration,spellID);
-        else
-          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,Integer.toString(val),"","",duration-1,spellID);
+        val=Integer.parseInt(args.split(";")[0]);
+        String valMax4=args.split(";")[1];
+        if(valMax4.compareTo("-1")==0)
+          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration,spellID);
+        else if(valMax4.compareTo("-1")!=0)
+          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,valMax4,"","",duration,spellID);
         break;
       case 131: //AP Poisons
         if(duration==-1)
@@ -714,7 +697,7 @@ public class Fighter implements Comparable<Fighter>
         else if(duration==1&&spellID==83&&id==120) //Hand self-buff duration
           SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration,spellID);
         else
-          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration-1,spellID);
+          SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(this.fight,7,id,getId(),val,"","","",duration-1==0 ? duration : duration-1,spellID);
         break;
     }
   }
@@ -895,12 +878,10 @@ public class Fighter implements Comparable<Fighter>
               return;
             if(id==Constant.STATE_DRUNK)
             {
-              entry.getCaster().setState(Constant.STATE_SOBER,-1); //infinite duration
+              entry.getCaster().setState(Constant.STATE_SOBER,-1,this.getId()); //infinite duration
               SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,950,entry.getCaster().getId()+"",entry.getCaster().getId()+","+Constant.STATE_SOBER+",1");
             }
-
-            setState(id,0);
-            SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this.fight,7,950,entry.getCaster().getId()+"",entry.getCaster().getId()+","+id+",0");
+            setState(id,0,this.getId());
             break;
         }
       }
@@ -1115,12 +1096,11 @@ public class Fighter implements Comparable<Fighter>
     {
       switch(spellid)
       {
-        case 66:
-        case 71:
-        case 181:
-        case 196:
-        case 200:
-        case 219:
+        case 66: //Poison
+        case 181: //Earthquake
+        case 196: //Poisoned Wind
+        case 200: //Paralyzing Poison
+        case 219: //Plissken's Poisoning
           return;
       }
     }

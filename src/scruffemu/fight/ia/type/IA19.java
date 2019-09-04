@@ -21,10 +21,13 @@ public class IA19 extends AbstractIA
   {
     if(!this.stop&&this.fighter.canPlay()&&this.count>0)
     {
+      int time=1000;
       Fighter friend=Function.getInstance().getNearestFriend(this.fight,this.fighter);
       Fighter ennemy=Function.getInstance().getNearestEnnemy(this.fight,this.fighter);
 
-      int dist1=PathFinding.getDirBetweenTwoCase(friend.getCell().getId(),ennemy.getCell().getId(),this.fight.getMap(),true);
+      int dist1=-1;
+      if(friend!=null)
+        dist1=PathFinding.getDirBetweenTwoCase(friend.getCell().getId(),ennemy.getCell().getId(),this.fight.getMap(),true);
       int dist2=PathFinding.getDirBetweenTwoCase(this.fighter.getCell().getId(),ennemy.getCell().getId(),this.fight.getMap(),true);
 
       for(Fighter t : this.fight.getFighters(3))
@@ -48,30 +51,52 @@ public class IA19 extends AbstractIA
         this.tp=true;
       }
 
-      if(needTp&&!this.tp&&Function.getInstance().tpIfPossibleTynril(this.fight,this.fighter,friend)==0)
+      if(friend!=null)
       {
-        this.tp=true;
-      } else if(!needTp)
-      {
-        Function.getInstance().moveNearIfPossible(this.fight,this.fighter,ennemy);
-        dist1=-5;
-      }
-
-      if(this.fighter.getCurPm(this.fight)>0&&dist1!=-5)
-      {
-        int dist=PathFinding.getDirBetweenTwoCase(this.fighter.getCell().getId(),ennemy.getCell().getId(),this.fight.getMap(),true);
-        if(dist>1)
+        if(needTp&&!this.tp&&Function.getInstance().tpIfPossibleTynril(this.fight,this.fighter,friend)==0)
+        {
+          this.tp=true;
+        }
+        else if(!needTp)
         {
           Function.getInstance().moveNearIfPossible(this.fight,this.fighter,ennemy);
+          dist1=-5;
+        }
+
+        if(this.fighter.getCurPm(this.fight)>0&&dist1!=-5)
+        {
+          int dist=PathFinding.getDirBetweenTwoCase(this.fighter.getCell().getId(),ennemy.getCell().getId(),this.fight.getMap(),true);
+          if(dist>1)
+          {
+            Function.getInstance().moveNearIfPossible(this.fight,this.fighter,ennemy);
+          }
+        }
+
+        if(!Function.getInstance().HealIfPossiblefriend(fight,this.fighter,friend))
+        {
+          Function.getInstance().attackIfPossibleTynril(this.fight,this.fighter,ennemy);
         }
       }
-
-      if(!Function.getInstance().HealIfPossiblefriend(fight,this.fighter,friend))
+      else
       {
-        Function.getInstance().attackIfPossibleTynril(this.fight,this.fighter,ennemy);
+        if(this.fighter.getCurPm(this.fight)>0)
+        {
+          int num=Function.getInstance().moveautourIfPossible(this.fight,this.fighter,ennemy);
+          if(num!=0)
+          {
+            time=num;
+            ennemy=Function.getInstance().getNearestEnnemy(this.fight,this.fighter);
+          }
+          else
+            Function.getInstance().attackIfPossibleTynril(this.fight,this.fighter,ennemy);
+        }
+        else
+          Function.getInstance().attackIfPossibleTynril(this.fight,this.fighter,ennemy);
       }
-      this.addNext(this::decrementCount,1000);
-    } else
+
+      this.addNext(this::decrementCount,time);
+    }
+    else
     {
       this.stop=true;
     }

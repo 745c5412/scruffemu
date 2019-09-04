@@ -30,11 +30,6 @@ public class IA2 extends AbstractNeedSpell
       Fighter enemy=Function.getInstance().getNearestEnnemyNotListedLos(this.fight,this.fighter,this.attacked);
       Fighter enemy2=Function.getInstance().getNearestEnnemyNotListed(this.fight,this.fighter,this.attacked);
 
-      if(enemy!=null)
-        System.out.println("enemy: "+enemy.getMob().getTemplate().getId());
-      else
-        System.out.println("no enemy");
-
       for(Spell.SortStats spellStats : this.highests)
         if(spellStats.getMaxPO()>maxPo)
           maxPo=spellStats.getMaxPO();
@@ -70,7 +65,6 @@ public class IA2 extends AbstractNeedSpell
           int value=Function.getInstance().moveautourIfPossible(this.fight,this.fighter,A);
           if(value!=0)
           {
-            System.out.println("reached");
             time=value;
             action=true;
           }
@@ -79,7 +73,6 @@ public class IA2 extends AbstractNeedSpell
         {
           if(Function.getInstance().buffIfPossible(this.fight,this.fighter,A,this.buffs))
           {
-            System.out.println("reached2");
             this.attack++;
             time=1000;
             action=true;
@@ -92,7 +85,6 @@ public class IA2 extends AbstractNeedSpell
         {
           if(Function.getInstance().buffIfPossible(this.fight,this.fighter,enemy,this.buffs))
           {
-            System.out.println("reached3");
             this.attack++;
             time=1000;
             action=true;
@@ -105,7 +97,6 @@ public class IA2 extends AbstractNeedSpell
         if(fight.canCastSpell2(fighter,dragofire,fighter.getCell(),enemy.getCell()))
         {
           this.fight.tryCastSpell(this.fighter,dragofire,enemy.getCell().getId());
-          System.out.println("reached4");
           this.attacked.add(enemy);
           this.attack++;
           time=dragofire.getSpell().getDuration();
@@ -118,8 +109,7 @@ public class IA2 extends AbstractNeedSpell
         int value=Function.getInstance().moveenfaceIfPossible(this.fight,this.fighter,enemy,maxPo+1);
         if(value!=0)
         {
-          System.out.println("reached5");
-          time=value+600;
+          time=value+1200;
           action=true;
         }
       }
@@ -128,7 +118,6 @@ public class IA2 extends AbstractNeedSpell
       {
         if(Function.getInstance().moveNearIfPossible(this.fight,this.fighter,enemy2))
         {
-          System.out.println("reached6");
           time=1500;
           action=true;
         }
@@ -138,10 +127,7 @@ public class IA2 extends AbstractNeedSpell
       {
         int value=Function.getInstance().moveFarIfPossible(this.fight,this.fighter);
         if(value!=0)
-        {
           time=value;
-          System.out.println("reached7");
-        }
       }
 
       if(this.fighter.getCurPa(this.fight)==0&&this.fighter.getCurPm(this.fight)==0)

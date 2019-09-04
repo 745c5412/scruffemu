@@ -285,7 +285,6 @@ public class JobAction
     {
       if(!this.player.hasItemGuid(e.getKey()))
       {
-        System.out.println("reached1");
         SocketManager.GAME_SEND_Ec_PACKET(this.player,"EI");
         return;
       }
@@ -294,13 +293,11 @@ public class JobAction
 
       if(obj==null)
       {
-        System.out.println("reached2");
         SocketManager.GAME_SEND_Ec_PACKET(this.player,"EI");
         return;
       }
       if(obj.getQuantity()<e.getValue())
       {
-        System.out.println("reached3");
         SocketManager.GAME_SEND_Ec_PACKET(this.player,"EI");
         return;
       }
@@ -776,23 +773,30 @@ public class JobAction
       for(int i=0;i<exoSplit.length;i++)
       {
         String[] exoSplit2=exoSplit[i].split(",");
-        float statPwr=Constant.getPowerByStatId(Integer.valueOf(exoSplit2[0]),false);
-        float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
-        exoPower=exoPower+entryPower;
+        if(Rune.getRuneByStatId(exoSplit2[0])!=null)
+        {
+          Rune tempRune=Rune.getRuneByStatId(exoSplit2[0]);
+          float statPwr=tempRune.getPower()*tempRune.getStatsAdd();
+          float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
+          exoPower=exoPower+entryPower;
+        }
       }
     }
 
     //v2.8 - total power limit
-    if(Job.getActualJet(objectFm,rune.getStatId())+rune.getStatsAdd()>getStatBaseMaxs(objectFm.getTemplate(),rune.getStatId())) //current mage exceeds bae stats
-      if(rune.getPower()+exoPower>101f)
-      {
-        SocketManager.GAME_SEND_MESSAGE(this.player,"This mage would exceed the maximum allowed exomaged power limit.");
-        if(receiver!=null)
-          clearMage(objectFm,runeObject,receiver);
-        else
-          clearMage(objectFm,runeObject,this.player);
-        return false;
-      }
+    if(rune!=null)
+    {
+      if(Job.getActualJet(objectFm,rune.getStatId())+rune.getStatsAdd()>getStatBaseMaxs(objectFm.getTemplate(),rune.getStatId())) //current mage exceeds base stats
+        if(rune.getPower()+exoPower>101f)
+        {
+          SocketManager.GAME_SEND_MESSAGE(this.player,"This mage would exceed the maximum allowed exomaged power limit.");
+          if(receiver!=null)
+            clearMage(objectFm,runeObject,receiver);
+          else
+            clearMage(objectFm,runeObject,this.player);
+          return false;
+        }
+    }
 
     //ALL CHECKS ARE DONE FROM THIS POINT
 
@@ -1201,9 +1205,13 @@ public class JobAction
           for(int i=0;i<exoSplit.length;i++)
           {
             String[] exoSplit2=exoSplit[i].split(",");
-            float statPwr=Constant.getPowerByStatId(Integer.valueOf(exoSplit2[0]),false);
-            float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
-            exoPower=exoPower+entryPower;
+            if(Rune.getRuneByStatId(exoSplit2[0])!=null)
+            {
+              Rune tempRune=Rune.getRuneByStatId(exoSplit2[0]);
+              float statPwr=tempRune.getPower()*tempRune.getStatsAdd();
+              float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
+              exoPower=exoPower+entryPower;
+            }
           }
           exoPower=(float)Math.round(exoPower*100)/100; //rounding to two decimals
 
@@ -1281,9 +1289,13 @@ public class JobAction
           for(int i=0;i<exoSplit.length;i++)
           {
             String[] exoSplit2=exoSplit[i].split(",");
-            float statPwr=Constant.getPowerByStatId(Integer.valueOf(exoSplit2[0]),false);
-            float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
-            exoPower=exoPower+entryPower;
+            if(Rune.getRuneByStatId(exoSplit2[0])!=null)
+            {
+              Rune tempRune=Rune.getRuneByStatId(exoSplit2[0]);
+              float statPwr=tempRune.getPower()*tempRune.getStatsAdd();
+              float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
+              exoPower=exoPower+entryPower;
+            }
           }
           exoPower=(float)Math.round(exoPower*100)/100; //rounding to two decimals
 
@@ -1372,9 +1384,13 @@ public class JobAction
         for(int i=0;i<exoSplit.length;i++)
         {
           String[] exoSplit2=exoSplit[i].split(","); //split stat per value
-          float statPwr=Constant.getPowerByStatId(Integer.valueOf(exoSplit2[0]),false);
-          float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
-          exoPower=exoPower+entryPower;
+          if(Rune.getRuneByStatId(exoSplit2[0])!=null)
+          {
+            Rune tempRune=Rune.getRuneByStatId(exoSplit2[0]);
+            float statPwr=tempRune.getPower()*tempRune.getStatsAdd();
+            float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
+            exoPower=exoPower+entryPower;
+          }
         }
         exoPower=(float)Math.round(exoPower*100)/100; //rounding to two decimals
 
@@ -1442,9 +1458,13 @@ public class JobAction
         for(int i=0;i<exoSplit.length;i++)
         {
           String[] exoSplit2=exoSplit[i].split(","); //split stat per value
-          float statPwr=Constant.getPowerByStatId(Integer.valueOf(exoSplit2[0]),false);
-          float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
-          exoPower=exoPower+entryPower;
+          if(Rune.getRuneByStatId(exoSplit2[0])!=null)
+          {
+            Rune tempRune=Rune.getRuneByStatId(exoSplit2[0]);
+            float statPwr=tempRune.getPower()*tempRune.getStatsAdd();
+            float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
+            exoPower=exoPower+entryPower;
+          }
         }
         exoPower=(float)Math.round(exoPower*100)/100; //rounding to two decimals
 
@@ -1562,8 +1582,12 @@ public class JobAction
             catch(Exception ex)
             {
             }
-            Weigth=qua*Constant.getPowerByStatId(statID,false);
-            Alto+=Weigth;
+            if(Rune.getRuneByStatId(Integer.toHexString(statID))!=null)
+            {
+              Rune rune=Rune.getRuneByStatId(Integer.toHexString(statID));
+              Weigth=qua*(rune.getPower()/rune.getStatsAdd());
+              Alto+=Weigth;
+            }
           }
         }
     }
@@ -1633,7 +1657,7 @@ public class JobAction
       else if(Integer.toHexString(statID).toLowerCase().compareTo(Rune.getNegativeStatByRuneStat(rune.getStatId()))==0)
       {
         float finalWeight=0; //v2.0 - Divide by 0 handler
-        final float Weight=entry.getValue()*Constant.getPowerByStatId(Integer.parseInt(Rune.getNegativeStatByRuneStat(rune.getStatId()),16),false);
+        final float Weight=entry.getValue()*(rune.getnPower()/rune.getStatsAdd());
         if(Weight==0)
           finalWeight=1;
         else
@@ -1685,8 +1709,12 @@ public class JobAction
         {
           e.printStackTrace();
         }
-        weight=value*Constant.getPowerByStatId(statID,false);
-        alt+=weight;
+        if(Rune.getRuneByStatId(Integer.toHexString(statID))!=null)
+        {
+          Rune rune=Rune.getRuneByStatId(Integer.toHexString(statID));
+          weight=value*(rune.getPower()/rune.getStatsAdd());
+          alt+=weight;
+        }
       }
     }
     return alt;
@@ -1738,8 +1766,12 @@ public class JobAction
         {
           e.printStackTrace();
         }
-        weight=value*Constant.getPowerByStatId(statID,false);
-        alt+=weight;
+        if(Rune.getRuneByStatId(Integer.toHexString(statID))!=null)
+        {
+          Rune rune=Rune.getRuneByStatId(Integer.toHexString(statID));
+          weight=value*(rune.getStatsAdd()/rune.getPower());
+          alt+=weight;
+        }
       }
     }
     return alt;

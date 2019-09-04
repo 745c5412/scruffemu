@@ -12,6 +12,7 @@ import scruffemu.fight.spells.SpellEffect;
 import scruffemu.fight.spells.Spell.SortStats;
 import scruffemu.fight.traps.Glyph;
 import scruffemu.game.action.GameAction;
+import scruffemu.main.Config;
 import scruffemu.main.Constant;
 import scruffemu.main.Main;
 
@@ -354,7 +355,7 @@ public class Function
     }
     if(target==null)
       return 666;
-    if(fighter.getPa()<14)
+    if(fighter.getPa()<14||!LaunchedSpell.cooldownGood(fighter,1039))
       return 0;
     int attack=fight.tryCastSpell(fighter,SS,target.getCell().getId());
 
@@ -382,22 +383,22 @@ public class Function
     if(fighter.haveState(36))
     {
       spell=Main.world.getSort(1110).getStatsByLevel(5);
-      fighter.setState(36,0);
+      fighter.setState(36,0,fighter.getId());
     }
     if(fighter.haveState(37))
     {
       spell=Main.world.getSort(1109).getStatsByLevel(5);
-      fighter.setState(37,0);
+      fighter.setState(37,0,fighter.getId());
     }
     if(fighter.haveState(38))
     {
       spell=Main.world.getSort(1108).getStatsByLevel(5);
-      fighter.setState(38,0);
+      fighter.setState(38,0,fighter.getId());
     }
     if(fighter.haveState(35))
     {
       spell=Main.world.getSort(1107).getStatsByLevel(5);
-      fighter.setState(35,0);
+      fighter.setState(35,0,fighter.getId());
     }
     while(_loc0_++<limit)
     {
@@ -506,10 +507,10 @@ public class Function
     return 0;
   }
 
-  public int tpIfPossibleRasboul(Fight fight, Fighter fighter, Fighter target)// 0 = Rien, 5 = EC, 666 = NULL, 10 = SpellNull ou ActionEnCour ou Can'tCastSpell, 0 = AttaqueOK
+  public int tpIfPossibleRasboul(Fight fight, Fighter fighter, Fighter target) // 0 = success, 5 = EC, 10 = error, 666 = NULL
   {
     if(fight==null||fighter==null)
-      return 0;
+      return 10;
     SortStats SS=null;
     for(Map.Entry<Integer, SortStats> entry : fighter.getMob().getSpells().entrySet())
     {
@@ -519,10 +520,7 @@ public class Function
     }
     if(target==null)
       return 666;
-    int attack=fight.tryCastSpell(fighter,SS,target.getCell().getId());
-    if(attack!=0)
-      return attack;
-    return 0;
+    return fight.tryCastSpell(fighter,SS,target.getCell().getId());
   }
 
   public boolean HealIfPossiblefriend(Fight fight, Fighter f, Fighter target)//boolean pour choisir entre auto-soin ou soin alli�
@@ -1181,7 +1179,7 @@ public class Function
     if(!fight.onFighterDeplace(F,GA))
       return 0;
 
-    return nbrcase*360;
+    return nbrcase*Config.getInstance().AIMovementCellDelay+Config.getInstance().AIMovementFlatDelay;
   }
 
   public boolean testCotes(int cellWeAre, int cellWego)//Nous permet d'interdire le d�placement du bord vers des cellules hors map
@@ -1737,7 +1735,7 @@ public class Function
     if(!fight.onFighterDeplace(F,GA))
       return 0;
 
-    return nbrcase*360+200;
+    return nbrcase*Config.getInstance().AIMovementCellDelay+Config.getInstance().AIMovementFlatDelay;
   }
 
   public int moveIfPossiblecontremur(Fight fight, Fighter F, Fighter T)
@@ -1825,7 +1823,7 @@ public class Function
     if(!fight.onFighterDeplace(F,GA))
       return 0;
 
-    return nbrcase*360;
+    return nbrcase*Config.getInstance().AIMovementCellDelay+Config.getInstance().AIMovementFlatDelay;
   }
 
   public int movediagIfPossible(Fight fight, Fighter F, Fighter T)
@@ -1912,7 +1910,7 @@ public class Function
     if(!fight.onFighterDeplace(F,GA))
       return 0;
 
-    return nbrcase*360;
+    return nbrcase*Config.getInstance().AIMovementCellDelay+Config.getInstance().AIMovementFlatDelay;
   }
 
   public int moveenfaceIfPossible(Fight fight, Fighter F, Fighter T, int dist)
@@ -2000,7 +1998,7 @@ public class Function
     if(!fight.onFighterDeplace(F,GA))
       return 0;
 
-    return nbrcase*450;
+    return nbrcase*Config.getInstance().AIMovementCellDelay+Config.getInstance().AIMovementFlatDelay;
   }
 
   public int movecacIfPossible(Fight fight, Fighter F, Fighter T)
@@ -2086,7 +2084,7 @@ public class Function
     if(!fight.onFighterDeplace(F,GA))
       return 0;
 
-    return nbrcase*360;
+    return nbrcase*Config.getInstance().AIMovementCellDelay+Config.getInstance().AIMovementFlatDelay;
   }
 
   public Fighter getNearestFriendInvoc(Fight fight, Fighter fighter)

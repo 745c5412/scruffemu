@@ -67,7 +67,7 @@ public class Glyph
   public void onTrapped(Fighter target)
   {
     if(this.spell==3500||this.spell==3501)
-    {//glyph pair/impair
+    { //glyph pair/impair
       if(target.getMob()!=null)
       {
         if(target.getMob().getTemplate().getId()==1045)
@@ -76,11 +76,11 @@ public class Glyph
           {
             target.addBuff(217,400,duration,1,false,1077,"",target,true);// - 400 air
             target.addBuff(218,400,duration,1,false,1077,"",target,true);// - 400 feu
+            
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,1077,caster.getId()+"",target.getId()+","+""+","+1);
             this.fight.getFighters(7).stream().filter(fighter -> fighter.getPersonnage()!=null&&fighter.getPersonnage().isOnline()).forEach(fighter -> {
               fighter.getPersonnage().send("GA;217;-100;"+target.getId()+",400,1");
               fighter.getPersonnage().send("GA;218;-100;"+target.getId()+",400,1");
-              fighter.getPersonnage().sendMessage("Kimbo has entered the even state.");
             });
           }
           else
@@ -93,7 +93,6 @@ public class Glyph
             this.fight.getFighters(7).stream().filter(fighter -> fighter.getPersonnage()!=null&&fighter.getPersonnage().isOnline()).forEach(fighter -> {
               fighter.getPersonnage().send("GA;216;-100;"+target.getId()+",400,1");
               fighter.getPersonnage().send("GA;215;-100;"+target.getId()+",400,1");
-              fighter.getPersonnage().sendMessage("Kimbo has entered the odd state.");
             });
           }
         }

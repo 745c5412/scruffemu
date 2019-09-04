@@ -21,19 +21,19 @@ public class PigDragon
     initializeMap(9372,442,320,216,22);
     initializeMap(9373,414,262,144,48);
     initializeMap(9374,417,262,231,51);
-    initializeMap(9375,413,274,262,36); // Huiti�me
+    //initializeMap(9375,413,274,262,36); // Huiti�me
     initializeMap(9376,413,274,262,36);
-    initializeMap(9377,413,274,262,36); // Dix-huiti�me
+    //initializeMap(9377,413,274,262,36); // Dix-huiti�me
     initializeMap(9378,413,274,262,36);
     initializeMap(9379,413,274,262,36);
     initializeMap(9380,442,320,216,22);
-    initializeMap(9381,442,320,216,22); // Douzi�me
+    //initializeMap(9381,442,320,216,22); // Douzi�me
     initializeMap(9382,442,320,216,22);
     initializeMap(9383,442,320,216,22);
     initializeMap(9384,442,320,216,22);
     initializeMap(9385,414,262,144,48);
     initializeMap(9386,414,262,144,48);
-    initializeMap(9387,414,262,144,48); // Quatorzi�me
+    //initializeMap(9387,414,262,144,48); // Quatorzi�me
     initializeMap(9388,414,262,144,48);
     initializeMap(9389,414,262,144,48);
     initializeMap(9390,417,262,231,51);
@@ -42,8 +42,7 @@ public class PigDragon
     initializeMap(9393,417,262,231,51);
     initializeMap(9394,417,262,231,51);
     initializeMap(9395,417,262,231,51);
-    if(PigDragon.outside==null)
-      PigDragon.initializeExt();
+    initializeExt();
     new TimerWaiterPlus(PigDragon::checkOutside,5*60*1000);
   }
 
@@ -110,11 +109,6 @@ public class PigDragon
           case 9389: // bas
             close(map,(short)277);
             break;
-          case 9387: // bas
-            if(isOutside(277))
-              setOutside(null);
-            close(map,(short)277);
-            break;
           case 9395: // haut
             if(isInside(262))
               setInside(null);
@@ -131,12 +125,6 @@ public class PigDragon
             setInside(null);
         close(map,(short)216);
         break;
-      case 216: // Droite
-        if(map.getId()==(short)9381)
-          if(isOutside(201))
-            setOutside(null);
-        close(map,(short)201);
-        break;
       case 144: // Droite
         close(map,(short)158);
         break;
@@ -148,12 +136,6 @@ public class PigDragon
         break;
       case 48: // Haut
         close(map,(short)63);
-        break;
-      case 36: // Haut
-        if(map.getId()==(short)9377)
-          if(isOutside(36))
-            setOutside(null);
-        close(map,(short)50);
         break;
       case 22: // Haut
         close(map,(short)37);
@@ -170,6 +152,34 @@ public class PigDragon
         break;
       case 414: // Bas
         close(map,(short)399);
+        break;
+    }
+  }
+
+  public static void closeExit(GameMap map, GameCase cell)
+  {
+    if(map==null||cell==null)
+      return;
+
+    switch(cell.getId())
+    {
+      case 262: // Gauche
+        if(map.getId()==(short)9387)
+          if(isOutside(277))
+            setOutside(null);
+        close(map,(short)277);
+        break;
+      case 216: // Droite
+        if(map.getId()==(short)9381)
+          if(isOutside(201))
+            setOutside(null);
+        close(map,(short)201);
+        break;
+      case 36: // Haut
+        if(map.getId()==(short)9377)
+          if(isOutside(36))
+            setOutside(null);
+        close(map,(short)50);
         break;
       case 413: // Bas
         if(map.getId()==(short)9375)
@@ -221,11 +231,12 @@ public class PigDragon
             open(map,(short)277);
             break;
           case 9387:
-            if(outside==null)
+            if(outside==null||isOutside(277))
             {
               setOutside(map.getCase(277));
               open(map,(short)277);
-            } else
+            }
+            else
             {
               close(map,(short)277);
             }
@@ -243,15 +254,17 @@ public class PigDragon
       case 216: // Droite
         if(map.getId()==(short)9381)
         {
-          if(outside==null)
+          if(outside==null||isOutside(201))
           {
             setOutside(map.getCase(201));
             open(map,(short)201);
-          } else
+          }
+          else
           {
             close(map,(short)201);
           }
-        } else
+        }
+        else
           open(map,(short)201);
         break;
       case 144: // Droite
@@ -268,15 +281,17 @@ public class PigDragon
       case 36: // Haut
         if(map.getId()==(short)9377)
         {
-          if(outside==null)
+          if(outside==null||isOutside(50))
           {
             setOutside(map.getCase(50));
             open(map,(short)50);
-          } else
+          }
+          else
           {
             close(map,(short)50);
           }
-        } else
+        }
+        else
           open(map,(short)50);
         break;
       case 22: // Haut
@@ -297,15 +312,17 @@ public class PigDragon
       case 413: // Bas
         if(map.getId()==(short)9375)
         {
-          if(outside==null)
+          if(outside==null||isOutside(399))
           {
             setOutside(map.getCase(399));
             open(map,(short)399);
-          } else
+          }
+          else
           {
             close(map,(short)399);
           }
-        } else
+        }
+        else
           open(map,(short)399);
         break;
     }
@@ -584,33 +601,48 @@ public class PigDragon
 
   private static void initializeExt()
   {
-    GameMap map;
-    GameCase cell;
+    GameMap map8=Main.world.getMap((short)9375);
+    GameCase cell8=map8.getCase(413);
+    GameMap map12=Main.world.getMap((short)9381);
+    GameCase cell12=map12.getCase(216);
+    GameMap map14=Main.world.getMap((short)9387);
+    GameCase cell14=map14.getCase(262);
+    GameMap map18=Main.world.getMap((short)9377);
+    GameCase cell18=map18.getCase(36);
+
     switch(Formulas.getRandomValue(0,3))
     {
-      case 0: // 9375 - 8�me
+      case 0: //map8
+        System.out.println("0");
         closeMap(9375,413,274,262,36);
-        map=Main.world.getMap((short)9375);
-        cell=map.getCase(413);
-        open(map,cell);
+        closeExit(map12,cell12);
+        closeExit(map14,cell14);
+        closeExit(map18,cell18);
+        open(map8,cell8);
         break;
-      case 1: // 9381 - 12�me
+      case 1: //map12
+        System.out.println("1");
         closeMap(9381,442,320,216,22);
-        map=Main.world.getMap((short)9381);
-        cell=map.getCase(216);
-        open(map,cell);
+        closeExit(map8,cell8);
+        closeExit(map14,cell14);
+        closeExit(map18,cell18);
+        open(map12,cell12);
         break;
-      case 2: // 9387 - 14�me
+      case 2: //map14
+        System.out.println("2");
         closeMap(9387,414,262,144,48);
-        map=Main.world.getMap((short)9387);
-        cell=map.getCase(262);
-        open(map,cell);
+        closeExit(map8,cell8);
+        closeExit(map12,cell12);
+        closeExit(map18,cell18);
+        open(map14,cell14);
         break;
-      case 3: // 9377 - 18�me
+      case 3: //map18
+        System.out.println("3");
         closeMap(9377,413,274,262,36);
-        map=Main.world.getMap((short)9377);
-        cell=map.getCase(36);
-        open(map,cell);
+        closeExit(map8,cell8);
+        closeExit(map12,cell12);
+        closeExit(map14,cell14);
+        open(map18,cell18);
         break;
     }
   }
