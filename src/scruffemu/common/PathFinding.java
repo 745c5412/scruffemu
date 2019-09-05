@@ -23,7 +23,7 @@ public class PathFinding
 {
   public static char[] DIRECTIONS= { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
   private static Short _nroMovimientos=0;
-  
+
   @SuppressWarnings("deprecation")
   private static Integer nSteps=new Integer(0);
   private static class CeldaCamino
@@ -734,10 +734,10 @@ public class PathFinding
   public static int getNearestligneGA(Fight fight, int startCell, int endCell, ArrayList<GameCase> forbidens, int distmin)
   {
     GameMap map=fight.getMap();
-    ArrayList<Glyph> glyphs=new ArrayList<Glyph>();
+    ArrayList<Glyph> glyphs=new ArrayList<Glyph>();//Copie du tableau
     glyphs.addAll(fight.getAllGlyphs());
     int dist=1000;
-
+    //On prend la cellule autour de la cible, la plus proche
     int cellID=startCell;
     if(forbidens==null)
       forbidens=new ArrayList<>();
@@ -749,29 +749,36 @@ public class PathFinding
         continue;
       int dis=PathFinding.getDistanceBetween(map,endCell,c);
       int dis2=PathFinding.getDistanceBetween(map,startCell,c);
-
       if(dis<dist&&dis2<=distmin&&map.getCase(c).isWalkable(true,true,-1)&&map.getCase(c).getFirstFighter()==null&&!forbidens.contains(map.getCase(c)))
       {
         boolean ok1=true;
         for(Glyph g : glyphs)
+        {
           if(PathFinding.getDistanceBetween(map,c,g.getCell().getId())<=g.getSize()&&g.getSpell()!=476)
             ok1=false;
+        }
 
         if(!ok1)
           continue;
+        // On crée la distance
         dist=dis;
+        // On modifie la cellule
         cellID=c;
       }
       else if(dis<dist&&map.getCase(c).isWalkable(true,true,-1)&&map.getCase(c).getFirstFighter()==null&&!forbidens.contains(map.getCase(c)))
       {
         boolean ok1=true;
         for(Glyph g : glyphs)
+        {
           if(PathFinding.getDistanceBetween(map,c,g.getCell().getId())<=g.getSize()&&g.getSpell()!=476)
             ok1=false;
+        }
+
         if(!ok1)
           continue;
-
+        // On crée la distance
         dist=dis;
+        // On modifie la cellule
         cellID=c;
       }
       boolean ok=false;
@@ -782,36 +789,42 @@ public class PathFinding
           ok=true;
         dis=PathFinding.getDistanceBetween(map,endCell,c);
         dis2=PathFinding.getDistanceBetween(map,startCell,c);
-        // Si la distance est strictement inférieur à 1000 et que la case
-        // est marchable et que personne ne
-        // se trouve dessus et que la case n'est pas interdite
         if(dis<dist&&dis2<=distmin&&map.getCase(c).isWalkable(true,true,-1)&&map.getCase(c).getFirstFighter()==null&&!forbidens.contains(map.getCase(c)))
         {
           boolean ok1=true;
           for(Glyph g : glyphs)
+          {
             if(PathFinding.getDistanceBetween(map,c,g.getCell().getId())<=g.getSize()&&g.getSpell()!=476)
               ok1=false;
+          }
 
           if(!ok1)
             continue;
+          // On crée la distance
           dist=dis;
+          // On modifie la cellule
           cellID=c;
         }
         else if(dis<dist&&map.getCase(c).isWalkable(true,true,-1)&&map.getCase(c).getFirstFighter()==null&&!forbidens.contains(map.getCase(c)))
         {
           boolean ok1=true;
           for(Glyph g : glyphs)
+          {
             if(PathFinding.getDistanceBetween(map,c,g.getCell().getId())<=g.getSize()&&g.getSpell()!=476)
               ok1=false;
+          }
 
           if(!ok1)
             continue;
+          // On crée la distance
           dist=dis;
+          // On modifie la cellule
           cellID=c;
         }
         c=h;
       }
     }
+
     return cellID==startCell ? -1 : cellID;
   }
 
@@ -2070,9 +2083,9 @@ public class PathFinding
     return null;
   }
 
-  public static boolean checkLoS(GameMap map, int cell1, int cell2, Fighter fighter, boolean isPeur)
+  public static boolean checkLoS(GameMap map, int cell1, int cell2, Fighter fighter, boolean needsWalkable)
   {
-    if(fighter!=null&&fighter.getPersonnage()!=null) // on ne rev�rifie pas (en plus du client) pour les joueurs
+    if(fighter!=null&&fighter.getPersonnage()!=null) //on ne rev�rifie pas (en plus du client) pour les joueurs
       return true;
     ArrayList<Integer> CellsToConsider=new ArrayList<Integer>();
     CellsToConsider=getLoSBotheringIDCases(map,cell1,cell2,true);
@@ -2083,10 +2096,8 @@ public class PathFinding
     for(Integer cellID : CellsToConsider)
     {
       if(map.getCase(cellID)!=null)
-        if(!map.getCase(cellID).blockLoS()||(!map.getCase(cellID).isWalkable(false)&&isPeur))
-        {
+        if(!map.getCase(cellID).blockLoS()||(!map.getCase(cellID).isWalkable(false)&&needsWalkable))
           return false;
-        }
     }
     return true;
   }
@@ -2601,7 +2612,7 @@ public class PathFinding
     }
     return null;
   }
-  
+
   public static short distanciaEstimada(final GameMap mapa, final short celdaInicio, final short celdaDestino)
   {
     if(celdaInicio==celdaDestino)
@@ -2614,7 +2625,7 @@ public class PathFinding
     final int difY=Math.abs(cInicio.getY()-cDestino.getY());
     return (short)Math.sqrt(Math.pow(difX,2)+Math.pow(difY,2));
   }
-  
+
   private static short celdaMasCercanaACeldaObjetivo(final GameMap mapa, final short celdaInicio, final short celdaDestino, ArrayList<GameCase> celdasProhibidas, final boolean ocupada)
   {
     if(mapa.getCase(celdaInicio)==null||mapa.getCase(celdaDestino)==null)
@@ -2645,7 +2656,7 @@ public class PathFinding
     }
     return celdaID==celdaInicio ? -1 : celdaID;
   }
-  
+
   public static char[] listaDirEntreDosCeldas(final GameMap mapa, final short celdaInicio, final short celdaDestino)
   {
     char[] abc;
@@ -2712,7 +2723,7 @@ public class PathFinding
     }
     return abc;
   }
-  
+
   public static short getSigIDCeldaMismaDir(final short celdaID, final char direccion, final GameMap mapa, final boolean combate)
   {
     switch(direccion)
@@ -2736,7 +2747,7 @@ public class PathFinding
     }
     return -1;
   }
-  
+
   public static byte getIndexDireccion(char c)
   {
     byte b=0;
@@ -2748,7 +2759,7 @@ public class PathFinding
     }
     return 0;
   }
-  
+
   public static short cellMoveSprite(final GameMap map, final int cell)
   {
     final ArrayList<Short> celdasPosibles=new ArrayList<Short>();
@@ -2776,7 +2787,7 @@ public class PathFinding
     }
     return celdasPosibles.get(Formulas.getRandomValue(0,celdasPosibles.size()-1));
   }
-  
+
   public static char direccionEntreDosCeldas(final GameMap mapa, final short celdaInicio, final short celdaDestino, final boolean esPelea)
   {
     if(celdaInicio==celdaDestino||mapa==null)
@@ -2820,7 +2831,7 @@ public class PathFinding
       return DIRECTIONS[5];
     }
   }
-  
+
   public static String getPathToString(GameMap mapa, ArrayList<GameCase> celdas, short celdaInicio, boolean esPelea)
   {
     StringBuilder pathStr=new StringBuilder();
@@ -2838,7 +2849,7 @@ public class PathFinding
     }
     return pathStr.toString();
   }
-  
+
   public static short numeroMovimientos(final GameMap mapa, final Fight pelea, final AtomicReference<String> pathRef, final short celdaInicio, final short celdaFinal, Player perso)
   {
     synchronized(_nroMovimientos)
@@ -2858,7 +2869,7 @@ public class PathFinding
         final char dir=miniPath.charAt(0);
         final short celdaTemp=(short)Main.world.getCryptManager().cellCode_To_ID(miniPath.substring(1));
         _nroMovimientos=0;
-        
+
         final String[] aPathInfos=pathSimpleValido(nuevaCelda,celdaTemp,dir,mapa,pelea,celdaFinal,perso).split(Pattern.quote(";"));
         if(aPathInfos[0].equalsIgnoreCase("invisible"))
         {
@@ -2892,7 +2903,7 @@ public class PathFinding
       return movimientos;
     }
   }
-  
+
   private static String pathSimpleValido(final short celdaID, final short celdaSemiFinal, final char dir, final GameMap mapa, final Fight pelea, final short celdaFinalDest, Player perso)
   {
     _nroMovimientos=0;

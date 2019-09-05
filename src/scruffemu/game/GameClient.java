@@ -332,9 +332,9 @@ public class GameClient
         }
       }
     }
-    
-    String cap = name.substring(0,1).toUpperCase() + name.substring(1);
-    
+
+    String cap=name.substring(0,1).toUpperCase()+name.substring(1);
+
     //Si le nom est invalide
     if(!isValid)
     {
@@ -2918,77 +2918,6 @@ public class GameClient
             break;
         }
         break;
-
-      /*//v2.8 - Small exception fix
-      case ExchangeAction.CRAFTING:
-        //Si pas action de craft, on s'arrete la
-        if(!((JobAction)this.player.getExchangeAction().getValue()).isCraft())
-          return;
-      
-        if(packet.charAt(2)=='O'&&((JobAction)this.player.getExchangeAction().getValue()).getJobCraft()==null)//Ajout d'objet
-        {
-          if(packet.contains("+"))
-          {
-            for(String split : packet.substring(4).split("\\+"))
-            {
-              String[] infos=split.split("\\|");
-              try
-              {
-                int guid=Integer.parseInt(infos[0]);
-                int qua=Integer.parseInt(infos[1]);
-                if(qua<=0)
-                  return;
-                if(!this.player.hasItemGuid(guid))
-                  return;
-                GameObject obj=World.getGameObject(guid);
-                if(obj==null)
-                  return;
-                if(obj.getQuantity()<=0)
-                  return;
-                if(obj.getQuantity()<qua)
-                  qua=obj.getQuantity();
-                ((JobAction)this.player.getExchangeAction().getValue()).modifIngredient(this.player,guid,qua);
-              }
-              catch(NumberFormatException e)
-              {
-                this.player.sendMessage("Error: JobExchange : "+packet+"\n"+e.getMessage());
-                e.printStackTrace();
-                return;
-              }
-            }
-          } else
-          {
-            String[] infos=packet.substring(4).split("\\|");
-            try
-            {
-              int guid=Integer.parseInt(infos[0]);
-              int qua=Integer.parseInt(infos[1]);
-              if(qua<=0)
-                return;
-              GameObject obj=World.getGameObject(guid);
-              if(obj==null)
-                return;
-              ((JobAction)this.player.getExchangeAction().getValue()).modifIngredient(this.player,guid,-qua);
-            }
-            catch(NumberFormatException e)
-            {
-              this.player.sendMessage("Error: JobExchange : "+packet+"\n"+e.getMessage());
-              e.printStackTrace();
-              return;
-            }
-          }
-      
-        } else if(packet.charAt(2)=='R')
-        {
-          if(((JobAction)this.player.getExchangeAction().getValue()).getJobCraft()==null)
-            ((JobAction)this.player.getExchangeAction().getValue()).setJobCraft(((JobAction)this.player.getExchangeAction().getValue()).oldJobCraft);
-          ((JobAction)this.player.getExchangeAction().getValue()).getJobCraft().setAction(Integer.parseInt(packet.substring(3)));
-        } else if(packet.charAt(2)=='r')
-          if(this.player.getExchangeAction().getValue()!=null)
-            if(((JobAction)this.player.getExchangeAction().getValue()).getJobCraft()!=null)
-              ((JobAction)this.player.getExchangeAction().getValue()).broken=true;
-        break;*/
-
       case ExchangeAction.CRAFTING:
         //Si pas action de craft, on s'arrete la
         if(!((JobAction)this.player.getExchangeAction().getValue()).isCraft())
@@ -4909,8 +4838,6 @@ public class GameClient
         break;
 
       case 902://Refus/Anuler Defie
-        if(Config.getInstance().fightAsBlocked)
-          return;
         gameCancelDuel(packet);
         break;
 
@@ -5292,8 +5219,10 @@ public class GameClient
       Player player=Main.world.getPlayer(this.player.getDuelId());
       player.setAway(false);
       player.setDuelId(-1);
+      player.setFight(null);
       this.player.setAway(false);
       this.player.setDuelId(-1);
+      this.player.setFight(null);
     }
     catch(NumberFormatException e)
     {
@@ -7050,7 +6979,7 @@ public class GameClient
       catch(Exception ignored)
       {
       }
-
+      
       GameObject object=World.getGameObject(id);
       if(!this.player.hasItemGuid(id)||object==null)
         return;
@@ -7194,16 +7123,16 @@ public class GameClient
           }
           this.player.removeItemClasse(objTemplate.getId());
         }
-        
+
         if(!Constant.isValidPlaceForItem(object.getTemplate(),position)&&position!=Constant.ITEM_POS_NO_EQUIPED&&object.getTemplate().getType()!=Constant.ITEM_TYPE_OBJET_VIVANT)
           return;
-        
+
         if(!object.getTemplate().getConditions().equalsIgnoreCase("")&&!ConditionParser.validConditions(this.player,object.getTemplate().getConditions()))
         {
           SocketManager.GAME_SEND_Im_PACKET(this.player,"119|44"); // si le this.player ne v�rifie pas les conditions diverses
           return;
         }
-        
+
         if((position==Constant.ITEM_POS_BOUCLIER&&this.player.getObjetByPos(Constant.ITEM_POS_ARME)!=null)||(position==Constant.ITEM_POS_ARME&&this.player.getObjetByPos(Constant.ITEM_POS_BOUCLIER)!=null))
         {
           if(this.player.getObjetByPos(Constant.ITEM_POS_ARME)!=null)
@@ -7230,7 +7159,7 @@ public class GameClient
           SocketManager.GAME_SEND_OAEL_PACKET(this);
           return;
         }
-        
+
         //On ne peut �quiper 2 items de panoplies identiques, ou 2 Dofus identiques
         if(position!=Constant.ITEM_POS_NO_EQUIPED&&(object.getTemplate().getPanoId()!=-1||object.getTemplate().getType()==Constant.ITEM_TYPE_DOFUS)&&this.player.hasEquiped(object.getTemplate().getId()))
           return;

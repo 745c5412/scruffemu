@@ -33,11 +33,11 @@ public class Rune
         return rune;
     return null;
   }
-  
+
   public static Rune getRuneByStatId(String statId)
   {
     for(Rune rune : runes)
-      if(rune.getStatId()==statId)
+      if(rune.getStatId().compareTo(statId)==0)
         return rune;
     return null;
   }
@@ -280,7 +280,6 @@ public class Rune
   {
     this.templateId=templateId;
   }
-
 
   public String getnStatId()
   {

@@ -2003,3 +2003,25 @@ Fixed a bug where flat fire resistance had the wrong ID internally, making effec
 Fixed a bug where flat water resistance had the wrong ID internally, making effects that added it not work correctly
 Fixed a bug where flat air resistance had the wrong ID internally, making effects or items that added it not work correctly
 Made rune system completely dynamic
+Fixed a bug where Feline Movement's critical hit did not do anything
+Fixed a bug where static summons counted towards your summons (Sadidas no longer gets blocked from summoning dolls because they have summoned trees)
+Fixed a bug where the "find closest line" function would not correctly check if lines contained fighters or blocked line of sight otherwise (fixes Red Wyrmling)
+
+05-09-2019
+Fixed a bug where canceling a challenge did not correctly reset a few variables
+Fixed a bug where glyphs still triggered if the entire enemy team was dead
+Made Cra's Poisoned Arrow bypass shields and res like other poisons
+Fixed a bug where teleglyphing into a Paralyzing Glyph caused the caster to become unable to move even though MP was not actually removed from the caster
+Removed Pandora Hairs as a drop from Pandora Master
+Removed Earth Pandawushu Artifact as a drop from Pandora Master
+Removed Fire Pandawushu Artifact as a drop from Pandora Master
+Removed Water Pandawushu Artifact as a drop from Pandora Master
+Removed Air Pandawushu Artifact as a drop from Pandora Master
+Increased droprate of Pandora Master Hair to 24% (was 1.5%)
+Made Living Chest's base prospecting equal to the summoner's prospecting
+Made Red Wyrmling's Dragofire no longer print messages for the damage buff it gives (prevents freezing when Red Wyrmling attacks with a large amount of teammates)
+Made Crackler's Crushing no longer print messages for the resistance buffs it gives (prevents freezing when Crackler attacks with a large amount of teammates)
+Reduced Red Wyrmling's Dragofire animation timer to 1000ms (was 1200ms)
+Redid parts of Red Wyrmling's AI
+
+to export: drops.sql, spells.sql

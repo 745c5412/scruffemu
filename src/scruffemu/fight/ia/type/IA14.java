@@ -48,7 +48,7 @@ public class IA14 extends AbstractIA
           Function.getInstance().moveNearIfPossible(this.fight,this.fighter,target);
       }
 
-      addNext(this::decrementCount,1000);
+      addNext(this::decrementCount,500);
     }
     else
     {

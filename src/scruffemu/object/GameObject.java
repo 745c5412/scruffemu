@@ -1107,10 +1107,10 @@ public class GameObject
   //v2.7 - Replaced String += with StringBuilder
   public String parseStringStatsEC_FM(GameObject obj, double power, int stat)
   {
-    String stats="notEmpty";
+    String stats="";
     double lost=0.0;
     boolean stop=false;
-    while(lost<power&&!stats.isEmpty()) //stop looping when power limit is reached or item doesnt have stats
+    do
     {
       stats="";
       boolean first=false;
@@ -1186,8 +1186,12 @@ public class GameObject
         int newstats=0;
         int statID=i;
         int statAmount=statsObj.get(i);
-        Rune rune=Rune.getRuneByStatId(Integer.toHexString(statID));
-        float statPower=rune.getPower()/rune.getStatsAdd();
+        float statPower=0;
+        if(Rune.getRuneByStatId(Integer.toHexString(statID))!=null)
+        {
+          Rune rune=Rune.getRuneByStatId(Integer.toHexString(statID));
+          statPower=rune.getPower()/rune.getStatsAdd();
+        }
         if((statID==stat&&filteredKeys.size()!=1)||lost>=power) //stop removing if stat being targeted is runestat while more options are available or if more power than runepower has been lost
           newstats=statAmount;
         else if(statID==stat&&filteredKeys.size()==1&&statAmount*statPower<=power-lost) //only stat available is runeStat and less than power limit
@@ -1252,7 +1256,7 @@ public class GameObject
       obj.parseStringToStats(stats,true);
       if(stop)
         return stats;
-    }
+    } while(lost<power&&!stats.isEmpty()); //stop looping when power limit is reached or item doesnt have stats
     return stats;
   }
 

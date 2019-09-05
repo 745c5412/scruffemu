@@ -1057,7 +1057,14 @@ public class Fighter implements Comparable<Fighter>
         return (getTotalStats().getEffect(Constant.STATS_ADD_PROS)+Math.round(getTotalStats().getEffect(Constant.STATS_ADD_CHAN)/10)+Math.round(getBuffValue(Constant.STATS_ADD_CHAN)/10));
       case 2: // mob
         if(this.isInvocation()) // Si c'est un coffre anim�, la chance est �gale � 1000*(1+lvlinvocateur/100)
-          return (getTotalStats().getEffect(Constant.STATS_ADD_PROS)+(1000*(1+this.getInvocator().getLvl()/100))/10);
+        {
+          int tempPros=0;
+          for(SpellEffect prospecting : this.getBuffsByEffectID(Constant.STATS_ADD_PROS))
+          {
+            tempPros+=prospecting.getValue();
+          }
+          return tempPros+this.getInvocator().getPros();
+        }
         else
           return (getTotalStats().getEffect(Constant.STATS_ADD_PROS)+Math.round(getBuffValue(Constant.STATS_ADD_CHAN)/10));
     }

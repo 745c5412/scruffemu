@@ -13,6 +13,7 @@ public class IA2 extends AbstractNeedSpell
 {
   private byte attack=0;
   private ArrayList<Fighter> attacked=new ArrayList<Fighter>();
+  private ArrayList<Fighter> tryAttacked=new ArrayList<Fighter>();
   Spell.SortStats dragofire=this.fighter.getMob().getSpells().get(477);
 
   public IA2(Fight fight, Fighter fighter, byte count)
@@ -27,22 +28,23 @@ public class IA2 extends AbstractNeedSpell
     {
       int time=100,maxPo=1;
       boolean action=false;
-      Fighter enemy=Function.getInstance().getNearestEnnemyNotListedLos(this.fight,this.fighter,this.attacked);
-      Fighter enemy2=Function.getInstance().getNearestEnnemyNotListed(this.fight,this.fighter,this.attacked);
+      Fighter dispellTarget=Function.getInstance().getNearestEnnemy(this.fight,this.fighter);
+      Fighter dragoFireTarget=Function.getInstance().getNearestEnnemyNotListedLos(this.fight,this.fighter,attacked);
+      ArrayList<Fighter> targets=fight.getFighters(this.fighter.getOtherTeam());
+
+      Fighter A=Function.getInstance().getSummoner(fight,this.fighter,63);
 
       for(Spell.SortStats spellStats : this.highests)
         if(spellStats.getMaxPO()>maxPo)
           maxPo=spellStats.getMaxPO();
 
-      Fighter A=Function.getInstance().getSummoner(fight,this.fighter,63);
-
       int enemyBuffInfluence=0;
-      if(enemy!=null)
+      if(dispellTarget!=null)
       {
         ArrayList<SpellEffect> buffs=new ArrayList<SpellEffect>();
-        buffs.addAll(enemy.getFightBuff());
+        buffs.addAll(dispellTarget.getFightBuff());
         for(SpellEffect SE : buffs)
-          enemyBuffInfluence+=Function.getInstance().calculInfluence(SE,this.fighter,enemy);
+          enemyBuffInfluence+=Function.getInstance().calculInfluence(SE,this.fighter,dispellTarget);
       }
 
       int summonerBuffInfluence=0;
@@ -54,22 +56,16 @@ public class IA2 extends AbstractNeedSpell
           summonerBuffInfluence+=Function.getInstance().calculInfluence(SE,this.fighter,A);
       }
 
-      if(enemy!=null)
-        if(enemy.isHide())
-          enemy=null;
+      if(dispellTarget!=null)
+        if(dispellTarget.isHide())
+          dispellTarget=null;
+      if(dragoFireTarget!=null)
+        if(dragoFireTarget.isHide())
+          dragoFireTarget=null;
 
       if(summonerBuffInfluence<=-200)
       {
-        if(this.fighter.getCurPm(this.fight)>0) //move to summoner
-        {
-          int value=Function.getInstance().moveautourIfPossible(this.fight,this.fighter,A);
-          if(value!=0)
-          {
-            time=value;
-            action=true;
-          }
-        }
-        if(this.fighter.getCurPa(this.fight)>0&&!action) //dispell summoner
+        if(this.fighter.getCurPa(this.fight)>0) //dispell summoner
         {
           if(Function.getInstance().buffIfPossible(this.fight,this.fighter,A,this.buffs))
           {
@@ -78,47 +74,89 @@ public class IA2 extends AbstractNeedSpell
             action=true;
           }
         }
+
+        if(this.fighter.getCurPm(this.fight)>0&&!action) //move to summoner
+        {
+          int value=Function.getInstance().moveautourIfPossible(this.fight,this.fighter,A);
+          if(value!=0)
+          {
+            tryAttacked.clear();
+            time=value;
+            action=true;
+          }
+        }
       }
       else if(enemyBuffInfluence<=-200)
       {
-        if(this.fighter.getCurPa(this.fight)>0&&!action&&enemy!=null) //dispell enemy
+        if(this.fighter.getCurPa(this.fight)>0&&!action&&dispellTarget!=null) //dispell enemy
         {
-          if(Function.getInstance().buffIfPossible(this.fight,this.fighter,enemy,this.buffs))
+          if(Function.getInstance().buffIfPossible(this.fight,this.fighter,dispellTarget,this.buffs))
           {
             this.attack++;
             time=1000;
             action=true;
           }
         }
-      }
 
-      if(this.fighter.getCurPa(this.fight)>0&&!action&&enemy!=null&&this.fighter.getCurPa(this.fight)>=dragofire.getPACost()) //dragofire if possible
-      {
-        if(fight.canCastSpell2(fighter,dragofire,fighter.getCell(),enemy.getCell()))
+        if(this.fighter.getCurPm(this.fight)>0&&!action) //move to summoner
         {
-          this.fight.tryCastSpell(this.fighter,dragofire,enemy.getCell().getId());
-          this.attacked.add(enemy);
-          this.attack++;
-          time=dragofire.getSpell().getDuration();
-          action=true;
+          int value=Function.getInstance().moveautourIfPossible(this.fight,this.fighter,dispellTarget);
+          if(value!=0)
+          {
+            tryAttacked.clear();
+            time=value;
+            action=true;
+          }
         }
       }
 
-      if(this.fighter.getCurPm(this.fight)>0&&enemy!=null&&this.fighter.getCurPa(this.fight)>=dragofire.getPACost()&&!action) //move into line
+      if(!action&&this.fighter.getCurPa(this.fight)>=dragofire.getPACost()) //dragofire if possible
       {
-        int value=Function.getInstance().moveenfaceIfPossible(this.fight,this.fighter,enemy,maxPo+1);
+        for(Fighter f : targets)
+          if(!tryAttacked.contains(f)&&!attacked.contains(f)&&!f.isDead())
+            if(fight.canCastSpell2(fighter,dragofire,fighter.getCell(),f.getCell()))
+            {
+              if(this.fight.tryCastSpell(this.fighter,dragofire,f.getCell().getId())==0)
+              {
+                this.attacked.add(f);
+                this.attack++;
+                time=dragofire.getSpell().getDuration();
+                action=true;
+              }
+              else
+                time=1500;
+              tryAttacked.clear();
+              break;
+            }
+            else
+              tryAttacked.add(f);
+      }
+
+      if(this.fighter.getCurPm(this.fight)>0&&this.fighter.getCurPa(this.fight)>=dragofire.getPACost()&&!action) //move into line
+      {
+        for(Fighter f : targets)
+          if(!f.isDead())
+          {
+            int value=Function.getInstance().moveenfaceIfPossible(this.fight,this.fighter,f,maxPo+1);
+            if(value!=0)
+            {
+              System.out.println("moved into line");
+              tryAttacked.clear();
+              time=value+500;
+              action=true;
+              break;
+            }
+          }
+      }
+
+      if(this.fighter.getCurPm(this.fight)>0&&dragoFireTarget!=null&&this.fighter.getCurPa(this.fight)>=dragofire.getPACost()&&!action) //move close if blocked
+      {
+        int value=Function.getInstance().moveautourIfPossible(this.fight,this.fighter,dragoFireTarget);
         if(value!=0)
         {
-          time=value+1200;
-          action=true;
-        }
-      }
-
-      if(this.fighter.getCurPm(this.fight)>0&&enemy2!=null&&this.fighter.getCurPa(this.fight)>=dragofire.getPACost()&&!action) //move close if blocked
-      {
-        if(Function.getInstance().moveNearIfPossible(this.fight,this.fighter,enemy2))
-        {
-          time=1500;
+          System.out.println("moved close");
+          tryAttacked.clear();
+          time=value+500;
           action=true;
         }
       }
@@ -127,7 +165,7 @@ public class IA2 extends AbstractNeedSpell
       {
         int value=Function.getInstance().moveFarIfPossible(this.fight,this.fighter);
         if(value!=0)
-          time=value;
+          time=value+1500;
       }
 
       if(this.fighter.getCurPa(this.fight)==0&&this.fighter.getCurPm(this.fight)==0)

@@ -4499,6 +4499,12 @@ public class SpellEffect
       SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,effectID,caster.getId()+"",caster.getId()+","+val+","+turns);
       return;
     }
+    else if(spell==477) //Red Wyrmling's Dragofire, do not print message
+    {
+      for(Fighter target : cibles)
+        target.addBuff(effectID,val,turns,1,true,spell,args,caster,false);
+      return;
+    }
     for(Fighter target : cibles)
     {
       target.addBuff(effectID,val,turns,1,true,spell,args,caster,false);
@@ -4710,25 +4716,7 @@ public class SpellEffect
 
   private void applyEffect_127(ArrayList<Fighter> cibles, Fight fight)
   {
-    if(this.spell==907)
-    {
-      for(Fighter target : cibles)
-      {
-        final int remove=Formulas.getPointsLost('m',value,caster,target);
-        if((value-remove)>0)
-        {
-          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,309,caster.getId()+"",target.getId()+","+(value-remove));
-        }
-        target.setCurPm(fight,-remove);
-        if(remove>0)
-        {
-          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,127,target.getId()+"",target.getId()+",-"+remove);
-          if(target.getMob()!=null)
-            this.verifmobs(fight,target,127,0);
-        }
-      }
-    }
-    else if(turns<=0)
+    if(turns<=0)
     {
       for(Fighter target : cibles)
       {
@@ -5103,7 +5091,7 @@ public class SpellEffect
       else
         target.lastInvisMP=0;
       target.addBuff(effectID,0,turns,1,true,spell,args,caster,true);
-      
+
       SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,effectID,caster.getId()+"",target.getId()+","+(turns-1));
     }
   }
@@ -5719,7 +5707,7 @@ public class SpellEffect
     fight.getMap().getCase(this.cell.getId()).addFighter(fighter);
     fighter.setCell(fight.getMap().getCase(this.cell.getId()));
     fight.addFighterInTeam(fighter,this.caster.getTeam());
-    SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,181,this.caster.getId()+"",fighter.getGmPacket('+',true).substring(3));
+    SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,185,this.caster.getId()+"",fighter.getGmPacket('+',true).substring(3));
   }
 
   private void applyEffect_186(Fight fight, ArrayList<Fighter> cibles)
@@ -5781,8 +5769,11 @@ public class SpellEffect
     }
     int val=Formulas.getRandomJet(jet);
     if(val==-1)
+      return;
+    if(spell==2005) //Crackler's Crushing, do not print message
     {
-
+      for(Fighter target : cibles)
+        target.addBuff(effectID,val,turns,1,true,spell,args,caster,false);
       return;
     }
     for(Fighter target : cibles)
@@ -5798,8 +5789,11 @@ public class SpellEffect
       return;
     int val=Formulas.getRandomJet(jet);
     if(val==-1)
+      return;
+    if(spell==2005) //Crackler's Crushing, do not print message
     {
-
+      for(Fighter target : cibles)
+        target.addBuff(effectID,val,turns,1,true,spell,args,caster,false);
       return;
     }
     for(Fighter target : cibles)
@@ -5815,8 +5809,11 @@ public class SpellEffect
       return;
     int val=Formulas.getRandomJet(jet);
     if(val==-1)
+      return;
+    if(spell==2005) //Crackler's Crushing, do not print message
     {
-
+      for(Fighter target : cibles)
+        target.addBuff(effectID,val,turns,1,true,spell,args,caster,false);
       return;
     }
     for(Fighter target : cibles)
@@ -5832,8 +5829,11 @@ public class SpellEffect
       return;
     int val=Formulas.getRandomJet(jet);
     if(val==-1)
+      return;
+    if(spell==2005) //Crackler's Crushing, do not print message
     {
-
+      for(Fighter target : cibles)
+        target.addBuff(effectID,val,turns,1,true,spell,args,caster,false);
       return;
     }
     for(Fighter target : cibles)
@@ -5849,8 +5849,11 @@ public class SpellEffect
       return;
     int val=Formulas.getRandomJet(jet);
     if(val==-1)
+      return;
+    if(spell==2005) //Crackler's Crushing, do not print message
     {
-
+      for(Fighter target : cibles)
+        target.addBuff(effectID,val,turns,1,true,spell,args,caster,false);
       return;
     }
     for(Fighter target : cibles)
@@ -7583,6 +7586,8 @@ public class SpellEffect
         if(dist<=p.getSize())
           p.onTraped(caster);
       }
+      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,4,caster.getId()+"",caster.getId()+","+cell.getId());
+
       ArrayList<Glyph> glyphs=new ArrayList<>(caster.getFight().getAllGlyphs());
       ArrayList<Glyph> targetGlyphs=new ArrayList<>();
       for(Glyph glyph : glyphs)
@@ -7594,9 +7599,7 @@ public class SpellEffect
       {
         for(Fighter f : caster.getFight().getFighters(3))
         {
-          if(f==caster)
-            continue;
-          else if(PathFinding.getDistanceBetween(f.getFight().getMap(),f.getCell().getId(),glyph.getCell().getId())<=glyph.getSize()&&Constant.isFecaGlyph(glyph.getSpell()))
+          if(f!=caster&&PathFinding.getDistanceBetween(f.getFight().getMap(),f.getCell().getId(),glyph.getCell().getId())<=glyph.getSize()&&Constant.isFecaGlyph(glyph.getSpell()))
           {
             glyph.onTrapped(f);
             if(f.getPdv()<=0)
@@ -7609,7 +7612,6 @@ public class SpellEffect
           }
         }
       }
-      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,4,caster.getId()+"",caster.getId()+","+cell.getId());
     }
   }
 

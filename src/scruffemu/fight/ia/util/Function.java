@@ -1936,23 +1936,31 @@ public class Function
       return 0;
     int nbrcase=0;
 
-    int cellID=PathFinding.getNearestligneGA(fight,cell2.getId(),cell.getId(),null,dist);
+    int targetCell=PathFinding.getNearestligneGA(fight,cell2.getId(),cell.getId(),null,dist);
+    if(!PathFinding.checkLoS(fight.getMap(),targetCell,T.getCell().getId(),null,false))
+      targetCell=-1;
 
-    if(cellID==-1)
+    if(targetCell==-1)
     {
       Map<Integer, Fighter> ennemys=getLowHpEnnemyList(fight,F);
       for(Map.Entry<Integer, Fighter> target : ennemys.entrySet())
       {
-        int cellID2=PathFinding.getNearestligneGA(fight,target.getValue().getCell().getId(),cell.getId(),null,dist);
-        if(cellID2!=-1)
+        int tempTargetCell=PathFinding.getNearestligneGA(fight,target.getValue().getCell().getId(),cell.getId(),null,dist);
+        if(!PathFinding.checkLoS(fight.getMap(),tempTargetCell,T.getCell().getId(),null,false))
+          tempTargetCell=-1;
+        if(tempTargetCell!=-1)
         {
-          cellID=cellID2;
+          targetCell=tempTargetCell;
           break;
         }
       }
     }
 
-    ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,cell.getId(),cellID).getShortestPath(0); //0pour en ligne
+    System.out.println("targetCell: "+targetCell);
+    if(targetCell==-1)
+      return 0;
+
+    ArrayList<GameCase> path=new AstarPathfinding(fight.getMapOld(),fight,cell.getId(),targetCell).getShortestPath(0); //0pour en ligne
     if(path==null||path.isEmpty())
       return 0;
 
@@ -1962,10 +1970,13 @@ public class Function
     {
       if(path.size()==a||ligneok==true)
         break;
-      if(PathFinding.casesAreInSameLine(fight.getMap(),path.get(a).getId(),T.getCell().getId(),'z',70))
+      if(PathFinding.casesAreInSameLine(fight.getMap(),path.get(a).getId(),T.getCell().getId(),'z',70)&&PathFinding.checkLoS(fight.getMap(),path.get(a).getId(),T.getCell().getId(),null,false))
         ligneok=true;
       finalPath.add(path.get(a));
     }
+    if(ligneok==false)
+      return 0;
+
     String pathstr="";
     try
     {
@@ -2218,10 +2229,10 @@ public class Function
     {
       if(f.isDead()||fightList.contains(f))
         continue;
-      if(f.getTeam2()!=fighter.getTeam2())//Si c'est un ennemis
+      if(f.getTeam()!=fighter.getTeam())//Si c'est un ennemis
       {
         if(PathFinding.casesAreInSameLine(fight.getMap(),fighter.getCell().getId(),f.getCell().getId(),'z',70))
-          if(!PathFinding.checkLoS(fight.getMap(),fighter.getCell().getId(),f.getCell().getId(),null,true))
+          if(!PathFinding.checkLoS(fight.getMap(),fighter.getCell().getId(),f.getCell().getId(),null,false))
             continue;
 
         int d=PathFinding.getDistanceBetween(fight.getMap(),fighter.getCell().getId(),f.getCell().getId());
@@ -2283,6 +2294,22 @@ public class Function
       if(f.getTeam2()!=fighter.getTeam2())
         curF=PathFinding.getNearestligneenemy(fight.getMap(),fighter.getCell().getId(),f,distmax);
 
+    }
+    return curF;
+  }
+
+  public Fighter getNearEnnemylignenbrcasemaxNotListed(Fight fight, Fighter fighter, int distmin, int distmax, ArrayList<Fighter> fightList)
+  {
+    if(fight==null||fighter==null)
+      return null;
+    Fighter curF=null;
+
+    for(Fighter f : fight.getFighters(3))
+    {
+      if(f.isDead()||fightList.contains(f))
+        continue;
+      if(f.getTeam2()!=fighter.getTeam2())
+        curF=PathFinding.getNearestligneenemy(fight.getMap(),fighter.getCell().getId(),f,distmax);
     }
     return curF;
   }

@@ -490,6 +490,56 @@ public class Formulas
       isCaC=false;
     }
 
+    //Poisons
+    if(spellid!=-1)
+    {
+      switch(spellid)
+      {
+        //Insidious Poison, Poisoned Trap, Poisoned Arrow
+        case 66:
+        case 71:
+        case 164:
+          statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_AGIL);
+          if(statC<0)
+            statC=0;
+          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC);
+
+        //Earthquake
+        case 181:
+          statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_INTE);
+          if(statC<0)
+            statC=0;
+          if(target.hasBuff(183))
+            if(target.getBuff(183).getSpell()==197) //sylvan power reduction
+              return 0;
+          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC);
+
+        //Poisoned Wind
+        case 196:
+          statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_FORC);
+          if(statC<0)
+            statC=0;
+          if(target.hasBuff(184))
+            if(target.getBuff(184).getSpell()==197) //sylvan power reduction
+              return 0;
+          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC);
+
+        //Paralyzing Poison
+        case 200:
+          statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_INTE);
+          if(statC<0)
+            statC=0;
+          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC);
+
+        //Poisoning
+        case 219:
+          statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_FORC);
+          if(statC<0)
+            statC=0;
+          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC);
+      }
+    }
+
     switch(statID)
     {
       case Constant.ELEMENT_NULL://Fixe
@@ -615,53 +665,6 @@ public class Formulas
 
     num=a*mulT*aoeMultiplier*trapMultiplier*(jet*((100+statC+perdomC)/100))+domC; //dÃ¯Â¿Â½gats bruts
 
-    //Poisons
-    if(spellid!=-1)
-    {
-      switch(spellid)
-      {
-        //Insidious Posion + Poisoned Trap
-        case 66:
-        case 71:
-          statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_AGIL);
-          if(statC<0)
-            statC=0;
-          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC);
-
-        //Poisoned Wind
-        case 196:
-          statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_FORC);
-          if(statC<0)
-            statC=0;
-          if(target.hasBuff(184))
-            if(target.getBuff(184).getSpell()==197) //sylvan power reduction
-              return 0;
-          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC);
-        //Poisoning
-        case 219:
-          statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_FORC);
-          if(statC<0)
-            statC=0;
-          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC);
-
-        //Earthquake
-        case 181:
-          statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_INTE);
-          if(statC<0)
-            statC=0;
-          if(target.hasBuff(183))
-            if(target.getBuff(183).getSpell()==197) //sylvan power reduction
-              return 0;
-          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC);
-        //Paralyzing Poison
-        case 200:
-          statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_INTE);
-          if(statC<0)
-            statC=0;
-          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC);
-      }
-    }
-
     //Non-buff reflect
     if(caster.getId()!=target.getId())
     {
@@ -707,7 +710,7 @@ public class Formulas
     if(num<1)
       num=0;
 
-    // DÃ¯Â¿Â½but Formule pour les MOBs
+    //DÃ¯Â¿Â½but Formule pour les MOBs
     if(caster.getPersonnage()==null&&!caster.isCollector())
     {
       if(caster.getMob().getTemplate().getId()==116) //SacrifiÃ¯Â¿Â½ Dommage = PDV*2
@@ -1171,7 +1174,7 @@ public class Formulas
   {
     if(negative)
       return (itemPower+runePower)/averageItemPower; //return reciprocal to make you not gain more chance when getting closer to 0
-    return 1.1f*averageItemPower/(itemPower+runePower);
+    return averageItemPower/(itemPower+runePower);
   }
 
   public static float statPowerFormula(float averageStatPower, float statPower, boolean negative)
@@ -1219,8 +1222,6 @@ public class Formulas
     else if(chanceForRune>1f)
       chanceForRune=1f;
 
-    /*f(itemPower<minItemPower/2&&itemPower)
-      itemPower=minItemPower/2;*/
     float itemPowerModifier=itemPowerFormula(averageItemPower,itemPower,runePower,negative); //modifier that reduces the chance of working for above-average items and increases it for below-average items
     if(itemPowerModifier<0.01f)
       itemPowerModifier=0.01f;
@@ -1238,8 +1239,8 @@ public class Formulas
       statPowerModifier=0.17f;
     else if(statPower>=4.5f)
     {
-      if(statPowerModifier>runePower/3)
-        statPowerModifier=runePower/3;
+      if(statPowerModifier>runePower/2)
+        statPowerModifier=runePower/2;
     }
     else if(statPowerModifier>=1f)
       statPowerModifier=1f;

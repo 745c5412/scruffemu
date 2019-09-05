@@ -212,6 +212,7 @@ public class CommandPlayer
     }
     if(perso.cantTP())
     {
+      SocketManager.GAME_SEND_MESSAGE(perso,"You can not teleport currently.");
       return true;
     }
     if(perso.getFight()!=null)

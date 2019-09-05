@@ -592,9 +592,7 @@ public class JobAction
       SocketManager.GAME_SEND_EXCHANGE_MOVE_OK(player,'O',"+",id+"|"+oldQuantity);
     }
     else
-    {
       SocketManager.GAME_SEND_EXCHANGE_MOVE_OK(player,'O',"-",id+"");
-    }
   }
 
   public byte sizeList(Map<Player, ArrayList<Pair<Integer, Integer>>> list)

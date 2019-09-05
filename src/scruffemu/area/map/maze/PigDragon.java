@@ -48,30 +48,7 @@ public class PigDragon
 
   private static void checkOutside()
   {
-    GameMap actual=Main.world.getMap((short)9375);
-    if(actual.getCase(returnCell(actual,413)).isLoS())
-    {
-      new TimerWaiterPlus(PigDragon::checkOutside,5*60*1000);
-      return;
-    }
-    actual=Main.world.getMap((short)9377);
-    if(actual.getCase(returnCell(actual,36)).isLoS())
-    {
-      new TimerWaiterPlus(PigDragon::checkOutside,5*60*1000);
-      return;
-    }
-    actual=Main.world.getMap((short)9381);
-    if(actual.getCase(returnCell(actual,216)).isLoS())
-    {
-      new TimerWaiterPlus(PigDragon::checkOutside,5*60*1000);
-      return;
-    }
-    actual=Main.world.getMap((short)9387);
-    if(actual.getCase(returnCell(actual,262)).isLoS())
-    {
-      new TimerWaiterPlus(PigDragon::checkOutside,5*60*1000);
-      return;
-    }
+    new TimerWaiterPlus(PigDragon::checkOutside,5*60*1000);
     Main.world.pigDragon.initialize();
   }
 

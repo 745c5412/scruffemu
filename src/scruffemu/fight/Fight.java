@@ -1818,7 +1818,7 @@ public class Fight
         }
       }
 
-      if(getState()<Constant.FIGHT_STATE_FINISHED)
+      if(!verifOtherTeamIsDead(current))
       {
         if(PathFinding.getDistanceBetween(getMap(),current.getCell().getId(),glyph.getCell().getId())<=glyph.getSize()&&glyph.getSpell()!=476)
           glyph.onTrapped(current);
@@ -1991,12 +1991,13 @@ public class Fight
     glyphs.addAll(getAllGlyphs());
     for(Glyph g : glyphs)
     {
-      if(getState()>=Constant.FIGHT_STATE_FINISHED)
-        return;
-      // Si dans le glyphe
-      int dist=PathFinding.getDistanceBetween(getMap(),current.getCell().getId(),g.getCell().getId());
-      if(dist<=g.getSize()&&g.getSpell()==476)// 476 a effet en fin de tour, alors le joueur est dans le glyphe
-        g.onTrapped(current);
+      if(!verifOtherTeamIsDead(current))
+      {
+        // Si dans le glyphe
+        int dist=PathFinding.getDistanceBetween(getMap(),current.getCell().getId(),g.getCell().getId());
+        if(dist<=g.getSize()&&g.getSpell()==476)// 476 a effet en fin de tour, alors le joueur est dans le glyphe
+          g.onTrapped(current);
+      }
     }
 
     if(current.getPdv()<=0)
@@ -3050,16 +3051,7 @@ public class Fight
     Player perso=caster.getPersonnage();
 
     if(SS==null)
-    {
-      if(perso!=null)
-      {
-        /*
-        SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(this,7);
-        SocketManager.GAME_SEND_Im_PACKET(perso,"1169");
-        SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(this,7,0,perso.getId());*/
-      }
       return false;
-    }
 
     if(current.getId()!=caster.getId())
     {
@@ -3094,22 +3086,21 @@ public class Fight
       return false;
     }
 
-    if(caster.getType()==1&&perso.getItemClasseSpell().containsKey(SS.getSpellID()))
+    if(perso!=null)
     {
-      int modi=perso.getItemClasseModif(SS.getSpellID(),288);
-      boolean modif=modi==1;
-      if(SS.isLineLaunch()&&!modif&&!PathFinding.casesAreInSameLine(getMap(),casterCell.getId(),targetCell.getId(),'z',70))
+      if(caster.getType()==1&&perso.getItemClasseSpell().containsKey(SS.getSpellID()))
       {
-        SocketManager.GAME_SEND_Im_PACKET(perso,"1173");
-        return false;
+        int modi=perso.getItemClasseModif(SS.getSpellID(),288);
+        boolean modif=modi==1;
+        if(SS.isLineLaunch()&&!modif&&!PathFinding.casesAreInSameLine(getMap(),casterCell.getId(),targetCell.getId(),'z',70))
+        {
+          SocketManager.GAME_SEND_Im_PACKET(perso,"1173");
+          return false;
+        }
       }
     }
     else if(SS.isLineLaunch()&&!PathFinding.casesAreInSameLine(getMap(),casterCell.getId(),targetCell.getId(),'z',70))
-    {
-      if(perso!=null)
-        SocketManager.GAME_SEND_Im_PACKET(perso,"1173");
       return false;
-    }
 
     char dir=PathFinding.getDirBetweenTwoCase(casterCell.getId(),targetCell.getId(),getMap(),true);
 
@@ -3345,14 +3336,14 @@ public class Fight
         if(player!=null&&target!=caster&&deadPlayer!=null)
           player.increaseTotalKills();
       }
-
-      final Fighter current=this.getFighterByOrdreJeu();
-      if(current==null)
-        return;
-
+      
       target.setIsDead(true);
       if(!target.hasLeft())
         this.getDeadList().add(new Pair<Integer, Fighter>(target.getId(),target));
+      
+      final Fighter current=this.getFighterByOrdreJeu();
+      if(current==null)
+        return;
 
       SocketManager.GAME_SEND_FIGHT_PLAYER_DIE_TO_FIGHT(this,7,target.getId());
       target.getCell().getFighters().clear();// Supprime tout causait bug si port�/porteur
@@ -3893,6 +3884,40 @@ public class Fight
         return false;
     }
     return true;
+  }
+
+  public boolean verifOtherTeamIsDead(Fighter f)
+  {
+    if(f.getTeam()==0)
+    {
+      boolean finish=true;
+      for(Entry<Integer, Fighter> entry : getTeam1().entrySet())
+      {
+        if(entry.getValue().isInvocation())
+          continue;
+        if(!entry.getValue().isDead())
+        {
+          finish=false;
+          break;
+        }
+      }
+      return finish;
+    }
+    else
+    {
+      boolean finish=true;
+      for(Entry<Integer, Fighter> entry : getTeam0().entrySet())
+      {
+        if(entry.getValue().isInvocation())
+          continue;
+        if(!entry.getValue().isDead())
+        {
+          finish=false;
+          break;
+        }
+      }
+      return finish;
+    }
   }
 
   public boolean verifIfTeamIsDead()
@@ -4869,7 +4894,15 @@ public class Fight
         int currentProspecting=-1;
         for(Fighter fighter : winners)
         {
-          if(fighter.getTotalStats().getEffect(Constant.STATS_ADD_PROS)>currentProspecting&&!temporary1.contains(fighter))
+          if(fighter.getMob()!=null&&fighter.getMob().getTemplate()!=null&&fighter.getMob().getTemplate().getId()==285&&fighter.getInvocator()!=null)
+          {
+            if(fighter.getInvocator().getTotalStats().getEffect(Constant.STATS_ADD_PROS)>currentProspecting&&!temporary1.contains(fighter))
+            {
+              higherFighter=fighter;
+              currentProspecting=fighter.getInvocator().getTotalStats().getEffect(Constant.STATS_ADD_PROS);
+            }
+          }
+          else if(fighter.getTotalStats().getEffect(Constant.STATS_ADD_PROS)>currentProspecting&&!temporary1.contains(fighter))
           {
             higherFighter=fighter;
             currentProspecting=fighter.getTotalStats().getEffect(Constant.STATS_ADD_PROS);
@@ -5118,7 +5151,7 @@ public class Fight
           for(Fighter ipDropper : ipDroppers.keySet())
             if(player.getAccount().getCurrentIp().compareTo(ipDropper.getPersonnage().getAccount().getCurrentIp())==0) //same IP of two IpDroppers, do not add
               add=false;
-        if(add)
+        if(add&&player!=null)
           ipDroppers.put(i,"");
 
         if(player!=null&&getType()!=Constant.FIGHT_TYPE_CHALLENGE)
@@ -5713,7 +5746,7 @@ public class Fight
             else if(target!=i) //give ipDrops away person
             {
               p.append(";");
-              if(ipDroppers.get(target).isEmpty())
+              if(ipDroppers.get(target)==null)
                 ipDroppers.put(target,drops);
               else
               {
@@ -5737,7 +5770,7 @@ public class Fight
           else if(target!=i) //give ipDrops away summon (living chest)
           {
             p.append(";");
-            if(ipDroppers.get(i).isEmpty())
+            if(ipDroppers.get(i)==null)
               ipDroppers.put(i,drops);
             else
             {
