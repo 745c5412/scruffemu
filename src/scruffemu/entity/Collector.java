@@ -631,4 +631,9 @@ public class Collector
   {
     return this.objects.values();
   }
+  
+  public String parseQuestionTaxCollector()
+  {
+    return "1"+';'+Main.world.getGuild(this.getGuildId()).getName()+','+Main.world.getGuild(this.getGuildId()).getLvl()+','+this.getPodsTotal()+','+this.getXp();
+  }
 }

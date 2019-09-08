@@ -197,9 +197,10 @@ public class Mount
               mount.aumReproduction();
               if(mount.getSavage()==1)
               {
-                park.getListOfRaising().remove(mount.id);
-                park.getMap().send("GM|-"+mount.getId());
                 Player player=Main.world.getPlayer(mount.getOwner());
+                park.delRaising(mount.getId());
+                park.getEtable().remove(mount);
+                park.getMap().send("GM|-"+mount.getId());
                 if(player!=null&&player.isOnline())
                 {
                   player.send("Im0111;~"+park.getMap().getX()+","+park.getMap().getY());
@@ -221,7 +222,8 @@ public class Mount
               mountArg.aumReproduction();
               if(mountArg.getSavage()==1)
               {
-                park.getListOfRaising().remove(mountArg.id);
+                park.delRaising(mountArg.getId());
+                park.getEtable().remove(mountArg);
                 park.getMap().send("GM|-"+mountArg.getId());
                 Player player=Main.world.getPlayer(mountArg.getOwner());
                 if(player!=null&&player.isOnline())
@@ -275,13 +277,6 @@ public class Mount
 
       if(player.getCurMap().getMountPark().hasEtableFull(player.getId()))
         player.send("Im1105");
-      if(father!=null&&father.getSavage()==1)
-      {
-        Database.getStatics().getMountData().delete(father.getId());
-        player.getCurMap().getMountPark().delRaising(father.getId());
-        player.getCurMap().getMountPark().getEtable().remove(father);
-        Main.world.removeMount(father.getId());
-      }
       if(this.getSavage()==1)
       {
         Database.getStatics().getMountData().delete(this.getId());
@@ -813,12 +808,12 @@ public class Mount
         }
         else if(item==7628||item==7622||item==7623||item==7624||item==7733||item==7734||item==7735||item==7736||item==7737||item==7738||item==7739||item==7740||item==7741||item==7742||item==7743||item==7744||item==7745||item==7746)
         { //Patter
-            aumState(GameMap.getObjResist(MP,cellTest,item));
-            aumFatige();
-            if(this.sex==0)
-              this.stateMale();
-            else
-              this.stateFemale();
+          aumState(GameMap.getObjResist(MP,cellTest,item));
+          aumFatige();
+          if(this.sex==0)
+            this.stateMale();
+          else
+            this.stateFemale();
         }
         else if(item==7590||item==7591||item==7592||item==7593||item==7594||item==7595||item==7596||item==7597||item==7598||item==7599||item==7600||item==7601||item==7602||item==7603||item==7604||item==7605||item==7673||item==7674||item==7675||item==7676||item==7677||item==7678||item==7679||item==7682)
         { //Drinking Well
@@ -942,12 +937,12 @@ public class Mount
         }
         else if(item==7628||item==7622||item==7623||item==7624||item==7733||item==7734||item==7735||item==7736||item==7737||item==7738||item==7739||item==7740||item==7741||item==7742||item==7743||item==7744||item==7745||item==7746)
         { //Patter
-            aumState(GameMap.getObjResist(MP,cellTest,item));
-            aumFatige();
-            if(this.sex==0)
-              this.stateMale();
-            else
-              this.stateFemale();
+          aumState(GameMap.getObjResist(MP,cellTest,item));
+          aumFatige();
+          if(this.sex==0)
+            this.stateMale();
+          else
+            this.stateFemale();
         }
         else if(item==7590||item==7591||item==7592||item==7593||item==7594||item==7595||item==7596||item==7597||item==7598||item==7599||item==7600||item==7601||item==7602||item==7603||item==7604||item==7605||item==7673||item==7674||item==7675||item==7676||item==7677||item==7678||item==7679||item==7682)
         { //Drinking Well
@@ -1014,9 +1009,10 @@ public class Mount
       return;
     //Si le joueur n'a pas l'item dans son sac ...
     if(P.getItems().get(guid)==null)
-    {
       return;
-    }
+
+    if(this.getActualPods()+playerObj.getTemplate().getPod()*qua>this.getMaxPods())
+      return;
 
     @SuppressWarnings("unused")
     String str="";
@@ -1079,6 +1075,7 @@ public class Mount
       }
     }
 
+    SocketManager.GAME_SEND_Ow_PACKET(P);
     SocketManager.GAME_SEND_Ew_PACKET(P,this.getActualPods(),this.getMaxPods());
     SocketManager.GAME_SEND_EL_MOUNT_PACKET(P,this);
   }

@@ -556,15 +556,31 @@ public class GameClient
     if(this.account.getPlayers().get(id)!=null)
     {
       int i=Main.world.getOnlinePlayerCountSameIP(this);
-      if(i<Config.getInstance().maxconnections)
+      if(this.account.getPlayers().get(id).getGroupe()==null)
+      {
+        if(i<Config.getInstance().maxconnections)
+        {
+          this.player=this.account.getPlayers().get(id);
+          if(this.player!=null)
+          {
+            if(this.player.isDead()==1&&Config.getInstance().HEROIC)
+              this.getSession().write("BN");
+            else
+            {
+              this.setCharacterSelect(false);
+              this.player.OnJoinGame();
+            }
+            return;
+          }
+        }
+      }
+      else if(!this.account.getPlayers().get(id).getGroupe().isPlayer())
       {
         this.player=this.account.getPlayers().get(id);
         if(this.player!=null)
         {
           if(this.player.isDead()==1&&Config.getInstance().HEROIC)
-          {
             this.getSession().write("BN");
-          }
           else
           {
             this.setCharacterSelect(false);
@@ -1319,7 +1335,7 @@ public class GameClient
       if(collector!=null&&collector.getMap()==this.player.getCurMap().getId())
       {
         SocketManager.GAME_SEND_DCK_PACKET(this,id);
-        SocketManager.GAME_SEND_QUESTION_PACKET(this,Main.world.getGuild(collector.getGuildId()).parseQuestionTaxCollector());
+        SocketManager.GAME_SEND_QUESTION_PACKET(this,collector.parseQuestionTaxCollector());
         return;
       }
 
@@ -6979,7 +6995,7 @@ public class GameClient
       catch(Exception ignored)
       {
       }
-      
+
       GameObject object=World.getGameObject(id);
       if(!this.player.hasItemGuid(id)||object==null)
         return;
@@ -8127,9 +8143,8 @@ public class GameClient
     Database.getStatics().getPlayerData().update(this.player);
     //On rafraichit l'enclo
     for(Player z : this.player.getCurMap().getPlayers())
-    {
       SocketManager.GAME_SEND_Rp_PACKET(z,MP);
-    }
+    SocketManager.GAME_SEND_STATS_PACKET(this.player);
   }
 
   private void dataMount(String packet, boolean b)
@@ -8564,20 +8579,17 @@ public class GameClient
   //v2.6 - only used in logging in system
   public void kick()
   {
-    if(this.account!=null&&this.player!=null)
-      if(this.session.isConnected())
-        this.session.close(true);
+    if(this.session.isConnected())
+      this.session.close(true);
   }
 
   //v2.8 - kick system fix v2
   public void disconnect()
   {
     if(this.account!=null&&this.player!=null)
-    {
       this.account.disconnect(this.player);
-      if(this.getSession()!=null)
-        kickSession();
-    }
+    if(this.getSession()!=null)
+      kickSession();
     Main.refreshTitle();
   }
 

@@ -9,6 +9,7 @@ import scruffemu.common.Formulas;
 import scruffemu.common.SocketManager;
 import scruffemu.database.Database;
 import scruffemu.fight.Fighter;
+import scruffemu.fight.traps.Trap;
 import scruffemu.game.World;
 import scruffemu.game.action.ExchangeAction;
 import scruffemu.game.action.GameAction;
@@ -40,6 +41,7 @@ public class GameCase
   private byte _slope;
   private byte _movimiento;
   private boolean _activo;
+  private Trap trap;
   
   public GameCase(GameMap map, int id, final boolean activo, final byte movimiento, final byte level, final byte slope, boolean walkable, boolean loS, int objId)
   {
@@ -125,7 +127,7 @@ public class GameCase
     return hide;
   }
 
-  public void addPlayer(Player player)
+  public synchronized void addPlayer(Player player)
   {
     if(this.players==null)
       this.players=new ArrayList<>();
@@ -133,7 +135,7 @@ public class GameCase
       this.players.add(player);
   }
 
-  public void removePlayer(Player player)
+  public synchronized void removePlayer(Player player)
   {
     if(this.players!=null)
     {
@@ -144,7 +146,7 @@ public class GameCase
     }
   }
 
-  public List<Player> getPlayers()
+  public synchronized List<Player> getPlayers()
   {
     if(this.players==null)
       return new ArrayList<>();
@@ -1296,5 +1298,15 @@ public class GameCase
   public boolean getActivo()
   {
     return _activo;
+  }
+
+  public Trap getTrap()
+  {
+    return trap;
+  }
+
+  public void setTrap(Trap trap)
+  {
+    this.trap = trap;
   }
 }

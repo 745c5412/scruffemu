@@ -55,11 +55,11 @@ public class SubAreaData extends AbstractDAO<SubArea>
       ResultSet RS=result.resultSet;
       while(RS.next())
       {
-        int id=RS.getInt("id");
+        SubArea SA=new SubArea(RS.getInt("id"),RS.getInt("area"),RS.getString("name"));
+        Main.world.addSubArea(SA);
         int alignement=RS.getInt("alignement");
         int conquistable=RS.getInt("conquistable");
-        int prisme=RS.getInt("Prisme");
-        SubArea SA=Main.world.getSubArea(id);
+        int prisme=RS.getInt("prisme");
         SA.setAlignement(alignement);
         SA.setPrismId(prisme);
         SA.setConquistable(conquistable);

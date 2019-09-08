@@ -771,15 +771,17 @@ public class JobAction
       for(int i=0;i<exoSplit.length;i++)
       {
         String[] exoSplit2=exoSplit[i].split(",");
-        if(Rune.getRuneByStatId(exoSplit2[0])!=null)
+        if(Rune.getRuneByStatId(Integer.toHexString(Integer.parseInt(exoSplit2[0])))!=null)
         {
-          Rune tempRune=Rune.getRuneByStatId(exoSplit2[0]);
-          float statPwr=tempRune.getPower()*tempRune.getStatsAdd();
+          Rune tempRune=Rune.getRuneByStatId(Integer.toHexString(Integer.parseInt(exoSplit2[0])));
+          float statPwr=tempRune.getPower()/tempRune.getStatsAdd();
           float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
           exoPower=exoPower+entryPower;
         }
       }
     }
+
+    System.out.println("exoPower: "+exoPower);
 
     //v2.8 - total power limit
     if(rune!=null)
@@ -994,10 +996,15 @@ public class JobAction
         float newSink=0;
         if(lostPower.getLeft()==0)
         {
-          if(negative)
-            newSink=objectFm.getPuit()+lostPower.getRight()-rune.getnPower();
+          if(rune!=null)
+          {
+            if(negative)
+              newSink=objectFm.getPuit()+lostPower.getRight()-rune.getnPower();
+            else
+              newSink=objectFm.getPuit()+lostPower.getRight()-rune.getPower();
+          }
           else
-            newSink=objectFm.getPuit()+lostPower.getRight()-rune.getPower();
+            newSink=objectFm.getPuit()+lostPower.getRight()-potion.getPower();
         }
         if(lostPower.getLeft()==1)
         {
@@ -1203,10 +1210,10 @@ public class JobAction
           for(int i=0;i<exoSplit.length;i++)
           {
             String[] exoSplit2=exoSplit[i].split(",");
-            if(Rune.getRuneByStatId(exoSplit2[0])!=null)
+            if(Rune.getRuneByStatId(Integer.toHexString(Integer.parseInt(exoSplit2[0])))!=null)
             {
-              Rune tempRune=Rune.getRuneByStatId(exoSplit2[0]);
-              float statPwr=tempRune.getPower()*tempRune.getStatsAdd();
+              Rune tempRune=Rune.getRuneByStatId(Integer.toHexString(Integer.parseInt(exoSplit2[0])));
+              float statPwr=tempRune.getPower()/tempRune.getStatsAdd();
               float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
               exoPower=exoPower+entryPower;
             }
@@ -1287,10 +1294,10 @@ public class JobAction
           for(int i=0;i<exoSplit.length;i++)
           {
             String[] exoSplit2=exoSplit[i].split(",");
-            if(Rune.getRuneByStatId(exoSplit2[0])!=null)
+            if(Rune.getRuneByStatId(Integer.toHexString(Integer.parseInt(exoSplit2[0])))!=null)
             {
-              Rune tempRune=Rune.getRuneByStatId(exoSplit2[0]);
-              float statPwr=tempRune.getPower()*tempRune.getStatsAdd();
+              Rune tempRune=Rune.getRuneByStatId(Integer.toHexString(Integer.parseInt(exoSplit2[0])));
+              float statPwr=tempRune.getPower()/tempRune.getStatsAdd();
               float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
               exoPower=exoPower+entryPower;
             }
@@ -1382,9 +1389,9 @@ public class JobAction
         for(int i=0;i<exoSplit.length;i++)
         {
           String[] exoSplit2=exoSplit[i].split(","); //split stat per value
-          if(Rune.getRuneByStatId(exoSplit2[0])!=null)
+          if(Rune.getRuneByStatId(Integer.toHexString(Integer.parseInt(exoSplit2[0])))!=null)
           {
-            Rune tempRune=Rune.getRuneByStatId(exoSplit2[0]);
+            Rune tempRune=Rune.getRuneByStatId(Integer.toHexString(Integer.parseInt(exoSplit2[0])));
             float statPwr=tempRune.getPower()*tempRune.getStatsAdd();
             float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
             exoPower=exoPower+entryPower;
@@ -1456,10 +1463,10 @@ public class JobAction
         for(int i=0;i<exoSplit.length;i++)
         {
           String[] exoSplit2=exoSplit[i].split(","); //split stat per value
-          if(Rune.getRuneByStatId(exoSplit2[0])!=null)
+          if(Rune.getRuneByStatId(Integer.toHexString(Integer.parseInt(exoSplit2[0])))!=null)
           {
-            Rune tempRune=Rune.getRuneByStatId(exoSplit2[0]);
-            float statPwr=tempRune.getPower()*tempRune.getStatsAdd();
+            Rune tempRune=Rune.getRuneByStatId(Integer.toHexString(Integer.parseInt(exoSplit2[0])));
+            float statPwr=tempRune.getPower()/tempRune.getStatsAdd();
             float entryPower=statPwr*(Integer.valueOf(exoSplit2[1])-getStatBaseMaxs(objectFm.getTemplate(),Integer.toString(Integer.valueOf(exoSplit2[0]),16)));
             exoPower=exoPower+entryPower;
           }

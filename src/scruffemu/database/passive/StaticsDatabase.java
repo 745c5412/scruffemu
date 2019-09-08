@@ -20,7 +20,6 @@ import scruffemu.database.passive.data.PubData;
 import scruffemu.database.passive.data.QuestPlayerData;
 import scruffemu.database.passive.data.ServerData;
 import scruffemu.database.passive.data.StakeData;
-import scruffemu.database.passive.data.SubAreaData;
 import scruffemu.database.passive.data.TrunkData;
 import scruffemu.main.Config;
 import scruffemu.main.Main;
@@ -42,7 +41,6 @@ public class StaticsDatabase
   private ServerData serverData;
   private BanIpData banIpData;
   private AreaData areaData;
-  private SubAreaData subAreaData;
   private GroupData groupData;
   private GuildData guildData;
   private HouseData houseData;
@@ -64,7 +62,6 @@ public class StaticsDatabase
     this.serverData=new ServerData(this.dataSource);
     this.banIpData=new BanIpData(this.dataSource);
     this.areaData=new AreaData(this.dataSource);
-    this.subAreaData=new SubAreaData(this.dataSource);
     this.guildData=new GuildData(this.dataSource);
     this.groupData=new GroupData(this.dataSource);
     this.houseData=new HouseData(this.dataSource);
@@ -149,11 +146,6 @@ public class StaticsDatabase
   public AreaData getAreaData()
   {
     return areaData;
-  }
-
-  public SubAreaData getSubAreaData()
-  {
-    return subAreaData;
   }
 
   public GuildData getGuildData()

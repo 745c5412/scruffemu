@@ -57,7 +57,8 @@ public class House
           packet.append("undefined;");
         else
           packet.append(Main.world.getAccount(house.getValue().getOwnerId()).getPseudo()).append(";");
-      } else
+      }
+      else
       {
         packet.append(";");
       }
@@ -76,14 +77,16 @@ public class House
           String Gemblem=G.getEmblem();
           if(G.getMembers().size()<10&&G.getId()>2)//Ce n'est plus une maison de guilde
           {
-           Database.getDynamics().getHouseData().updateGuild(house.getValue(),0,0);
-          } else
+            Database.getDynamics().getHouseData().updateGuild(house.getValue(),0,0);
+          }
+          else
           {
             //Affiche le blason pour les membre de guilde OU Affiche le blason pour les non membre de guilde
             if(player.get_guild()!=null&&player.get_guild().getId()==house.getValue().getGuildId()&&house.getValue().canDo(Constant.H_GBLASON))//meme guilde
             {
               packet.append(";").append(Gname).append(";").append(Gemblem);
-            } else if(house.getValue().canDo(Constant.H_OBLASON))//Pas de guilde/guilde-diff�rente
+            }
+            else if(house.getValue().canDo(Constant.H_OBLASON))//Pas de guilde/guilde-diff�rente
             {
               packet.append(";").append(Gname).append(";").append(Gemblem);
             }
@@ -100,7 +103,8 @@ public class House
         if(house.getValue().getSale()<=0)
         {
           packet1.append("0;").append(house.getValue().getSale());
-        } else if(house.getValue().getSale()>0)
+        }
+        else if(house.getValue().getSale()>0)
         {
           packet1.append("1;").append(house.getValue().getSale());
         }
@@ -115,7 +119,8 @@ public class House
     {
       P.teleport((short)this.getHouseMapId(),this.getHouseCellId());
       closeCode(P);
-    } else if((packet.compareTo(this.getKey())!=0)||this.canDo(Constant.H_OCANTOPEN))//Mauvais code
+    }
+    else if((packet.compareTo(this.getKey())!=0)||this.canDo(Constant.H_OCANTOPEN))//Mauvais code
     {
       SocketManager.GAME_SEND_KODE(P,"KE");
       SocketManager.GAME_SEND_KODE(P,"V");
@@ -147,7 +152,7 @@ public class House
       trunk.setKamas(0);//Retrait kamas
       trunk.setKey("-");//ResetPass
       trunk.setOwnerId(player.getAccID());//ResetOwner
-     Database.getDynamics().getTrunkData().update(trunk);
+      Database.getDynamics().getTrunkData().update(trunk);
     }
 
     //Ajoute des kamas dans la banque du vendeur
@@ -163,7 +168,7 @@ public class House
 
     closeBuy(player);
     SocketManager.GAME_SEND_STATS_PACKET(player);
-   Database.getDynamics().getHouseData().buy(player,house);
+    Database.getDynamics().getHouseData().buy(player,house);
 
     for(Player viewer : player.getCurMap().getPlayers())
       House.load(viewer,viewer.getCurMap().getId());
@@ -180,7 +185,7 @@ public class House
       SocketManager.GAME_SEND_hOUSE(P,"V");
       SocketManager.GAME_SEND_hOUSE(P,"SK"+h.getId()+"|"+price);
       //Vente de la maison
-     Database.getDynamics().getHouseData().sell(h,price);
+      Database.getDynamics().getHouseData().sell(h,price);
       //Rafraichir la map apr�s la mise en vente
       for(Player z : P.getCurMap().getPlayers())
         load(z,z.getCurMap().getId());
@@ -203,9 +208,10 @@ public class House
     House h=P.getInHouse();
     if(h.isHouse(P,h))
     {
-     Database.getDynamics().getHouseData().updateCode(P,h,packet);//Change le code
+      Database.getDynamics().getHouseData().updateCode(P,h,packet);//Change le code
       closeCode(P);
-    } else
+    }
+    else
     {
       closeCode(P);
     }
@@ -239,7 +245,8 @@ public class House
             packet.append(Main.world.getPlayer(house.getValue().getOwnerId()).getAccount().getPseudo()+";");
           packet.append(Main.world.getMap((short)house.getValue().getHouseMapId()).getX()+","+Main.world.getMap((short)house.getValue().getHouseMapId()).getY()+";0;"+house.getValue().getGuildRights());
           isFirst=false;
-        } else
+        }
+        else
         {
           packet.append("|"+house.getKey()+";");
           if(Main.world.getPlayer(house.getValue().getOwnerId())==null)
@@ -281,24 +288,28 @@ public class House
         {
           return;
         }
-       Database.getDynamics().getHouseData().updateGuild(h,P.get_guild().getId(),0);
+        Database.getDynamics().getHouseData().updateGuild(h,P.get_guild().getId(),0);
         parseHG(P,null);
-      } else if(packet.charAt(0)=='-')
+      }
+      else if(packet.charAt(0)=='-')
       {
         //Retire de la guilde
-       Database.getDynamics().getHouseData().updateGuild(h,0,0);
+        Database.getDynamics().getHouseData().updateGuild(h,0,0);
         parseHG(P,null);
-      } else
+      }
+      else
       {
-       Database.getDynamics().getHouseData().updateGuild(h,h.getGuildId(),Integer.parseInt(packet));
+        Database.getDynamics().getHouseData().updateGuild(h,h.getGuildId(),Integer.parseInt(packet));
         h.parseIntToRight(Integer.parseInt(packet));
       }
-    } else if(packet==null)
+    }
+    else if(packet==null)
     {
       if(h.getGuildId()<=0)
       {
         SocketManager.GAME_SEND_hOUSE(P,"G"+h.getId());
-      } else if(h.getGuildId()>0)
+      }
+      else if(h.getGuildId()>0)
       {
         SocketManager.GAME_SEND_hOUSE(P,"G"+h.getId()+";"+P.get_guild().getName()+";"+P.get_guild().getEmblem()+";"+h.getGuildRights());
       }
@@ -343,11 +354,12 @@ public class House
       {
         h.getValue().setGuildRights(0);
         h.getValue().setGuildId(0);
-      } else
+      }
+      else
       {
       }
     }
-   Database.getDynamics().getHouseData().removeGuild(GuildID); //Supprime les maisons de guilde
+    Database.getDynamics().getHouseData().removeGuild(GuildID); //Supprime les maisons de guilde
   }
 
   public void setGuildRightsWithParse(int guildRights)

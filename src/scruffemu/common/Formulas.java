@@ -493,50 +493,39 @@ public class Formulas
     //Poisons
     if(spellid!=-1)
     {
+      int red=0;
       switch(spellid)
       {
-        //Insidious Poison, Poisoned Trap, Poisoned Arrow
-        case 66:
-        case 71:
-        case 164:
+        case 196: //Poisoned Wind
+        case 219: //Poisoning
+          statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_FORC);
+          if(statC<0)
+            statC=0;
+          if(target.hasBuff(Constant.STATS_ADD_RES_P))
+            if(target.getBuff(Constant.STATS_ADD_RES_P).getSpell()==197) //sylvan power reduction
+              red=target.getBuff(Constant.STATS_ADD_RES_P).getValue();
+          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC-red);
+
+        case 181: //Earthquake
+        case 200: //Paralyzing Poison
+          statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_INTE);
+          if(statC<0)
+            statC=0;
+          if(target.hasBuff(Constant.STATS_ADD_RES_M))
+            if(target.getBuff(Constant.STATS_ADD_RES_M).getSpell()==197) //sylvan power reduction
+              red=target.getBuff(Constant.STATS_ADD_RES_M).getValue();
+          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC-red);
+
+        case 66: //Insidious Poison
+        case 71: //Poisoned Trap
+        case 164: //Poisoned Arrow
           statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_AGIL);
           if(statC<0)
             statC=0;
-          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC);
-
-        //Earthquake
-        case 181:
-          statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_INTE);
-          if(statC<0)
-            statC=0;
-          if(target.hasBuff(183))
-            if(target.getBuff(183).getSpell()==197) //sylvan power reduction
-              return 0;
-          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC);
-
-        //Poisoned Wind
-        case 196:
-          statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_FORC);
-          if(statC<0)
-            statC=0;
-          if(target.hasBuff(184))
-            if(target.getBuff(184).getSpell()==197) //sylvan power reduction
-              return 0;
-          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC);
-
-        //Paralyzing Poison
-        case 200:
-          statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_INTE);
-          if(statC<0)
-            statC=0;
-          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC);
-
-        //Poisoning
-        case 219:
-          statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_FORC);
-          if(statC<0)
-            statC=0;
-          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC);
+          if(target.hasBuff(Constant.STATS_ADD_RES_M))
+            if(target.getBuff(Constant.STATS_ADD_RES_M).getSpell()==197) //sylvan power reduction
+              red=target.getBuff(Constant.STATS_ADD_RES_M).getValue();
+          return (int)(mulT*(jet*((100+statC+perdomC)/100))+domC-red);
       }
     }
 
@@ -561,7 +550,7 @@ public class Formulas
         //on ajoute les dom Physique
         domC+=caster.getTotalStats().getEffect(Constant.STATS_ADD_PDOM);
         //Ajout de la resist Physique
-        resfT=target.getTotalStats().getEffect(Constant.STATS_ADD_RES_P);
+        resfT+=target.getTotalStats().getEffect(Constant.STATS_ADD_RES_P);
         break;
       case Constant.ELEMENT_TERRE://force
         statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_FORC);
@@ -575,7 +564,7 @@ public class Formulas
         //on ajout les dom Physique
         domC+=caster.getTotalStats().getEffect(Constant.STATS_ADD_PDOM);
         //Ajout de la resist Physique
-        resfT=target.getTotalStats().getEffect(Constant.STATS_ADD_RES_P);
+        resfT+=target.getTotalStats().getEffect(Constant.STATS_ADD_RES_P);
         break;
       case Constant.ELEMENT_EAU://chance
         statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_CHAN);
@@ -587,7 +576,7 @@ public class Formulas
           resfT+=target.getTotalStats().getEffect(Constant.STATS_ADD_R_PVP_EAU);
         }
         //Ajout de la resist Magique
-        resfT=target.getTotalStats().getEffect(Constant.STATS_ADD_RES_M);
+        resfT+=target.getTotalStats().getEffect(Constant.STATS_ADD_RES_M);
         break;
       case Constant.ELEMENT_FEU://intell
         statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_INTE);
@@ -599,7 +588,7 @@ public class Formulas
           resfT+=target.getTotalStats().getEffect(Constant.STATS_ADD_R_PVP_FEU);
         }
         //Ajout de la resist Magique
-        resfT=target.getTotalStats().getEffect(Constant.STATS_ADD_RES_M);
+        resfT+=target.getTotalStats().getEffect(Constant.STATS_ADD_RES_M);
         break;
       case Constant.ELEMENT_AIR://agilitÃ¯Â¿Â½
         statC=caster.getTotalStats().getEffect(Constant.STATS_ADD_AGIL);
@@ -611,7 +600,7 @@ public class Formulas
           resfT+=target.getTotalStats().getEffect(Constant.STATS_ADD_R_PVP_AIR);
         }
         //Ajout de la resist Magique
-        resfT=target.getTotalStats().getEffect(Constant.STATS_ADD_RES_M);
+        resfT+=target.getTotalStats().getEffect(Constant.STATS_ADD_RES_M);
         break;
     }
     //On bride la resistance a 50% si c'est un joueur
@@ -679,17 +668,18 @@ public class Formulas
           renvoie=caster.getPdv();
         if(num<1)
           num=0;
-
+        renvoie-=Formulas.getArmorResist(caster,-1);
         if(caster.getPdv()<=renvoie)
         {
           caster.removePdv(caster,renvoie);
-          target.removePdvMax((int)Math.floor(renvoie*(Config.getInstance().erosion+caster.getTotalStats().getEffect(Constant.STATS_ADD_ERO)-caster.getTotalStats().getEffect(Constant.STATS_REM_ERO)-target.getTotalStats().getEffect(Constant.STATS_ADD_R_ERO)+target.getTotalStats().getEffect(Constant.STATS_REM_R_ERO)))/100);
+          caster.removePdvMax((int)Math.floor(renvoie*(Config.getInstance().erosion+target.getTotalStats().getEffect(Constant.STATS_ADD_ERO)-target.getTotalStats().getEffect(Constant.STATS_REM_ERO)-caster.getTotalStats().getEffect(Constant.STATS_ADD_R_ERO)+caster.getTotalStats().getEffect(Constant.STATS_REM_R_ERO)))/100);
           fight.onFighterDie(caster,caster);
         }
         else
+        {
           caster.removePdv(caster,renvoie);
-        target.removePdvMax((int)Math.floor(renvoie*(Config.getInstance().erosion+caster.getTotalStats().getEffect(Constant.STATS_ADD_ERO)-caster.getTotalStats().getEffect(Constant.STATS_REM_ERO)-target.getTotalStats().getEffect(Constant.STATS_ADD_R_ERO)+target.getTotalStats().getEffect(Constant.STATS_REM_R_ERO)))/100);
-
+          caster.removePdvMax((int)Math.floor(renvoie*(Config.getInstance().erosion+target.getTotalStats().getEffect(Constant.STATS_ADD_ERO)-target.getTotalStats().getEffect(Constant.STATS_REM_ERO)-caster.getTotalStats().getEffect(Constant.STATS_ADD_R_ERO)+caster.getTotalStats().getEffect(Constant.STATS_REM_R_ERO)))/100);
+        }
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,100,caster.getId()+"",caster.getId()+",-"+renvoie);
       }
     }
@@ -747,36 +737,28 @@ public class Formulas
         case 1: //Glowing Armour
         {
           if(statID!=3)
-          {
             continue;
-          }
           fighter=SE.getCaster();
           break;
         }
         case 6: //Earth Armour
         {
           if(statID!=1&&statID!=0)
-          {
             continue;
-          }
           fighter=SE.getCaster();
           break;
         }
         case 14: //Wind Armour
         {
           if(statID!=4)
-          {
             continue;
-          }
           fighter=SE.getCaster();
           break;
         }
         case 18: //Aqueous Armour
         {
           if(statID!=2)
-          {
             continue;
-          }
           fighter=SE.getCaster();
           break;
         }
@@ -1001,7 +983,6 @@ public class Formulas
         sortChance=25;
         break;
     }
-
     return sortChance+pierreChance;
   }
 

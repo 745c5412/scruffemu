@@ -48,6 +48,8 @@ import scruffemu.object.entity.Fragment;
 import scruffemu.object.entity.SoulStone;
 import scruffemu.quest.QuestPlayer;
 import scruffemu.utility.Pair;
+import scruffemu.utility.Sort;
+
 import org.slf4j.LoggerFactory;
 import scruffemu.common.CryptManager;
 import scruffemu.comhandler.transfer.DataQueue;
@@ -351,6 +353,11 @@ public class World
     return Prismes;
   }
 
+  public void setPrisms(Map<Integer, Prism> prisms)
+  {
+    this.Prismes=prisms;
+  }
+
   public Map<Integer, Map<String, Map<String, Integer>>> getExtraMonsters()
   {
     return extraMonstre;
@@ -416,18 +423,16 @@ public class World
     Database.getDynamics().getQuestData().load();
     logger.debug("The quests data were loaded successfully.");
 
-    Database.getDynamics().getPrismData().load();
-    logger.debug("The prisms were loaded successfully.");
-
     Database.getStatics().getAreaData().load();
     logger.debug("The statics areas data were loaded successfully.");
     Database.getDynamics().getAreaData().load();
     logger.debug("The dynamics areas data were loaded successfully.");
 
-    Database.getStatics().getSubAreaData().load();
-    logger.debug("The statics sub-areas data were loaded successfully.");
     Database.getDynamics().getSubAreaData().load();
-    logger.debug("The dynamics sub-areas data were loaded successfully.");
+    logger.debug("The sub-area data were loaded successfully.");
+    
+    Database.getDynamics().getPrismData().load();
+    logger.debug("The prisms were loaded successfully.");
 
     Database.getDynamics().getInteractiveDoorData().load();
     logger.debug("The templates of interactive doors were loaded successfully.");
@@ -558,6 +563,8 @@ public class World
     Potion.addPotions();
     logger.debug("Runes have been added succesfully");
 
+    this.setPrisms(Sort.sortPrismsAlphabetically(Main.world.getPrisms()));
+    
     Database.getStatics().getServerData().updateTime(time);
     logger.info("All data was loaded successfully at "+new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss",Locale.FRANCE).format(new Date())+" in "+new SimpleDateFormat("mm",Locale.FRANCE).format((System.currentTimeMillis()-time))+" min "+new SimpleDateFormat("ss",Locale.FRANCE).format((System.currentTimeMillis()-time))+" s.");
     logger.setLevel(Level.ALL);

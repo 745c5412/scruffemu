@@ -29,7 +29,7 @@ public class MountParkData extends AbstractDAO<MountPark>
     PreparedStatement p=null;
     try
     {
-      p=getPreparedStatement("UPDATE `mountpark_data` SET  `owner`=?, `guild`=?, `price` =?, `data` =?, `enclos` =?, `ObjetPlacer`=?, `durabilite`=? WHERE `mapid`=?");
+      p=getPreparedStatement("UPDATE `mountpark_data` SET `owner`=?, `guild`=?, `price` =?, `data` =?, `enclos` =?, `ObjetPlacer`=?, `durabilite`=? WHERE `mapid`=?");
       p.setInt(1,MP.getOwner());
       p.setInt(2,(MP.getGuild()!=null) ? MP.getGuild().getId() : -1);
       p.setInt(3,MP.getPrice());

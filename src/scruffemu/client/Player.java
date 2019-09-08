@@ -137,7 +137,6 @@ public class Player
   private int _inviting=0;
   private ArrayList<Integer> craftingType=new ArrayList<>();
   private Map<Integer, JobStat> _metiers=new HashMap<Integer, JobStat>();
-  //Enclos
 
   //Monture
   private Mount _mount;
@@ -4555,6 +4554,12 @@ public class Player
     {
       if(Prisme.getMap()==Short.valueOf(packet.substring(2)))
       {
+        if(Prisme.getFight()!=null)
+        {
+          SocketManager.GAME_SEND_MESSAGE(this,"This prism is currently in combat and cant be teleported to.");
+          return;
+        }
+        
         celdaID=Prisme.getCell();
         MapID=Prisme.getMap();
         break;

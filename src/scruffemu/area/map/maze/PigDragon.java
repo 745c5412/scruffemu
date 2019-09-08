@@ -48,7 +48,6 @@ public class PigDragon
 
   private static void checkOutside()
   {
-    new TimerWaiterPlus(PigDragon::checkOutside,5*60*1000);
     Main.world.pigDragon.initialize();
   }
 
@@ -207,17 +206,6 @@ public class PigDragon
           case 9389: // bas
             open(map,(short)277);
             break;
-          case 9387:
-            if(outside==null||isOutside(277))
-            {
-              setOutside(map.getCase(277));
-              open(map,(short)277);
-            }
-            else
-            {
-              close(map,(short)277);
-            }
-            break;
         }
         break;
       case 274: // Droite
@@ -227,22 +215,6 @@ public class PigDragon
         if(map.getId()==(short)9395)
           setInside(map.getCase(216));
         open(map,(short)216);
-        break;
-      case 216: // Droite
-        if(map.getId()==(short)9381)
-        {
-          if(outside==null||isOutside(201))
-          {
-            setOutside(map.getCase(201));
-            open(map,(short)201);
-          }
-          else
-          {
-            close(map,(short)201);
-          }
-        }
-        else
-          open(map,(short)201);
         break;
       case 144: // Droite
         open(map,(short)158);
@@ -254,22 +226,6 @@ public class PigDragon
         break;
       case 48: // Haut
         open(map,(short)63);
-        break;
-      case 36: // Haut
-        if(map.getId()==(short)9377)
-        {
-          if(outside==null||isOutside(50))
-          {
-            setOutside(map.getCase(50));
-            open(map,(short)50);
-          }
-          else
-          {
-            close(map,(short)50);
-          }
-        }
-        else
-          open(map,(short)50);
         break;
       case 22: // Haut
         open(map,(short)37);
@@ -285,22 +241,6 @@ public class PigDragon
         break;
       case 414: // Bas
         open(map,(short)399);
-        break;
-      case 413: // Bas
-        if(map.getId()==(short)9375)
-        {
-          if(outside==null||isOutside(399))
-          {
-            setOutside(map.getCase(399));
-            open(map,(short)399);
-          }
-          else
-          {
-            close(map,(short)399);
-          }
-        }
-        else
-          open(map,(short)399);
         break;
     }
   }
@@ -590,36 +530,36 @@ public class PigDragon
     switch(Formulas.getRandomValue(0,3))
     {
       case 0: //map8
-        System.out.println("0");
+        //System.out.println("0");
         closeMap(9375,413,274,262,36);
         closeExit(map12,cell12);
         closeExit(map14,cell14);
         closeExit(map18,cell18);
-        open(map8,cell8);
+        openExit(map8,cell8);
         break;
       case 1: //map12
-        System.out.println("1");
+        //System.out.println("1");
         closeMap(9381,442,320,216,22);
         closeExit(map8,cell8);
         closeExit(map14,cell14);
         closeExit(map18,cell18);
-        open(map12,cell12);
+        openExit(map12,cell12);
         break;
       case 2: //map14
-        System.out.println("2");
+        //System.out.println("2");
         closeMap(9387,414,262,144,48);
         closeExit(map8,cell8);
         closeExit(map12,cell12);
         closeExit(map18,cell18);
-        open(map14,cell14);
+        openExit(map14,cell14);
         break;
       case 3: //map18
-        System.out.println("3");
+        //System.out.println("3");
         closeMap(9377,413,274,262,36);
         closeExit(map8,cell8);
         closeExit(map12,cell12);
         closeExit(map14,cell14);
-        open(map18,cell18);
+        openExit(map18,cell18);
         break;
     }
   }
@@ -792,6 +732,28 @@ public class PigDragon
 
   private static boolean isInside(int cell)
   {
-    return inside!=null&&(cell==outside.getId());
+    return inside!=null&&(cell==inside.getId());
+  }
+
+  public static void openExit(GameMap map, GameCase cell)
+  {
+    if(map==null||cell==null)
+      return;
+
+    switch(map.getId())
+    {
+      case 9387:
+        open(map,(short)277);
+        break;
+      case 9381:
+        open(map,(short)201);
+        break;
+      case 9377:
+        open(map,(short)50);
+        break;
+      case 9375:
+        open(map,(short)399);
+        break;
+    }
   }
 }

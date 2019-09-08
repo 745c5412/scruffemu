@@ -311,8 +311,8 @@ public class Guild
     return String.valueOf(getNbrPerco())+"|"+Collector.countCollectorGuild(getId())+"|"+100*getLvl()+"|"+getLvl()+"|"+getStats(158)+"|"+getStats(176)+"|"+getStats(124)+"|"+getNbrPerco()+"|"+getCapital()+"|"+(1000+(10*getLvl()))+"|"+compileSpell();
   }
 
-  public String parseQuestionTaxCollector()
+  /*public String parseQuestionTaxCollector()
   {
     return "1"+';'+getName()+','+getStats(Constant.STATS_ADD_PODS)+','+getStats(Constant.STATS_ADD_PROS)+','+getStats(Constant.STATS_ADD_SAGE)+','+getNbrPerco();
-  }
+  }*/
 }

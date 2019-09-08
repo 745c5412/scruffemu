@@ -129,6 +129,7 @@ public class Trap
     else
       fakeCaster=new Fighter(this.fight,this.caster.getPersonnage());
     fakeCaster.setCell(this.cell);
+    System.out.println("targetCell: "+target.getCell().getId());
     this.trapSpell.applySpellEffectToFight(this.fight,fakeCaster,target.getCell(),cells,false);
     this.fight.verifIfTeamAllDead();
   }

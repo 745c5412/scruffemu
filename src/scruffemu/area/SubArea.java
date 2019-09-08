@@ -14,11 +14,13 @@ public class SubArea
   private int alignement, prismId;
   private boolean conquistable;
   private final ArrayList<GameMap> maps=new ArrayList<>();
+  private final String name;
 
-  public SubArea(int id, int area)
+  public SubArea(int id, int area, String name)
   {
     this.id=id;
     this.area=Main.world.getArea(area);
+    this.name=name;
   }
 
   public int getId()
@@ -77,5 +79,10 @@ public class SubArea
   public void addMap(GameMap Map)
   {
     this.maps.add(Map);
+  }
+
+  public String getName()
+  {
+    return name;
   }
 }

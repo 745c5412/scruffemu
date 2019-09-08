@@ -17,7 +17,6 @@ import scruffemu.fight.traps.Trap;
 import scruffemu.main.Config;
 import scruffemu.main.Constant;
 import scruffemu.main.Main;
-import scruffemu.utility.TimerWaiterPlus;
 
 public class SpellEffect
 {
@@ -167,7 +166,7 @@ public class SpellEffect
             target.getCell().addFighter(target);
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,5,target.getId()+"",target.getId()+","+newCellID);
 
-            ArrayList<Trap> P=(new ArrayList<Trap>());
+            /*ArrayList<Trap> P=(new ArrayList<Trap>());
             P.addAll(fight.getAllTraps());
             for(Trap p : P)
             {
@@ -175,7 +174,8 @@ public class SpellEffect
               //on active le piege
               if(dist<=p.getSize())
                 p.onTraped(target);
-            }
+            }*/
+            verifyTraps(fight,target);
             //si le joueur a bouger
             if(exCase!=newCellID)
               finalDommage=0;
@@ -244,8 +244,9 @@ public class SpellEffect
               renvoie=caster.getPdv();
             if(finalDommage<0)
               finalDommage=0;
+            renvoie-=Formulas.getArmorResist(caster,-1);
             caster.removePdv(caster,renvoie);
-            target.removePdvMax((int)Math.floor(renvoie*(Config.getInstance().erosion+caster.getTotalStats().getEffect(Constant.STATS_ADD_ERO)-caster.getTotalStats().getEffect(Constant.STATS_REM_ERO)-target.getTotalStats().getEffect(Constant.STATS_ADD_R_ERO)+target.getTotalStats().getEffect(Constant.STATS_REM_R_ERO)))/100);
+            caster.removePdvMax((int)Math.floor(renvoie*(Config.getInstance().erosion+target.getTotalStats().getEffect(Constant.STATS_ADD_ERO)-target.getTotalStats().getEffect(Constant.STATS_REM_ERO)-caster.getTotalStats().getEffect(Constant.STATS_ADD_R_ERO)+caster.getTotalStats().getEffect(Constant.STATS_REM_R_ERO)))/100);
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,100,caster.getId()+"",caster.getId()+",-"+renvoie);
             break;
           case 606://Chatiment (acncien)
@@ -1651,7 +1652,7 @@ public class SpellEffect
       caster.setCell(cell);
       caster.getCell().addFighter(caster);
 
-      ArrayList<Trap> P=(new ArrayList<Trap>());
+     /* ArrayList<Trap> P=(new ArrayList<Trap>());
       P.addAll(fight.getAllTraps());
       for(Trap p : P)
       {
@@ -1659,7 +1660,9 @@ public class SpellEffect
         //on active le piege
         if(dist<=p.getSize())
           p.onTraped(caster);
-      }
+      }*/
+      
+      verifyTraps(fight,caster);
 
       SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,4,caster.getId()+"",caster.getId()+","+cell.getId());
     }
@@ -1773,7 +1776,7 @@ public class SpellEffect
         target.getCell().addFighter(target);
 
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,5,caster.getId()+"",target.getId()+","+newCellId);
-        new TimerWaiterPlus(() -> this.checkTraps(fight,target),750);
+        verifyTraps(fight,target);
       }
     }
   }
@@ -1815,7 +1818,7 @@ public class SpellEffect
         target.getCell().addFighter(target);
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,5,caster.getId()+"",target.getId()+","+newCellID);
 
-        ArrayList<Trap> P=(new ArrayList<Trap>());
+       /* ArrayList<Trap> P=(new ArrayList<Trap>());
         P.addAll(fight.getAllTraps());
         for(Trap p : P)
         {
@@ -1823,7 +1826,9 @@ public class SpellEffect
           //on active le piege
           if(dist<=p.getSize())
             p.onTraped(target);
-        }
+        }*/
+        
+        verifyTraps(fight,target);
       }
     }
   }
@@ -1867,7 +1872,7 @@ public class SpellEffect
     //on ajoute les fighters aux cases
     target.getCell().addFighter(target);
     caster.getCell().addFighter(caster);
-    ArrayList<Trap> P=(new ArrayList<Trap>());
+    /*ArrayList<Trap> P=(new ArrayList<Trap>());
     P.addAll(fight.getAllTraps());
     for(Trap p : P)
     {
@@ -1878,7 +1883,10 @@ public class SpellEffect
         p.onTraped(target);
       else if(dist2<=p.getSize())
         p.onTraped(caster);
-    }
+    }*/
+    
+    verifyTraps(fight,caster);
+    verifyTraps(fight,target);
     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,4,caster.getId()+"",target.getId()+","+exCaster.getId());
     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,4,caster.getId()+"",caster.getId()+","+exTarget.getId());
 
@@ -1943,7 +1951,7 @@ public class SpellEffect
     caster.setState(Constant.ETAT_PORTEUR,0,caster.getId()); //duration 0, remove state
     caster.setIsHolding(null);
     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,51,new StringBuilder(String.valueOf(this.caster.getId())).toString(),new StringBuilder(String.valueOf(this.cell.getId())).toString());
-    this.checkTraps(fight,target);
+    verifyTraps(fight,target);
     fight.setCurAction("");
   }
 
@@ -5524,7 +5532,7 @@ public class SpellEffect
     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,180,caster.getId()+"",fighter.getGmPacket('+',true).substring(3));
     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,999,caster.getId()+"",fight.getGTL());
 
-    this.checkTraps(fight,fighter);
+    verifyTraps(fight,fighter);
   }
 
   private void applyEffect_181(Fight fight) //invocation
@@ -5610,7 +5618,7 @@ public class SpellEffect
     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,181,caster.getId()+"",gm);
     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,999,caster.getId()+"",gtl);
     caster.nbrInvoc++;
-    ArrayList<Trap> P=(new ArrayList<Trap>());
+    /*ArrayList<Trap> P=(new ArrayList<Trap>());
     P.addAll(fight.getAllTraps());
     for(Trap p : P)
     {
@@ -5618,7 +5626,8 @@ public class SpellEffect
       //on active le piege
       if(dist<=p.getSize())
         p.onTraped(F);
-    }
+    }*/
+    verifyTraps(fight,F);
   }
 
   private void applyEffect_182(Fight fight, ArrayList<Fighter> cibles)
@@ -6201,6 +6210,7 @@ public class SpellEffect
     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,team,999,caster.getId()+"",str);
     str="GDC"+cell.getId()+";Haaaaaaaaz3005;";
     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,team,999,caster.getId()+"",str);
+    caster.setJustTrapped(true);
   }
 
   //v2.7 - glyph trap fix
@@ -6454,6 +6464,7 @@ public class SpellEffect
       SocketManager.GAME_SEND_STATS_PACKET(target.getPersonnage());
 
     fight.removeDead(target);
+    verifyTraps(fight,target);
   }
 
   private void applyEffect_781(ArrayList<Fighter> cibles, Fight fight)
@@ -6518,7 +6529,7 @@ public class SpellEffect
     target.getCell().addFighter(target);
 
     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,5,caster.getId()+"",target.getId()+","+cell.getId());
-    new TimerWaiterPlus(() -> this.checkTraps(fight,target),750);
+    verifyTraps(fight,target);
   }
 
   private void applyEffect_784(ArrayList<Fighter> cibles, Fight fight)
@@ -6819,8 +6830,9 @@ public class SpellEffect
       caster.getCell().getFighters().clear();
       caster.setCell(cell);
       caster.getCell().addFighter(caster);
-      new ArrayList<>(fight.getAllTraps()).stream().filter(trap -> PathFinding.getDistanceBetween(fight.getMap(),trap.getCell().getId(),caster.getCell().getId())<=trap.getSize()).forEach(trap -> trap.onTraped(caster));
-      SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,4,caster.getId()+"",caster.getId()+","+cell.getId());
+     /* new ArrayList<>(fight.getAllTraps()).stream().filter(trap -> PathFinding.getDistanceBetween(fight.getMap(),trap.getCell().getId(),caster.getCell().getId())<=trap.getSize()).forEach(trap -> trap.onTraped(caster));
+      */SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,4,caster.getId()+"",caster.getId()+","+cell.getId());
+      verifyTraps(fight,caster);
     }
 
     Glyph g=new Glyph(fight,caster,cell,(byte)0,TS,duration,spell);
@@ -6983,14 +6995,15 @@ public class SpellEffect
         caster.getCell().addFighter(caster);
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,5,target.getId()+"",caster.getId()+","+newCellID);
 
-        ArrayList<Trap> P=(new ArrayList<Trap>());
+       /* ArrayList<Trap> P=(new ArrayList<Trap>());
         P.addAll(fight.getAllTraps());
         for(Trap p : P)
         {
           int dist=PathFinding.getDistanceBetween(fight.getMap(),p.getCell().getId(),caster.getCell().getId());
           if(dist<=p.getSize())
             p.onTraped(caster);
-        }
+        }*/
+        verifyTraps(fight,caster);
       }
     }
   }
@@ -7578,14 +7591,15 @@ public class SpellEffect
       caster.setCell(cell);
       caster.getCell().addFighter(caster);
 
-      ArrayList<Trap> P=(new ArrayList<Trap>());
+     /* ArrayList<Trap> P=(new ArrayList<Trap>());
       P.addAll(fight.getAllTraps());
       for(Trap p : P)
       {
         int dist=PathFinding.getDistanceBetween(fight.getMap(),p.getCell().getId(),caster.getCell().getId());
         if(dist<=p.getSize())
           p.onTraped(caster);
-      }
+      }*/
+      verifyTraps(fight,caster);
       SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,4,caster.getId()+"",caster.getId()+","+cell.getId());
 
       ArrayList<Glyph> glyphs=new ArrayList<>(caster.getFight().getAllGlyphs());
@@ -7799,7 +7813,7 @@ public class SpellEffect
     }
   }
 
-  public void checkTraps(Fight fight, Fighter fighter)
+  /*public void checkTraps(Fight fight, Fighter fighter)
   {
     final short[] nbr= { 0 };
     new ArrayList<>(fight.getAllTraps()).stream().filter(trap -> PathFinding.getDistanceBetween(fight.getMap(),trap.getCell().getId(),fighter.getCell().getId())<=trap.getSize()).forEach(trap -> {
@@ -7813,6 +7827,13 @@ public class SpellEffect
         e.printStackTrace();
       }
       nbr[0]++;
+    });
+  }*/
+
+  public static void verifyTraps(Fight fight, Fighter fighter)
+  {
+    new ArrayList<>(fight.getAllTraps()).stream().filter(trap -> PathFinding.getDistanceBetween(fight.getMap(),trap.getCell().getId(),fighter.getCell().getId())<=trap.getSize()).forEach(trap -> {
+      trap.onTraped(fighter);
     });
   }
 }

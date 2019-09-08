@@ -2286,7 +2286,6 @@ public class PathFinding
 
       for(Trap trap : fight.getAllTraps())
       {
-
         if(PathFinding.getDistanceBetween(fight.getMap(),trap.getCell().getId(),actualCell.getId())<=trap.getSize())
           return actualCell;
       }

@@ -64,6 +64,7 @@ public class Fighter implements Comparable<Fighter>
   public GameCase lastInvisCell=null;
   public int lastInvisMP=-1;
   private boolean hadSober=false;
+  private boolean justTrapped=false;
 
   public Fighter(Fight f, MobGrade mob)
   {
@@ -1347,5 +1348,15 @@ public class Fighter implements Comparable<Fighter>
   public void setHadSober(boolean hadSober)
   {
     this.hadSober=hadSober;
+  }
+
+  public boolean getJustTrapped()
+  {
+    return justTrapped;
+  }
+
+  public void setJustTrapped(boolean justTrapped)
+  {
+    this.justTrapped = justTrapped;
   }
 }

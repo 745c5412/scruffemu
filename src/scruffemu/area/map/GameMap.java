@@ -90,18 +90,9 @@ public class GameMap
       this.Y=Byte.parseByte(mapInfos[1]);
       int subArea=Integer.parseInt(mapInfos[2]);
 
-      if(subArea==0&&id==32)
-      {
-        this.subArea=Main.world.getSubArea(subArea);
-        if(this.subArea!=null)
-          this.subArea.addMap(this);
-      }
-      else if(subArea!=0)
-      {
-        this.subArea=Main.world.getSubArea(subArea);
-        if(this.subArea!=null)
-          this.subArea.addMap(this);
-      }
+      this.subArea=Main.world.getSubArea(subArea);
+      if(this.subArea!=null)
+        this.subArea.addMap(this);
     }
     catch(Exception e)
     {
@@ -830,11 +821,14 @@ public class GameMap
     }
   }
 
-  public ArrayList<Player> getPlayers()
+  public synchronized ArrayList<Player> getPlayers()
   {
     ArrayList<Player> player=new ArrayList<>();
     for(GameCase c : cases)
-      player.addAll(c.getPlayers().stream().collect(Collectors.toList()));
+      if(!c.getPlayers().isEmpty())
+        for(Player p : c.getPlayers())
+          if(!player.contains(p))
+            player.add(p);
     return player;
   }
 
@@ -935,14 +929,14 @@ public class GameMap
     return false;
   }
 
-  public void spawnAfterTimeGroup()
+  public void spawnAfterTimeGroup(int minRespawn, int maxRespawn)
   {
-    new TimerWaiterPlus(new RespawnGroup(this,-1,System.currentTimeMillis()),0);
+    new TimerWaiterPlus(new RespawnGroup(this,-1,System.currentTimeMillis()),Formulas.getRandomValue(minRespawn,maxRespawn));
   }
 
-  public void spawnAfterTimeGroupFix(final int cell)
+  public void spawnAfterTimeGroupFix(final int cell, int minRespawn, int maxRespawn)
   {
-    new TimerWaiterPlus(new RespawnGroup(this,cell,System.currentTimeMillis()),0);
+    new TimerWaiterPlus(new RespawnGroup(this,cell,System.currentTimeMillis()),Formulas.getRandomValue(minRespawn,maxRespawn));
   }
 
   public void spawnGroup(int align, int nbr, boolean log, int cellID)
@@ -1360,7 +1354,7 @@ public class GameMap
       perso.sendMessage("This map does not have fighting positions, please post the mapID (type /mapid) and this message in the bug report channel on <b><a href='"+Config.getInstance().discord+"'>Discord</a></b>.");
       return;
     }
-    
+
     int id=1;
     if(this.fights==null)
       this.fights=new ArrayList<>();
@@ -1900,7 +1894,7 @@ public class GameMap
   {
     this.maxRespawnTime=maxRespawnTime;
   }
-  
+
   public void moveMobGroups(int mover)
   {
     // String str = "";
@@ -1934,7 +1928,7 @@ public class GameMap
     }
     // return str;
   }
-  
+
   public void zillaTimer()
   {
     new TimerWaiterPlus(() -> this.spawnZilla(),3*60*1000); //3 minutes before spawn

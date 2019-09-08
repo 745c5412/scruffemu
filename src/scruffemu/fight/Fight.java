@@ -3237,6 +3237,8 @@ public class Fight
       this.setCurAction("");
       return false;
     }
+
+    current.setJustTrapped(false);
     setCurFighterPm(getCurFighterPm()-nStep);
     this.setCurFighterUsedPm(this.getCurFighterUsedPm()+nStep);
 
@@ -3303,17 +3305,28 @@ public class Fight
 
     if(fighter.getPersonnage()==null)
     {
-      new TimerWaiterPlus(() -> {
+      try
+      {
+        Thread.sleep((int)(400+(100*Math.sqrt(nStep))));
+      }
+      catch(final Exception e)
+      {
+      }
+      this.setCurAction("");
+      SpellEffect.verifyTraps(this,fighter);
+      /*new TimerWaiterPlus(() -> {
         SocketManager.GAME_SEND_GAMEACTION_TO_FIGHT(this,7,this.getCurAction());
         this.setCurAction("");
         new ArrayList<>(this.getAllTraps()).stream().filter(trap -> trap!=null).filter(trap -> PathFinding.getDistanceBetween(getMap(),trap.getCell().getId(),current.getCell().getId())<=trap.getSize()).forEach(trap -> trap.onTraped(current));
-      },900+100*nStep);
+      },700+150*nStep);*/
       return true;
     }
 
     if((getType()==Constant.FIGHT_TYPE_PVM)&&(getAllChallenges().size()>0)&&!current.isInvocation()&&!current.isDouble()&&!current.isCollector()||(getType()==Constant.FIGHT_TYPE_DOPEUL)&&(getAllChallenges().size()>0)&&!current.isInvocation()&&!current.isDouble()&&!current.isCollector())
       this.getAllChallenges().entrySet().stream().filter(c -> c.getValue()!=null).forEach(c -> c.getValue().onPlayerMove(fighter));
 
+    if(fighter.getPersonnage()!=null)
+      SpellEffect.verifyTraps(this,fighter);
     fighter.getPersonnage().getGameClient().addAction(GA);
     return true;
   }
@@ -3336,11 +3349,11 @@ public class Fight
         if(player!=null&&target!=caster&&deadPlayer!=null)
           player.increaseTotalKills();
       }
-      
+
       target.setIsDead(true);
       if(!target.hasLeft())
         this.getDeadList().add(new Pair<Integer, Fighter>(target.getId(),target));
-      
+
       final Fighter current=this.getFighterByOrdreJeu();
       if(current==null)
         return;
@@ -4506,16 +4519,20 @@ public class Fight
     SocketManager.GAME_SEND_GAMEACTION_TO_FIGHT(this,7,this.getCurAction());
     SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(this,7,2,current.getId());
 
-    final ArrayList<Trap> traps=new ArrayList<>(this.getAllTraps());
-    final Fighter fighter=getFighterByPerso(player);
-    final int currentCell=fighter.getCell().getId();
+    //final ArrayList<Trap> traps=new ArrayList<>(this.getAllTraps());
+    // final Fighter fighter=getFighterByPerso(player);
+    //final int currentCell=fighter.getCell().getId();
 
-    for(Trap trap : traps)
+    if(!current.getJustTrapped()&&current.getFight()!=null)
     {
-      if(PathFinding.getDistanceBetween(this.getMap(),trap.getCell().getId(),currentCell)<=trap.getSize())
-        trap.onTraped(fighter);
-      if(this.getState()==Constant.FIGHT_STATE_FINISHED)
-        break;
+      /*  for(Trap trap : traps)
+      {
+        if(PathFinding.getDistanceBetween(this.getMap(),trap.getCell().getId(),currentCell)<=trap.getSize())
+          trap.onTraped(fighter);
+        if(this.getState()==Constant.FIGHT_STATE_FINISHED)
+          break;
+      }*/
+      SpellEffect.verifyTraps(current.getFight(),current);
     }
 
     this.setCurAction("");
@@ -4636,7 +4653,7 @@ public class Fight
           {
             try
             {
-              Fighter f=this.getCapturer().get(Formulas.getRandomValue(0,this.getCapturer().size()-1)); // R�cup�re un captureur au hasard dans la liste
+              Fighter f=this.getCapturer().get(Formulas.getRandomValue(0,this.getCapturer().size()-1)); //R�cup�re un captureur au hasard dans la liste
               if(f!=null&&f.getPersonnage()!=null)
               {
                 if(f.getPersonnage().getObjetByPos(Constant.ITEM_POS_ARME)==null||!(f.getPersonnage().getObjetByPos(Constant.ITEM_POS_ARME).getTemplate().getType()==Constant.ITEM_TYPE_PIERRE_AME))
@@ -4647,12 +4664,12 @@ public class Fight
                 Pair<Integer, Integer> playerSoulStone=Formulas.decompPierreAme(f.getPersonnage().getObjetByPos(Constant.ITEM_POS_ARME));// R�cup�re les stats de la pierre �quipp�
 
                 if(playerSoulStone.getRight()<maxLvl)
-                {// Si la pierre est trop faible
+                { //Si la pierre est trop faible
                   this.getCapturer().remove(f);
                   continue;
                 }
                 if(Formulas.getRandomValue(1,100)<=Formulas.totalCaptChance(playerSoulStone.getLeft(),f.getPersonnage()))
-                {// Si le joueur obtiens la capture Retire la pierre vide au personnage et lui envoie ce changement
+                { //Si le joueur obtiens la capture Retire la pierre vide au personnage et lui envoie ce changement
                   int emptySoulStone=f.getPersonnage().getObjetByPos(Constant.ITEM_POS_ARME).getGuid();
                   f.getPersonnage().deleteItem(emptySoulStone);
                   SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(f.getPersonnage(),emptySoulStone);
@@ -4924,6 +4941,31 @@ public class Fight
       int quantity=2;
       if(this.getType()==Constant.FIGHT_TYPE_AGRESSION)
       {
+        int totalLoserRank=0;
+        for(Fighter fighter : loosers)
+          if(fighter.getPersonnage()!=null)
+            if(fighter.getPersonnage().get_align()!=0)
+              totalLoserRank+=fighter.getPersonnage().getGrade();
+
+        int totalWinnerRank=0;
+        int winningPlayers=0;
+        for(Fighter fighter : winners)
+          if(fighter.getPersonnage()!=null)
+            if(fighter.getPersonnage().get_align()!=0)
+            {
+              winningPlayers++;
+              totalWinnerRank+=fighter.getPersonnage().getGrade();
+            }
+
+        float averageLoserRank=totalLoserRank/loosers.size();
+        if(totalWinnerRank<=totalLoserRank&&averageLoserRank>=2)
+        {
+          int tokenReward=(int)Math.floor(4*totalLoserRank/winningPlayers);
+          for(Fighter f : winners)
+            if(f.getPersonnage()!=null)
+              new Action(475,Integer.toString(tokenReward),"",null).apply(f.getPersonnage(),null,-1,-1); //20 token reward
+        }
+
         boolean isAlone=true;
 
         for(Fighter fighter : winners)
@@ -5015,6 +5057,34 @@ public class Fight
         }
       }
 
+      if(this.getType()==Constant.FIGHT_TYPE_CONQUETE)
+      {
+        int totalLoserRank=0;
+        for(Fighter fighter : loosers)
+          if(fighter.getPersonnage()!=null)
+            if(fighter.getPersonnage().get_align()!=0)
+              totalLoserRank+=fighter.getPersonnage().getGrade();
+
+        int totalWinnerRank=0;
+        int winningPlayers=0;
+        for(Fighter fighter : winners)
+          if(fighter.getPersonnage()!=null)
+            if(fighter.getPersonnage().get_align()!=0)
+            {
+              winningPlayers++;
+              totalWinnerRank+=fighter.getPersonnage().getGrade();
+            }
+
+        float averageLoserRank=totalLoserRank/loosers.size();
+        if(totalWinnerRank<=totalLoserRank&&averageLoserRank>=2)
+        {
+          int tokenReward=(int)Math.floor(4*totalLoserRank/winningPlayers);
+          for(Fighter f : winners)
+            if(f.getPersonnage()!=null)
+              new Action(475,Integer.toString(tokenReward),"",null).apply(f.getPersonnage(),null,-1,-1); //20 token reward
+        }
+      }
+
       if(Config.getInstance().HEROIC)
       {
         switch(this.getType())
@@ -5074,7 +5144,7 @@ public class Fight
                 GameMap map=this.getMapOld();
                 if(map.getId()!=8338&&map.getId()!=8340&&map.getId()!=8342&&map.getId()!=8344&&map.getId()!=8345&&map.getId()!=8347) //firefoux
                   if(!group.isFix())
-                    this.getMapOld().spawnAfterTimeGroup();
+                    this.getMapOld().spawnAfterTimeGroup(this.getMapOld().getMinRespawnTime(),this.getMapOld().getMaxRespawnTime());
               }
             }
             catch(Exception e)
@@ -5099,9 +5169,9 @@ public class Fight
             {
               GameMap map=this.getMapOld();
               if(group.isFix()) //players won against fixed mobgroup
-                this.getMapOld().spawnAfterTimeGroupFix(mobGroup.getSpawnCellId());
+                this.getMapOld().spawnAfterTimeGroupFix(mobGroup.getSpawnCellId(),this.getMapOld().getMinRespawnTime(),this.getMapOld().getMaxRespawnTime());
               else if(map.getId()!=8338&&map.getId()!=8340&&map.getId()!=8342&&map.getId()!=8344&&map.getId()!=8345&&map.getId()!=8347) //firefoux
-                this.getMapOld().spawnAfterTimeGroup();
+                this.getMapOld().spawnAfterTimeGroup(this.getMapOld().getMinRespawnTime(),this.getMapOld().getMaxRespawnTime());
             }
           }
           catch(Exception e)
@@ -5174,7 +5244,12 @@ public class Fight
             {
               if(player!=null&&memberGuild!=0)
                 if(player.getGuildMember()!=null)
+                {
                   xpGuild=(int)Math.floor(this.getCollector().getXp()/memberGuild);
+                  if(Main.world.getGuild(this.getCollector().getGuildId()).getLvl()>=20)
+                    if(this.getCollector().getPodsTotal()>100)
+                      new Action(475,"20","",null).apply(player,null,-1,-1); //20 token reward
+                }
             }
             else
               xpGuild=Formulas.getGuildXpWin(i,XP);
