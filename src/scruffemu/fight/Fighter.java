@@ -801,7 +801,7 @@ public class Fighter implements Comparable<Fighter>
       ArrayList<SpellEffect> newBuffs=new ArrayList<SpellEffect>();
       for(SpellEffect buff : fightBuffs)
       {
-        if(!buff.isDebuffable())
+        if(!buff.isDebuffable()&&buff.getSpell()!=686) //not boozer
         {
           newBuffs.add(buff);
           continue;
@@ -816,7 +816,18 @@ public class Fighter implements Comparable<Fighter>
           case Constant.STATS_ADD_PM2:
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this.fight,7,127,getId()+"",getId()+",-"+buff.getValue());
             break;
+          case Constant.STATS_REM_PA:
+          case Constant.STATS_REM_PA2:
+            SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this.fight,7,111,getId()+"",getId()+","+buff.getValue());
+            this.setCurPa(this.fight,this.getCurPa(fight)+buff.getValue());
+            break;
+          case Constant.STATS_REM_PM:
+          case Constant.STATS_REM_PM2:
+            SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this.fight,7,128,getId()+"",getId()+",+"+buff.getValue());
+            break;
         }
+        if(this.getPersonnage()!=null)
+          SocketManager.GAME_SEND_STATS_PACKET(this.getPersonnage());
       }
       fightBuffs.clear();
       if(!newBuffs.isEmpty())
@@ -1357,6 +1368,6 @@ public class Fighter implements Comparable<Fighter>
 
   public void setJustTrapped(boolean justTrapped)
   {
-    this.justTrapped = justTrapped;
+    this.justTrapped=justTrapped;
   }
 }

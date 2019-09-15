@@ -4785,38 +4785,34 @@ public class Action
         break;
 
       case 474:
-      {
         try
         {
           final int tokenAmount=Integer.parseInt(this.args);
           int tokens=player.getTokens();
           SocketManager.GAME_SEND_MESSAGE(player,"You've gained "+tokenAmount+" tokens for defeating this boss. You now have "+(tokens+tokenAmount)+" tokens.","9800ff");
           player.setTokens(tokens+tokenAmount);
-          break;
         }
         catch(Exception e4)
         {
           e4.printStackTrace();
           return true;
         }
-      }
-      
+        break;
+
       case 475:
-      {
         try
         {
           final int tokenAmount=Integer.parseInt(this.args);
           int tokens=player.getTokens();
           SocketManager.GAME_SEND_MESSAGE(player,"You've gained "+tokenAmount+" tokens for winning this fight. You now have "+(tokens+tokenAmount)+" tokens.","9800ff");
           player.setTokens(tokens+tokenAmount);
-          break;
         }
         catch(Exception e4)
         {
           e4.printStackTrace();
           return true;
         }
-      }
+        break;
 
       default:
         break;

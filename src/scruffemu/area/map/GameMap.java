@@ -908,11 +908,11 @@ public class GameMap
       return false;
     for(MobGroup group : this.mobGroups.values())
     {
-      if(perso.get_align()==0&&group.getAlignement()>0)
+      if(perso.get_align()==0&&group.getAlignement()>0) //neutral player and not neutral mob
         continue;
-      if(perso.get_align()==1&&group.getAlignement()==1)
+      if(perso.get_align()==1&&group.getAlignement()==1) //same align
         continue;
-      if(perso.get_align()==2&&group.getAlignement()==2)
+      if(perso.get_align()==2&&group.getAlignement()==2) //same align
         continue;
 
       if(this.subArea!=null)

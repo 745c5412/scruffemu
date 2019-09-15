@@ -6,6 +6,7 @@ import java.util.Map;
 
 import scruffemu.area.map.GameMap;
 import scruffemu.common.Formulas;
+import scruffemu.main.Constant;
 import scruffemu.main.Main;
 import scruffemu.object.GameObject;
 import scruffemu.utility.Pair;
@@ -78,7 +79,7 @@ public class RespawnGroup implements Runnable
         }
         else if(time-this.lastTime>random) //is normal group with timer expired
         {
-          getMap().spawnGroup(-1,1,true,-1);
+          getMap().spawnGroup(Constant.ALIGNEMENT_NEUTRE,1,true,-1);
           this.stop();
           break;
         }

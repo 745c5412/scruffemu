@@ -4942,28 +4942,32 @@ public class Fight
       if(this.getType()==Constant.FIGHT_TYPE_AGRESSION)
       {
         int totalLoserRank=0;
+        int losingPlayers=0;
         for(Fighter fighter : loosers)
           if(fighter.getPersonnage()!=null)
+          {
+            losingPlayers++;
             if(fighter.getPersonnage().get_align()!=0)
               totalLoserRank+=fighter.getPersonnage().getGrade();
+          }
 
         int totalWinnerRank=0;
         int winningPlayers=0;
         for(Fighter fighter : winners)
           if(fighter.getPersonnage()!=null)
+          {
+            winningPlayers++;
             if(fighter.getPersonnage().get_align()!=0)
-            {
-              winningPlayers++;
               totalWinnerRank+=fighter.getPersonnage().getGrade();
-            }
+          }
 
-        float averageLoserRank=totalLoserRank/loosers.size();
+        float averageLoserRank=totalLoserRank/losingPlayers;
         if(totalWinnerRank<=totalLoserRank&&averageLoserRank>=2)
         {
           int tokenReward=(int)Math.floor(4*totalLoserRank/winningPlayers);
           for(Fighter f : winners)
             if(f.getPersonnage()!=null)
-              new Action(475,Integer.toString(tokenReward),"",null).apply(f.getPersonnage(),null,-1,-1); //20 token reward
+              f.getPersonnage().setNeededEndFightAction(new Action(475,Integer.toString(tokenReward),"",null)); //token reward
         }
 
         boolean isAlone=true;
@@ -5060,28 +5064,32 @@ public class Fight
       if(this.getType()==Constant.FIGHT_TYPE_CONQUETE)
       {
         int totalLoserRank=0;
+        int losingPlayers=0;
         for(Fighter fighter : loosers)
           if(fighter.getPersonnage()!=null)
+          {
+            losingPlayers++;
             if(fighter.getPersonnage().get_align()!=0)
               totalLoserRank+=fighter.getPersonnage().getGrade();
+          }
 
         int totalWinnerRank=0;
         int winningPlayers=0;
         for(Fighter fighter : winners)
           if(fighter.getPersonnage()!=null)
+          {
+            winningPlayers++;
             if(fighter.getPersonnage().get_align()!=0)
-            {
-              winningPlayers++;
               totalWinnerRank+=fighter.getPersonnage().getGrade();
-            }
+          }
 
-        float averageLoserRank=totalLoserRank/loosers.size();
+        float averageLoserRank=totalLoserRank/losingPlayers;
         if(totalWinnerRank<=totalLoserRank&&averageLoserRank>=2)
         {
           int tokenReward=(int)Math.floor(4*totalLoserRank/winningPlayers);
           for(Fighter f : winners)
             if(f.getPersonnage()!=null)
-              new Action(475,Integer.toString(tokenReward),"",null).apply(f.getPersonnage(),null,-1,-1); //20 token reward
+              f.getPersonnage().setNeededEndFightAction(new Action(475,Integer.toString(tokenReward),"",null)); //token reward
         }
       }
 
@@ -5242,14 +5250,12 @@ public class Fight
 
             if(this.getType()==Constant.FIGHT_TYPE_PVT&&win==1)
             {
-              if(player!=null&&memberGuild!=0)
+              if(memberGuild!=0)
                 if(player.getGuildMember()!=null)
-                {
                   xpGuild=(int)Math.floor(this.getCollector().getXp()/memberGuild);
-                  if(Main.world.getGuild(this.getCollector().getGuildId()).getLvl()>=20)
-                    if(this.getCollector().getPodsTotal()>100)
-                      new Action(475,"20","",null).apply(player,null,-1,-1); //20 token reward
-                }
+              if(Main.world.getGuild(this.getCollector().getGuildId()).getLvl()>=20)
+                if(this.getCollector().getPodsTotal()>=100)
+                  player.setNeededEndFightAction(new Action(475,"20","",null)); //20 token reward
             }
             else
               xpGuild=Formulas.getGuildXpWin(i,XP);

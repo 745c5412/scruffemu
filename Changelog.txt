@@ -2024,4 +2024,75 @@ Made Crackler's Crushing no longer print messages for the resistance buffs it gi
 Reduced Red Wyrmling's Dragofire animation timer to 1000ms (was 1200ms)
 Redid parts of Red Wyrmling's AI
 
-to export: drops.sql, spells.sql
+06-09-2019
+Fixed a bug where physical and magic resistance didnt always apply correctly
+Made Sylvan Power block all poisons instead of just Earthquake and Poisoned Wind
+Fixed a bug where Sylvan Power set the damage of all poisons to 0 instead of reducing them by 1000
+Added token reward to Lord Crow's Library
+Fixed a bug where damage reflecting effects reduced the max hp of the target instead of the max hp of the caster
+Fixed a bug where damage reflecting effects did not get reduced by general shields (Toad, Fortification, Preventing Word)
+
+07-09-2019
+Fixed a bug in the Dragon Pig door opening/closing system that caused doors to stop opening
+Made male wild mounts now run away upon mating instead of upon the female mount getting a baby
+Fixed a bug where Lord Crow's Carapace of Wings air damage also affected allies
+Fixed a bug where mobs' respawn timers did not apply correctly, respawning them instantly instead
+Fixed a bug where Sram traps would trigger instantly upon casting in certain instances
+Completely redid all trap detection code as it was complete spaghetti code leftover from the base emulator
+Fixed a bug where the player's pods did not get updated after moving an item to a mount's inventory
+Fixed a bug where mounts did not stop accepting items after their pod limit got reached
+Added a 20 token reward for killing a perceptor of a guild above level 20 with more than 100 pods used
+Redid the perceptor message so it now shows the perceptor's guild level, the amount of pods it has used and the amount of XP it has collected
+Fixed respawn timer of Dark Vlad
+Fixed respawn timer of arachnees in Arachnee House
+Fixed a bug that allowed the max exo limit in the maging system to be passed
+Added token reward for winning PvP fights: if the average rank of the losing team is >= 2 and the sum of all winners' ranks is <= the sum of all losers' ranks, reward (4*(the sum of all losing player's ranks)/(the total amount of players in the winning team) in tokens, rounded down
+- 1 v a rank 10 person: 40 tokens
+- 1 v two rank 10 persons: 80 tokens
+- 1 v a rank 5 person: 20 tokens
+- 1 v two rank 5 persons: 40 tokens
+- 2 v a rank 10 person: 20 tokens
+- 2 v two rank 10 persons: 40 tokens
+- 3 v a rank 10 person: 13 tokens
+- 3 v two rank 10 persons: 26 tokens
+- 4 v a rank 10 person: 10 tokens
+- 4 v two rank 10 persons: 20 tokens
+
+08-09-2019
+Fixed a bug where players could teleport to a prism that was in a fight
+Redid the entire subarea loading sequence
+Made prism list automatically sort alphabetically upon launching the server
+Fixed a bug where the players' kamas did not get updated visually after buying a paddock even though it did correctly update on the server-side
+Tweaked disconnection algorithm
+
+13-09-2019
+Fixed a divide by zero error in the conquest system
+Fixed a broken entry in the subarea data table
+Fixed a bug where getting tokens from PvP did not work
+Fixed a bug where getting tokens from killing perceptors did not work
+Fixed a bug where you had to be in a guild to get tokens from killing a perceptor
+Made mount tiredness reduce before mounts move instead of after
+Added system that prevents mobs from starting fights in walls
+Fixed a bug where bontarian and brakmarian mobs would never respawn
+Fixed a bug where bontarian and brakmarian mobs did not aggro players of the other alignment correctly (mobs have to be killed for this to start working)
+Fixed a bug where the dopple area did not spawn mobs correctly
+Fixed a bug where alignment aggro did not work on mobs that spawned when starting the server
+Fixed a bug where the Cawwot summon had 10 base hp at every level
+Fixed a bug where the Axe Smithmagus profession was not obtainable
+Added Hogmeiser's Worn Boots as a drop from Gobball War Chief at 0.3%
+Added Hogmeiser's Worn Boots as a drop from Gobball War Chief archmob at 0.6%
+Added Hogmeiser's Worn Boots as a drop from Small Gobball War Chief at 0.3%
+Fixed a bug where dispells did not give AP when they removed a -AP debuff
+Fixed a bug where dispells did not give MP when they removed a -MP debuff
+Fixed a bug where -AP debuffs were not dispellable
+Fixed a bug where AP refunded by using a dispell was not usable
+Fixed a bug where the drunk state tooltip did not get removed after using bamboo milk even though the drunk state did get removed correctly
+Added spellpoint scrolls to token shop for 40 tokens each
+
+15-09-2019
+Fully integrated Dofus Remastered client with Herofus client
+Fixed a bug where the healing done by life transfer would only be as high as the amount needed to heal someone to full hp
+Fixed a bug where Cawwot Dofus' internal price was 1 kama
+Fixed a bug where Ochre Dofus' internal price was 50000 kamas
+Fixed a bug where Kaliptus Dofus' internal price was 1 kama
+Fixed a bug where Spell Point Scroll was internally still named Parchemin de Sorts

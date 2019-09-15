@@ -794,7 +794,7 @@ public class World
       if(subarea.getArea()==area&&subarea.getAlignement()==alignement)
         cant++;
     }
-    if(cant==0)
+    if(cant==0||area.getSubAreas().size()==0)
       return 0;
     return Math.rint((1000*cant/(area.getSubAreas().size()))/10);
   }

@@ -77,7 +77,15 @@ public class CryptManager
       list=new ArrayList<>();
       while(a<infos.length())
       {
-        list.add(map.getCase((getIntByHashedValue(infos.charAt(a))<<6)+getIntByHashedValue(infos.charAt(a+1))));
+        if(map.getCase((getIntByHashedValue(infos.charAt(a))<<6)+getIntByHashedValue(infos.charAt(a+1))).isWalkable(false))
+          list.add(map.getCase((getIntByHashedValue(infos.charAt(a))<<6)+getIntByHashedValue(infos.charAt(a+1))));
+        else
+        {
+          GameCase cell=map.getCase(map.getRandomFreeCellId());
+          while(!cell.isWalkable(false)||cell==null)
+            cell=map.getCase(map.getRandomFreeCellId());
+          list.add(cell);
+        }
         a=a+2;
       }
     }

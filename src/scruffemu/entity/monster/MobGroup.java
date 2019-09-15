@@ -55,107 +55,64 @@ public class MobGroup
     int rand=0;
     int nbr=0;
     if(fixSize>0&&fixSize<9)
-    {
       nbr=fixSize;
-    }
     else if(minSize!=-1&&maxSize!=-1&&maxSize!=0&&(minSize<maxSize))
     {
       if(minSize==3&&maxSize==8)
       {
         rand=Formulas.getRandomValue(0,99);
         if(rand<25) //3: 25%
-        {
           nbr=3;
-        }
         else if(rand<48) //4:23%
-        {
           nbr=4;
-        }
         else if(rand<51) //5:20%
-        {
           nbr=5;
-        }
         else if(rand<85) //6:17%
-        {
           nbr=6;
-        }
         else if(rand<95) //7:10%
-        {
           nbr=7;
-        }
         else
-        //8:5%
-        {
+          //8:5%
           nbr=8;
-        }
       }
       else if(minSize==1&&maxSize==3)
       { // 21 - normalement tout astrub
         rand=Formulas.getRandomValue(0,99);
         if(rand<40) //1: 40%
-        {
           nbr=1;
-        }
         else if(rand<75)//2: 35%
-        {
           nbr=2;
-        }
-        else
-        //3: 25%
-        {
+        else //3: 25%
           nbr=3;
-        }
       }
       else if(minSize==1&&maxSize==5)
       {
         rand=Formulas.getRandomValue(0,99);
         if(rand<30) //3: 30%
-        {
           nbr=1;
-        }
         else if(rand<53) //4:23%
-        {
           nbr=2;
-        }
         else if(rand<73) //5:20%
-        {
           nbr=3;
-        }
         else if(rand<90) //6:17%
-        {
           nbr=4;
-        }
-        else
-        //8:10%
-        {
+        else //8:10%
           nbr=5;
-        }
       }
       else if(minSize==1&&maxSize==4)
       {
         rand=Formulas.getRandomValue(0,99);
         if(rand<35) //3: 35%
-        {
           nbr=1;
-        }
         else if(rand<61) //4:26%
-        {
           nbr=2;
-        }
         else if(rand<82) //5:21%
-        {
           nbr=3;
-        }
-        else
-        //8:18%
-        {
+        else //8:18%
           nbr=4;
-        }
       }
       else
-      {
         nbr=Formulas.getRandomValue(minSize,maxSize);
-      }
     }
     else if(minSize==-1)
     {
@@ -180,8 +137,7 @@ public class MobGroup
             nbr=2;
           else if(rand<74) //3:26%
             nbr=3;
-          else
-            //4:26%
+          else //4:26%
             nbr=4;
           break;
         case 5:
@@ -194,8 +150,7 @@ public class MobGroup
             nbr=3;
           else if(rand<85) //4:25%
             nbr=4;
-          else
-            //5:15%
+          else //5:15%
             nbr=5;
           break;
         case 6:
@@ -210,8 +165,7 @@ public class MobGroup
             nbr=4;
           else if(rand<85) //5:20%
             nbr=5;
-          else
-            //6:15%
+          else //6:15%
             nbr=6;
           break;
         case 7:
@@ -228,8 +182,7 @@ public class MobGroup
             nbr=5;
           else if(rand<91) //6:16%
             nbr=6;
-          else
-            //7:9%
+          else //7:9%
             nbr=7;
           break;
         default:
@@ -248,8 +201,7 @@ public class MobGroup
             nbr=6;
           else if(rand<91) //7:11%
             nbr=7;
-          else
-            //8:9%
+          else //8:9%
             nbr=8;
           break;
       }
@@ -441,8 +393,6 @@ public class MobGroup
       }
     }
     int guid=-1;
-    boolean haveSameAlign=false;
-
     if(extra!=null)
     {
       setIsExtraGroup(true);
@@ -450,19 +400,22 @@ public class MobGroup
       this.mobs.put(guid,extra);
       guid--;
     }
-    //On v�rifie qu'il existe des monstres de l'alignement demand� pour �viter les boucles infinies
-    for(MobGrade mob : possibles)
-      if(mob.getTemplate().getAlign()==this.align)
-        haveSameAlign=true;
-    if(!haveSameAlign)
-      return;//S'il n'y en a pas
     for(int a=0;a<nbr;a++)
     {
       MobGrade Mob=null;
       do
       {
-        int random=Formulas.getRandomValue(0,possibles.size()-1);//on prend un mob au hasard dans le tableau
+        int random=Formulas.getRandomValue(0,possibles.size()-1); //on prend un mob au hasard dans le tableau
         Mob=possibles.get(random).getCopy();
+        if(this.align==Constant.ALIGNEMENT_NEUTRE&&Mob.getTemplate().getAlign()!=Constant.ALIGNEMENT_NEUTRE)
+        {
+          if(Mob.getTemplate().getId()==372||Mob.getTemplate().getId()==415)
+            this.align=Constant.ALIGNEMENT_BRAKMARIEN;
+          else if(Mob.getTemplate().getId()==296)
+            this.align=Constant.ALIGNEMENT_BONTARIEN;
+          else
+            this.align=Map.getSubArea().getAlignement();
+        }
       } while(Mob.getTemplate().getAlign()!=this.align);
 
       this.mobs.put(guid,Mob);
@@ -471,6 +424,8 @@ public class MobGroup
       guid--;
     }
 
+    if(this.aggroDistance<=0&&this.align!=Constant.ALIGNEMENT_NEUTRE)
+      this.aggroDistance=3;
     this.cellId=(cell==-1 ? Map.getRandomFreeCellId() : cell);
     while(Map.containsForbiddenCellSpawn(this.cellId))
       this.cellId=Map.getRandomFreeCellId();
@@ -484,7 +439,7 @@ public class MobGroup
     this.setIsDynamic(dynamic);
   }
 
-  public MobGroup(int id, int cellId, String groupData, String objects, int stars)
+  public MobGroup(int id, short mapId, int cellId, String groupData, String objects, int stars)
   {
     this.id=id;
     this.align=Constant.ALIGNEMENT_NEUTRE;
@@ -514,10 +469,22 @@ public class MobGroup
         for(MobGrade MG : m.getGrades().values())
           if(MG.getLevel()>=min&&MG.getLevel()<=max)
             mgs.add(MG);
+       
         if(mgs.isEmpty())
           continue;
+        MobGrade chosen = mgs.get(Formulas.getRandomValue(0,mgs.size()-1));
+        if(this.align==Constant.ALIGNEMENT_NEUTRE&&chosen.getTemplate().getAlign()!=Constant.ALIGNEMENT_NEUTRE)
+        {
+          if(chosen.getTemplate().getId()==372||chosen.getTemplate().getId()==415)
+            this.align=Constant.ALIGNEMENT_BRAKMARIEN;
+          else if(chosen.getTemplate().getId()==296)
+            this.align=Constant.ALIGNEMENT_BONTARIEN;
+          else
+            this.align=Main.world.getMap(mapId).getSubArea().getAlignement();
+        }
+        
         //On prend un grade au hasard entre 0 et size -1 parmis les mobs possibles
-        this.mobs.put(guid,mgs.get(Formulas.getRandomValue(0,mgs.size()-1)));
+        this.mobs.put(guid,chosen);
         if(m.getAggroDistance()>this.aggroDistance)
           this.aggroDistance=m.getAggroDistance();
         guid--;
@@ -531,7 +498,9 @@ public class MobGroup
     for(Entry<Integer, MobGrade> mob : this.mobs.entrySet())// kralamour
       if(mob.getValue().getTemplate().getId()==423)
         this.orientation=3;
-
+    if(this.aggroDistance<=0&&this.align!=Constant.ALIGNEMENT_NEUTRE)
+      this.aggroDistance=3;
+    
     if(!objects.isEmpty())
     {
       for(String value : objects.split(","))
@@ -546,14 +515,13 @@ public class MobGroup
   public MobGroup(int id, int cellId, String groupData)
   {
     this.id=id;
-    this.align=Constant.ALIGNEMENT_NEUTRE;
-
     this.cellId=cellId;
     this.spawnCellId=this.getCellId();
     this.isFix=true;
     int guid=-1;
     @SuppressWarnings("unused")
     boolean star=false;
+    int tempAlign=Constant.ALIGNEMENT_NEUTRE;
     for(String data : groupData.split(";"))
     {
       if(data.equalsIgnoreCase(""))
@@ -580,6 +548,8 @@ public class MobGroup
         this.mobs.put(guid,mgs.get(Formulas.getRandomValue(0,mgs.size()-1))); //On prend un grade au hasard entre 0 et size -1 parmis les mobs possibles
         if(m.getAggroDistance()>this.aggroDistance)
           this.aggroDistance=m.getAggroDistance();
+        if(m.getAlign()!=Constant.ALIGNEMENT_NEUTRE)
+          tempAlign=m.getAlign();
         guid--;
       }
       catch(Exception e)
@@ -587,6 +557,11 @@ public class MobGroup
         e.printStackTrace();
       }
     }
+
+    this.align=tempAlign;
+    if(this.aggroDistance<=0&&this.align!=Constant.ALIGNEMENT_NEUTRE)
+      this.aggroDistance=3;
+
     this.orientation=(Formulas.getRandomValue(0,3)*2)+1;
   }
 
@@ -846,7 +821,7 @@ public class MobGroup
   {
     this.isDynamic=isDynamic;
   }
-  
+
   public void moveMobGroup(final GameMap map)
   {
     if(this.fight!=null)
@@ -882,6 +857,6 @@ public class MobGroup
 
   public void setFight(Fight fight)
   {
-    this.fight = fight;
+    this.fight=fight;
   }
 }

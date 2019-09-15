@@ -4024,7 +4024,22 @@ public class CommandAdmin extends AdminUser
     }
     else if(command.equalsIgnoreCase("RMOBSWORLD"))
     {
-      return;
+      for(GameMap map : Main.world.getMaps())
+      {
+        try
+        {
+          if(map.getMobPossibles()!=null&&!map.getMobPossibles().isEmpty()&&map.getMinSize()>0)
+          {
+            System.out.println("On map: "+map.getId());
+            map.refreshSpawns();
+          }
+        }
+        catch(Exception e)
+        {
+          e.printStackTrace();
+        }
+      }
+      this.sendMessage("Finished reloading maps.");
     }
     else if(command.equalsIgnoreCase("RESTART"))
     {

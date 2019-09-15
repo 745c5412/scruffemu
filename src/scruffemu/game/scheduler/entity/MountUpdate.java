@@ -18,13 +18,6 @@ public class MountUpdate extends Updatable
   {
     if(this.verify())
     {
-      for(String s : Config.getInstance().mountMaps)
-      {
-        short mapId=(short)Integer.parseInt(s);
-        GameMap map = Main.world.getMap(mapId);
-        map.getMountPark().startMoveMounts();
-      }
-
       for(Mount mount : Main.world.getMounts().values())
       {
         if(mount.getFatigue()<=0)
@@ -32,6 +25,13 @@ public class MountUpdate extends Updatable
         mount.setFatigue(mount.getFatigue()-3);
         if(mount.getFatigue()<0)
           mount.setFatigue(0);
+      }
+
+      for(String s : Config.getInstance().mountMaps)
+      {
+        short mapId=(short)Integer.parseInt(s);
+        GameMap map=Main.world.getMap(mapId);
+        map.getMountPark().startMoveMounts();
       }
     }
   }

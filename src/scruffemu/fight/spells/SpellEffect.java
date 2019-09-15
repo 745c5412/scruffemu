@@ -1652,7 +1652,7 @@ public class SpellEffect
       caster.setCell(cell);
       caster.getCell().addFighter(caster);
 
-     /* ArrayList<Trap> P=(new ArrayList<Trap>());
+      /* ArrayList<Trap> P=(new ArrayList<Trap>());
       P.addAll(fight.getAllTraps());
       for(Trap p : P)
       {
@@ -1661,7 +1661,7 @@ public class SpellEffect
         if(dist<=p.getSize())
           p.onTraped(caster);
       }*/
-      
+
       verifyTraps(fight,caster);
 
       SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,4,caster.getId()+"",caster.getId()+","+cell.getId());
@@ -1818,7 +1818,7 @@ public class SpellEffect
         target.getCell().addFighter(target);
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,5,caster.getId()+"",target.getId()+","+newCellID);
 
-       /* ArrayList<Trap> P=(new ArrayList<Trap>());
+        /* ArrayList<Trap> P=(new ArrayList<Trap>());
         P.addAll(fight.getAllTraps());
         for(Trap p : P)
         {
@@ -1827,7 +1827,7 @@ public class SpellEffect
           if(dist<=p.getSize())
             p.onTraped(target);
         }*/
-        
+
         verifyTraps(fight,target);
       }
     }
@@ -1884,7 +1884,7 @@ public class SpellEffect
       else if(dist2<=p.getSize())
         p.onTraped(caster);
     }*/
-    
+
     verifyTraps(fight,caster);
     verifyTraps(fight,target);
     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,4,caster.getId()+"",target.getId()+","+exCaster.getId());
@@ -2646,7 +2646,10 @@ public class SpellEffect
       for(Fighter target : cibles)
       {
         if((val+target.getPdv())>target.getPdvMax())
-          val=target.getPdvMax()-target.getPdv();//Target va mourrir
+        {
+          target.removePdv(caster,-(target.getPdvMax()-target.getPdv()));
+          SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,100,caster.getId()+"",target.getId()+",+"+(target.getPdvMax()-target.getPdv()));
+        }
         target.removePdv(caster,-val);
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,100,caster.getId()+"",target.getId()+",+"+val);
       }
@@ -4193,7 +4196,6 @@ public class SpellEffect
 
   private void applyEffect_101(ArrayList<Fighter> cibles, Fight fight)
   {
-
     if(spell==470)
     {
       for(Fighter target : cibles)
@@ -4285,7 +4287,7 @@ public class SpellEffect
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,308,caster.getId()+"",target.getId()+","+(value-retrait));
           if(retrait>0)
           {
-            target.addBuff(effectID,retrait,1,1,false,spell,args,caster,false);//m
+            target.addBuff(effectID,retrait,1,1,true,spell,args,caster,false);//m
             if(turns<=1||duration<=1)
               SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,101,target.getId()+"",target.getId()+",-"+retrait);
           }
@@ -5359,9 +5361,9 @@ public class SpellEffect
   }
 
   private void applyEffect_169(ArrayList<Fighter> cibles, Fight fight)
-  { // - PM, no esquivables
+  {
 
-    if(spell==686&&caster.haveState(1))//anti bug saoul
+    if(spell==686&&caster.haveState(1)) //anti bug saoul
       return;
     if(turns<=0)
     {
@@ -5410,12 +5412,12 @@ public class SpellEffect
 
           continue;
         }
-        else if(spell==197)
-        {// portencia sivelstre
+        else if(spell==197) //portencia sivelstre
+        {
           cible.addBuff(effectID,value,turns,turns,true,spell,args,caster,false);
         }
-        else if(spell==686)
-        {// picole
+        else if(spell==686) //picole
+        {
           cible.addBuff(effectID,value,turns,turns,true,spell,args,caster,false);
         }
         else
@@ -6830,7 +6832,7 @@ public class SpellEffect
       caster.getCell().getFighters().clear();
       caster.setCell(cell);
       caster.getCell().addFighter(caster);
-     /* new ArrayList<>(fight.getAllTraps()).stream().filter(trap -> PathFinding.getDistanceBetween(fight.getMap(),trap.getCell().getId(),caster.getCell().getId())<=trap.getSize()).forEach(trap -> trap.onTraped(caster));
+      /* new ArrayList<>(fight.getAllTraps()).stream().filter(trap -> PathFinding.getDistanceBetween(fight.getMap(),trap.getCell().getId(),caster.getCell().getId())<=trap.getSize()).forEach(trap -> trap.onTraped(caster));
       */SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,4,caster.getId()+"",caster.getId()+","+cell.getId());
       verifyTraps(fight,caster);
     }
@@ -6995,7 +6997,7 @@ public class SpellEffect
         caster.getCell().addFighter(caster);
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight,7,5,target.getId()+"",caster.getId()+","+newCellID);
 
-       /* ArrayList<Trap> P=(new ArrayList<Trap>());
+        /* ArrayList<Trap> P=(new ArrayList<Trap>());
         P.addAll(fight.getAllTraps());
         for(Trap p : P)
         {
@@ -7591,7 +7593,7 @@ public class SpellEffect
       caster.setCell(cell);
       caster.getCell().addFighter(caster);
 
-     /* ArrayList<Trap> P=(new ArrayList<Trap>());
+      /* ArrayList<Trap> P=(new ArrayList<Trap>());
       P.addAll(fight.getAllTraps());
       for(Trap p : P)
       {

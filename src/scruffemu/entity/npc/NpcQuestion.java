@@ -121,6 +121,8 @@ public class NpcQuestion
                   ok=false;
                 else if(Main.world.getMetier(mId2).isMaging()) // Sinon si c'est un m�tier de FM
                 {
+                  System.out.println("metierByID: "+Main.world.getMetierByMaging(mId2));
+                  System.out.println("final metier: "+player.getMetierByID(Main.world.getMetierByMaging(mId2)));
                   JobStat metier=player.getMetierByID(Main.world.getMetierByMaging(mId2)); // On r�cup�re le m�tier associ�
                   if(metier!=null) // S'il existe
                   {

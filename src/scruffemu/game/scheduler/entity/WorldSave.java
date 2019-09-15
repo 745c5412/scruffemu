@@ -119,16 +119,16 @@ public class WorldSave extends Updatable
       {
         for(MobGroup group : map.getMobGroups().values())
         {
-            if(group.getIsDynamic())
-              groups.add(new Pair<Short, MobGroup>(map.getId(),group));
-            else if(group.isFix())
-              groupsFix.add(new Pair<Short, MobGroup>(map.getId(),group));
+          if(group.getIsDynamic())
+            groups.add(new Pair<Short, MobGroup>(map.getId(),group));
+          else if(group.isFix())
+            groupsFix.add(new Pair<Short, MobGroup>(map.getId(),group));
         }
       }
       try
       {
-      Database.getDynamics().getHeroicMobsGroups().batchResetFix(groupsFix);
-      Database.getDynamics().getHeroicMobsGroups().batchReset(groups);
+        Database.getDynamics().getHeroicMobsGroups().batchResetFix(groupsFix);
+        Database.getDynamics().getHeroicMobsGroups().batchReset(groups);
       }
       catch(Exception e)
       {
@@ -156,7 +156,7 @@ public class WorldSave extends Updatable
 
     if(trys!=0)
       Main.gameServer.setState(1);
-    
+
     if(thread!=null)
     {
       Thread copy=thread;
