@@ -285,9 +285,7 @@ public class House
           return;
         }
         if(P.get_guild().getMembers().size()<10&&P.get_guild().getId()>2)
-        {
           return;
-        }
         Database.getDynamics().getHouseData().updateGuild(h,P.get_guild().getId(),0);
         parseHG(P,null);
       }

@@ -1214,10 +1214,10 @@ public class SocketManager
   public static void GAME_SEND_cMK_PACKET_TO_GUILD(Guild g, String suffix, int guid, String name, String msg)
   {
     String packet="cMK"+suffix+"|"+guid+"|"+name+"|"+msg;
-    for(Player perso : g.getMembers())
+    for(Player perso : g.getOnlineMembers())
     {
-      if(perso==null||!perso.isOnline())
-        continue;
+      if(!perso.isOnline())
+        perso.setOnline(true);
       send(perso,packet);
     }
   }
@@ -1582,7 +1582,7 @@ public class SocketManager
     String packet="EV"+c;
     send(out,packet);
   }
-  
+
   public static void GAME_SEND_STAKE_VALID(GameClient out, char c)
   {
     String packet="EV"+c;
@@ -2523,9 +2523,9 @@ public class SocketManager
       return;
     }*/
     for(Player player : Main.world.getOnlinePlayers())
-      
+
       //if(player.getCurMap()!=null&&player.getCurMap().getSubArea()!=null&&player.getCurMap().getSubArea().getArea()!=null&&player.getCurMap().getSubArea().getArea().getId()==45)
-    send(player,packet);
+      send(player,packet);
   }
 
   public static void GAME_SEND_Ag_PACKET(GameClient out, int idObjet, String codObjet)
@@ -2901,7 +2901,7 @@ public class SocketManager
     String packet="Bp";
     send(out,packet);
   }
-  
+
   public static void ENVIAR_GA_MOVER_SPRITE_MAPA(final GameMap mapa, final int idUnica, final int idAccionModelo, final String s1, final String s2)
   {
     String packet="GA"+(idUnica<=-1 ? "" : idUnica)+";"+idAccionModelo+";"+s1;
@@ -2910,7 +2910,7 @@ public class SocketManager
     for(final Player p : mapa.getPlayers())
       send(p,packet);
   }
-  
+
   //v2.8 - Average ping system
   public static void sendClearChallengePacket(GameClient out)
   {

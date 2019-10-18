@@ -426,17 +426,14 @@ public class Fight
     if(getCollector()!=null)
       str="A"+getCollector().getN1()+","+getCollector().getN2()+"|.|"+Main.world.getMap(getCollector().getMap()).getX()+"|"+Main.world.getMap(getCollector().getMap()).getY();
 
-    for(Player z : Main.world.getGuild(getGuildId()).getMembers())
+    for(Player z : Main.world.getGuild(getGuildId()).getOnlineMembers())
     {
-      if(z==null)
-        continue;
-      if(z.isOnline())
-      {
-        SocketManager.GAME_SEND_gITM_PACKET(z,Collector.parseToGuild(z.get_guild().getId()));
-        Collector.parseAttaque(z,getGuildId());
-        Collector.parseDefense(z,getGuildId());
-        SocketManager.SEND_gA_PERCEPTEUR(z,str);
-      }
+      if(!z.isOnline())
+        z.setOnline(true);
+      SocketManager.GAME_SEND_gITM_PACKET(z,Collector.parseToGuild(z.get_guild().getId()));
+      Collector.parseAttaque(z,getGuildId());
+      Collector.parseDefense(z,getGuildId());
+      SocketManager.SEND_gA_PERCEPTEUR(z,str);
     }
   }
 
@@ -1522,11 +1519,13 @@ public class Fight
 
                 if(getType()==Constant.FIGHT_TYPE_PVT)
                 {
-                  // FIXME
-                  Main.world.getGuild(getGuildId()).getMembers().stream().filter(player -> player!=null&&player.isOnline()).forEach(player -> {
+                  for(Player player : Main.world.getGuild(getGuildId()).getOnlineMembers())
+                  {
+                    if(!player.isOnline())
+                      player.setOnline(true);
                     SocketManager.GAME_SEND_gITM_PACKET(player,Collector.parseToGuild(player.get_guild().getId()));
                     SocketManager.GAME_SEND_MESSAGE(player,"Your perceptor has won the fight.");
-                  });
+                  }
 
                   this.getCollector().setInFight((byte)0);
                   this.getCollector().set_inFightID((byte)-1);
@@ -2249,13 +2248,16 @@ public class Fight
 
     if(getCollector()!=null)
     {
-      Main.world.getGuild(getGuildId()).getMembers().stream().filter(Player::isOnline).forEach(z -> {
+      for(Player z : Main.world.getGuild(getGuildId()).getOnlineMembers())
+      {
+        if(!z.isOnline())
+          z.setOnline(true);
         Collector.parseAttaque(z,getGuildId());
         Collector.parseDefense(z,getGuildId());
-      });
+      }
+      if(getPrism()!=null)
+        Main.world.getOnlinePlayers().stream().filter(z -> z!=null).filter(z -> z.get_align()==getPrism().getAlignement()).forEach(z -> Prism.parseAttack(perso));
     }
-    if(getPrism()!=null)
-      Main.world.getOnlinePlayers().stream().filter(z -> z!=null).filter(z -> z.get_align()==getPrism().getAlignement()).forEach(z -> Prism.parseAttack(perso));
   }
 
   void joinCollectorFight(final Player player, final int collector)
@@ -4132,10 +4134,13 @@ public class Fight
           /** Collector **/
           if(fighter.getCollector()!=null)
           {
-            Main.world.getGuild(getGuildId()).getMembers().stream().filter(player -> player!=null).filter(Player::isOnline).forEach(player -> {
+            for(Player player : Main.world.getGuild(getGuildId()).getOnlineMembers())
+            {
+              if(!player.isOnline())
+                player.setOnline(true);
               SocketManager.GAME_SEND_gITM_PACKET(player,Collector.parseToGuild(player.get_guild().getId()));
               SocketManager.GAME_SEND_PERCO_INFOS_PACKET(player,fighter.getCollector(),"S");
-            });
+            }
 
             fighter.getCollector().setInFight((byte)0);
             fighter.getCollector().set_inFightID((byte)-1);
@@ -4168,10 +4173,13 @@ public class Fight
         {
           if(fighter.getCollector()!=null)
           {
-            Main.world.getGuild(getGuildId()).getMembers().stream().filter(player -> player!=null).filter(Player::isOnline).forEach(player -> {
+            for(Player player : Main.world.getGuild(getGuildId()).getOnlineMembers())
+            {
+              if(!player.isOnline())
+                player.setOnline(true);
               SocketManager.GAME_SEND_gITM_PACKET(player,Collector.parseToGuild(player.get_guild().getId()));
               SocketManager.GAME_SEND_PERCO_INFOS_PACKET(player,fighter.getCollector(),"D");
-            });
+            }
 
             this.getMapOld().RemoveNpc(fighter.getCollector().getId());
             SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(getMapOld(),fighter.getCollector().getId());

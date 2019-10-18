@@ -20,7 +20,7 @@ public class Guild
   private String name="";
   private String emblem="";
   private Map<Integer, GuildMember> members=new TreeMap<>();
-  private List<Integer> onlineMembers=new ArrayList<>();
+  private List<Integer> onlineMemberIds=new ArrayList<>();
   private int lvl;
   private long xp;
   //Percepteur
@@ -182,11 +182,12 @@ public class Guild
     for(GuildMember GM : this.members.values())
     {
       String online="0";
-      for(Integer id : this.onlineMembers)
-      {
+      for(Integer id : this.onlineMemberIds)
         if(GM.getPlayer().getId()==id)
+        {
           online="1";
-      }
+          GM.getPlayer().setOnline(true);
+        }
       if(str.length()!=0)
         str.append("|");
       str.append(GM.getGuid()).append(";");
@@ -316,9 +317,9 @@ public class Guild
 
   public void removeOnlineMember(int id)
   {
-    if(this.onlineMembers.contains(id))
+    if(this.onlineMemberIds.contains(id))
     {
-      Iterator<Integer> iterator=this.onlineMembers.iterator();
+      Iterator<Integer> iterator=this.onlineMemberIds.iterator();
       while(iterator.hasNext())
         if(iterator.next()==id)
           iterator.remove();
@@ -327,7 +328,21 @@ public class Guild
 
   public void addOnlineMember(int id)
   {
-    if(!this.onlineMembers.contains(id))
-      this.onlineMembers.add(id);
+    if(!this.onlineMemberIds.contains(id))
+      this.onlineMemberIds.add(id);
+  }
+
+  public List<Integer> getOnlineMemberIds()
+  {
+    return this.onlineMemberIds;
+  }
+
+  public ArrayList<Player> getOnlineMembers()
+  {
+    ArrayList<Player> playerList=new ArrayList<Player>();
+    for(Integer id : this.onlineMemberIds)
+      if(Main.world.getPlayer(id)!=null)
+        playerList.add(Main.world.getPlayer(id));
+    return playerList;
   }
 }

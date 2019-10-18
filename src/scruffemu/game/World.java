@@ -860,9 +860,7 @@ public class World
     if(player.get_guild()!=null)
     {
       if(player.get_guild().getMembers().size()<=1)
-      {
         removeGuild(player.get_guild().getId());
-      }
       else if(player.getGuildMember().getRank()==1)
       {
         int curMaxRight=0;

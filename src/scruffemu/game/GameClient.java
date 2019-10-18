@@ -4327,19 +4327,18 @@ public class GameClient
           Collector collector=Main.world.getCollector((Integer)exchangeAction.getValue());
           if(collector==null)
             return;
-          for(Player loc : Main.world.getGuild(collector.getGuildId()).getMembers())
+          for(Player loc : Main.world.getGuild(collector.getGuildId()).getOnlineMembers())
           {
-            if(loc!=null&&loc.isOnline())
-            {
-              SocketManager.GAME_SEND_gITM_PACKET(loc,scruffemu.entity.Collector.parseToGuild(loc.get_guild().getId()));
-              String str="";
-              str+="G"+Integer.toString(collector.getN1(),36)+","+Integer.toString(collector.getN2(),36);
-              str+="|.|"+Main.world.getMap(collector.getMap()).getX()+"|"+Main.world.getMap(collector.getMap()).getY()+"|";
-              str+=player.getName()+"|"+(collector.getXp());
-              if(!collector.getLogObjects().equals(""))
-                str+=collector.getLogObjects();
-              SocketManager.GAME_SEND_gT_PACKET(loc,str);
-            }
+            if(!loc.isOnline())
+              loc.setOnline(true);
+            SocketManager.GAME_SEND_gITM_PACKET(loc,scruffemu.entity.Collector.parseToGuild(loc.get_guild().getId()));
+            String str="";
+            str+="G"+Integer.toString(collector.getN1(),36)+","+Integer.toString(collector.getN2(),36);
+            str+="|.|"+Main.world.getMap(collector.getMap()).getX()+"|"+Main.world.getMap(collector.getMap()).getY()+"|";
+            str+=player.getName()+"|"+(collector.getXp());
+            if(!collector.getLogObjects().equals(""))
+              str+=collector.getLogObjects();
+            SocketManager.GAME_SEND_gT_PACKET(loc,str);
           }
           player.getGuildMember().giveXpToGuild(collector.getXp());
           player.getCurMap().RemoveNpc(collector.getId());
@@ -6154,17 +6153,16 @@ public class GameClient
     SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(this.player.getCurMap(),idCollector);
     Database.getDynamics().getCollectorData().delete(Collector.getId());
     Collector.delCollector(Collector.getId());
-    for(Player z : this.player.get_guild().getMembers())
+    for(Player z : this.player.get_guild().getOnlineMembers())
     {
-      if(z.isOnline())
-      {
-        SocketManager.GAME_SEND_gITM_PACKET(z,scruffemu.entity.Collector.parseToGuild(z.get_guild().getId()));
-        String str="";
-        str+="R"+Integer.toString(Collector.getN1(),36)+","+Integer.toString(Collector.getN2(),36)+"|";
-        str+=Collector.getMap()+"|";
-        str+=Main.world.getMap(Collector.getMap()).getX()+"|"+Main.world.getMap(Collector.getMap()).getY()+"|"+this.player.getName();
-        SocketManager.GAME_SEND_gT_PACKET(z,str);
-      }
+      if(!z.isOnline())
+        z.setOnline(true);
+      SocketManager.GAME_SEND_gITM_PACKET(z,scruffemu.entity.Collector.parseToGuild(z.get_guild().getId()));
+      String str="";
+      str+="R"+Integer.toString(Collector.getN1(),36)+","+Integer.toString(Collector.getN2(),36)+"|";
+      str+=Collector.getMap()+"|";
+      str+=Main.world.getMap(Collector.getMap()).getX()+"|"+Main.world.getMap(Collector.getMap()).getY()+"|"+this.player.getName();
+      SocketManager.GAME_SEND_gT_PACKET(z,str);
     }
   }
 
@@ -6266,17 +6264,17 @@ public class GameClient
     Main.world.addCollector(Collector);
     SocketManager.GAME_SEND_ADD_PERCO_TO_MAP(this.player.getCurMap());
     Database.getDynamics().getCollectorData().add(id,this.player.getCurMap().getId(),this.player.get_guild().getId(),this.player.getId(),System.currentTimeMillis(),this.player.getCurCell().getId(),3,random1,random2);
-    for(Player z : this.player.get_guild().getMembers())
+
+    for(Player z : this.player.get_guild().getOnlineMembers())
     {
-      if(z!=null&&z.isOnline())
-      {
-        SocketManager.GAME_SEND_gITM_PACKET(z,scruffemu.entity.Collector.parseToGuild(z.get_guild().getId()));
-        String str="";
-        str+="S"+Integer.toString(Collector.getN1(),36)+","+Integer.toString(Collector.getN2(),36)+"|";
-        str+=Collector.getMap()+"|";
-        str+=Main.world.getMap(Collector.getMap()).getX()+"|"+Main.world.getMap(Collector.getMap()).getY()+"|"+this.player.getName();
-        SocketManager.GAME_SEND_gT_PACKET(z,str);
-      }
+      if(!z.isOnline())
+        z.setOnline(true);
+      SocketManager.GAME_SEND_gITM_PACKET(z,scruffemu.entity.Collector.parseToGuild(z.get_guild().getId()));
+      String str="";
+      str+="S"+Integer.toString(Collector.getN1(),36)+","+Integer.toString(Collector.getN2(),36)+"|";
+      str+=Collector.getMap()+"|";
+      str+=Main.world.getMap(Collector.getMap()).getX()+"|"+Main.world.getMap(Collector.getMap()).getY()+"|"+this.player.getName();
+      SocketManager.GAME_SEND_gT_PACKET(z,str);
     }
   }
 
@@ -6588,16 +6586,13 @@ public class GameClient
         collector.delDefenseFight(this.player);
         break;
     }
-    for(Player z : Main.world.getGuild(collector.getGuildId()).getMembers())
+    for(Player z : Main.world.getGuild(collector.getGuildId()).getOnlineMembers())
     {
-      if(z==null)
-        continue;
-      if(z.isOnline())
-      {
-        SocketManager.GAME_SEND_gITM_PACKET(z,Collector.parseToGuild(collector.getGuildId()));
-        Collector.parseAttaque(z,collector.getGuildId());
-        Collector.parseDefense(z,collector.getGuildId());
-      }
+      if(!z.isOnline())
+        z.setOnline(true);
+      SocketManager.GAME_SEND_gITM_PACKET(z,Collector.parseToGuild(collector.getGuildId()));
+      Collector.parseAttaque(z,collector.getGuildId());
+      Collector.parseDefense(z,collector.getGuildId());
     }
   }
 
@@ -8579,7 +8574,7 @@ public class GameClient
   //v2.6 - only used in logging in system
   public void kick()
   {
-    Player player = this.player;
+    Player player=this.player;
     if(this.session.isConnected())
       this.session.close(true);
     player.setOnline(false);
@@ -8596,7 +8591,7 @@ public class GameClient
   //v2.8 - kick system fix v2
   public void disconnect()
   {
-    Player player = this.player;
+    Player player=this.player;
     if(this.account!=null&&this.player!=null)
       this.account.disconnect(this.player);
     if(this.getSession()!=null)
@@ -8618,7 +8613,7 @@ public class GameClient
   {
     if(this.account!=null&&this.player!=null)
     {
-      Player player = this.player;
+      Player player=this.player;
       this.account.disconnect(this.player);
       if(this.getSession()!=null)
         kickSession();

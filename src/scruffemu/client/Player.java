@@ -6151,21 +6151,16 @@ public class Player
         if(Collector==null)
           return;
         Collector.reloadTimer();
-        for(Player z : Main.world.getGuild(Collector.getGuildId()).getMembers())
+        for(Player z : Main.world.getGuild(Collector.getGuildId()).getOnlineMembers())
         {
-          if(z==null)
-            continue;
-          if(z.isOnline())
-          {
-            SocketManager.GAME_SEND_gITM_PACKET(z,scruffemu.entity.Collector.parseToGuild(z.get_guild().getId()));
-            String str="G"+Collector.getN1()+","+Collector.getN2()+"|.|"+Main.world.getMap(Collector.getMap()).getX()+"|"+Main.world.getMap(Collector.getMap()).getY()+"|"+getName()+"|"+Collector.getXp()+";";
-
-            if(!Collector.getLogObjects().equals(""))
-              str+=Collector.getLogObjects();
-
-            Player.this.getGuildMember().giveXpToGuild(Collector.getXp());
-            SocketManager.GAME_SEND_gT_PACKET(z,str);
-          }
+          if(!z.isOnline)
+            z.setOnline(true);
+          SocketManager.GAME_SEND_gITM_PACKET(z,scruffemu.entity.Collector.parseToGuild(z.get_guild().getId()));
+          String str="G"+Collector.getN1()+","+Collector.getN2()+"|.|"+Main.world.getMap(Collector.getMap()).getX()+"|"+Main.world.getMap(Collector.getMap()).getY()+"|"+getName()+"|"+Collector.getXp()+";";
+          if(!Collector.getLogObjects().equals(""))
+            str+=Collector.getLogObjects();
+          Player.this.getGuildMember().giveXpToGuild(Collector.getXp());
+          SocketManager.GAME_SEND_gT_PACKET(z,str);
         }
         getCurMap().RemoveNpc(Collector.getId());
         SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(getCurMap(),Collector.getId());
