@@ -20,6 +20,7 @@ public class Guild
   private String name="";
   private String emblem="";
   private Map<Integer, GuildMember> members=new TreeMap<>();
+  private List<Integer> onlineMembers=new ArrayList<>();
   private int lvl;
   private long xp;
   //Percepteur
@@ -181,9 +182,11 @@ public class Guild
     for(GuildMember GM : this.members.values())
     {
       String online="0";
-      if(GM.getPlayer()!=null)
-        if(GM.getPlayer().isOnline())
+      for(Integer id : this.onlineMembers)
+      {
+        if(GM.getPlayer().getId()==id)
           online="1";
+      }
       if(str.length()!=0)
         str.append("|");
       str.append(GM.getGuid()).append(";");
@@ -216,7 +219,7 @@ public class Guild
   {
     GuildMember guildMember=this.members.get(id);
     if(guildMember==null)
-     Database.getDynamics().getGuildMemberData().load(id);
+      Database.getDynamics().getGuildMemberData().load(id);
     return this.members.get(id)==null ? this.members.get(id) : guildMember;
   }
 
@@ -225,10 +228,10 @@ public class Guild
     House house=House.getHouseByPerso(player);
     if(house!=null)
       if(House.houseOnGuild(this.id)>0)
-       Database.getDynamics().getHouseData().updateGuild(house,0,0);
+        Database.getDynamics().getHouseData().updateGuild(house,0,0);
 
     this.members.remove(player.getId());
-   Database.getDynamics().getGuildMemberData().delete(player.getId());
+    Database.getDynamics().getGuildMemberData().delete(player.getId());
   }
 
   public void addXp(long xp)
@@ -311,8 +314,20 @@ public class Guild
     return String.valueOf(getNbrPerco())+"|"+Collector.countCollectorGuild(getId())+"|"+100*getLvl()+"|"+getLvl()+"|"+getStats(158)+"|"+getStats(176)+"|"+getStats(124)+"|"+getNbrPerco()+"|"+getCapital()+"|"+(1000+(10*getLvl()))+"|"+compileSpell();
   }
 
-  /*public String parseQuestionTaxCollector()
+  public void removeOnlineMember(int id)
   {
-    return "1"+';'+getName()+','+getStats(Constant.STATS_ADD_PODS)+','+getStats(Constant.STATS_ADD_PROS)+','+getStats(Constant.STATS_ADD_SAGE)+','+getNbrPerco();
-  }*/
+    if(this.onlineMembers.contains(id))
+    {
+      Iterator<Integer> iterator=this.onlineMembers.iterator();
+      while(iterator.hasNext())
+        if(iterator.next()==id)
+          iterator.remove();
+    }
+  }
+
+  public void addOnlineMember(int id)
+  {
+    if(!this.onlineMembers.contains(id))
+      this.onlineMembers.add(id);
+  }
 }

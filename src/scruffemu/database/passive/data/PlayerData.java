@@ -120,7 +120,7 @@ public class PlayerData extends AbstractDAO<Player>
 
       }
     }
-    catch(SQLException e)
+    catch(Exception e)
     {
       super.sendError("PlayerData load id",e);
       Main.stop("unknown");
@@ -183,7 +183,7 @@ public class PlayerData extends AbstractDAO<Player>
           player.setGuildMember(Main.world.getGuild(guild).getMember(RS.getInt("id")));
       }
     }
-    catch(SQLException e)
+    catch(Exception e)
     {
       super.sendError("PlayerData loadByAccountId",e);
       Main.stop("unknown");

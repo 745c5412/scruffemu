@@ -4,7 +4,6 @@ import org.fusesource.jansi.AnsiConsole;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import scruffemu.area.map.entity.InteractiveObject;
 import scruffemu.comhandler.ExchangeClient;
 import scruffemu.database.Database;
 import scruffemu.game.GameServer;
@@ -14,7 +13,6 @@ import scruffemu.game.scheduler.entity.MountUpdate;
 import scruffemu.game.scheduler.entity.MoveEntities;
 import scruffemu.game.scheduler.entity.UpdateStarBonus;
 import scruffemu.game.scheduler.entity.WorldKickIdle;
-import scruffemu.game.scheduler.entity.WorldPlayerOption;
 import scruffemu.game.scheduler.entity.WorldPub;
 import scruffemu.game.scheduler.entity.WorldSave;
 
@@ -102,8 +100,6 @@ public class Main
         try
         {
           WorldSave.updatable.update();
-          InteractiveObject.updatable.update();
-          WorldPlayerOption.updatable.update();
           WorldPub.updatable.update();
           WorldKickIdle.updatable.update();
           UpdateStarBonus.updatable.update();

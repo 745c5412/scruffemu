@@ -147,7 +147,7 @@ public class CommandAdmin extends AdminUser
     {
       Player perso=this.getPlayer();
       if(infos.length>1)
-      {//Si un nom de perso est specifie
+      {
         try
         {
           perso=Main.world.getPlayerByName(infos[1]);

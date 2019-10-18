@@ -794,10 +794,14 @@ public class GameMap
     return map;
   }
 
+  //v2.8 - undefined cell login fix
   public void addPlayer(Player perso)
   {
     SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(this,perso);
-    perso.getCurCell().addPlayer(perso);
+    if(perso.getCurCell()!=null)
+      perso.getCurCell().addPlayer(perso);
+    else
+      this.getCase(this.getRandomFreeCellId()).addPlayer(perso);
     if(perso.getEnergy()>0)
     {
       if(perso.getEnergy()>=10000)

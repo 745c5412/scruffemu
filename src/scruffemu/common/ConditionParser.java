@@ -80,7 +80,7 @@ public class ConditionParser
       jep.addVariable("CW",perso.getTotalStats().getEffect(Constant.STATS_ADD_SAGE));
       jep.addVariable("CC",perso.getTotalStats().getEffect(Constant.STATS_ADD_CHAN));
       jep.addVariable("CS",perso.getTotalStats().getEffect(Constant.STATS_ADD_FORC));
-      jep.addVariable("CM",perso.getStats().getEffect(Constant.STATS_ADD_PM));
+      jep.addVariable("CM",perso.getTotalStats().getEffect(Constant.STATS_ADD_PM));
       //Stats de bases
       jep.addVariable("Ci",perso.getStats().getEffect(Constant.STATS_ADD_INTE));
       jep.addVariable("Cs",perso.getStats().getEffect(Constant.STATS_ADD_FORC));

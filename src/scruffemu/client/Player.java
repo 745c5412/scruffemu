@@ -227,7 +227,7 @@ public class Player
   private boolean worldMarket=false;
   //IPDrop system
   public boolean ipDrop=false;
-  private Pair<InteractiveObject,GameCase> inInteractiveObject=null;
+  private Pair<InteractiveObject, GameCase> inInteractiveObject=null;
   private boolean canDrop=true;
   private boolean autoSkip=false;
   private Stake stake=null;
@@ -655,11 +655,6 @@ public class Player
   public int getClasse()
   {
     return this.classe;
-  }
-
-  public void setClasse(int classe)
-  {
-    this.classe=classe;
   }
 
   public int getColor1()
@@ -1996,8 +1991,6 @@ public class Player
     if(Config.getInstance().fightAsBlocked)
       this.sendServerMessage("You can not start any fights until the server has rebooted.");
 
-    //this.checkVote();
-
     Main.world.logger.info("The player "+this.getName()+" come to connect.");
 
     if(this.getCurMap().getSubArea()!=null)
@@ -2012,31 +2005,10 @@ public class Player
 
     SocketManager.sendAveragePingPacket(this.getGameClient());
     refreshItemClasse();
+    if(this.getGuildMember()!=null)
+      if(this.getGuildMember().getGuild()!=null)
+        this.getGuildMember().getGuild().addOnlineMember(this.getId());
     Main.refreshTitle();
-  }
-
-  public void checkVote()
-  {
-    String IP=this.getAccount().getLastIP();
-    long now=System.currentTimeMillis()/1000;
-    boolean vote=true;
-    for(Account account : Main.world.getAccounts())
-    {
-      if(account!=null&&account.getLastVoteIP()!=null&&!account.getLastVoteIP().equalsIgnoreCase(""))
-      {
-        if(account.getLastVoteIP().equalsIgnoreCase(IP))
-        {
-          if((account.getHeureVote()+3600*3)>now)
-          {
-            vote=false;
-            break;
-          }
-        }
-      }
-    }
-
-    if(vote)
-      this.sendMessage("You are able to vote.");
   }
 
   public void SetSeeFriendOnline(boolean bool)
@@ -4335,10 +4307,10 @@ public class Player
         else
         {
           setShowWings(false);
-        _honor-=hloose;
-        SocketManager.GAME_SEND_ALTER_GM_PACKET(this.curMap,this);
-        Database.getStatics().getPlayerData().update(this);
-        break;
+          _honor-=hloose;
+          SocketManager.GAME_SEND_ALTER_GM_PACKET(this.curMap,this);
+          Database.getStatics().getPlayerData().update(this);
+          break;
         }
     }
     SocketManager.GAME_SEND_STATS_PACKET(this);
@@ -4559,7 +4531,7 @@ public class Player
           SocketManager.GAME_SEND_MESSAGE(this,"This prism is currently in combat and cant be teleported to.");
           return;
         }
-        
+
         celdaID=Prisme.getCell();
         MapID=Prisme.getMap();
         break;
@@ -5157,9 +5129,7 @@ public class Player
       this.getStats().addOneStat(119,-this.getStats().getEffect(119));
       this.getStats().addOneStat(126,-this.getStats().getEffect(126));
       if(this.getLevel()>=100)
-      {
         this.getStats().addOneStat(Constant.STATS_ADD_PA,-1);
-      }
       this.setCapital(0);
       this.getStatsParcho().getMap().clear();
       this._sorts=Constant.getStartSorts(classe);
@@ -5214,8 +5184,8 @@ public class Player
       SocketManager.GAME_SEND_eD_PACKET_TO_MAP(this.getCurMap(),this.getId(),1);
     }
     this.setGfxId(Integer.parseInt(this.getClasse()+"3"));
-    SocketManager.send(this,"AR3K");//Block l'orientation
-    SocketManager.send(this,"M112");//T'es mort!!! t'es mort!!! Mouhhahahahahaaaarg
+    SocketManager.send(this,"AR3K"); //Block l'orientation
+    SocketManager.send(this,"M112"); //T'es mort!!! t'es mort!!! Mouhhahahahahaaaarg
     SocketManager.GAME_SEND_ALTER_GM_PACKET(getCurMap(),this);
   }
 
@@ -5258,7 +5228,7 @@ public class Player
     SocketManager.GAME_SEND_STATS_PACKET(this);
     SocketManager.GAME_SEND_ALTER_GM_PACKET(this.curMap,this);
     SocketManager.send(this,"IH");
-    SocketManager.send(this,"AR6bk");//Block l'orientation
+    SocketManager.send(this,"AR6bk"); //Block l'orientation
   }
 
   public Map<Integer, Integer> getStoreItems()
@@ -5311,7 +5281,6 @@ public class Player
       GameObject O=World.getGameObject(obj.getKey());
       if(O==null)
         continue;
-      //O.getPoidOfBaseItem(O.getGuid());
       list.append(O.getGuid()).append(";").append(O.getQuantity()).append(";").append(O.getTemplate().getId()).append(";").append(O.parseStatsString()).append(";").append(obj.getValue()).append("|");
     }
 
@@ -6556,14 +6525,14 @@ public class Player
     this.followerCell=followerCell;
   }
 
-  public Pair<InteractiveObject,GameCase> getInInteractiveObject()
+  public Pair<InteractiveObject, GameCase> getInInteractiveObject()
   {
     return inInteractiveObject;
   }
 
-  public void setInInteractiveObject(Pair<InteractiveObject,GameCase> inInteractiveObject)
+  public void setInInteractiveObject(Pair<InteractiveObject, GameCase> inInteractiveObject)
   {
-    this.inInteractiveObject = inInteractiveObject;
+    this.inInteractiveObject=inInteractiveObject;
   }
 
   public boolean getCanDrop()
@@ -6573,9 +6542,9 @@ public class Player
 
   public void setCanDrop(boolean canDrop)
   {
-    this.canDrop = canDrop;
+    this.canDrop=canDrop;
   }
-  
+
   public Map<Integer, Spell.SortStats> getSorts()
   {
     return _sorts;
@@ -6588,7 +6557,7 @@ public class Player
 
   public void setStake(Stake stake)
   {
-    this.stake = stake;
+    this.stake=stake;
   }
 
   public boolean getAutoSkip()
@@ -6598,7 +6567,7 @@ public class Player
 
   public void setAutoSkip(boolean autoSkip)
   {
-    this.autoSkip = autoSkip;
+    this.autoSkip=autoSkip;
   }
 
 }

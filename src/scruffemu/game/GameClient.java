@@ -8579,17 +8579,37 @@ public class GameClient
   //v2.6 - only used in logging in system
   public void kick()
   {
+    Player player = this.player;
     if(this.session.isConnected())
       this.session.close(true);
+    player.setOnline(false);
+    player.resetVars();
+    Database.getStatics().getPlayerData().update(player);
+    SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(player.getCurMap(),player.getId());
+    Main.world.unloadPerso(player);
+    Database.getStatics().getPlayerData().load(player.getId());
+    Main.world.ReassignAccountToChar(player.getAccount());
+    if(player.getGuildMember().getGuild()!=null)
+      player.getGuildMember().getGuild().removeOnlineMember(player.getId());
   }
 
   //v2.8 - kick system fix v2
   public void disconnect()
   {
+    Player player = this.player;
     if(this.account!=null&&this.player!=null)
       this.account.disconnect(this.player);
     if(this.getSession()!=null)
       kickSession();
+    player.setOnline(false);
+    player.resetVars();
+    Database.getStatics().getPlayerData().update(player);
+    SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(player.getCurMap(),player.getId());
+    Main.world.unloadPerso(player);
+    Database.getStatics().getPlayerData().load(player.getId());
+    Main.world.ReassignAccountToChar(player.getAccount());
+    if(player.getGuildMember().getGuild()!=null)
+      player.getGuildMember().getGuild().removeOnlineMember(player.getId());
     Main.refreshTitle();
   }
 
@@ -8598,9 +8618,19 @@ public class GameClient
   {
     if(this.account!=null&&this.player!=null)
     {
+      Player player = this.player;
       this.account.disconnect(this.player);
       if(this.getSession()!=null)
         kickSession();
+      player.setOnline(false);
+      player.resetVars();
+      Database.getStatics().getPlayerData().update(player);
+      SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(player.getCurMap(),player.getId());
+      Main.world.unloadPerso(player);
+      Database.getStatics().getPlayerData().load(player.getId());
+      Main.world.ReassignAccountToChar(player.getAccount());
+      if(player.getGuildMember().getGuild()!=null)
+        player.getGuildMember().getGuild().removeOnlineMember(player.getId());
     }
   }
 
