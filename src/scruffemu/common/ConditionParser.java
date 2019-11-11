@@ -346,10 +346,7 @@ public class ConditionParser
           String[] split=cond.split("==")[1].split(",");
           int id=Integer.parseInt(split[0]),qua=Integer.parseInt(split[1]);
           if(player.hasItemTemplate(id,qua))
-          {
-            player.removeByTemplateID(id,qua);
             return true;
-          }
           else
           {
             SocketManager.GAME_SEND_Im_PACKET(player,"14");

@@ -2,6 +2,7 @@ package scruffemu.main;
 
 import org.fusesource.jansi.AnsiConsole;
 import org.slf4j.LoggerFactory;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import scruffemu.comhandler.ExchangeClient;
@@ -31,6 +32,7 @@ public class Main
   public static GameServer gameServer;
   public static boolean isRunning=false, isSaving=false;
   public static World world;
+  private static final Scanner scanner=new Scanner(System.in);
 
   public static void main(String[] args) throws SQLException
   {
@@ -99,6 +101,7 @@ public class Main
       {
         try
         {
+          parse(scanner.nextLine());
           WorldSave.updatable.update();
           WorldPub.updatable.update();
           WorldKickIdle.updatable.update();
@@ -133,11 +136,28 @@ public class Main
         {
           e.printStackTrace();
         }
+
       }
     }
     else
     {
       Main.logger.error("An error occurred when the server have try a connection on the Mysql server. Please check your identification.");
+    }
+  }
+
+  private static void parse(String line)
+  {
+    if(!line.isEmpty())
+    {
+      switch(line.toUpperCase())
+      {
+        case "SAVE":
+          WorldSave.cast(1);
+          break;
+        default:
+          System.out.println(" > Unknown command '"+line.toUpperCase()+"' !");
+          break;
+      }
     }
   }
 
@@ -171,9 +191,9 @@ public class Main
     runnables.clear();
     if(Database.launchDatabase())
     {
-    world=new World();
-    world.createWorld();
-    refreshTitle();
+      world=new World();
+      world.createWorld();
+      refreshTitle();
     }
     gameServer.setState(1);
     logger.info("The server is ready ! Waiting for connection..\n");

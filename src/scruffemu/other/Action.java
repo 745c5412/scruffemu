@@ -97,7 +97,6 @@ public class Action
 
   public boolean apply(final Player player, Player target, int itemID, int cellid)
   {
-
     if(player==null)
       return true;
     if(player.getFight()!=null)

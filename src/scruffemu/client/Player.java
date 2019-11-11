@@ -586,17 +586,14 @@ public class Player
     }
     int mountID=-1;
     if(P.getMount()!=null)
-    {
       mountID=P.getMount().getId();
-    }
 
-    Player Clone=new Player(id,P.getName(),(P.getGroupe()!=null) ? P.getGroupe().getId() : -1,P.getSexe(),P.getClasse(),P.getColor1(),P.getColor2(),P.getColor3(),P.getLevel(),100,P.getGfxId(),stats,P.parseObjetsToDB(),100,showWings,mountID,alvl,P.get_align());
-
+    Player Clone=new Player(id,P.getName(),(P.getGroupe()!=null) ? P.getGroupe().getId() : -1,P.getSexe(),P.getClasse(),P.getColor1(),P.getColor2(),P.getColor3(),P.getLevel(),100,P.getGfxId(),stats,"",100,showWings,mountID,alvl,P.get_align());
+    Clone.objects=new HashMap<>();
+    Clone.objects.putAll(P.objects);
     Clone.set_isClone(true);
     if(P._onMount)
-    {
       Clone._onMount=true;
-    }
     return Clone;
   }
 
@@ -1477,6 +1474,7 @@ public class Player
   {
     if(Main.world.getSort(spellID).getStatsByLevel(level)==null)
     {
+      System.out.println("reached");
       Main.gameServer.a();
       return false;
     }

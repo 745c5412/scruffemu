@@ -556,7 +556,12 @@ public class GameClient
     if(this.account.getPlayers().get(id)!=null)
     {
       int i=Main.world.getOnlinePlayerCountSameIP(this);
+      boolean isPlayer=false;
       if(this.account.getPlayers().get(id).getGroupe()==null)
+        isPlayer=true;
+      else if(this.account.getPlayers().get(id).getGroupe().isPlayer())
+        isPlayer=true;
+      if(isPlayer) //not admin group, check limit
       {
         if(i<Config.getInstance().maxconnections)
         {
@@ -574,7 +579,7 @@ public class GameClient
           }
         }
       }
-      else if(!this.account.getPlayers().get(id).getGroupe().isPlayer())
+      else //admin group, dont check limit
       {
         this.player=this.account.getPlayers().get(id);
         if(this.player!=null)
@@ -8577,15 +8582,9 @@ public class GameClient
     Player player=this.player;
     if(this.session.isConnected())
       this.session.close(true);
-    player.setOnline(false);
-    player.resetVars();
-    Database.getStatics().getPlayerData().update(player);
-    SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(player.getCurMap(),player.getId());
-    Main.world.unloadPerso(player);
-    Database.getStatics().getPlayerData().load(player.getId());
-    Main.world.ReassignAccountToChar(player.getAccount());
-    if(player.getGuildMember().getGuild()!=null)
-      player.getGuildMember().getGuild().removeOnlineMember(player.getId());
+    if(player!=null)
+      charReset(player);
+    Main.refreshTitle();
   }
 
   //v2.8 - kick system fix v2
@@ -8596,15 +8595,8 @@ public class GameClient
       this.account.disconnect(this.player);
     if(this.getSession()!=null)
       kickSession();
-    player.setOnline(false);
-    player.resetVars();
-    Database.getStatics().getPlayerData().update(player);
-    SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(player.getCurMap(),player.getId());
-    Main.world.unloadPerso(player);
-    Database.getStatics().getPlayerData().load(player.getId());
-    Main.world.ReassignAccountToChar(player.getAccount());
-    if(player.getGuildMember().getGuild()!=null)
-      player.getGuildMember().getGuild().removeOnlineMember(player.getId());
+    if(player!=null)
+      charReset(player);
     Main.refreshTitle();
   }
 
@@ -8613,20 +8605,26 @@ public class GameClient
   {
     if(this.account!=null&&this.player!=null)
     {
-      Player player=this.player;
       this.account.disconnect(this.player);
       if(this.getSession()!=null)
         kickSession();
-      player.setOnline(false);
-      player.resetVars();
-      Database.getStatics().getPlayerData().update(player);
-      SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(player.getCurMap(),player.getId());
-      Main.world.unloadPerso(player);
-      Database.getStatics().getPlayerData().load(player.getId());
-      Main.world.ReassignAccountToChar(player.getAccount());
+      charReset(this.player);
+    }
+    Main.refreshTitle();
+  }
+
+  public void charReset(Player player)
+  {
+    player.setOnline(false);
+    player.resetVars();
+    Database.getStatics().getPlayerData().update(player);
+    SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(player.getCurMap(),player.getId());
+    /*Main.world.unloadPerso(player);
+    Database.getStatics().getPlayerData().load(player.getId());
+    Main.world.ReassignAccountToChar(player.getAccount());*/
+    if(player.getGuildMember()!=null)
       if(player.getGuildMember().getGuild()!=null)
         player.getGuildMember().getGuild().removeOnlineMember(player.getId());
-    }
   }
 
   //v2.6 - kick system fix

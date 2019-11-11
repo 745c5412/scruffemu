@@ -2483,13 +2483,9 @@ public class PathFinding
       try
       {
         if(celdaInicio==celdaDestino)
-        {
           return null;
-        }
         if(PM==-1)
-        {
           PM=500;
-        }
         final int _PM=PM;
         final byte _ancho=mapa.getW();
         final int _nroLados=4;
@@ -2627,10 +2623,10 @@ public class PathFinding
 
   private static short celdaMasCercanaACeldaObjetivo(final GameMap mapa, final short celdaInicio, final short celdaDestino, ArrayList<GameCase> celdasProhibidas, final boolean ocupada)
   {
-    if(mapa.getCase(celdaInicio)==null||mapa.getCase(celdaDestino)==null)
-    {
+    if(mapa==null)
       return -1;
-    }
+    if(mapa.getCase(celdaInicio)==null||mapa.getCase(celdaDestino)==null)
+      return -1;
     int dist=1000;
     short celdaID=celdaInicio;
     if(celdasProhibidas==null)
